@@ -1,0 +1,76 @@
+.slider {
+	--slider-track-size: 0.375rem;
+	--slider-thumb-size: 1.125rem;
+	display: flex;
+	align-items: center;
+	gap: spacing(m);
+	inline-size: 100%;
+
+	.value {
+		min-inline-size: 2.5ch;
+		color: $color-secondary;
+		--font-size: 0.875rem;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.control {
+		position: relative;
+		display: flex;
+		align-items: center;
+		flex: 1;
+		block-size: var(--slider-thumb-size);
+		touch-action: none;
+
+		.track {
+			position: relative;
+			inline-size: 100%;
+			block-size: var(--slider-track-size);
+			border-radius: $rounded-full;
+			background-color: $surface-track;
+
+			.indicator {
+				position: absolute;
+				block-size: 100%;
+				border-radius: inherit;
+				background-color: $accent;
+			}
+
+			.thumb {
+				inline-size: var(--slider-thumb-size);
+				block-size: var(--slider-thumb-size);
+				border-radius: $rounded-full;
+				background-color: $white;
+				box-shadow:
+					$shadow-small,
+					inset 0 0 0 0.0625rem var(--surface-strong);
+
+				&:focus-visible {
+					outline: 0.125rem solid $accent;
+					outline-offset: 0.125rem;
+				}
+			}
+		}
+	}
+
+	&[data-disabled] {
+		opacity: 0.5;
+
+		.control {
+			cursor: not-allowed;
+		}
+	}
+
+	&[data-orientation='vertical'] {
+		block-size: 12rem;
+
+		.control {
+			inline-size: var(--slider-thumb-size);
+			block-size: 100%;
+		}
+
+		.track {
+			inline-size: var(--slider-track-size);
+			block-size: 100%;
+		}
+	}
+}

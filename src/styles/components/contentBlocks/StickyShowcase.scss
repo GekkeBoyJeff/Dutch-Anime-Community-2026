@@ -1,0 +1,118 @@
+.sticky-showcase {
+	.header {
+		margin-block-end: spacing(3xl);
+	}
+
+	.scene {
+		display: grid;
+		gap: spacing(2xl);
+
+		@include bp(l) {
+			grid-template-columns: 1fr 1fr;
+			gap: spacing(5xl);
+		}
+	}
+
+	.stage {
+		display: none;
+
+		@include bp(l) {
+			position: sticky;
+			inset-block-start: 6rem;
+			display: block;
+			align-self: start;
+			block-size: min(70vh, 34rem);
+			border-radius: 1.5rem;
+			overflow: hidden;
+			background-color: $surface-muted;
+		}
+
+		.stage-media {
+			position: absolute;
+			inset: 0;
+			opacity: 0;
+			transition: opacity $speed-slow $ease;
+
+			&.is-active {
+				opacity: 1;
+			}
+
+			.media,
+			.frame {
+				position: absolute;
+				inset: 0;
+				block-size: 100%;
+
+				.frame {
+					aspect-ratio: auto;
+					border-radius: 0;
+				}
+			}
+		}
+	}
+
+	.rail {
+		display: grid;
+		gap: spacing(4xl);
+		margin: 0;
+		padding: 0;
+
+		@include bp(l) {
+			gap: 0;
+		}
+
+		.step {
+			display: flex;
+			flex-direction: column;
+			gap: spacing(m);
+			align-items: flex-start;
+
+			@include bp(l) {
+				min-block-size: 65vh;
+				justify-content: center;
+				opacity: 0.35;
+				transition: opacity $speed $ease;
+
+				&.is-active {
+					opacity: 1;
+				}
+			}
+
+			.step-index {
+				--font-size: 0.875rem;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				padding-block: spacing(xs);
+				padding-inline: spacing(m);
+				border-radius: $rounded-full;
+				background-color: $tint-accent;
+				color: $accent-text;
+				font-weight: $weight-semibold;
+				font-variant-numeric: tabular-nums;
+			}
+
+			.step-title {
+				margin: 0;
+			}
+
+			.step-body {
+				color: $color-secondary;
+				max-inline-size: 32rem;
+			}
+
+			.step-media {
+				inline-size: 100%;
+				margin-block-start: spacing(s);
+
+				.frame {
+					border-radius: 1.25rem;
+				}
+
+				@include bp(l) {
+					display: none;
+				}
+			}
+		}
+	}
+}

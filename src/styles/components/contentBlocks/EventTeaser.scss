@@ -1,0 +1,73 @@
+.event-teaser {
+	.event-teaser-inner {
+		margin-inline: auto;
+
+		.header {
+			display: flex;
+			flex-direction: column;
+			gap: spacing(s);
+			margin-block-end: spacing(2xl);
+
+			.description {
+				margin: 0;
+				color: $color-secondary;
+			}
+		}
+
+		.list {
+			display: flex;
+			flex-direction: column;
+			gap: spacing(m);
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			.event-card.is-compact {
+				.event-card-body {
+					gap: spacing(m);
+					padding: spacing(l);
+				}
+
+				.event-card-date {
+					inline-size: 3rem;
+					block-size: 3rem;
+				}
+
+				.event-card-day {
+					--font-size: 1.1875rem;
+				}
+
+				.event-card-meta {
+					margin-block-start: spacing(xs);
+				}
+			}
+		}
+
+		.event-teaser-footer {
+			margin-block-start: spacing(xl);
+			text-align: center;
+
+			.view-all {
+				display: inline-flex;
+				align-items: center;
+				gap: spacing(xs);
+				font-weight: $weight-medium;
+				color: $accent-text;
+				text-decoration: none;
+				text-underline-offset: 0.15em;
+
+				transition: color $speed-fast $ease;
+
+				@include interactive {
+					color: $accent-hover;
+					text-decoration: underline;
+				}
+
+				&:active {
+					color: $accent-active;
+				}
+
+			}
+		}
+	}
+}

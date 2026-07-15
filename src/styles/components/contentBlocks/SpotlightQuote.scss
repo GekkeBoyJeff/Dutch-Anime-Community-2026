@@ -1,0 +1,102 @@
+.spotlight-quote {
+	position: relative;
+	overflow: clip;
+
+	.inner {
+		position: relative;
+		display: grid;
+		gap: spacing(2xl);
+
+		@include bp(m) {
+			padding-inline-end: clamp(10rem, 18vw, 16rem);
+		}
+	}
+
+	.spotlight {
+		display: grid;
+		gap: spacing(xl);
+		margin: 0;
+
+		.quote {
+			position: relative;
+			margin: 0;
+			padding-block-start: spacing(2xl);
+
+			&::before {
+				content: '\201C';
+				position: absolute;
+				inset-block-start: -0.5rem;
+				inset-inline-start: -0.25rem;
+				font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
+				font-size: 4.5rem;
+				line-height: 1;
+				color: $accent;
+			}
+
+			.content {
+				--font-size: clamp(1.5rem, 3vw, 2.25rem);
+				font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
+				font-weight: $weight-medium;
+				line-height: 1.3;
+				letter-spacing: $tracking-tight;
+			}
+		}
+
+		.author {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: baseline;
+			gap: spacing(s);
+
+			.name {
+				--font-size: 1.0625rem;
+				font-weight: $weight-semibold;
+			}
+
+			.role {
+				--font-size: 0.9375rem;
+				color: $color-secondary;
+			}
+		}
+	}
+
+	.mascot {
+		--media-radius: 0;
+		inline-size: clamp(8rem, 16vw, 13rem);
+		justify-self: end;
+		margin-block-end: calc(spacing(5xl) * -1 - spacing(l));
+
+		@include bp(m) {
+			position: absolute;
+			inset-block-end: calc(spacing(5xl) * -1);
+			inset-inline-end: 0;
+			margin-block-end: 0;
+		}
+
+		.frame {
+			background: none;
+		}
+	}
+}
+
+html[data-motion] .spotlight-quote .mascot {
+	opacity: 0;
+	scale: 0.8;
+	rotate: 4deg;
+}
+
+html[data-motion] .spotlight-quote.is-revealed .mascot {
+	opacity: 1;
+	scale: 1;
+	rotate: 0deg;
+	transition: opacity $speed-slow $ease, scale $speed-slow cubic-bezier(0.34, 1.56, 0.64, 1), rotate $speed-slow cubic-bezier(0.34, 1.56, 0.64, 1);
+	transition-delay: 200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html[data-motion] .spotlight-quote .mascot {
+		opacity: 1;
+		scale: none;
+		rotate: none;
+	}
+}

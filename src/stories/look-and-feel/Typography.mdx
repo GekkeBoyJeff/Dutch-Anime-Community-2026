@@ -1,0 +1,82 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Look & feel/Typography" />
+
+# Typography
+
+The headings, h1 through h6, live:
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBlock: '1.5rem' }}>
+	{[1, 2, 3, 4, 5, 6].map((n) => (
+		<div key={n} className={`title is-${n}`}>
+			Heading {n} — the quick brown fox
+		</div>
+	))}
+</div>
+
+And the two body sizes:
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBlock: '1.5rem' }}>
+	<p className="content">Body — the standard size for running text. It scales up with the screen.</p>
+	<p className="content is-small">Small — for captions and metadata. Same idea, a smaller curve.</p>
+</div>
+
+## Roles, not a number scale
+
+Type is taken from **semantic roles**, not a neutral numeric scale. Each role carries its own size and
+line height, and each is responsive — it grows at set breakpoints on its own. The role lives on the
+class (`.title.is-1`, `.content`), not the tag, so a heading can *look* like an h2 while still being an
+`<h1>` in the document outline.
+
+These are the real values (mobile-first base, then the size at the medium and large breakpoints):
+
+| Role | Base (mobile) | At `m` (48rem) | At `l` (64rem) |
+|---|---|---|---|
+| `display` | 3rem / 1 | 4rem | 5rem |
+| `h1` | 2rem / 1.1 | 2.5rem | 3rem |
+| `h2` | 1.625rem / 1.15 | 2rem | 2.25rem |
+| `h3` | 1.375rem / 1.2 | 1.625rem | — |
+| `h4` | 1.1875rem / 1.25 | 1.375rem | — |
+| `h5` | 1.0625rem / 1.3 | 1.125rem | — |
+| `h6` | 1rem / 1.35 | — | — |
+| `body-large` | 1.125rem / 1.6 | 1.1875rem | 1.3125rem |
+| `body-default` | 1rem / 1.6 | 1.0625rem | 1.125rem |
+| `body-small` | 0.875rem / 1.55 | 0.9375rem | — |
+| `caption` | 0.8125rem / 1.4 | — | — |
+
+(Values are `font-size / line-height`; a dash means it doesn't change at that breakpoint.)
+
+`display` is for big standalone figures (a 404 code, a hero stat), not headings; `caption` is the small chrome
+text below body-small (badges, key caps, meta lines). Reach for a heading role (`h1`–`h6`) for actual headings.
+
+## The font
+
+The typeface is **Manrope**, self-hosted via [`next/font`](https://nextjs.org/docs/app/getting-started/fonts)
+in `src/app/layout.tsx`, exposed as the `--font-sans` custom property the SCSS reset reads. To use a
+different font, swap the `next/font` import there — that's the single place the typeface is set. (The
+`system-ui` in the reset is only a fallback while the font loads.)
+
+## How to use it
+
+`Title` picks the tag and the role; `Content` carries the body role.
+
+```tsx
+<Title size={1} value="A heading" />          {/* <h1 class="title is-1"> */}
+<Title element="h2" size={4} value="…" />     {/* <h2 tag, h4 size> — decoupled */}
+<Content value="Running text" />              {/* <p class="content"> */}
+<Content size="small" value="Small" />        {/* <p class="content is-small"> */}
+```
+
+> **Why decouple size from tag?** Document structure (which heading level) is for accessibility and
+> SEO; visual size is for design. Tying them together forces you to pick a wrong heading level just to
+> get the right size. Here you choose each independently.
+
+> **Why roles instead of `font-size`?** A role bundles size *and* line height *and* its responsive
+> steps under one name. You apply `h2` once and get all of it, consistently, everywhere.
+
+Where it lives: the roles and their per-breakpoint values are in `src/styles/_initial.scss`
+(`$type-roles` plus the `type-role()` mixin); the global classes are applied in `src/styles/base.scss`.
+
+---
+
+**See also:** [Colors](?path=/docs/look-feel-colors--docs) · [Spacing](?path=/docs/look-feel-spacing--docs).

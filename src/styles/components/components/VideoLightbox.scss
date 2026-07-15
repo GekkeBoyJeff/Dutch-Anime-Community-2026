@@ -1,0 +1,86 @@
+.video-lightbox-backdrop {
+	@include overlay-backdrop($scrim-strong);
+}
+
+.video-lightbox {
+	--video-lightbox-width: 64rem;
+	--video-lightbox-portrait-height: 80vh;
+
+	position: fixed;
+	inset: 0;
+	z-index: $z-modal;
+	display: grid;
+	place-items: center;
+	padding: spacing(l);
+
+	.frame {
+		position: relative;
+		inline-size: 100%;
+		max-inline-size: var(--video-lightbox-width);
+		aspect-ratio: 16 / 9;
+		overflow: hidden;
+		border-radius: $rounded-l;
+		background-color: $black;
+		background-size: cover;
+		background-position: center;
+		box-shadow: $shadow-medium;
+
+		.player {
+			block-size: 100%;
+			inline-size: 100%;
+			gap: 0;
+			--media-radius: 0;
+			--media-block-size: 100%;
+
+			.frame {
+				background-color: transparent;
+			}
+		}
+	}
+
+	&.is-portrait .frame {
+		aspect-ratio: 9 / 16;
+		inline-size: auto;
+		block-size: var(--video-lightbox-portrait-height);
+		max-block-size: calc(100vh - #{spacing(l)} * 2);
+	}
+
+	.close {
+		position: absolute;
+		inset-block-start: spacing(m);
+		inset-inline-end: spacing(m);
+		z-index: 1;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 2.5rem;
+		block-size: 2.5rem;
+		border-radius: $rounded-full;
+		font-size: 1.5rem;
+		line-height: 1;
+		color: $white;
+		background-color: $scrim;
+		cursor: pointer;
+
+		@include interactive {
+			background-color: $scrim-strong;
+		}
+
+		&:focus-visible {
+			outline: 0.125rem solid $white;
+			outline-offset: 0.125rem;
+		}
+	}
+
+	.frame {
+		transition:
+			opacity $speed $ease-out,
+			transform $speed $ease-out;
+	}
+
+	&[data-starting-style] .frame,
+	&[data-ending-style] .frame {
+		opacity: 0;
+		transform: scale(0.96);
+	}
+}

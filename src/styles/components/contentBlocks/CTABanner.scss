@@ -1,0 +1,67 @@
+.cta-banner {
+	.panel {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(xl);
+		padding: spacing(2xl);
+		border-radius: 1.75rem;
+
+		@include bp(m) {
+			padding: spacing(4xl);
+		}
+
+		&.has-media {
+			@include bp(m) {
+				flex-direction: row;
+				align-items: center;
+			}
+		}
+
+		.body {
+			display: flex;
+			flex-direction: column;
+			gap: spacing(l);
+			flex: 1;
+
+			.actions {
+				margin-inline: 0;
+			}
+
+			.actions {
+				display: flex;
+				flex-wrap: wrap;
+				gap: spacing(m);
+			}
+		}
+
+		.figure {
+			flex: 1;
+			min-inline-size: 0;
+		}
+	}
+
+	.panel.is-center .body {
+		align-items: center;
+		text-align: center;
+
+		.actions {
+			justify-content: center;
+		}
+	}
+
+	.panel.is-neutral {
+		background-color: $surface-muted;
+	}
+
+	.panel.is-primary {
+		background-color: $tint-accent;
+	}
+
+	.panel.is-success {
+		background-color: $tint-success;
+	}
+
+	.panel.is-warning {
+		background-color: $tint-warning;
+	}
+}

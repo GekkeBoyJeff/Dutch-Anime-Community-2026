@@ -1,0 +1,13 @@
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(l);
+	inline-size: 100%;
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: spacing(m);
+		margin-block-start: spacing(s);
+	}
+}

@@ -1,0 +1,35 @@
+.prose {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(l);
+
+	h2 {
+		--font-size: 1.375rem;
+	}
+	h3 {
+		--font-size: 1.1875rem;
+	}
+	a {
+		color: $accent-text;
+		text-decoration: underline;
+		text-underline-offset: 0.15em;
+
+		transition:
+			text-decoration-thickness $speed-fast $ease,
+			color $speed-fast $ease;
+
+		@include interactive {
+			text-decoration-thickness: 0.125rem;
+			color: $accent-hover;
+		}
+
+		&:active {
+			color: $accent-active;
+		}
+
+	}
+	ul {
+		padding-inline-start: spacing(xl);
+		list-style: disc;
+	}
+}

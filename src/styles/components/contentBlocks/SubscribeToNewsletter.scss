@@ -1,0 +1,14 @@
+.subscribe-newsletter {
+	.panel {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(xl);
+		max-inline-size: 46rem;
+		margin-inline: auto;
+		text-align: center;
+
+		.copy {
+			align-items: center;
+		}
+	}
+}

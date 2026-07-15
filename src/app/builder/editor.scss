@@ -1,0 +1,212 @@
+// Editor-only styles for the /builder route, imported by src/app/builder/page.tsx. Deliberately
+// NOT wired into src/styles/index.ts: the editor must never ship CSS to the public site (the
+// documented exception to the central style index — see the rebuild design doc).
+
+.builder {
+	min-block-size: 100dvh;
+
+	// Dark editor chrome, default on. Puck 0.22 styles its UI through these SEMANTIC custom
+	// properties (surface/border/text/interactive…), so overriding them on .builder re-themes every
+	// panel, field and menu that renders inside it. The preview iframe is a separate document: the
+	// CANVAS keeps rendering the site exactly as visitors see it — only the editor shell is dark.
+	--puck-color-surface: #131316;
+	--puck-color-surface-subtle: #18181b;
+	--puck-color-surface-muted: #1f1f22;
+	--puck-color-surface-inverse: #f4f4f5;
+
+	--puck-color-border: #26262b;
+	--puck-color-border-muted: #1f1f22;
+	--puck-color-border-hover: #4b4b53;
+	--puck-color-border-inverse: #4b4b53;
+
+	--puck-color-text: #f4f4f5;
+	--puck-color-text-secondary: #d4d4d8;
+	--puck-color-text-muted: #a1a1aa;
+	--puck-color-text-subtle: #8b8b94;
+	--puck-color-text-disabled: #52525b;
+	--puck-color-text-inverse: #131316;
+
+	--puck-color-interactive: #60a5fa;
+	--puck-color-interactive-hover: #93c5fd;
+	--puck-color-interactive-active: #bfdbfe;
+	--puck-color-interactive-inverse-hover: #3b82f6;
+	--puck-color-interactive-inverse-active: #2563eb;
+	--puck-color-interactive-neutral-hover: #26262b;
+	--puck-color-interactive-soft: #16244d;
+	--puck-color-interactive-soft-hover: #1e3a8a;
+	--puck-color-interactive-subtle: #1e3a8a;
+
+	--puck-color-focus-ring: #60a5fa;
+	--puck-color-selection-border: #60a5fa;
+	--puck-color-selection-bg: color-mix(in srgb, #3b82f6 30%, transparent);
+
+	.builder-page-select {
+		display: inline-flex;
+		align-items: center;
+		gap: spacing(xs);
+
+		select {
+			padding: spacing(xs) spacing(s);
+			border: 1px solid var(--puck-color-border);
+			border-radius: 4px;
+			background: var(--puck-color-surface-subtle);
+			color: var(--puck-color-text);
+		}
+	}
+
+	// Header refinements. Puck's MenuBar (undo/redo + our selects + Publish) uses hashed class
+	// names, so we match on a stable fragment — the same technique as the _ExternalInput overrides
+	// further down. These live inside .builder because the header renders in the editor shell (only
+	// the portalled modal/loading states below need to sit outside it).
+
+	// Even breathing room between every top-bar item. Puck's default mixed a 16px flex gap with our
+	// old per-select margin, which read unevenly; a single uniform column gap fixes that.
+	[class*='_MenuBar-inner_'] {
+		gap: spacing(s) spacing(xl);
+	}
+
+	// Undo/redo ("vorige/volgende"): larger icons, and a clear disabled affordance for when there's
+	// nothing left to undo or redo (Puck already sets the `disabled` attribute — we only make it read
+	// as disabled: dimmed with a not-allowed cursor).
+	[class*='_MenuBar-history_'] {
+		gap: spacing(xs);
+
+		button {
+			inline-size: 2rem;
+
+			svg {
+				inline-size: 24px;
+				block-size: 24px;
+			}
+
+			&:disabled {
+				cursor: not-allowed;
+				opacity: 0.4;
+			}
+		}
+	}
+}
+
+// The classes below are deliberately NOT nested under .builder: the export Modal portals to
+// <body> (Base UI Dialog) and the loading state renders before .builder mounts, so nesting them
+// would make the selectors never match. The builder- prefix keeps the global namespace safe.
+.builder-loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-block-size: 100dvh;
+}
+
+.builder-export {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(s);
+
+	textarea {
+		inline-size: 100%;
+		padding: spacing(s);
+		font-family: monospace;
+	}
+}
+
+.builder-issues {
+	padding-inline-start: spacing(m);
+	color: var(--puck-color-red-04, #b91c1c);
+
+	li {
+		margin-block-end: spacing(xs);
+	}
+}
+
+// The drawer with story variants (see BlockDrawer).
+.builder-drawer {
+	.builder-drawer-group {
+		margin-block-end: spacing(m);
+
+		h3 {
+			margin-block-end: spacing(xs);
+			font-size: 11px;
+			font-weight: 600;
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+			color: var(--puck-color-text-muted);
+		}
+
+		.builder-drawer-block {
+			margin-block-end: spacing(xs);
+
+			.builder-drawer-row {
+				display: flex;
+				align-items: center;
+				gap: spacing(xs);
+
+				// The Drawer.Item wrapper should take the remaining row width next to the toggle.
+				> :first-child {
+					flex: 1;
+					min-inline-size: 0;
+				}
+
+				.builder-drawer-toggle {
+					inline-size: 28px;
+					block-size: 28px;
+					border: 1px solid var(--puck-color-border);
+					border-radius: 4px;
+					background: var(--puck-color-surface-subtle);
+					color: var(--puck-color-text-secondary);
+					cursor: pointer;
+				}
+			}
+
+			.builder-drawer-variants {
+				display: flex;
+				flex-direction: column;
+				gap: spacing(xs);
+				margin-block-start: spacing(xs);
+				margin-inline-start: spacing(m);
+			}
+		}
+	}
+}
+
+// The one custom field widget (string lists), rendered inside Puck's own field chrome.
+.builder-string-list {
+	inline-size: 100%;
+	padding: spacing(xs);
+	font-family: monospace;
+}
+
+// Thumbnail in the /public file picker table (Puck portals the external-field modal, hence global).
+.builder-file-thumb {
+	inline-size: fit-content;
+	block-size: 32px;
+	object-fit: contain;
+	border-radius: 4px;
+}
+
+// Fixate the width of the first column (thumbnail) in the modal picker
+[class*='_ExternalInputModal-tr_'] > [class*='_ExternalInputModal-td_']:first-of-type {
+	inline-size: 7.5rem;
+}
+
+// Override the "lock" icon on Puck's ExternalInput detach button with a trash icon.
+[class*='_ExternalInput-detachButton_'] {
+	svg {
+		display: none;
+	}
+
+	&::before {
+		content: '';
+		display: block;
+		inline-size: 16px;
+		block-size: 16px;
+		background-color: currentColor;
+		-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6'/%3E%3Cpath d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2'/%3E%3C/svg%3E");
+		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6'/%3E%3Cpath d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2'/%3E%3C/svg%3E");
+		-webkit-mask-size: contain;
+		mask-size: contain;
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+		-webkit-mask-position: center;
+		mask-position: center;
+	}
+}

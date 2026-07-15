@@ -1,0 +1,66 @@
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: spacing(l);
+	padding-block: spacing(5xl);
+	padding-inline: spacing(xl);
+	text-align: center;
+
+	.empty-state-media {
+		max-inline-size: 16rem;
+
+		img,
+		svg {
+			inline-size: 100%;
+			block-size: auto;
+		}
+	}
+
+	.empty-state-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 3.5rem;
+		block-size: 3.5rem;
+		border-radius: $rounded-full;
+		background-color: $surface-muted;
+		color: $color-secondary;
+
+		.empty-state-glyph {
+			font-size: 1.5rem;
+		}
+	}
+
+	.empty-state-title {
+		margin: 0;
+	}
+
+	.empty-state-text {
+		max-inline-size: 36rem;
+		margin: 0;
+		color: $color-secondary;
+	}
+
+	.empty-state-actions {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: spacing(m);
+		margin-block-start: spacing(s);
+	}
+
+	&.is-compact {
+		gap: spacing(m);
+		padding-block: spacing(2xl);
+
+		.empty-state-icon {
+			inline-size: 2.5rem;
+			block-size: 2.5rem;
+
+			.empty-state-glyph {
+				font-size: 1.125rem;
+			}
+		}
+	}
+}

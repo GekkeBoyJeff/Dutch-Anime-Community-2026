@@ -1,0 +1,59 @@
+.badge {
+	--font-size: 0.8125rem;
+	display: inline-flex;
+	align-items: center;
+	gap: spacing(xs);
+	padding-block: spacing(xs);
+	padding-inline: spacing(s);
+	border-radius: $rounded-s;
+	font-weight: $weight-medium;
+	white-space: nowrap;
+	width: fit-content;
+
+	.dot {
+		inline-size: 0.5em;
+		block-size: 0.5em;
+		border-radius: $rounded-full;
+		background-color: currentColor;
+	}
+
+	.badge-icon {
+		font-size: 1em;
+	}
+
+	&.is-neutral {
+		background-color: $surface-muted;
+		color: $color;
+	}
+
+	&.is-primary {
+		background-color: $tint-accent;
+		color: $accent-text;
+	}
+
+	&.is-info {
+		background-color: $tint-info;
+		color: $status-info;
+	}
+
+	&.is-success {
+		background-color: $tint-success;
+		color: $status-success;
+	}
+
+	&.is-warning {
+		background-color: $tint-warning;
+		color: $status-warning;
+	}
+
+	&.is-error {
+		background-color: $tint-error;
+		color: $status-error;
+	}
+
+	&.is-outline {
+		background-color: transparent;
+		color: $color;
+		box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+	}
+}

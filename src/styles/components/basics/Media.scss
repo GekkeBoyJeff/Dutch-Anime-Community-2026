@@ -1,0 +1,55 @@
+.media {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(s);
+	max-inline-size: 100%;
+	margin: 0;
+	block-size: var(--media-block-size, auto);
+
+	.frame {
+		position: relative;
+		overflow: hidden;
+		aspect-ratio: 16 / 9;
+		block-size: var(--media-block-size, auto);
+		border-radius: var(--media-radius, #{$rounded-m});
+		background-color: $background-color;
+
+		.asset {
+			position: absolute;
+			inset: 0;
+			inline-size: 100%;
+			block-size: 100%;
+			border: 0;
+		}
+	}
+
+	&.is-plain {
+		display: inline-flex;
+
+		.asset {
+			inline-size: auto;
+			block-size: auto;
+			max-inline-size: 100%;
+		}
+	}
+
+	&.is-fill .asset {
+		object-fit: cover;
+	}
+
+	&.is-fit .asset {
+		object-fit: contain;
+	}
+
+	.caption {
+		--font-size: 0.875rem;
+		display: flex;
+		justify-content: space-between;
+		gap: spacing(m);
+		color: $color-secondary;
+
+		.credit {
+			font-style: italic;
+		}
+	}
+}

@@ -1,0 +1,163 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Look & feel/Colors" />
+
+# Colors
+
+The two colorsets, live. Each card sits in its own colorset, so you're looking at the real
+background, main-text and subtle-text colours — not a screenshot.
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBlock: '1.5rem' }}>
+	{['light', 'dark'].map((cs) => (
+		<div
+			key={cs}
+			data-colorset={cs}
+			style={{ padding: '1.25rem', borderRadius: '12px', background: 'var(--background-color)', color: 'var(--color)', boxShadow: '0 1px 2px rgba(0,0,0,.12)' }}
+		>
+			<strong style={{ textTransform: 'capitalize', display: 'block', marginBottom: '.5rem' }}>{cs}</strong>
+			<div>Main text on this background.</div>
+			<div style={{ color: 'var(--color-secondary)', marginTop: '.25rem' }}>Subtle text — captions, metadata.</div>
+		</div>
+	))}
+</div>
+
+A colorset is a named pairing of background and text. Three core values are in play, and every
+component starts from these:
+
+| Property | Role |
+|---|---|
+| `--background-color` | the surface behind the content |
+| `--color` | the main text colour |
+| `--color-secondary` | a quieter colour for captions and metadata |
+
+Around that core sits a small read-only vocabulary that flips with the colorset the same way:
+`--border-color`, `--background-hover` / `--background-active` (interaction feedback),
+`--surface-faint` / `--surface-muted` / `--surface-muted-strong` / `--surface-track` /
+`--surface-strong` (layered surfaces), `--border-strong` and `--accent-text` (accent that stays
+readable on the current background). Because a component reads only these, it looks right in any
+colorset without knowing which one it's in.
+
+## The accent
+
+The brand carries **one** saturated colour: gold. It comes through three tokens —
+
+| Property | Role |
+|---|---|
+| `--accent` | the gold itself: primary buttons, active states, highlights |
+| `--accent-contrast` | the colour of content sitting *on* the accent (plum-ink on gold) |
+| `--accent-text` | accent used *as text* on the current background — flips with the colorset so it keeps contrast |
+
+Everything else in the palette is neutral (cream, plum, white); if something needs to stand out,
+it gets the accent, not a new colour. Status colours (below) are the only other hues, reserved for
+feedback.
+
+## How to use it
+
+Set a colorset on a `Section`; everything inside inherits it. There's a live switch for it too — the
+sun/moon toggle in the toolbar re-renders every story in the chosen colorset.
+
+```tsx
+<Section colorset="dark">…</Section>   {/* renders data-colorset="dark" */}
+```
+
+## How it works: three layers
+
+The cascade is driven by [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes)
+and [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties),
+in three layers:
+
+**1. Theme** (`data-theme` on `<html>`) — the palette: the actual colour values each slot resolves to.
+Every slot exists in a `-light` and a `-dark` flavour:
+
+```scss
+:root {
+	--background-light: #{$white};
+	--color-light: #{$grey-darkest};
+	--color-secondary-light: #{$grey-dark};
+
+	--background-dark: #{$grey-darkest};
+	--color-dark: #{$grey-lightest};
+	--color-secondary-dark: #{$grey-light};
+}
+```
+
+**2. Colorset** (`data-colorset`, set via a `Section`) — picks which palette slot a subtree uses and
+maps it onto the runtime properties. It only *sets* the tokens; a surface reads them (layer 3). Nest a
+colorset and the tokens flip for that subtree, so every surface inside reskins — the same idea as a
+`[data-theme]` subtree:
+
+```scss
+@each $scheme in 'light', 'dark' {
+	[data-colorset='#{$scheme}'] {
+		--background-color: var(--background-#{$scheme});
+		--color: var(--color-#{$scheme});
+		--color-secondary: var(--color-secondary-#{$scheme});
+		// …and the same for borders, hover/active and the surface scale
+	}
+}
+```
+
+**3. Component** — reads only the runtime aliases (`$background-color`, `$color`, `$color-secondary`,
+`$accent`, …), and knows nothing else.
+
+Nesting works: a `dark` panel inside a `light` section switches only its own subtree. For the rare case
+where a component needs to change more than its text inside a given colorset, use the `on-colorset()`
+mixin:
+
+```scss
+@include on-colorset(dark) {
+	border-color: $color-secondary;
+}
+```
+
+> **Why three layers?** Each layer has one job. Components never name a colour, so they can't clash
+> with a theme. Swapping the whole site's look is then a *theme* change — override the same slots under
+> a new `data-theme` and nothing in any component changes. That is exactly how this site works: the
+> DAC brand (per the merkbrief — gold accent, cream canvas, plum-ink dark) is one override block, and
+> `layout.tsx` sets `data-theme="dac"` on `<html>`:
+>
+> ```scss
+> [data-theme='dac'] {
+> 	--accent: #f5c24a;          // gold — the one saturated brand colour
+> 	--accent-contrast: #241a22; // plum-ink on gold
+> 	--background-light: #ffffff;
+> 	--color-light: #241a22;
+> 	--background-dark: #3b2938; // plum
+> 	--color-dark: #f2ebd7;      // cream
+> 	// …plus borders, surfaces and scrims in the same key
+> }
+> ```
+>
+> A second theme, `sepia`, lives alongside it — switch between them with the **Theme** toolbar (the
+> paintbrush) to see the same components under a different palette.
+
+Where it lives: the raw brand colours and the runtime aliases are in `src/styles/_initial.scss` (and
+`_derived.scss`); the palette slots, theme variants (`dac`, `sepia`) and colorset mapping that emit
+them are in the THEME section of `src/styles/base.scss`. The brand rationale is in `MERKBRIEF.md`.
+
+## Status colours
+
+Feedback hues for `Badge`, `Alert` and `Progress`. They are **orthogonal to the colorset** — `success`
+means the same green on a light or dark section — and themeable via `--status-*`. A component never
+hardcodes them: it reads the token and tints a surface with the matching `--tint-*` / `--ring-*`.
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBlock: '1.5rem' }}>
+	{['info', 'success', 'warning', 'error'].map((s) => (
+		<div key={s} style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: '0 1px 2px rgba(0,0,0,.12)' }}>
+			<div style={{ height: '54px', background: `var(--status-${s})` }} />
+			<div style={{ padding: '.6rem .75rem' }}>
+				<strong style={{ textTransform: 'capitalize' }}>{s}</strong>
+				<div style={{ fontSize: '.8rem', opacity: 0.7 }}><code>--status-{s}</code></div>
+			</div>
+		</div>
+	))}
+</div>
+
+A theme overrides these exactly like the palette slots — redefine `--status-*` under a `data-theme`.
+They live as raw values in `_initial.scss` and are emitted as custom properties in `base.scss`.
+
+---
+
+**See also:** [Typography](?path=/docs/look-feel-typography--docs) ·
+[Spacing](?path=/docs/look-feel-spacing--docs) · the theming rules in
+[Conventions](?path=/docs/for-developers-2-conventions--docs).

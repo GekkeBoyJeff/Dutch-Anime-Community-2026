@@ -1,0 +1,37 @@
+.divider {
+	border: 0;
+
+	&.is-horizontal {
+		inline-size: 100%;
+		block-size: 0.0625rem;
+		background-color: $border-color;
+	}
+
+	&.is-vertical {
+		inline-size: 0.0625rem;
+		align-self: stretch;
+		min-block-size: 1em;
+		background-color: $border-color;
+	}
+
+	&.has-label {
+		display: flex;
+		align-items: center;
+		gap: spacing(m);
+		block-size: auto;
+		background-color: transparent;
+
+		&::before,
+		&::after {
+			content: '';
+			flex: 1;
+			block-size: 0.0625rem;
+			background-color: $border-color;
+		}
+
+		.label {
+			--font-size: 0.875rem;
+			color: $color-secondary;
+		}
+	}
+}

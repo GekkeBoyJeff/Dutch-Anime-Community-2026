@@ -1,0 +1,65 @@
+.error-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-block-size: 60vh;
+
+	.error-state-body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: spacing(l);
+		max-inline-size: 40rem;
+		text-align: center;
+
+		.error-state-media {
+			max-inline-size: 18rem;
+
+			img,
+			svg {
+				inline-size: 100%;
+				block-size: auto;
+			}
+		}
+
+		.error-state-icon {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			inline-size: 4rem;
+			block-size: 4rem;
+			border-radius: $rounded-full;
+			background-color: $surface-muted;
+			color: $color-secondary;
+
+			.error-state-icon-glyph {
+				font-size: 1.75rem;
+			}
+		}
+
+		.error-state-code {
+			--font-size: 3rem;
+			margin: 0;
+			color: $accent-text;
+			font-weight: $weight-bold;
+			letter-spacing: $tracking-tight;
+		}
+
+		.error-state-title {
+			margin: 0;
+		}
+
+		.error-state-text {
+			margin: 0;
+			color: $color-secondary;
+		}
+
+		.error-state-actions {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: spacing(m);
+			margin-block-start: spacing(s);
+		}
+	}
+}

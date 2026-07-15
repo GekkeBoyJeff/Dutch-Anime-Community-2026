@@ -1,0 +1,81 @@
+// The transition overlay covers the viewport while the animation runs; without this, clicks land
+// on the snapshot instead of the live page, so nav links feel dead mid-transition.
+::view-transition {
+	pointer-events: none;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+}
+
+::view-transition-old(.vt-none),
+::view-transition-new(.vt-none) {
+	animation: none;
+}
+
+::view-transition-group(site-navigation) {
+	z-index: 300;
+}
+
+::view-transition-old(site-navigation) {
+	display: none;
+}
+
+::view-transition-new(site-navigation) {
+	animation: none;
+}
+
+::view-transition-image-pair(.vt-fade-rise),
+::view-transition-image-pair(.vt-fade) {
+	border-radius: 2rem;
+	overflow: clip;
+}
+
+// The old snapshot stays fully opaque underneath while the new page fades in on top (the image
+// pair paints new over old). Fading both at once leaves a frame where neither is opaque and the
+// page background flashes through — the "page refreshes" flash on dark pages.
+::view-transition-old(.vt-fade-rise),
+::view-transition-old(.vt-fade) {
+	animation: none;
+}
+
+// Keep these short: the browser blocks all clicks while a transition animates (a platform
+// limitation in both Chromium and WebKit), so the duration is exactly how long the nav feels dead.
+::view-transition-new(.vt-fade-rise) {
+	animation: vt-fade-rise 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+::view-transition-new(.vt-fade) {
+	animation: vt-fade 180ms ease-out both;
+}
+
+@keyframes vt-fade-rise {
+	from {
+		opacity: 0;
+		translate: 0 1.25rem;
+	}
+
+	to {
+		opacity: 1;
+		translate: 0 0;
+	}
+}
+
+@keyframes vt-fade {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(*),
+	::view-transition-new(*),
+	::view-transition-group(*) {
+		animation: none !important;
+	}
+}

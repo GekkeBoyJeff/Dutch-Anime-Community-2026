@@ -1,0 +1,32 @@
+.spinner {
+	display: inline-flex;
+	--spinner-size: #{1.5rem};
+
+	&.is-s {
+		--spinner-size: 1rem;
+	}
+
+	&.is-l {
+		--spinner-size: 2.25rem;
+	}
+
+	.ring {
+		inline-size: var(--spinner-size);
+		block-size: var(--spinner-size);
+		border-radius: $rounded-full;
+		border: 0.125rem solid $border-color;
+		border-block-start-color: $accent;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.ring {
+			animation: spinner-rotate 0.7s linear infinite;
+		}
+	}
+}
+
+@keyframes spinner-rotate {
+	to {
+		transform: rotate(1turn);
+	}
+}

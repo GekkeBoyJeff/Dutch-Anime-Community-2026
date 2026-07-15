@@ -1,0 +1,45 @@
+.custom-cursor {
+	--cursor-dot: 0.5rem;
+	--cursor-circle: 2rem;
+
+	display: none;
+
+	@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+		display: block;
+	}
+
+	.dot,
+	.circle {
+		position: fixed;
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		z-index: $z-cursor;
+		pointer-events: none;
+		opacity: 0;
+		border-radius: $rounded-full;
+		margin-block-start: calc(var(--size) / -2);
+		margin-inline-start: calc(var(--size) / -2);
+		inline-size: var(--size);
+		block-size: var(--size);
+		transition: opacity $speed-fast $ease;
+	}
+
+	.dot {
+		--size: var(--cursor-dot);
+		background-color: $accent;
+	}
+
+	.circle {
+		--size: var(--cursor-circle);
+		border: 0.09375rem solid $accent;
+		transition:
+			opacity $speed-fast $ease,
+			scale $speed-fast $ease,
+			background-color $speed-fast $ease;
+
+		&.is-hovering {
+			scale: 1.6;
+			background-color: $tint-accent;
+		}
+	}
+}

@@ -1,0 +1,93 @@
+.drawer-backdrop {
+	@include overlay-backdrop;
+}
+
+.drawer {
+	--drawer-size: 22rem;
+
+	position: fixed;
+	z-index: $z-modal;
+	display: flex;
+	flex-direction: column;
+	gap: spacing(l);
+	padding: spacing(xl);
+	background-color: $white;
+	color: $grey-darkest;
+	box-shadow: $shadow-medium;
+	overflow-y: auto;
+
+	.drawer-head {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(xs);
+
+		.drawer-title {
+			margin: 0;
+			--font-size: 1.1875rem;
+			font-weight: $weight-bold;
+		}
+
+		.drawer-description {
+			margin: 0;
+			color: $color-secondary;
+			--font-size: 0.875rem;
+		}
+	}
+
+	.drawer-body {
+		flex: 1 1 auto;
+		min-block-size: 0;
+		--font-size: 0.875rem;
+	}
+
+	.drawer-footer {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: spacing(s);
+	}
+
+	&.is-left,
+	&.is-right {
+		inset-block: 0;
+		inline-size: min(var(--drawer-size), calc(100% - #{spacing(5xl)}));
+		max-inline-size: 100%;
+	}
+
+	&.is-left {
+		inset-inline-start: 0;
+		border-start-end-radius: $rounded-l;
+		border-end-end-radius: $rounded-l;
+	}
+
+	&.is-right {
+		inset-inline-end: 0;
+		border-start-start-radius: $rounded-l;
+		border-end-start-radius: $rounded-l;
+	}
+
+	&.is-bottom {
+		inset-inline: 0;
+		inset-block-end: 0;
+		block-size: min(var(--drawer-size), calc(100dvh - #{spacing(5xl)}));
+		border-start-start-radius: $rounded-l;
+		border-start-end-radius: $rounded-l;
+	}
+
+	transition: transform $speed $ease;
+
+	&.is-left[data-starting-style],
+	&.is-left[data-ending-style] {
+		transform: translateX(-100%);
+	}
+
+	&.is-right[data-starting-style],
+	&.is-right[data-ending-style] {
+		transform: translateX(100%);
+	}
+
+	&.is-bottom[data-starting-style],
+	&.is-bottom[data-ending-style] {
+		transform: translateY(100%);
+	}
+}

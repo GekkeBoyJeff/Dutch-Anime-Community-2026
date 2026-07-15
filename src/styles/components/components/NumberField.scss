@@ -1,0 +1,114 @@
+.number-field {
+	--number-field-step-size: 2.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: spacing(xs);
+	inline-size: 100%;
+
+	.label {
+		--font-size: 0.875rem;
+		font-weight: $weight-medium;
+
+		.scrub-area {
+			display: inline-flex;
+			align-items: center;
+			cursor: ew-resize;
+			user-select: none;
+
+			.scrub-cursor {
+				display: none;
+			}
+		}
+	}
+
+	.group {
+		display: inline-flex;
+		align-items: stretch;
+		inline-size: 100%;
+		box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+		border-radius: $rounded-m;
+		background-color: $background-color;
+		overflow: hidden;
+
+		transition: box-shadow $speed-fast $ease;
+
+		&[data-focused] {
+			box-shadow: inset 0 0 0 0.0625rem var(--accent), $shadow-focus;
+		}
+
+		&[data-disabled] {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		.input {
+			flex: 1;
+			min-inline-size: 0;
+			padding-block: spacing(s);
+			padding-inline: spacing(m);
+			border: none;
+			background-color: transparent;
+			color: $color;
+			font: inherit;
+			font-variant-numeric: tabular-nums;
+			text-align: center;
+
+			&:focus,
+			&:focus-visible {
+				outline: none;
+			}
+		}
+
+		.step {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			inline-size: var(--number-field-step-size);
+			border: none;
+			background-color: $surface-muted;
+			color: $color;
+			font: inherit;
+			cursor: pointer;
+
+			transition: background-color $speed-fast $ease;
+
+			.number-field-step-icon {
+				font-size: 1.1em;
+			}
+
+			&:not([data-disabled]) {
+				@include interactive {
+					background-color: $surface-muted-strong;
+				}
+
+				&:active {
+					background-color: $background-active;
+				}
+			}
+
+			&[data-disabled] {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+
+		}
+	}
+
+	.description {
+		color: $color-secondary;
+		--font-size: 0.875rem;
+	}
+
+	.error {
+		color: $status-error;
+		--font-size: 0.875rem;
+	}
+
+	&.is-invalid .group {
+		box-shadow: inset 0 0 0 0.0625rem var(--status-error);
+
+		&[data-focused] {
+			box-shadow: inset 0 0 0 0.0625rem var(--status-error), $shadow-focus-error;
+		}
+	}
+}

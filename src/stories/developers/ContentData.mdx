@@ -1,0 +1,172 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="For developers/4. Content & data" />
+
+# Content & data
+
+Step 4: you've built the pieces; here is the data you fill them with. Content is data, kept separate
+from the components that render it — this page is the data model: the shape of a page, the contract
+that guards it, and how one contract derives everything that uses it.
+
+## The shape
+
+A page is a single object with two parts — `meta` and an ordered list of `blocks`:
+
+```ts
+export const homePage: Page = {
+	meta: {
+		title: 'Next Starter',
+		description: 'A modern, scalable website starter built with Next.js.',
+	},
+	blocks: [
+		{ type: 'hero', id: 'intro', colorset: 'dark', title: 'Build faster, scale further', /* … */ },
+		{ type: 'featureCards', id: 'features', colorset: 'light', title: 'What you get', items: [/* … */] },
+		{ type: 'featureCards', id: 'partners', colorset: 'dark', title: 'Same block, different data', items: [/* … */] },
+		{ type: 'reviews', id: 'reviews', colorset: 'light', subject: 'Next Starter', items: [/* … */] },
+	],
+};
+```
+
+- **`meta`** is the page data (`title`, `description`, optional `image` and `structuredData`) that
+  feeds the metadata and SEO.
+- **`blocks`** is an ordered list. Each block's `type` picks the component; the rest of the block is
+  that component's props. Notice `features` and `partners` above: the **same block type, twice**, with
+  different data and a different colorset. That's how you compose a page — reorder the array, reorder
+  the page.
+
+The site chrome is content too: `src/content/structures.ts` holds one validated `SiteStructures`
+document (announcement bar, navigation, footer) that the `(website)` layout renders around every page.
+Both pages and structures can be composed visually in the builder (`/builder`, development only) and
+exported as these files.
+
+> **Why one content type?** A blog post, a landing page, an about page — they're all just a `Page`.
+> There's no separate post type to keep in sync.
+
+## The contract
+
+What counts as a valid block lives in the [Zod](https://zod.dev/) schemas under
+`src/lib/content/schema/`, organized by content concept — not by component tier:
+
+- `primitives.ts` — shared value objects (`Colorset`, `Id`, `Media`, `OgImage`).
+- `blocks/<type>.ts` — one file per block type (its schema, inferred type, and derived `*Props`).
+- `blocks/index.ts` — the `Block` [discriminated union](https://zod.dev/api?id=discriminated-unions) on
+  `type` + re-exports. This list *is* the visible inventory of every block type a page can contain.
+- `document.ts` — the page envelope (`PageMeta`, `Page`).
+
+Every TypeScript type is inferred from its schema with `z.infer`, so the schema and the type can't
+drift:
+
+> **Strict Rule on Schema Scope**: Include ONLY props in the JSON schema that come from the backend (CMS). Props with a fixed value in the code (e.g., `maxStars=5`) or pure UI-state components that only manage internal frontend state (like a progress bar inside a slider) do NOT need a schema. Also, the `properties` object in JSON schemas must always be written out across multiple lines, never on a single line.
+
+```ts
+export const Colorset = z.enum(['light', 'dark']);
+export type Colorset = z.infer<typeof Colorset>;
+
+export const HeroProps = z.object({
+	colorset: Colorset.optional(),
+	title: z.string().optional(),
+	text: z.string().optional(),
+	actions: z.array(HeroAction).optional(),
+});
+export type HeroProps = z.infer<typeof HeroProps>;
+
+export const HeroBlock = HeroProps.extend({ type: z.literal('hero'), id: Id.optional() });
+export type HeroBlock = z.infer<typeof HeroBlock>;
+
+// … FeatureCardsBlock, TextMediaBlock, ProseBlock, ReviewsBlock …
+
+export const Block = z.discriminatedUnion('type', [
+	HeroBlock,
+	FeatureCardsBlock,
+	TextMediaBlock,
+	ProseBlock,
+	ReviewsBlock,
+]);
+export type Block = z.infer<typeof Block>;
+```
+
+Content files are typed against it (`export const homePage: Page = …`), and the `lib/content`
+accessors validate it. So if something is off — a missing required field, an unknown `type`, a wrong
+field type, or a wrong *value* like a rating of 9 — it fails at **build time and runtime**, with a
+message that points at the exact path.
+
+> **Why split the schema by concept (not by component tier)?** A schema describes valid *data*, which
+> is a different axis than the component tree (`basics`/`components` are presentational and have no
+> content schema at all). Mirroring the tiers would create empty, confusing folders; organizing by
+> concept means the `blocks/` folder is the literal inventory of block types.
+
+> **Why validate at runtime, not just at compile time?** You know content is correct *before* it goes
+> live — not just its shape, but its values (a rating really is 1–5, a colorset really is `light` or
+> `dark`). And because the schema is still there at runtime, content from an untrusted source like a
+> CMS is checked at the boundary by default, not as an afterthought. How it runs and what an error
+> looks like is the next page, [Validation](?path=/docs/for-developers-5-validation--docs).
+
+## One contract, derived everywhere
+
+The props schema is defined once, and everything else derives from it — so there's nothing
+to keep in sync:
+
+| What | Where | How it derives |
+|---|---|---|
+| The block schema | the block's schema file | `HeroBlock = HeroProps.extend({ type, id })` — the props schema plus the two keys the registry uses |
+| The render registry | `components/contentBlocks/Blocks.tsx` | a [mapped type](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html) over the `Block` union |
+| JSON-LD builders | `lib/seo.ts` | a mapped type keyed on `type` |
+
+`type` is the single string that ties them together. `HeroProps` is the source schema for the
+component; the block adds the two keys the registry strips before rendering (`type` selects the
+component, `id` becomes the React key):
+
+```ts
+export const HeroBlock = HeroProps.extend({ type: z.literal('hero'), id: Id.optional() });
+```
+
+The registry and the JSON-LD builders both key on that same `type`, so a mis-wire is a *compile*
+error, not a runtime surprise:
+
+```ts
+// components/contentBlocks/Blocks.tsx — the renderer must match the block's exact props
+type BlockRenderers = {
+	[B in Block as B['type']]: React.ComponentType<Omit<B, 'type' | 'id'>>;
+};
+
+// lib/seo.ts — each builder receives only its own block variant
+const BLOCK_BUILDERS: {
+	[B in Block as B['type']]?: (block: Extract<Block, { type: B['type'] }>) => unknown;
+} = { /* … */ };
+```
+
+> **Why derive instead of redeclare?** Add a field to the `HeroBlock` schema and the `Hero` component's
+> props gain it automatically, the registry stays correctly typed, and the props table in this Storybook
+> updates — all from editing one schema. Wire a block to the wrong renderer and TypeScript stops the
+> build.
+
+## Reading content
+
+`lib/content` is the only layer that knows where content comes from. Routes call these accessors,
+never the registries directly:
+
+```ts
+getPageByPath(path: string): Promise<Page | null>   // a page, by route path ('/', '/about')
+getAllPagePaths(): Promise<string[]>                 // every registered page path (the catch-all route + sitemap use this)
+getNotFoundPage(): Promise<Page>                     // the 404 content (not-found.tsx); kept out of the registry so it's not a route or sitemap entry
+```
+
+The accessors are **async** (the bodies are trivially synchronous today). That keeps the public API
+stable for the future swap: point them at a CMS — a database — and only the bodies change to an
+`await fetch(...)`; the routes already `await` them, so nothing downstream moves, as long as the
+returned shape still satisfies the contract.
+
+## Extending
+
+- **Add a field to a block** → add it to that block's schema file under
+  `src/lib/content/schema/blocks/` (this is a Zod schema, not a hand-written type — the inferred type
+  and the component's props follow automatically).
+- **Add a whole new block type** → see the step-by-step in
+  [Adding things](?path=/docs/for-developers-3-adding-things--docs).
+- **Give a block structured data** (reviews, FAQs, events) → see
+  [SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs).
+
+---
+
+**Next:** [Validation](?path=/docs/for-developers-5-validation--docs) — how content is checked, where
+that runs, and what an error looks like.

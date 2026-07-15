@@ -1,0 +1,47 @@
+.tooltip-positioner {
+	z-index: $z-popover;
+}
+
+.tooltip {
+	--tooltip-bg: #{$grey-darkest};
+	--tooltip-fg: #{$white};
+
+	max-inline-size: 18rem;
+	padding-block: spacing(xs);
+	padding-inline: spacing(s);
+	border-radius: $rounded-s;
+	background-color: var(--tooltip-bg);
+	color: var(--tooltip-fg);
+	--font-size: 0.8125rem;
+	box-shadow: $shadow-medium;
+
+	transform-origin: var(--transform-origin);
+
+	@include popup-enter-exit($scale: 0.96);
+
+	.tooltip-arrow {
+		.tooltip-arrow-glyph {
+			display: block;
+			inline-size: 0.5rem;
+			block-size: 0.5rem;
+			background-color: var(--tooltip-bg);
+			transform: rotate(45deg);
+		}
+
+		&[data-side='top'] {
+			inset-block-end: -0.2rem;
+		}
+
+		&[data-side='bottom'] {
+			inset-block-start: -0.2rem;
+		}
+
+		&[data-side='left'] {
+			inset-inline-end: -0.2rem;
+		}
+
+		&[data-side='right'] {
+			inset-inline-start: -0.2rem;
+		}
+	}
+}

@@ -1,0 +1,104 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Start here" />
+
+# The starter, in one page
+
+A reusable foundation for building content-driven websites with **Next.js 16**. Pages are written
+as data, the UI is a small set of components you compose, and one set of tokens drives colour,
+type and spacing. This Storybook is where you read how it works and see every piece in isolation.
+
+_Built by Jeffrey Ullers._
+
+## What it's for
+
+You start a new site. Instead of wiring up routing, metadata, SEO, a styling system and a component
+library from scratch each time, you get them here, already fitted together and documented:
+
+- **Content as data** — a page is a plain object, not hand-written markup, so it's ready to move to
+  a CMS later without touching the components.
+- **A validated contract** — every page and block is checked against a schema, at build time *and*
+  runtime, so broken content (a missing field, a rating out of range) fails instead of shipping.
+- **One styling system** — colour, typography and spacing come from tokens; change them in one place
+  and the whole site follows.
+- **SEO and sharing out of the box** — metadata, JSON-LD, Open Graph images, a sitemap and robots
+  are generated from the same content.
+
+## The stack
+
+| Tool | Version | Role |
+|---|---|---|
+| [Next.js](https://nextjs.org/docs) | 16 (App Router, Turbopack) | Routing, rendering, metadata, image/OG generation |
+| [React](https://react.dev) | 19 | Components, Server Components, `ref` as a prop |
+| [TypeScript](https://www.typescriptlang.org/docs/) | 5 (`strict`, `noUncheckedIndexedAccess`) | The content contract and component props |
+| [Zod](https://zod.dev/) | 4 | The content schema — runtime validation, with the types inferred from it |
+| [Sass](https://sass-lang.com/documentation/) | Dart Sass (`sass-embedded`) | Global SCSS with tokens, functions and mixins |
+| [Storybook](https://storybook.js.org/docs) | 10 (`nextjs-vite`) | This workshop — build, preview and document the UI |
+| [Serwist](https://serwist.pages.dev/) | 9 | Optional PWA / offline support (off by default) |
+
+## The core idea
+
+A page is **data, not markup**. You write an object — `{ meta, blocks }` — and the framework turns
+it into HTML through one fixed pipeline:
+
+```
+content object        →  lib/content (validate)  →  Blocks registry   →  page (Server Component)  →  HTML
+{ meta, blocks }         getPageByPath()             type → component     renders <Blocks blocks={…} />
+```
+
+Each block is `{ type, ...props }`. The `type` string selects which component renders it. Because the
+data and the components are separate, the same block type can appear many times with different data,
+and you reorder a page by reordering an array. **[1. Architecture](?path=/docs/for-developers-1-architecture--docs)** walks through the whole pipeline.
+
+## How the UI is layered
+
+A page is built from one kind of thing: **content blocks**. Each layer below is composed from the one
+under it.
+
+```
+page
+└─ content blocks   — the only thing that goes on a page  (Hero, FeatureCards, TextMedia, Prose, Reviews)
+   └─ components     — reusable, often interactive pieces  (Card, Carousel, Modal, Tabs, Form, EventCard, …)
+      └─ basics      — the smallest primitives  (Button, Title, Content, Media, Section, Icon, Pill, Interactive)
+```
+
+Separately, **`structures`** holds the page shell — `Navigation`, `Footer`, `AnnouncementBar`,
+composed by `SiteChrome` — which wraps the page in the layout rather than sitting inside it. Each
+layer composes only the layers beneath it: a content block never hand-rolls a button or a card, it
+uses the system component — and every capability lives in the lowest layer that can own it (the rules
+are spelled out in [Conventions](?path=/docs/for-developers-2-conventions--docs)).
+
+## The repo map
+
+| Folder | What it holds |
+|---|---|
+| `src/app` | Routes (App Router): pages, the root layout, `error`/`loading`/`not-found`, and the generated files — `sitemap`, `robots`, OG images, `manifest`. |
+| `src/components/<layer>` | The UI, grouped into `basics`, `components`, `contentBlocks` and the `structures` shell (see above). |
+| `src/content` | The content itself: page data files in `pages/`, registered in `index.ts`. |
+| `src/lib` | Non-UI logic: `content/` (async accessors + the Zod contract in `content/schema/`), `seo.ts`, `site.ts`, `env.ts` (the validated environment contract), `ogImage.tsx`. |
+| `src/hooks` | Small client-side utilities (`useHaptics`, `useHotkey`, `useOverlay`). |
+| `src/styles` | SCSS: `_initial.scss` (values + engine), `base.scss` (the global cascade), and `components/<layer>/` — a per-component stylesheet mirroring the component tree, all imported once through `src/styles/index.ts`. |
+
+## How these docs are organised
+
+- **For developers** — the guide if you're building. It's a short course: seven pages, **read top to
+  bottom**, each one building on the last.
+
+  1. **[Architecture](?path=/docs/for-developers-1-architecture--docs)** — how it fits together.
+  2. **[Conventions](?path=/docs/for-developers-2-conventions--docs)** — the rules you write by.
+  3. **[Adding things](?path=/docs/for-developers-3-adding-things--docs)** — blocks, components, pages.
+  4. **[Content & data](?path=/docs/for-developers-4-content-data--docs)** — pages as data.
+  5. **[Validation](?path=/docs/for-developers-5-validation--docs)** — how the contract is enforced.
+  6. **[SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs)** — metadata, OG, sitemap.
+  7. **[Hooks](?path=/docs/for-developers-7-hooks--docs)** — the small client-side utilities.
+
+- **[Look & feel](?path=/docs/look-feel-colors--docs)** — the visual system you can see and check
+  live: colours, typography and spacing. Start here if you're reviewing the design.
+- **Basics / Components / ContentBlocks / Structures / Forms** — every component with a **Docs** tab
+  (props table plus stories). Use the sun/moon toggle for light/dark and the **Theme** toolbar for the
+  brand palette.
+- **Why it's built this way** — the why-boxes throughout these docs (like the one below) carry the
+  rationale and trade-offs behind the non-obvious choices, next to the rule they explain.
+
+> **New here?** Read **[1. Architecture](?path=/docs/for-developers-1-architecture--docs)** next —
+> it's the foundation everything else builds on.

@@ -1,0 +1,60 @@
+.scroll-area {
+	--scroll-area-size: 0.625rem;
+	--scroll-area-thumb: #{$surface-strong};
+
+	position: relative;
+	overflow: hidden;
+
+	.viewport {
+		block-size: 100%;
+		inline-size: 100%;
+		overscroll-behavior: contain;
+	}
+
+	.scrollbar {
+		display: flex;
+		touch-action: none;
+		opacity: 0;
+
+		transition: opacity $speed-fast $ease;
+
+		&[data-orientation='vertical'] {
+			inline-size: var(--scroll-area-size);
+			padding: 0.125rem;
+		}
+
+		&[data-orientation='horizontal'] {
+			flex-direction: column;
+			block-size: var(--scroll-area-size);
+			padding: 0.125rem;
+		}
+
+		&[data-hovering],
+		&[data-scrolling] {
+			opacity: 1;
+
+			transition-duration: $speed;
+		}
+
+		.thumb {
+			flex: 1;
+			border-radius: $rounded-full;
+			background-color: var(--scroll-area-thumb);
+
+			transition: background-color $speed-fast $ease;
+
+			&:hover {
+				background-color: $border-strong;
+			}
+		}
+	}
+
+	&:hover .scrollbar,
+	&:focus-within .scrollbar {
+		opacity: 1;
+	}
+
+	.corner {
+		background-color: transparent;
+	}
+}

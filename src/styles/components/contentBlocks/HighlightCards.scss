@@ -1,0 +1,71 @@
+.highlight-cards {
+	--columns: 3;
+
+	.header {
+		margin-block-end: spacing(3xl);
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: spacing(xl);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+
+		@include bp(m) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		@include bp(l) {
+			grid-template-columns: repeat(var(--columns), 1fr);
+		}
+
+		> li {
+			display: flex;
+
+			.highlight-card {
+				flex: 1;
+			}
+		}
+
+		.highlight-card {
+			.card-tagline {
+				color: $accent-text;
+			}
+
+			.card-media {
+				.index {
+					position: absolute;
+					inset-block-start: spacing(s);
+					inset-inline-start: spacing(s);
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					inline-size: 2rem;
+					block-size: 2rem;
+					border-radius: $rounded-full;
+					background-color: $accent;
+					color: $accent-contrast;
+					font-weight: $weight-bold;
+					font-variant-numeric: tabular-nums;
+				}
+
+				.badges {
+					position: absolute;
+					inset-block-end: spacing(s);
+					inset-inline-start: spacing(s);
+					display: flex;
+					flex-wrap: wrap;
+					gap: spacing(xs);
+				}
+			}
+
+			.actions {
+				display: flex;
+				flex-wrap: wrap;
+				gap: spacing(s);
+				margin-block-start: spacing(xs);
+			}
+		}
+	}
+}

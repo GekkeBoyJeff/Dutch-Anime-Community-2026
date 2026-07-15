@@ -1,0 +1,60 @@
+.scroll-progress {
+	--scroll-progress-height: 0.1875rem;
+
+	position: fixed;
+	inset-inline: 0;
+	z-index: calc($z-sticky + 1);
+	block-size: var(--scroll-progress-height);
+	pointer-events: none;
+
+	&.is-top {
+		inset-block-start: 0;
+	}
+
+	&.is-bottom {
+		inset-block-end: 0;
+	}
+
+	.bar {
+		display: block;
+		block-size: 100%;
+		inline-size: 100%;
+		transform: scaleX(0);
+		transform-origin: left center;
+	}
+
+	&.is-primary .bar {
+		background-color: $accent;
+	}
+
+	&.is-secondary .bar {
+		background-color: $color;
+	}
+
+	@supports (animation-timeline: scroll()) {
+		.bar {
+			animation: scroll-progress-grow linear;
+			animation-timeline: --page-scroll;
+		}
+
+		@media (prefers-reduced-motion: no-preference) {
+			.bar {
+				transition: none;
+			}
+		}
+	}
+
+	@supports not (animation-timeline: scroll()) {
+		display: none;
+	}
+}
+
+@keyframes scroll-progress-grow {
+	from {
+		transform: scaleX(0);
+	}
+
+	to {
+		transform: scaleX(1);
+	}
+}

@@ -1,0 +1,157 @@
+.photo-mosaic {
+	.header {
+		margin-block-end: spacing(3xl);
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-auto-rows: 9rem;
+		grid-auto-flow: dense;
+		gap: spacing(l);
+		margin: 0;
+		padding: 0;
+
+		@include bp(m) {
+			grid-template-columns: repeat(3, 1fr);
+			grid-auto-rows: 10rem;
+		}
+
+		@include bp(l) {
+			grid-template-columns: repeat(4, 1fr);
+			grid-auto-rows: 11rem;
+		}
+	}
+
+	.mosaic-item {
+		&.is-wide {
+			@include bp(m) {
+				grid-column: span 2;
+			}
+		}
+
+		&.is-tall {
+			grid-row: span 2;
+		}
+
+		.frame {
+			position: relative;
+			block-size: 100%;
+			border-radius: 1.25rem;
+			overflow: hidden;
+
+			.photo {
+				position: absolute;
+				inset: 0;
+				--media-block-size: 100%;
+				--media-radius: 0;
+
+				.frame {
+					aspect-ratio: auto;
+					block-size: 100%;
+				}
+
+				.asset {
+					transition: transform $speed-slow $ease;
+				}
+			}
+
+			.caption {
+				position: absolute;
+				inset-block-end: 0;
+				inset-inline: 0;
+				padding-block: spacing(2xl) spacing(m);
+				padding-inline: spacing(l);
+				background: linear-gradient(to top, $scrim-strong, transparent);
+				color: $white;
+				--font-size: 0.875rem;
+				font-weight: $weight-medium;
+			}
+
+			@media (hover: hover) {
+				.caption {
+					opacity: 0;
+					translate: 0 0.5rem;
+					transition: opacity $speed $ease, translate $speed $ease-snappy;
+				}
+
+				&:hover,
+				&:focus-within {
+					.photo .asset {
+						transform: scale(1.05);
+					}
+
+					.caption {
+						opacity: 1;
+						translate: 0 0;
+					}
+				}
+			}
+		}
+	}
+
+	&.is-scrapbook {
+		.grid {
+			grid-auto-rows: auto;
+			align-items: start;
+		}
+
+		.mosaic-item {
+			.frame {
+				block-size: auto;
+				border-radius: $rounded-s;
+				background-color: $surface-muted;
+				border: 0.0625rem solid $white;
+				box-shadow: 0 0.125rem 0.9375rem rgba(#241a22, 0.22);
+				padding: spacing(s) spacing(s) spacing(2xl);
+				overflow: visible;
+				transition: transform $speed $ease-snappy, box-shadow $speed $ease;
+
+				.photo {
+					position: relative;
+					inset: auto;
+
+					.frame {
+						aspect-ratio: 4 / 3;
+						border-radius: 0.125rem;
+					}
+				}
+
+				.caption {
+					position: static;
+					background: none;
+					color: $color-secondary;
+					opacity: 1;
+					translate: none;
+					padding: spacing(s) spacing(xs) 0;
+				}
+			}
+
+			&:nth-child(3n + 1) .frame {
+				transform: rotate(-3deg);
+			}
+
+			&:nth-child(3n + 2) .frame {
+				transform: rotate(2deg);
+			}
+
+			&:nth-child(4n + 3) .frame {
+				transform: rotate(-1.5deg);
+			}
+
+			@media (hover: hover) {
+				.frame:hover {
+					transform: rotate(0deg) scale(1.03);
+					z-index: $z-base;
+					box-shadow: 0 0.5rem 1.5rem rgba(#241a22, 0.28);
+				}
+			}
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.photo-mosaic.is-scrapbook .mosaic-item .frame {
+		transform: none;
+	}
+}

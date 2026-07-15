@@ -1,0 +1,470 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	min-block-size: 100svh;
+	font-family: var(--font-sans, system-ui, sans-serif);
+	font-size: var(--font-size);
+	line-height: 1.6;
+	background-color: $background-color;
+	color: $color;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+:where(body *) {
+	font-size: var(--font-size);
+}
+
+body:has(> .navigation) {
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+}
+
+body:has(> .announcement-bar) {
+	grid-template-rows: auto auto 1fr auto;
+}
+
+// The window itself never scrolls: the body is a fixed page mat around the frame, and the frame
+// is the scroll container. That keeps the gap and rounded corners visible on every scroll position.
+body:has(> .page-frame) {
+	block-size: 100dvh;
+	overflow: hidden;
+	padding-block: spacing(m);
+	padding-inline: spacing(m);
+	background-color: $page;
+	background-image: radial-gradient(circle, rgba(#7a5406, 0.22) 0.0625rem, transparent 0.09375rem);
+	background-size: 1.375rem 1.375rem;
+}
+
+// Outer frame owns the radius and clips the inner scroller, so the scrollbar's straight edge is
+// cut off at the rounded corners instead of drawing over them.
+.page-frame {
+	block-size: 100%;
+	max-inline-size: 105rem;
+	margin-inline: auto;
+	border-radius: 2rem;
+	overflow: clip;
+	background-color: $background-color;
+	box-shadow: $shadow-card;
+
+	main > .section:first-child:not(.is-cover) {
+		padding-block-start: 7rem;
+	}
+
+	main > .section.is-band {
+		margin-inline: spacing(m);
+		border-radius: 1.75rem;
+
+		@include bp(l) {
+			margin-inline: spacing(l);
+		}
+	}
+}
+
+.page-frame-scroll {
+	display: grid;
+	grid-template-rows: 1fr auto;
+	// minmax(0): without it the column tracks to main's min-content, so one wide element (a stats
+	// grid, a long word) silently pushes the whole page wider than the frame and clips on mobile.
+	grid-template-columns: minmax(0, 1fr);
+	block-size: 100%;
+	overflow-x: clip;
+	overflow-y: auto;
+	// Named timeline for ScrollProgress: its fixed positioning makes scroll(nearest) resolve to the
+	// (never-scrolling) viewport, but a named lookup walks the DOM tree and finds this scroller.
+	scroll-timeline: --page-scroll block;
+
+	&:has(> .announcement-bar) {
+		grid-template-rows: auto auto 1fr auto;
+	}
+}
+
+.corner {
+	--corner-size: 1.5rem;
+	--corner-color: var(--background-color);
+	position: absolute;
+	inline-size: var(--corner-size);
+	block-size: var(--corner-size);
+	pointer-events: none;
+
+	&.is-scoop-tl {
+		background-image: radial-gradient(circle at 0 0, transparent calc(var(--corner-size) - 0.03125rem), var(--corner-color) var(--corner-size));
+	}
+
+	&.is-scoop-tr {
+		background-image: radial-gradient(circle at 100% 0, transparent calc(var(--corner-size) - 0.03125rem), var(--corner-color) var(--corner-size));
+	}
+
+	&.is-scoop-bl {
+		background-image: radial-gradient(circle at 0 100%, transparent calc(var(--corner-size) - 0.03125rem), var(--corner-color) var(--corner-size));
+	}
+
+	&.is-scoop-br {
+		background-image: radial-gradient(circle at 100% 100%, transparent calc(var(--corner-size) - 0.03125rem), var(--corner-color) var(--corner-size));
+	}
+}
+
+html[data-motion] [data-reveal] {
+	opacity: 0;
+	translate: 0 1.25rem;
+	transition: opacity $speed-slow $ease-snappy, translate $speed-slow $ease-snappy;
+
+	&.is-revealed {
+		opacity: 1;
+		translate: 0 0;
+	}
+}
+
+html[data-motion] main .section:not(.is-revealed) :is(.grid, .list) > li {
+	opacity: 0;
+	translate: 0 1rem;
+}
+
+html[data-motion] main .section.is-revealed :is(.grid, .list) > li {
+	opacity: 1;
+	translate: 0 0;
+	transition: opacity $speed-slow $ease-snappy, translate $speed-slow $ease-snappy;
+
+	@for $i from 2 through 12 {
+		&:nth-child(#{$i}) {
+			transition-delay: #{($i - 1) * 70}ms;
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html[data-motion] [data-reveal],
+	html[data-motion] main .section :is(.grid, .list) > li {
+		opacity: 1;
+		translate: none;
+	}
+}
+
+.not-found {
+	display: grid;
+	align-content: center;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-inline-size: 100%;
+	block-size: auto;
+}
+
+input,
+button,
+textarea,
+select {
+	font: inherit;
+	color: inherit;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+ul,
+ol {
+	padding: 0;
+	list-style: none;
+}
+
+.skip-link {
+	position: absolute;
+	inset-block-start: spacing(m);
+	inset-inline-start: spacing(m);
+	z-index: calc(#{$z-toast} + 1);
+	padding-block: spacing(s);
+	padding-inline: spacing(l);
+	border-radius: $rounded-full;
+	background-color: $accent;
+	color: $accent-contrast;
+	font-weight: $weight-medium;
+	transform: translateY(-200%);
+
+	&:focus-visible {
+		transform: none;
+	}
+}
+
+.sr-only {
+	position: absolute;
+	inline-size: 0.0625rem;
+	block-size: 0.0625rem;
+	padding: 0;
+	margin: -0.0625rem;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+.body-small {
+	--font-size: 0.875rem;
+	line-height: 1.55;
+}
+
+.body-large {
+	--font-size: 1.125rem;
+	line-height: 1.6;
+}
+
+.caption {
+	--font-size: 0.8125rem;
+	line-height: 1.4;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+.title {
+	font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
+	font-weight: $weight-semibold;
+	letter-spacing: $tracking-tight;
+}
+
+.h1 {
+	--font-size: 2rem;
+	line-height: 1.1;
+
+	@include bp(m) {
+		--font-size: 2.5rem;
+	}
+
+	@include bp(l) {
+		--font-size: 3rem;
+	}
+}
+
+.h2 {
+	--font-size: 1.625rem;
+	line-height: 1.15;
+
+	@include bp(m) {
+		--font-size: 2rem;
+	}
+
+	@include bp(l) {
+		--font-size: 2.25rem;
+	}
+}
+
+.h3 {
+	--font-size: 1.375rem;
+	line-height: 1.2;
+
+	@include bp(m) {
+		--font-size: 1.625rem;
+	}
+}
+
+.h4 {
+	--font-size: 1.1875rem;
+	line-height: 1.25;
+
+	@include bp(m) {
+		--font-size: 1.375rem;
+	}
+}
+
+.h5 {
+	--font-size: 1.0625rem;
+	line-height: 1.3;
+
+	@include bp(m) {
+		--font-size: 1.125rem;
+	}
+}
+
+.h6 {
+	--font-size: 1rem;
+	line-height: 1.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+:root {
+	--font-size: 1.0625rem;
+
+	--background-light: #{$white};
+	--color-light: #{$grey-darkest};
+	--color-secondary-light: #{$grey-dark};
+	--border-light: #{rgba($grey-darkest, 0.12)};
+	--background-hover-light: #{rgba($grey-darkest, 0.05)};
+	--background-active-light: #{rgba($grey-darkest, 0.1)};
+	--surface-faint-light: #{rgba($grey-dark, 0.08)};
+	--surface-muted-light: #{rgba($grey-dark, 0.16)};
+	--surface-muted-strong-light: #{rgba($grey-dark, 0.24)};
+	--surface-track-light: #{rgba($grey-dark, 0.28)};
+	--surface-strong-light: #{rgba($grey-dark, 0.4)};
+	--border-strong-light: #{rgba($grey-dark, 0.6)};
+
+	--background-dark: #{$grey-darkest};
+	--color-dark: #{$grey-lightest};
+	--color-secondary-dark: #{$grey-light};
+	--border-dark: #{rgba($white, 0.14)};
+	--background-hover-dark: #{rgba($white, 0.08)};
+	--background-active-dark: #{rgba($white, 0.16)};
+	--surface-faint-dark: #{rgba($grey-light, 0.08)};
+	--surface-muted-dark: #{rgba($grey-light, 0.16)};
+	--surface-muted-strong-dark: #{rgba($grey-light, 0.24)};
+	--surface-track-dark: #{rgba($grey-light, 0.28)};
+	--surface-strong-dark: #{rgba($grey-light, 0.4)};
+	--border-strong-dark: #{rgba($grey-light, 0.6)};
+
+	--accent: #3b5bdb;
+	--accent-hover: #3450c1;
+	--accent-active: #2e47ab;
+	--accent-contrast: #{$white};
+	--tint-accent: #{rgba(#3b5bdb, 0.14)};
+	--accent-text-light: #3b5bdb;
+	--accent-text-dark: #94a8ef;
+
+	--page: #{$grey-lightest};
+	--page-soft: #{$white};
+
+	--status-info: #{$info};
+	--status-success: #{$success};
+	--status-warning: #{$warning};
+	--status-error: #{$error};
+	--tint-info: #{rgba($info, 0.14)};
+	--tint-success: #{rgba($success, 0.14)};
+	--tint-warning: #{rgba($warning, 0.16)};
+	--tint-error: #{rgba($error, 0.14)};
+	--ring-info: #{rgba($info, 0.32)};
+	--ring-success: #{rgba($success, 0.32)};
+	--ring-warning: #{rgba($warning, 0.32)};
+	--ring-error: #{rgba($error, 0.32)};
+
+	--scrim: #{rgba($black, 0.4)};
+	--scrim-strong: #{rgba($black, 0.78)};
+
+	--shadow-focus: 0 0 0 0.1875rem #{rgba(#3b5bdb, 0.3)};
+	--shadow-focus-error: 0 0 0 0.1875rem #{rgba($error, 0.3)};
+
+	--section-gutter: #{spacing(l)};
+}
+
+@include bp(l) {
+	:root {
+		--section-gutter: #{spacing(4xl)};
+	}
+}
+
+[data-theme='sepia'] {
+	--accent: #b4632a;
+	--accent-hover: #a1571f;
+	--accent-active: #8f4d1b;
+	--tint-accent: #{rgba(#b4632a, 0.14)};
+	--accent-text-light: #a1571f;
+	--accent-text-dark: #dd9457;
+
+	--background-light: #f4ecd8;
+	--color-light: #3a2f21;
+	--color-secondary-light: #7a6a52;
+
+	--background-dark: #2a2118;
+	--color-dark: #f4ecd8;
+	--color-secondary-dark: #c9b79a;
+}
+
+[data-theme='dac'] {
+	--accent: #f5c24a;
+	--accent-hover: #e6a92c;
+	--accent-active: #d1971f;
+	--accent-contrast: #241a22;
+	--tint-accent: #{rgba(#f5c24a, 0.16)};
+	--accent-text-light: #8f640e;
+	--accent-text-dark: #f5c24a;
+
+	--page: #f2ebd7;
+	--page-soft: #faf6ec;
+
+	--background-light: #ffffff;
+	--color-light: #241a22;
+	--color-secondary-light: #6f5f6a;
+	--border-light: #e7dcc0;
+	--background-hover-light: #{rgba(#3b2938, 0.05)};
+	--background-active-light: #{rgba(#3b2938, 0.09)};
+	--surface-faint-light: #faf6ec;
+	--surface-muted-light: #f2ebd7;
+	--surface-muted-strong-light: #e9dfc2;
+	--surface-track-light: #e9dfc2;
+	--surface-strong-light: #d8ccae;
+	--border-strong-light: #d8ccae;
+
+	--background-dark: #3b2938;
+	--color-dark: #f2ebd7;
+	--color-secondary-dark: #c9b4bf;
+	--border-dark: #{rgba(#f2ebd7, 0.14)};
+	--background-hover-dark: #{rgba(#f2ebd7, 0.08)};
+	--background-active-dark: #{rgba(#f2ebd7, 0.16)};
+	--surface-faint-dark: #{rgba(#f2ebd7, 0.06)};
+	--surface-muted-dark: #{rgba(#f2ebd7, 0.12)};
+	--surface-muted-strong-dark: #{rgba(#f2ebd7, 0.18)};
+	--surface-track-dark: #{rgba(#f2ebd7, 0.28)};
+	--surface-strong-dark: #{rgba(#f2ebd7, 0.4)};
+	--border-strong-dark: #{rgba(#f2ebd7, 0.6)};
+
+	--scrim: #{rgba(#241a22, 0.55)};
+	--scrim-strong: #{rgba(#241a22, 0.78)};
+}
+
+@each $scheme in 'light', 'dark' {
+	$baseline: '';
+	@if $scheme == 'light' {
+		$baseline: ':root, ';
+	}
+
+	#{$baseline}[data-colorset='#{$scheme}'] {
+		--background-color: var(--background-#{$scheme});
+		--color: var(--color-#{$scheme});
+		--accent-text: var(--accent-text-#{$scheme});
+		--shadow-focus: 0 0 0 0.1875rem var(--accent-text-#{$scheme});
+		--color-secondary: var(--color-secondary-#{$scheme});
+		--border-color: var(--border-#{$scheme});
+		--background-hover: var(--background-hover-#{$scheme});
+		--background-active: var(--background-active-#{$scheme});
+		--surface-faint: var(--surface-faint-#{$scheme});
+		--surface-muted: var(--surface-muted-#{$scheme});
+		--surface-muted-strong: var(--surface-muted-strong-#{$scheme});
+		--surface-track: var(--surface-track-#{$scheme});
+		--surface-strong: var(--surface-strong-#{$scheme});
+		--border-strong: var(--border-strong-#{$scheme});
+	}
+}

@@ -1,0 +1,160 @@
+.timeline {
+	--timeline-rail: 0.125rem;
+	--timeline-dot: 0.875rem;
+	--timeline-gutter: #{spacing(xl)};
+
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+
+	.milestone {
+		position: relative;
+		display: grid;
+		grid-template-columns: var(--timeline-gutter) 1fr;
+		column-gap: spacing(l);
+
+		&::before {
+			content: "";
+			position: absolute;
+			inset-block: 0;
+			inset-inline-start: calc(var(--timeline-gutter) / 2);
+			inline-size: var(--timeline-rail);
+			transform: translateX(-50%);
+			background-color: $border-color;
+		}
+
+		&:first-child::before {
+			inset-block-start: 0.5rem;
+		}
+
+		&:last-child::before {
+			inset-block-end: calc(100% - 0.5rem);
+		}
+
+		.marker {
+			position: relative;
+			display: flex;
+			justify-content: center;
+			padding-block-start: 0.35rem;
+
+			.dot {
+				inline-size: var(--timeline-dot);
+				block-size: var(--timeline-dot);
+				border-radius: $rounded-full;
+				background-color: $accent;
+				box-shadow: 0 0 0 0.25rem $background-color;
+			}
+		}
+
+		.entry {
+			min-inline-size: 0;
+			padding-block-end: spacing(2xl);
+
+			.year {
+				margin: 0 0 spacing(xs);
+				font-weight: $weight-bold;
+				color: $accent-text;
+			}
+
+			.timeline-card {
+				display: flex;
+				flex-direction: column;
+				gap: spacing(s);
+
+				.tagline {
+					margin: 0;
+					font-weight: $weight-medium;
+					color: $color-secondary;
+					text-transform: uppercase;
+					letter-spacing: $tracking-wide;
+					--font-size: 0.8125rem;
+				}
+
+				.date {
+					margin: 0;
+					color: $color-secondary;
+					--font-size: 0.875rem;
+				}
+
+				.thumb {
+					margin-block-start: spacing(xs);
+					border-radius: $rounded-m;
+					overflow: hidden;
+				}
+
+				.actions {
+					display: flex;
+					flex-wrap: wrap;
+					gap: spacing(s);
+					margin-block-start: spacing(xs);
+				}
+			}
+		}
+	}
+
+	&.is-alternating {
+		@include bp(l) {
+			.milestone {
+				grid-template-columns: 1fr var(--timeline-gutter) 1fr;
+
+				&::before {
+					inset-inline-start: 50%;
+				}
+
+				.marker {
+					grid-column: 2;
+				}
+
+				.entry {
+					grid-column: 1;
+					text-align: end;
+				}
+
+				&.is-odd .entry {
+					grid-column: 3;
+					text-align: start;
+				}
+
+				.timeline-card {
+					align-items: flex-end;
+				}
+
+				&.is-odd .timeline-card {
+					align-items: flex-start;
+				}
+
+				.actions {
+					justify-content: flex-end;
+				}
+
+				&.is-odd .actions {
+					justify-content: flex-start;
+				}
+			}
+		}
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		@supports (animation-timeline: view()) {
+			.entry {
+				animation: timeline-rise linear both;
+				animation-timeline: view();
+				animation-range: entry 0% cover 30%;
+			}
+		}
+	}
+}
+
+@keyframes timeline-rise {
+	from {
+		opacity: 0;
+		transform: translateY(1.5rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

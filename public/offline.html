@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="nl">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex" />
+		<title>Je bent offline · Dutch Anime Community</title>
+		<style>
+			/* Standalone fallback page served by the service worker when an offline navigation hits an
+			   uncached route. No build pipeline runs here, so the DAC palette (src/styles/_initial.scss)
+			   is hardcoded and theme-aware via prefers-color-scheme. Both logos are precached, so they
+			   resolve offline; img-src 'self' keeps this CSP-safe. */
+			:root {
+				--bg: #ffffff;
+				--ink: #202024;
+				--muted: #5c5c66;
+				--accent: #3b5bdb;
+				--accent-contrast: #ffffff;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				:root {
+					--bg: #202024;
+					--ink: #f6f6f7;
+					--muted: #a0a0a8;
+					--accent: #94a8ef;
+					--accent-contrast: #202024;
+				}
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				min-height: 100vh;
+				min-height: 100dvh;
+				display: grid;
+				place-items: center;
+				padding: 2rem 1.5rem;
+				background: var(--bg);
+				color: var(--ink);
+				font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+				line-height: 1.5;
+				-webkit-font-smoothing: antialiased;
+			}
+
+			main {
+				width: 100%;
+				max-width: 30rem;
+				text-align: center;
+				animation: rise 0.5s ease both;
+			}
+
+			.logo {
+				width: 4.5rem;
+				height: 4.5rem;
+				margin: 0 auto 1.75rem;
+				opacity: 0.9;
+			}
+
+			/* dac-logo.svg = dark ink for light backgrounds; dac-logo-white.svg = white for dark. */
+			.logo-dark {
+				display: none;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.logo-light {
+					display: none;
+				}
+				.logo-dark {
+					display: block;
+				}
+			}
+
+			h1 {
+				margin: 0 0 0.75rem;
+				font-size: clamp(1.6rem, 5vw, 2rem);
+				letter-spacing: -0.01em;
+			}
+
+			p {
+				margin: 0 auto;
+				max-width: 34ch;
+				color: var(--muted);
+			}
+
+			.actions {
+				margin-top: 2rem;
+			}
+
+			a.button {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				min-height: 2.75rem;
+				padding: 0 1.5rem;
+				border-radius: 0.625rem;
+				background: var(--accent);
+				color: var(--accent-contrast);
+				font-weight: 600;
+				text-decoration: none;
+				transition: transform 0.15s ease, filter 0.15s ease;
+			}
+
+			a.button:hover {
+				filter: brightness(1.05);
+			}
+
+			a.button:active {
+				transform: translateY(1px);
+			}
+
+			a.button:focus-visible {
+				outline: none;
+				box-shadow: 0 0 0 0.1875rem var(--accent);
+			}
+
+			@keyframes rise {
+				from {
+					opacity: 0;
+					transform: translateY(0.75rem);
+				}
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				main {
+					animation: none;
+				}
+				a.button {
+					transition: none;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<img class="logo logo-light" src="/media/dac-logo.svg" alt="Dutch Anime Community" width="72" height="72" />
+			<img class="logo logo-dark" src="/media/dac-logo-white.svg" alt="" aria-hidden="true" width="72" height="72" />
+			<h1>Je bent offline</h1>
+			<p>Er is even geen internetverbinding. Pagina's die je al bezocht hebt kun je gewoon blijven lezen — deze pagina was nog niet opgeslagen.</p>
+			<div class="actions">
+				<a class="button" href="/">Naar de homepagina</a>
+			</div>
+		</main>
+	</body>
+</html>

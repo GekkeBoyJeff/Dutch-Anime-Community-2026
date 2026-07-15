@@ -1,0 +1,98 @@
+.toggle-group {
+	display: inline-flex;
+	gap: spacing(xs);
+
+	&[data-orientation='vertical'] {
+		flex-direction: column;
+	}
+
+	.item {
+		display: inline-flex;
+		align-items: center;
+		gap: spacing(xs);
+		padding-block: spacing(s);
+		padding-inline: spacing(m);
+		box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+		border-radius: $rounded-m;
+		background-color: $background-color;
+		color: $color;
+		font: inherit;
+		font-weight: $weight-medium;
+		line-height: 1;
+		cursor: pointer;
+
+		transition:
+			background-color $speed-fast $ease,
+			box-shadow $speed-fast $ease,
+			color $speed-fast $ease;
+
+		.toggle-group-icon {
+			font-size: 1.15em;
+		}
+
+		&:not([data-disabled]):not([data-pressed]) {
+			@include interactive {
+				box-shadow: inset 0 0 0 0.0625rem var(--border-strong);
+				background-color: $background-hover;
+			}
+
+			&:active {
+				background-color: $background-active;
+			}
+		}
+
+		&[data-pressed] {
+			box-shadow: inset 0 0 0 0.0625rem var(--accent);
+			background-color: $accent;
+			color: $accent-contrast;
+		}
+
+		&[data-disabled] {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+
+	}
+
+	&.is-segmented {
+		gap: 0;
+
+		.item {
+			border-radius: 0;
+			margin-inline-start: -0.0625rem;
+
+			&:first-child {
+				margin-inline-start: 0;
+				border-start-start-radius: $rounded-m;
+				border-end-start-radius: $rounded-m;
+			}
+
+			&:last-child {
+				border-start-end-radius: $rounded-m;
+				border-end-end-radius: $rounded-m;
+			}
+
+			&[data-pressed] {
+				z-index: 1;
+			}
+
+			&:focus-visible {
+				z-index: 2;
+			}
+		}
+
+		&[data-orientation='vertical'] .item {
+			margin-inline-start: 0;
+			margin-block-start: -0.0625rem;
+
+			&:first-child {
+				margin-block-start: 0;
+				border-radius: $rounded-m $rounded-m 0 0;
+			}
+
+			&:last-child {
+				border-radius: 0 0 $rounded-m $rounded-m;
+			}
+		}
+	}
+}

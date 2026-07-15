@@ -1,0 +1,31 @@
+.page-header {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(l);
+	padding-block: spacing(4xl);
+
+	.bar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: spacing(2xl);
+
+		.text {
+			display: flex;
+			flex-direction: column;
+			gap: spacing(m);
+
+			.subtitle {
+				color: $color-secondary;
+			}
+		}
+
+		.actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: spacing(m);
+			flex-shrink: 0;
+		}
+	}
+}

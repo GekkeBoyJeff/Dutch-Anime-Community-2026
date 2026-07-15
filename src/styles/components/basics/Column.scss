@@ -1,0 +1,27 @@
+.column {
+	grid-column-end: span 12;
+}
+
+@for $i from 1 through 12 {
+	.column.is-#{$i} {
+		grid-column-end: span #{$i};
+	}
+
+	.column.offset-#{$i} {
+		grid-column-start: #{$i + 1};
+	}
+}
+
+@each $bp in m, l, xl {
+	@include bp($bp) {
+		@for $i from 1 through 12 {
+			.column.is-#{$i}-#{$bp} {
+				grid-column-end: span #{$i};
+			}
+
+			.column.offset-#{$i}-#{$bp} {
+				grid-column-start: #{$i + 1};
+			}
+		}
+	}
+}

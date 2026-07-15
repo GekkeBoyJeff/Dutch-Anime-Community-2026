@@ -1,0 +1,53 @@
+.title {
+	&.is-1 {
+		--font-size: 2rem;
+
+		@include bp(m) {
+			--font-size: 2.5rem;
+		}
+
+		@include bp(l) {
+			--font-size: 3rem;
+		}
+	}
+
+	&.is-2 {
+		--font-size: 1.625rem;
+
+		@include bp(m) {
+			--font-size: 2rem;
+		}
+
+		@include bp(l) {
+			--font-size: 2.25rem;
+		}
+	}
+
+	&.is-3 {
+		--font-size: 1.375rem;
+
+		@include bp(m) {
+			--font-size: 1.625rem;
+		}
+	}
+
+	&.is-4 {
+		--font-size: 1.1875rem;
+
+		@include bp(m) {
+			--font-size: 1.375rem;
+		}
+	}
+
+	&.is-5 {
+		--font-size: 1.0625rem;
+
+		@include bp(m) {
+			--font-size: 1.125rem;
+		}
+	}
+
+	&.is-6 {
+		--font-size: 1rem;
+	}
+}

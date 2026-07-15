@@ -1,0 +1,30 @@
+.interactive {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: spacing(s);
+	border: 0;
+	background: none;
+	color: inherit;
+	font-size: $font-size;
+	text-align: inherit;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+	transition:
+		opacity $speed-fast $ease,
+		transform $speed-fast $ease,
+		background-color $speed-fast $ease,
+		color $speed-fast $ease,
+		box-shadow $speed-fast $ease;
+
+
+	&:disabled,
+	&[aria-disabled='true'] {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	&:active:not(:disabled):not([aria-disabled='true']) {
+		transform: scale(0.97);
+	}
+}

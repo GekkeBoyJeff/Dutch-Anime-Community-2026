@@ -1,0 +1,21 @@
+.text-media {
+	display: grid;
+	gap: spacing(xl);
+	align-items: center;
+
+	@include bp(m) {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.body {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(m);
+	}
+
+	&.is-reverse .text-media-figure {
+		@include bp(m) {
+			order: -1;
+		}
+	}
+}

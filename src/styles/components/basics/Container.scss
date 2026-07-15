@@ -1,0 +1,36 @@
+.container {
+	--container-max: 72rem;
+	inline-size: 100%;
+	max-inline-size: var(--container-max);
+	margin-inline: auto;
+	padding-inline: var(--section-gutter);
+
+	&.is-full {
+		max-inline-size: none;
+		padding-inline: 0;
+	}
+
+	&.gutter-none {
+		padding-inline: 0;
+	}
+
+	&.gutter-xs {
+		padding-inline: spacing(xs);
+	}
+
+	&.gutter-s {
+		padding-inline: spacing(s);
+	}
+
+	&.gutter-m {
+		padding-inline: spacing(m);
+	}
+
+	&.gutter-l {
+		padding-inline: spacing(l);
+	}
+
+	&.gutter-xl {
+		padding-inline: spacing(xl);
+	}
+}

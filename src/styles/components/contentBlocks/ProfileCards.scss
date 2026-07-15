@@ -1,0 +1,76 @@
+.profile-cards {
+	--columns: 3;
+
+	.header {
+		margin-block-end: spacing(3xl);
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: spacing(xl);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+
+		@include bp(s) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		@include bp(l) {
+			grid-template-columns: repeat(var(--columns), 1fr);
+		}
+
+		> li {
+			display: flex;
+
+			.profile-card {
+				flex: 1;
+			}
+		}
+
+		.profile-card {
+			gap: spacing(m);
+
+			.portrait {
+				--media-radius: #{$rounded-s};
+			}
+
+			.card-body {
+				gap: spacing(xs);
+			}
+
+			.card-content {
+				gap: spacing(xs);
+			}
+
+			.role {
+				margin: 0;
+				font-weight: $weight-medium;
+				color: $accent-text;
+			}
+
+			.socials {
+				display: flex;
+				flex-wrap: wrap;
+				gap: spacing(s);
+				list-style: none;
+				margin: spacing(xs) 0 0;
+				padding: 0;
+
+				.social {
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					min-inline-size: 2rem;
+					min-block-size: 2rem;
+					border-radius: $rounded-s;
+					color: $color-secondary;
+
+					@include interactive {
+						color: $accent-text;
+					}
+				}
+			}
+		}
+	}
+}

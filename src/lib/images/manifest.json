@@ -1,0 +1,340 @@
+{
+	"/media/amelia-chibi.png": {
+		"width": 1600,
+		"height": 1600,
+		"hash": "6d88dc33e473c57ab599935bbfd4befb8012af0a",
+		"variants": [
+			{
+				"w": 320,
+				"url": "/media/_opt/amelia-chibi-320.webp"
+			},
+			{
+				"w": 480,
+				"url": "/media/_opt/amelia-chibi-480.webp"
+			},
+			{
+				"w": 640,
+				"url": "/media/_opt/amelia-chibi-640.webp"
+			},
+			{
+				"w": 768,
+				"url": "/media/_opt/amelia-chibi-768.webp"
+			},
+			{
+				"w": 1024,
+				"url": "/media/_opt/amelia-chibi-1024.webp"
+			},
+			{
+				"w": 1280,
+				"url": "/media/_opt/amelia-chibi-1280.webp"
+			},
+			{
+				"w": 1536,
+				"url": "/media/_opt/amelia-chibi-1536.webp"
+			},
+			{
+				"w": 1600,
+				"url": "/media/_opt/amelia-chibi-1600.webp"
+			}
+		]
+	},
+	"/media/amelia.png": {
+		"width": 1600,
+		"height": 1600,
+		"hash": "7a3d517ee59601c2af8b0fa7464d9c094e9f59c1",
+		"variants": [
+			{
+				"w": 320,
+				"url": "/media/_opt/amelia-320.webp"
+			},
+			{
+				"w": 480,
+				"url": "/media/_opt/amelia-480.webp"
+			},
+			{
+				"w": 640,
+				"url": "/media/_opt/amelia-640.webp"
+			},
+			{
+				"w": 768,
+				"url": "/media/_opt/amelia-768.webp"
+			},
+			{
+				"w": 1024,
+				"url": "/media/_opt/amelia-1024.webp"
+			},
+			{
+				"w": 1280,
+				"url": "/media/_opt/amelia-1280.webp"
+			},
+			{
+				"w": 1536,
+				"url": "/media/_opt/amelia-1536.webp"
+			},
+			{
+				"w": 1600,
+				"url": "/media/_opt/amelia-1600.webp"
+			}
+		]
+	},
+	"/media/dac-logo.png": {
+		"width": 256,
+		"height": 256,
+		"hash": "2c19905f67f092b99c308c2c481886c2db553a1e",
+		"variants": [
+			{
+				"w": 256,
+				"url": "/media/_opt/dac-logo-256.webp"
+			}
+		]
+	},
+	"/media/dac-meetup.png": {
+		"width": 2120,
+		"height": 1192,
+		"hash": "40e4df294ca7845d6a6569a484802e769625c915",
+		"variants": [
+			{
+				"w": 320,
+				"url": "/media/_opt/dac-meetup-320.webp"
+			},
+			{
+				"w": 480,
+				"url": "/media/_opt/dac-meetup-480.webp"
+			},
+			{
+				"w": 640,
+				"url": "/media/_opt/dac-meetup-640.webp"
+			},
+			{
+				"w": 768,
+				"url": "/media/_opt/dac-meetup-768.webp"
+			},
+			{
+				"w": 1024,
+				"url": "/media/_opt/dac-meetup-1024.webp"
+			},
+			{
+				"w": 1280,
+				"url": "/media/_opt/dac-meetup-1280.webp"
+			},
+			{
+				"w": 1536,
+				"url": "/media/_opt/dac-meetup-1536.webp"
+			},
+			{
+				"w": 2120,
+				"url": "/media/_opt/dac-meetup-2120.webp"
+			}
+		]
+	},
+	"/media/dac-stand.jpg": {
+		"width": 4032,
+		"height": 3024,
+		"hash": "69a241b53f3c6e5f88e6927591f3ed5171d64bce",
+		"variants": [
+			{
+				"w": 320,
+				"url": "/media/_opt/dac-stand-320.webp"
+			},
+			{
+				"w": 480,
+				"url": "/media/_opt/dac-stand-480.webp"
+			},
+			{
+				"w": 640,
+				"url": "/media/_opt/dac-stand-640.webp"
+			},
+			{
+				"w": 768,
+				"url": "/media/_opt/dac-stand-768.webp"
+			},
+			{
+				"w": 1024,
+				"url": "/media/_opt/dac-stand-1024.webp"
+			},
+			{
+				"w": 1280,
+				"url": "/media/_opt/dac-stand-1280.webp"
+			},
+			{
+				"w": 1536,
+				"url": "/media/_opt/dac-stand-1536.webp"
+			},
+			{
+				"w": 4032,
+				"url": "/media/_opt/dac-stand-4032.webp"
+			}
+		]
+	},
+	"/media/dcc-2023-highlights.png": {
+		"width": 1080,
+		"height": 1080,
+		"hash": "efb685d2831f079db4db85717855045393967804",
+		"variants": [
+			{
+				"w": 320,
+				"url": "/media/_opt/dcc-2023-highlights-320.webp"
+			},
+			{
+				"w": 480,
+				"url": "/media/_opt/dcc-2023-highlights-480.webp"
+			},
+			{
+				"w": 640,
+				"url": "/media/_opt/dcc-2023-highlights-640.webp"
+			},
+			{
+				"w": 768,
+				"url": "/media/_opt/dcc-2023-highlights-768.webp"
+			},
+			{
+				"w": 1024,
+				"url": "/media/_opt/dcc-2023-highlights-1024.webp"
+			},
+			{
+				"w": 1080,
+				"url": "/media/_opt/dcc-2023-highlights-1080.webp"
+			}
+		]
+	},
+	"/media/dcc-2024.png": {
+		"width": 1080,
+		"height": 1080,
+		"hash": "d34f32796061488d9d58378c736a258fbd6eb5e9",
+		"variants": [
+			{
+				"w": 320,
+				"url": "/media/_opt/dcc-2024-320.webp"
+			},
+			{
+				"w": 480,
+				"url": "/media/_opt/dcc-2024-480.webp"
+			},
+			{
+				"w": 640,
+				"url": "/media/_opt/dcc-2024-640.webp"
+			},
+			{
+				"w": 768,
+				"url": "/media/_opt/dcc-2024-768.webp"
+			},
+			{
+				"w": 1024,
+				"url": "/media/_opt/dcc-2024-1024.webp"
+			},
+			{
+				"w": 1080,
+				"url": "/media/_opt/dcc-2024-1080.webp"
+			}
+		]
+	},
+	"/media/demo.png": {
+		"width": 1600,
+		"height": 1200,
+		"hash": "6ae903344a8c484adc035a7e76c22b9b6bc70867",
+		"variants": [
+			{
+				"w": 320,
+				"url": "/media/_opt/demo-320.webp"
+			},
+			{
+				"w": 480,
+				"url": "/media/_opt/demo-480.webp"
+			},
+			{
+				"w": 640,
+				"url": "/media/_opt/demo-640.webp"
+			},
+			{
+				"w": 768,
+				"url": "/media/_opt/demo-768.webp"
+			},
+			{
+				"w": 1024,
+				"url": "/media/_opt/demo-1024.webp"
+			},
+			{
+				"w": 1280,
+				"url": "/media/_opt/demo-1280.webp"
+			},
+			{
+				"w": 1536,
+				"url": "/media/_opt/demo-1536.webp"
+			},
+			{
+				"w": 1600,
+				"url": "/media/_opt/demo-1600.webp"
+			}
+		]
+	},
+	"/media/hmia-2024.png": {
+		"width": 1080,
+		"height": 1080,
+		"hash": "b57c23ea63c05fb38de5d9038b8280e5232c44d2",
+		"variants": [
+			{
+				"w": 320,
+				"url": "/media/_opt/hmia-2024-320.webp"
+			},
+			{
+				"w": 480,
+				"url": "/media/_opt/hmia-2024-480.webp"
+			},
+			{
+				"w": 640,
+				"url": "/media/_opt/hmia-2024-640.webp"
+			},
+			{
+				"w": 768,
+				"url": "/media/_opt/hmia-2024-768.webp"
+			},
+			{
+				"w": 1024,
+				"url": "/media/_opt/hmia-2024-1024.webp"
+			},
+			{
+				"w": 1080,
+				"url": "/media/_opt/hmia-2024-1080.webp"
+			}
+		]
+	},
+	"/media/spelletjesmiddag.jpg": {
+		"width": 3000,
+		"height": 2000,
+		"hash": "aee59ca805c026a3cc8bbc536721dee32593bd15",
+		"variants": [
+			{
+				"w": 320,
+				"url": "/media/_opt/spelletjesmiddag-320.webp"
+			},
+			{
+				"w": 480,
+				"url": "/media/_opt/spelletjesmiddag-480.webp"
+			},
+			{
+				"w": 640,
+				"url": "/media/_opt/spelletjesmiddag-640.webp"
+			},
+			{
+				"w": 768,
+				"url": "/media/_opt/spelletjesmiddag-768.webp"
+			},
+			{
+				"w": 1024,
+				"url": "/media/_opt/spelletjesmiddag-1024.webp"
+			},
+			{
+				"w": 1280,
+				"url": "/media/_opt/spelletjesmiddag-1280.webp"
+			},
+			{
+				"w": 1536,
+				"url": "/media/_opt/spelletjesmiddag-1536.webp"
+			},
+			{
+				"w": 3000,
+				"url": "/media/_opt/spelletjesmiddag-3000.webp"
+			}
+		]
+	}
+}

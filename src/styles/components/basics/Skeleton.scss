@@ -1,0 +1,46 @@
+.skeleton {
+	display: block;
+	inline-size: 100%;
+	block-size: 1em;
+	border-radius: $rounded-m;
+	background-color: $surface-muted-strong;
+	background-image: linear-gradient(
+		90deg,
+		transparent,
+		$surface-muted,
+		transparent
+	);
+	background-size: 200% 100%;
+	background-repeat: no-repeat;
+
+	&.radius-s {
+		border-radius: $rounded-s;
+	}
+
+	&.radius-l {
+		border-radius: $rounded-l;
+	}
+
+	&.radius-full {
+		border-radius: $rounded-full;
+	}
+
+	&.is-circle {
+		aspect-ratio: 1;
+		border-radius: $rounded-full;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		animation: skeleton-shimmer 1.4s ease-in-out infinite;
+	}
+}
+
+@keyframes skeleton-shimmer {
+	from {
+		background-position: 200% 0;
+	}
+
+	to {
+		background-position: -200% 0;
+	}
+}

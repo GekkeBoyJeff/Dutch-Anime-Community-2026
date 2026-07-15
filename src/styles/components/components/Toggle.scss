@@ -1,0 +1,45 @@
+.toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: spacing(xs);
+	padding-block: spacing(xs);
+	padding-inline: spacing(m);
+	border: none;
+	border-radius: $rounded-s;
+	background-color: $surface-muted;
+	color: $color;
+	font: inherit;
+	font-weight: $weight-medium;
+	line-height: 1;
+	cursor: pointer;
+
+	transition:
+		background-color $speed-fast $ease,
+		color $speed-fast $ease;
+
+	.toggle-icon {
+		font-size: 1.1em;
+	}
+
+	&:not([data-disabled]):not([data-pressed]) {
+		@include interactive {
+			background-color: $surface-muted-strong;
+		}
+
+		&:active {
+			background-color: $background-active;
+		}
+	}
+
+	&[data-pressed] {
+		background-color: $background-color;
+		color: $accent-text;
+		box-shadow: $shadow-small;
+	}
+
+	&[data-disabled] {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+}

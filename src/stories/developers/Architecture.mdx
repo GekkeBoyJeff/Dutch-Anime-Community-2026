@@ -1,0 +1,182 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="For developers/1. Architecture" />
+
+# Architecture
+
+Step 1: the foundation. The one pipeline every page runs through, where code lives, and what Next.js
+generates for you — the mental model the rest of the guide builds on.
+
+## The data pipeline
+
+A page is data, not markup. The same five steps run for every route:
+
+```
+content object        →  lib/content (validate)  →  Blocks registry   →  page (Server Component)  →  HTML
+{ meta, blocks }         getPageByPath()             type → component     <Blocks blocks={…} />
+```
+
+1. **Content** lives in `src/content` as a plain object — `{ meta, blocks }`. Each block is
+   `{ type, id?, ...props }`. See [Content & data](?path=/docs/for-developers-4-content-data--docs).
+2. **`lib/content`** is the only code that knows where content comes from, and it
+   [validates](?path=/docs/for-developers-5-validation--docs) what it returns against the schema. Today it
+   reads the local registry (`getPageByPath`, `getAllPagePaths`); point it at a CMS later and nothing
+   downstream changes.
+3. **`Blocks`** maps each block's `type` to the component that renders it — one registry in
+   `src/components/contentBlocks/Blocks.tsx`.
+4. **The page** is a [Server Component](https://react.dev/reference/rsc/server-components). It fetches
+   its data and hands the array to `<Blocks>`.
+5. **Next** renders it to static HTML at build time.
+
+Here's the page end of that pipeline. Both route files are thin: the home route (`src/app/(website)/page.tsx`)
+and the catch-all (`src/app/(website)/[...slug]/page.tsx`) each work out a path and hand it to the shared
+`PageView` (`src/app/_components/PageView.tsx`):
+
+```tsx
+// src/app/(website)/page.tsx — the home route ('/')
+const Home = () => {
+	return <PageView path="/" />;
+};
+
+export default Home;
+```
+
+`PageView` is where the pipeline actually runs — it fetches the page for that path, renders its blocks,
+and adds any JSON-LD. The catch-all does the same, deriving the path from the URL segments instead:
+
+```tsx
+// src/app/_components/PageView.tsx
+const PageView = async ({ path }: PageViewProps) => {
+	const page = await getPageByPath(path);
+	if (!page) {
+		notFound();
+	}
+
+	const graph = pageJsonLd(page.blocks, page.meta.structuredData);
+
+	return (
+		<main>
+			<Blocks blocks={page.blocks} />
+			{graph && <JsonLd data={graph} />}
+		</main>
+	);
+};
+
+export default PageView;
+```
+
+> **Why two route files, not one?** A *required* catch-all can't match the root, so home needs its own
+> file. Both delegate to `PageView` and `pageMetadata`, so the two files are identical apart from how
+> they derive the path and never drift.
+
+And the registry that turns a block's `type` into a component (`src/components/contentBlocks/Blocks.tsx`):
+
+```tsx
+const REGISTRY: BlockRenderers = {
+	hero: Hero,
+	featureCards: FeatureCards,
+	textMedia: TextMedia,
+	prose: Prose,
+	reviews: Reviews,
+};
+
+const Blocks = ({ blocks = [] }: BlocksProps) => {
+	return blocks.map(({ type, id, ...props }, index) => {
+		const Renderer = REGISTRY[type] as React.ComponentType<typeof props> | undefined;
+		if (!Renderer) {
+			return null; // unknown type (e.g. from a CMS) is skipped, never crashes
+		}
+		return <Renderer key={id ?? `${type}-${index}`} {...props} />;
+	});
+};
+```
+
+> **Why a registry?** It's the single place that connects data to UI. Adding a block type is one line
+> here, and the type of `REGISTRY` is a mapped type over the `Block` union — wiring `hero` to the wrong
+> component is a compile error, not a runtime surprise. The same union also drives the JSON-LD builders
+> in `lib/seo`, so a mis-wire there fails to compile too. Content is already
+> [validated](?path=/docs/for-developers-5-validation--docs) at the `lib/content` boundary, so the
+> skip-unknown line above is just a last-resort guard.
+
+## How the UI is layered
+
+The UI is built in layers, each composed from the one below it — and a page is made of exactly one of
+them, content blocks:
+
+```
+page
+└─ content blocks   — the only thing that goes on a page
+   └─ components     — reusable, often interactive pieces
+      └─ basics      — the smallest primitives
+```
+
+| Layer | Built from | What it is | Examples |
+|---|---|---|---|
+| `basics` | — | The smallest primitives | `Button`, `Title`, `Content`, `Media`, `Section`, `Icon`, `Pill`, `Interactive` |
+| `components` | basics | Reusable, often interactive pieces | modal, drawer, tabs |
+| `contentBlocks` | components + basics | Whole page sections — a page is a list of these | `Hero`, `FeatureCards`, `TextMedia`, `Prose`, `Reviews` |
+
+A content block receives all its data through props and fetches nothing itself. `contentBlocks` compose `components` and `basics` directly — `Hero`, for example, is built from `Section`, `Container`, `Title`, `Content` and `Interactive` (its call-to-action buttons are `Interactive` elements with a `button` class, not a `Button` component). Separately,
+**`structures`** is the page shell (header, footer, navigation, cookie banners) that lives in the layout, around the
+page rather than in it. The shell is data, like pages: the `(website)` layout renders `SiteChrome` from the validated
+`SiteStructures` document in `src/content/structures.ts`, so the chrome is editable (also in the visual builder at
+`/builder`) without touching the layout.
+
+> **Why these four tiers?** Plain, descriptive names give a newcomer an obvious home for new code, with
+> room to grow into the empty tiers. A structure can also be block-renderable — placed in a page's
+> `blocks` array as well as the layout — without special-casing.
+
+## Where things live
+
+| Folder | What it holds |
+|---|---|
+| `src/app` | Routes: pages, the root `layout`, `error`/`loading`/`not-found`, and generated files — `sitemap`, `robots`, OG images, `manifest`. |
+| `src/components/<layer>` | The UI, by layer (see above). |
+| `src/content` | The content: page data files in `pages/`, registered in `index.ts`. |
+| `src/lib` | Non-UI logic: `content/` (async accessors + the Zod contract in `content/schema/`), `env.ts` (the validated environment), `seo.ts`, `site.ts`, `ogImage.tsx`. |
+| `src/hooks` | Client-side utilities — see [Hooks](?path=/docs/for-developers-7-hooks--docs). |
+| `src/styles` | SCSS: `_initial.scss` (values + engine), `_derived.scss`, `_interactions.scss`, `base.scss` (the global cascade, loaded once in `layout`), and `components/<layer>/` — a per-component stylesheet mirroring the component tree, each imported by its own component. |
+
+`env.ts` is the env counterpart of `lib/content`: it validates `process.env` once, at load, against a
+Zod schema (via [T3 Env](https://env.t3.gg/)), so a missing or malformed value fails the build the same
+way bad content does. `site.ts` reads `env.NEXT_PUBLIC_SITE_URL` from it — never `process.env` directly.
+Server values stay server-only; `NEXT_PUBLIC_` values are inlined into the browser (public by design).
+
+## What Next.js generates
+
+You write content and components; Next builds the rest from the same data, all static by default:
+
+- **Routes** — the home page (`app/(website)/page.tsx`) renders `/`; a required catch-all (`app/(website)/[...slug]`)
+  statically prerenders every other registered page via
+  [`generateStaticParams`](https://nextjs.org/docs/app/api-reference/functions/generate-static-params).
+  An unregistered path 404s (`dynamicParams=false`) and renders `not-found.tsx` inside the layout.
+- **`sitemap.xml`** and **`robots.txt`** — built from the content registry
+  ([sitemap](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap),
+  [robots](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots)), so a new
+  page is listed automatically.
+- **Open Graph images** — a branded share card per route from the route handler `app/api/og/route.tsx`
+  ([`next/og`](https://nextjs.org/docs/app/api-reference/functions/image-response)), with
+  `app/opengraph-image.tsx` as the site-wide fallback and `meta.image` as a per-page override.
+- **`manifest.webmanifest`** — makes the app installable.
+
+All of this is covered in [SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs).
+
+## Server first, client islands
+
+Every component is a [Server Component](https://nextjs.org/docs/app/getting-started/server-and-client-components)
+unless it needs interactivity. When a part needs state, an effect, a ref or a click handler, it gets
+`'use client'` and stays small. The static shell renders on the server; only the interactive piece
+ships JavaScript.
+
+`Interactive` is the one client island the basics rely on. It's the single definition of "clickable":
+it renders a `<button>`, a [`next/link`](https://nextjs.org/docs/app/api-reference/components/link), or
+an external `<a>` (with a safe `rel`) depending on its props, and fires haptic feedback on each click.
+`Button` and `Pill` wrap it and stay Server Components themselves.
+
+> **Why keep islands small?** The client bundle's weight is mostly the React/Next runtime, not your
+> components. Rendering the static parts on the server keeps the JavaScript you ship to the visitor low.
+
+---
+
+**Next:** [2. Conventions](?path=/docs/for-developers-2-conventions--docs) — the rules you write code by:
+how a component is shaped, where styling lives, and how the project is wired.

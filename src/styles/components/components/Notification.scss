@@ -1,0 +1,125 @@
+.notification {
+	--notification-width: 22rem;
+	--notification-gap: #{spacing(s)};
+
+	position: fixed;
+	z-index: $z-toast;
+	display: flex;
+	flex-direction: column;
+	gap: var(--notification-gap);
+	inline-size: var(--notification-width);
+	max-inline-size: calc(100vw - #{spacing(l)});
+	margin: spacing(m);
+
+	&[data-position='top-left'] {
+		inset-block-start: 0;
+		inset-inline-start: 0;
+	}
+
+	&[data-position='top-right'] {
+		inset-block-start: 0;
+		inset-inline-end: 0;
+	}
+
+	&[data-position='bottom-left'] {
+		inset-block-end: 0;
+		inset-inline-start: 0;
+	}
+
+	&[data-position='bottom-right'] {
+		inset-block-end: 0;
+		inset-inline-end: 0;
+	}
+
+	&[data-position='top-center'] {
+		inset-block-start: 0;
+		inset-inline: 0;
+		margin-inline: auto;
+	}
+
+	&[data-position='bottom-center'] {
+		inset-block-end: 0;
+		inset-inline: 0;
+		margin-inline: auto;
+	}
+
+	.toast {
+		display: flex;
+		align-items: flex-start;
+		gap: spacing(s);
+		padding-block: spacing(s);
+		padding-inline: spacing(m);
+		border-radius: $rounded-m;
+		background-color: $background-color;
+		color: $color;
+		box-shadow:
+			$shadow-medium,
+			inset 0 0 0 0.0625rem var(--border-color);
+
+		.body {
+			display: flex;
+			flex-direction: column;
+			gap: spacing(xs);
+			flex: 1;
+			min-inline-size: 0;
+
+			.title {
+				margin: 0;
+				font-weight: $weight-medium;
+			}
+
+			.description {
+				--font-size: 0.875rem;
+				margin: 0;
+				color: $color-secondary;
+			}
+		}
+
+		.close {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			inline-size: 1.5rem;
+			block-size: 1.5rem;
+			flex-shrink: 0;
+			border-radius: $rounded-s;
+			font-size: 1.25rem;
+			line-height: 1;
+			color: $color-secondary;
+			cursor: pointer;
+
+			@include interactive {
+				background-color: $background-hover;
+				color: $color;
+			}
+		}
+	}
+
+	.toast[data-type='info'] {
+		border-inline-start: 0.1875rem solid $status-info;
+	}
+
+	.toast[data-type='success'] {
+		border-inline-start: 0.1875rem solid $status-success;
+	}
+
+	.toast[data-type='warning'] {
+		border-inline-start: 0.1875rem solid $status-warning;
+	}
+
+	.toast[data-type='error'] {
+		border-inline-start: 0.1875rem solid $status-error;
+	}
+
+	.toast {
+		transition:
+			opacity $speed $ease,
+			transform $speed $ease;
+	}
+
+	.toast[data-starting-style],
+	.toast[data-ending-style] {
+		opacity: 0;
+		transform: translateY(0.5rem);
+	}
+}

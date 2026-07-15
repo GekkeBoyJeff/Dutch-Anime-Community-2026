@@ -1,0 +1,91 @@
+.tabs {
+	--tabs-gap: #{spacing(s)};
+	--tabs-indicator-size: 0.125rem;
+
+	display: flex;
+	flex-direction: column;
+	gap: spacing(2xl);
+
+	&[data-orientation="vertical"] {
+		flex-direction: row;
+		align-items: flex-start;
+	}
+
+	.list {
+		position: relative;
+		display: flex;
+		gap: var(--tabs-gap);
+		border-block-end: 0.0625rem solid $border-color;
+
+		&[data-orientation="vertical"] {
+			flex-direction: column;
+			border-inline-end: 0.0625rem solid $border-color;
+		}
+
+		.tab {
+			display: inline-flex;
+			align-items: center;
+			gap: spacing(xs);
+			padding-block: spacing(m);
+			padding-inline: spacing(s);
+			border: 0;
+			background: none;
+			color: $color-secondary;
+			font: inherit;
+			font-weight: $weight-medium;
+			white-space: nowrap;
+			cursor: pointer;
+
+			.tabs-tab-icon {
+				font-size: 1.1em;
+			}
+
+			@include interactive {
+				color: $color;
+			}
+
+			&[data-selected] {
+				color: $color;
+			}
+
+			&[data-disabled] {
+				color: $color-secondary;
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+
+		}
+
+		.indicator {
+			position: absolute;
+			inset-inline-start: var(--active-tab-left);
+			inset-block-end: 0;
+			inline-size: var(--active-tab-width);
+			block-size: var(--tabs-indicator-size);
+			background-color: $accent;
+			border-radius: $rounded-full;
+
+			transition:
+				inset-inline-start $speed $ease,
+				inline-size $speed $ease;
+		}
+	}
+
+	&[data-orientation="vertical"] .indicator {
+		inset-inline-start: auto;
+		inset-inline-end: 0;
+		inset-block-start: var(--active-tab-top);
+		inline-size: var(--tabs-indicator-size);
+		block-size: var(--active-tab-height);
+
+		transition:
+			inset-block-start $speed $ease,
+			block-size $speed $ease;
+	}
+
+	.panel {
+		flex: 1;
+		min-inline-size: 0;
+
+	}
+}

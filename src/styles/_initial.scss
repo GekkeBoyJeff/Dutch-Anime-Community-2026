@@ -1,0 +1,121 @@
+@use "sass:map";
+@use "sass:meta";
+@use "breakpoints" as *;
+
+$white: #ffffff;
+$grey-lightest: #f6f6f7;
+$grey-light: #e3e3e6;
+$grey: #a0a0a8;
+$grey-dark: #5c5c66;
+$grey-darkest: #202024;
+$black: #111112;
+
+$info: #1c7ed6;
+$success: #2f9e44;
+$warning: #e8590c;
+$error: #e03131;
+
+$accent: var(--accent);
+$accent-contrast: var(--accent-contrast);
+$accent-text: var(--accent-text);
+$page: var(--page);
+$page-soft: var(--page-soft);
+
+$background-color: var(--background-color);
+$color: var(--color);
+$color-secondary: var(--color-secondary);
+$border-color: var(--border-color);
+$background-hover: var(--background-hover);
+$background-active: var(--background-active);
+
+$status-info: var(--status-info);
+$status-success: var(--status-success);
+$status-warning: var(--status-warning);
+$status-error: var(--status-error);
+
+$weight-regular: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+
+$rounded-s: 0.25rem;
+$rounded-m: 0.5rem;
+$rounded-l: 1rem;
+$rounded-full: 62.5rem;
+
+$speed: 300ms;
+$speed-fast: 150ms;
+$speed-slow: 600ms;
+$ease: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-out: cubic-bezier(0, 0, 0.2, 1);
+$ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+
+$shadow-small: 0 0.0625rem 0.125rem rgba($black, 0.08);
+$shadow-medium: 0 0.25rem 1rem rgba($black, 0.12);
+$shadow-card: 0 0.0625rem 0.125rem rgba($black, 0.04), 0 0.5rem 1.5rem -0.5rem rgba($black, 0.1);
+
+$z-base: 1;
+$z-sticky: 100;
+$z-overlay: 200;
+$z-modal: 300;
+$z-popover: 400;
+$z-toast: 500;
+$z-cursor: 600;
+
+$tracking-tight: -0.02em;
+$tracking-wide: 0.04em;
+$tracking-wider: 0.08em;
+
+$tap-target: 2.75rem;
+$control-size: 2.25rem;
+$measure: 60ch;
+
+$font-size: var(--font-size);
+
+$spacing: (
+	xs: 0.25rem,
+	s: 0.5rem,
+	m: 0.75rem,
+	l: 1rem,
+	xl: 1.25rem,
+	2xl: 1.5rem,
+	3xl: 1.75rem,
+	4xl: 2rem,
+	5xl: 2.5rem,
+);
+
+@function spacing($step) {
+	@if map.has-key($spacing, $step) {
+		@return map.get($spacing, $step);
+	}
+
+	@if meta.type-of($step) == "number" {
+		@return $step * 0.25rem;
+	}
+
+	@error 'Unknown spacing step: #{$step}';
+}
+
+@mixin bp($name) {
+	@if not map.has-key($breakpoints, $name) {
+		@error 'Unknown breakpoint: #{$name}';
+	}
+
+	@media (min-width: map.get($breakpoints, $name)) {
+		@content;
+	}
+}
+
+@function breakpoint($name) {
+	@if not map.has-key($breakpoints, $name) {
+		@error 'Unknown breakpoint: #{$name}';
+	}
+
+	@return map.get($breakpoints, $name);
+}
+
+@mixin on-colorset($name) {
+	[data-colorset="#{$name}"] & {
+		@content;
+	}
+}

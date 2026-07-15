@@ -1,0 +1,67 @@
+.indicator-badge {
+	position: relative;
+	display: inline-flex;
+
+	.mark {
+		position: absolute;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 0.625rem;
+		block-size: 0.625rem;
+		border-radius: $rounded-full;
+		background-color: var(--indicator-color);
+		box-shadow: 0 0 0 0.125rem $background-color;
+	}
+
+	.mark.has-count {
+		inline-size: auto;
+		min-inline-size: 1.25rem;
+		block-size: 1.25rem;
+		padding-inline: spacing(xs);
+		color: $accent-contrast;
+		--font-size: 0.8125rem;
+		font-weight: $weight-bold;
+	}
+
+	&.is-top-end .mark {
+		inset-block-start: 0;
+		inset-inline-end: 0;
+		transform: translate(50%, -50%);
+	}
+
+	&.is-top-start .mark {
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		transform: translate(-50%, -50%);
+	}
+
+	&.is-bottom-end .mark {
+		inset-block-end: 0;
+		inset-inline-end: 0;
+		transform: translate(50%, 50%);
+	}
+
+	&.is-bottom-start .mark {
+		inset-block-end: 0;
+		inset-inline-start: 0;
+		transform: translate(-50%, 50%);
+	}
+
+	&.is-primary {
+		--indicator-color: #{$accent};
+	}
+
+	&.is-success {
+		--indicator-color: #{$status-success};
+	}
+
+	&.is-warning {
+		--indicator-color: #{$status-warning};
+	}
+
+	&.is-error {
+		--indicator-color: #{$status-error};
+	}
+}

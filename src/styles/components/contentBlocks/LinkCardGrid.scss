@@ -1,0 +1,84 @@
+.link-card-grid {
+	--link-grid-columns: 3;
+
+	.header {
+		margin-block-end: spacing(3xl);
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: spacing(m);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+
+		@include bp(s) {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		@include bp(l) {
+			grid-template-columns: repeat(var(--link-grid-columns), minmax(0, 1fr));
+		}
+
+		.link-card {
+			block-size: 100%;
+
+			.card-body {
+				padding: spacing(l);
+			}
+
+			.card-content {
+				flex-direction: row;
+				align-items: flex-start;
+				gap: spacing(m);
+			}
+
+			.icon-wrap {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				flex-shrink: 0;
+				inline-size: 2.5rem;
+				block-size: 2.5rem;
+				border-radius: $rounded-m;
+				background-color: $tint-accent;
+				color: $accent-text;
+				font-size: 1.25rem;
+			}
+
+			.body {
+				display: flex;
+				flex-direction: column;
+				gap: spacing(xs);
+				flex: 1;
+
+				.cta {
+					margin-block-start: spacing(xs);
+					font-weight: $weight-medium;
+					color: $accent-text;
+				}
+			}
+
+			.arrow {
+				flex-shrink: 0;
+				align-self: center;
+				inline-size: 0.55em;
+				block-size: 0.55em;
+				border-inline-end: 0.125rem solid currentColor;
+				border-block-start: 0.125rem solid currentColor;
+				transform: rotate(45deg);
+				color: $color-secondary;
+
+				@media (prefers-reduced-motion: no-preference) {
+					transition: transform $speed-fast ease;
+				}
+			}
+		}
+	}
+
+	.link-card:hover .arrow,
+	.link-card:focus-within .arrow {
+		transform: rotate(45deg) translate(0.125rem, -0.125rem);
+		color: $accent-text;
+	}
+}

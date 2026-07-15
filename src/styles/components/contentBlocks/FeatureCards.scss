@@ -1,0 +1,22 @@
+.feature-cards {
+	.section-header {
+		margin-block-end: spacing(4xl);
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: spacing(xl);
+
+		@include bp(m) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		@include bp(l) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		> li {
+			display: grid;
+		}
+	}
+}

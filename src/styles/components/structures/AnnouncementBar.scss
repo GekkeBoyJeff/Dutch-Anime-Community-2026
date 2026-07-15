@@ -1,0 +1,83 @@
+.announcement-bar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: spacing(l);
+	padding-block: spacing(s);
+	padding-inline: spacing(l);
+	--font-size: 0.875rem;
+	text-align: center;
+
+	.content {
+		display: inline-flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: spacing(m);
+
+		.message {
+			margin: 0;
+			font-weight: $weight-medium;
+		}
+
+		.cta {
+			padding-block: spacing(xs);
+			padding-inline: spacing(m);
+		}
+	}
+
+	.close {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		inline-size: 1.75rem;
+		block-size: 1.75rem;
+		margin-inline-start: auto;
+		border-radius: $rounded-full;
+		font-size: 1.25rem;
+		line-height: 1;
+		color: inherit;
+		cursor: pointer;
+
+		transition: background-color $speed-fast $ease;
+
+		@include interactive {
+			background-color: color-mix(in srgb, currentColor 14%, transparent);
+		}
+
+		&:focus-visible {
+			outline: 0.125rem solid currentColor;
+			outline-offset: 0.125rem;
+		}
+	}
+
+	&.is-info {
+		background-color: $tint-info;
+		color: $status-info;
+	}
+
+	&.is-success {
+		background-color: $tint-success;
+		color: $status-success;
+	}
+
+	&.is-warning {
+		background-color: $tint-warning;
+		color: $status-warning;
+	}
+
+	&.is-accent {
+		background-color: $tint-accent;
+		color: $accent-text;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition: opacity $speed ease, transform $speed ease;
+
+		&.is-leaving {
+			opacity: 0;
+			transform: translateY(-100%);
+		}
+	}
+}

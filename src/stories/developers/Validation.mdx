@@ -1,0 +1,98 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="For developers/5. Validation" />
+
+# Validation
+
+Step 5: how the data you just modelled is guarded — at build and at runtime.
+
+The [content you write](?path=/docs/for-developers-4-content-data--docs) is validated against a schema,
+not just typed. The contract is written once under `src/lib/content/schema/` with
+[Zod](https://zod.dev/), and that one definition does two jobs: it's the runtime check, and the
+TypeScript types are inferred straight from it.
+
+## Schema and types are one thing
+
+Recall from [Content & data](?path=/docs/for-developers-4-content-data--docs) that each block is a Zod
+schema with its TypeScript type inferred via `z.infer` — one definition, no second file to keep in sync.
+What matters on this page is the half TypeScript can't give you: that schema is also a *runtime* check.
+
+> **Why a schema instead of just types?** TypeScript checks *shape* at compile time and then disappears
+> at runtime. It can't check a *value* — that a rating is 1–5, that an embed has a provider. A schema
+> checks both, and it's still there at runtime to guard content that didn't come from the build.
+
+## Where it runs
+
+`lib/content` is the only layer that knows where content comes from, so that's where validation lives.
+The accessors validate the whole registry once, when the module loads, through a shared `parseContent`
+helper (`src/lib/content/validate.ts`). On failure it throws a clean, **source-aware** error: it maps
+Zod's path back to the page route and groups every problem per file.
+
+```ts
+// src/lib/content/pages.ts
+const pages = parseContent(z.record(z.string(), Page), rawPages, {
+	label: 'page content',
+	locate: (path) => {
+		const [route, ...rest] = path; // ['/', 'meta', 'title'] → route '/', field 'meta.title'
+		return { source: `page "${String(route)}"`, field: rest.join('.') };
+	},
+});
+```
+
+The accessors are **async**, so this runs **at build time** today (`next build` prerenders the pages,
+which load the accessors, which parse — broken content fails the build), and point them at a CMS later
+and the same check runs **at request time** with the route signatures unchanged.
+
+## What an error looks like
+
+A `rating: 9` is a valid `number` to TypeScript but invalid content; an empty `title: ''` passes the
+`string` type but not the schema. Both fail the build, naming the **page and field** — no guessing:
+
+```
+✖ Invalid page content — 1 problem:
+
+  page "/"
+   └ meta.title
+     Too small: expected string to have >=1 characters
+```
+
+Run `npm run dev` instead of building and the same message appears in the browser error-overlay, so you
+catch it without waiting for a build.
+
+## What's enforced
+
+Beyond shape, the schema enforces the values the types could only hint at:
+
+- **`rating`** must be a whole number 1–5 (`z.number().int().min(1).max(5)`).
+- **`colorset`, `provider`, `variant`** are real enums — a typo like `'darkk'` or `'dailymotion'` fails.
+- **required text** (`meta.title`/`description`, a CTA label, a prose body) must be non-empty (`.min(1)`).
+- **an embed** must carry both a `provider` and an `embedId` — a cross-field `.refine` rule, so a
+  half-filled embed can't render a broken `<iframe>`.
+
+## When content is invalid
+
+- **In the repo (today):** the parse throws and the **build fails** — you fix it before it ships, which
+  is the point.
+- **From a CMS (later):** validate at the fetch with `safeParse` and decide how loud to be — return the
+  prettified error, or drop the bad item. As a last line of defence, the
+  [render registry](?path=/docs/for-developers-1-architecture--docs) already skips a block whose `type`
+  it doesn't recognise, so one unknown block can never crash a page.
+
+> **What it does *not* do:** a `prose` block's `value` is raw HTML, rendered as-is. The schema checks
+> it's a non-empty string — it does **not** sanitise it. Treat prose as author-trusted; sanitising
+> untrusted HTML is a separate step. (Output escaping for JSON-LD is handled separately — see
+> [SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs).)
+
+## The same pattern guards the environment
+
+Content isn't the only thing checked this way. `src/lib/env.ts` runs `process.env` through the same
+parse-once / fail-the-build shape — via [T3 Env](https://env.t3.gg/) — so a missing or malformed
+environment value fails the build instead of surfacing as an `undefined` at request time. The env rules
+themselves (the `NEXT_PUBLIC_` prefix, server-only secrets) live in
+[Conventions](?path=/docs/for-developers-2-conventions--docs); what matters here is that the *guarantee* is
+identical — nothing the app reads, content or configuration, reaches runtime unvalidated.
+
+---
+
+**Next:** [SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs) — metadata, JSON-LD, Open
+Graph images, and the installable PWA, all generated from this same content.

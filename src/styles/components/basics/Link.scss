@@ -1,0 +1,23 @@
+.link,
+.content a {
+	display: inline;
+	color: $accent-text;
+	border-radius: $rounded-s;
+	text-decoration: none;
+	background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0% 0.08em;
+	transition: background-size $speed-fast ease;
+
+	&:hover:not([aria-disabled='true']),
+	&:focus-visible {
+		background-size: 100% 0.08em;
+	}
+}
+
+.link.is-subtle {
+	color: $color-secondary;
+	background: none;
+
+	@include interactive {
+		color: $color;
+	}
+}

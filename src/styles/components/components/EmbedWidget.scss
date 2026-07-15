@@ -1,0 +1,35 @@
+.embed-widget {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(s);
+
+	.embed-widget-title {
+		margin: 0;
+	}
+
+	.embed-widget-frame {
+		position: relative;
+		inline-size: 100%;
+		overflow: hidden;
+		border-radius: $rounded-m;
+		background-color: $surface-muted;
+		outline: 0.0625rem solid $border-color;
+
+		.embed-widget-iframe {
+			position: absolute;
+			inset: 0;
+			inline-size: 100%;
+			block-size: 100%;
+			border: 0;
+		}
+	}
+
+	.embed-widget-media {
+		margin: 0;
+	}
+
+	.embed-widget-caption {
+		margin: 0;
+		color: $color-secondary;
+	}
+}

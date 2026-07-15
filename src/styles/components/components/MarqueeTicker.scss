@@ -1,0 +1,71 @@
+.marquee-ticker {
+	--marquee-speed: 30s;
+	--marquee-direction: normal;
+	--marquee-gap: #{spacing(2xl)};
+
+	overflow: hidden;
+	inline-size: 100%;
+	padding-block: spacing(m);
+	user-select: none;
+
+	.viewport {
+		display: flex;
+		inline-size: max-content;
+
+		.track {
+			display: flex;
+			flex-shrink: 0;
+			align-items: center;
+			gap: var(--marquee-gap);
+			padding-inline-end: var(--marquee-gap);
+
+			.item {
+				display: inline-flex;
+				align-items: center;
+				gap: spacing(xs);
+				white-space: nowrap;
+				font-weight: $weight-medium;
+
+				.marquee-ticker-icon {
+					font-size: 1.1em;
+				}
+			}
+		}
+	}
+
+	&.is-primary {
+		background-color: $accent;
+		color: $accent-contrast;
+	}
+
+	&.is-dark {
+		background-color: $grey-darkest;
+		color: $white;
+	}
+
+	&.is-light {
+		background-color: $surface-muted;
+		color: $color;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.track {
+			animation: marquee-scroll var(--marquee-speed) linear infinite;
+			animation-direction: var(--marquee-direction);
+		}
+
+		&:hover .track {
+			animation-play-state: paused;
+		}
+	}
+}
+
+@keyframes marquee-scroll {
+	from {
+		transform: translateX(0);
+	}
+
+	to {
+		transform: translateX(-100%);
+	}
+}

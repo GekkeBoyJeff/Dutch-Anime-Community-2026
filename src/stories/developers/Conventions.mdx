@@ -1,0 +1,271 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="For developers/2. Conventions" />
+
+# Conventions
+
+Step 2: the rules you write code by — learn them once, and every file looks the same. They're short
+and consistent on purpose: once you've written one component, you've written them all. Every example
+here is real code from the repo.
+
+## Writing a component
+
+Here is a complete primitive, `src/components/basics/Title.tsx`. It shows every rule at once:
+
+```tsx
+import parse from 'html-react-parser';
+import type { ReactNode, Ref } from 'react';
+
+import { classNames } from '@/lib/classNames';
+import type { TitleProps } from '@/lib/content/schema/basics/title';
+
+type Props = TitleProps & {
+	/** Child content; takes precedence over value */
+	children?: ReactNode;
+};
+
+// Picks the semantic tag (h1–h6 when `element` is omitted) and the responsive type role via the
+// .title.is-N class. Because the class — not the tag — drives the type, size and level decouple.
+const Title = ({
+	element,
+	size = 2,
+	className,
+	value,
+	children,
+	ref,
+}: Props & { ref?: Ref<HTMLElement> }) => {
+	const Element = (element || `h${size}`) as React.ElementType;
+
+	return (
+		<Element ref={ref} className={classNames('title', `is-${size}`, className)}>
+			{children ? children : value && parse(value)}
+		</Element>
+	);
+}
+
+export default Title;
+```
+
+The rules it follows, top to bottom:
+
+- **`ref` is a regular prop.** Take `ref` in the props and pass it to the element you render — no
+  `forwardRef`. React 19 dropped the need for it. ([React 19: ref as a prop](https://react.dev/blog/2024/12/05/react-19#ref-as-a-prop))
+- **A named arrow-const component with `export default`, one per file** — `const Title = (…) => {…}`
+  then `export default Title`. ESLint (`react/function-component-definition` set to `arrow-function`,
+  plus `func-style`) makes a `function` declaration an error, so hooks, plain helpers and inline
+  callbacks are all arrow functions too.
+  > **Why arrow consts?** One shape for the whole codebase to scan for, and a named const still shows
+  > its name in stack traces and the React DevTools. Mind ordering: a const isn't hoisted, so define a
+  > helper above its first use.
+- **Props are a Zod schema, not a hand-written `interface`.** The schema lives under
+  `src/lib/content/schema/` (here `src/lib/content/schema/basics/title.ts`), and each field carries a
+  `.describe(...)` call. The file exports the schema object and its inferred type under the same name —
+  `export const TitleProps = z.object({ … })` and `export type TitleProps = z.infer<typeof TitleProps>`
+  — and the component imports that type. The `.describe(...)` text becomes the prop's description in
+  this Storybook's props table (via the `jsonSchema` story parameter), so write it for a human:
+  ```ts
+  // src/lib/content/schema/basics/title.ts
+  export const TitleProps = z
+  	.object({
+  		element: z.string().optional().describe('The HTML tag; defaults to h{size}. Lets an h2 show the h3 role, etc'),
+  		size: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5), z.literal(6)]).optional().describe('The type role (h1–h6) that picks the responsive size; defaults to 2'),
+  		className: z.string().optional().describe('Additional classes on the root element'),
+  		value: z.string().optional().describe('The text; may contain HTML'),
+  	})
+  	.meta({ title: 'Title' });
+  export type TitleProps = z.infer<typeof TitleProps>;
+  ```
+- **Build the class list with the shared `classNames()` helper** from `@/lib/classNames`. Pass the
+  always-present classes and each conditional one as `condition && 'the-class'`; the helper filters out
+  falsy values and joins the rest: ``className={classNames('title', `is-${size}`, className)}``.
+- **HTML text comes in as `value`** and is rendered with [html-react-parser](https://github.com/remarkablemark/html-react-parser);
+  `children` wins when both are present: `children ? children : value && parse(value)`.
+- **Indent with tabs.**
+
+- **Keep the DOM flat and semantic.** Avoid unnecessary wrapper `div`s. Ensure correct semantics and ARIA attributes (e.g., `role='progressbar'` with `aria-valuenow`). Use existing basics (like `<Title>`) instead of native HTML where possible.
+- **Storybook is mandatory.** Every new component must be delivered with a `.stories.ts` file without being asked. Pass the schema to Storybook wrapped in an object under a `schema` key (`jsonSchema: { schema: ComponentSchema }`). Note: Object args must always be spread over multiple lines for readability, and show one clear variant per feature without making a separate story for every single value.
+
+> **Why `value` and `children`?** Content often arrives as an HTML string from a data file or CMS
+> (`value`), but you also want to compose JSX directly in code (`children`). Supporting both, with
+> `children` winning, covers every case with one prop shape.
+
+## Layer rules
+
+The layers (basics → components → content blocks / structures) only work if they are strict. Four
+rules keep them that way:
+
+1. **A layer composes only the layers beneath it — never hand-rolled lookalikes.** A content block
+   never writes `<a className="button is-primary">`, its own card markup, an inline `<svg>` or a raw
+   `next/image`: it renders `Button`, `Card`, `Icon`, `Media`. If the markup you're about to write
+   already has a system component, use it — even when reusing just the CSS class would *look* the same.
+   The class contract is an implementation detail; the component is the API.
+2. **Every capability lives in the lowest layer that can own it.** When a block needs a visual trick
+   the system component doesn't have (an animated icon badge on a primary CTA, say), the fix is to
+   extend the component — a prop, a variant, documented in its story — never to bolt private markup and
+   SCSS onto the block. Worked example: the hero's badged arrow CTA is `Button icon="arrow-up-right"
+   iconStyle="badge"`, not hero-local markup.
+3. **A component isn't done without its story.** The story is the component's contract: every variant
+   and capability visible, with site-realistic args (real copy, real `/media/*` assets) — if the site
+   renders something a story can't show, rule 2 has been broken somewhere.
+4. **Content-block stories double as builder presets.** `src/lib/puck/presets.ts` harvests
+   `src/stories/contentBlocks/*.stories.tsx`: the folder stays flat; `meta.component` must be the exact
+   component registered in the blocks `REGISTRY` (a wrapper silently drops all presets); every export
+   *with `args`* becomes an insertable preset, so args must be schema-valid and JSON-serialisable (no
+   JSX, no functions — demo-only compositions go render-only, without `args`); export names are the
+   editor-facing labels and `Default` is the insert default.
+
+These rules are enforced by convention and review, not by lint — which is exactly why they're written
+down here.
+
+## Where styling lives
+
+Styling is **global SCSS**, not CSS Modules. Class names are plain strings on both sides: the
+component writes them, the stylesheet targets them, and nothing is hashed.
+
+- **Stylesheets live in a separate tree that mirrors the component path.** `src/components/basics/Button.tsx`
+  is styled by `src/styles/components/basics/Button.scss`. The component itself imports no styles.
+  > **Why a mirror, not a co-located `Button/` folder?** The parallel tree keeps each render file free
+  > of style imports and gives one predictable place to look; moving everything is churn without a clear
+  > win at this size — revisit when a tier grows its own hooks or tests.
+- **You wire it up with one import line** in `src/styles/index.ts` (imported by both the app layout
+  and this Storybook):
+
+```ts
+// src/styles/index.ts — the global cascade first, then one line per component
+import '@/styles/base.scss';
+
+// basics
+import '@/styles/components/basics/Button.scss';
+import '@/styles/components/basics/Section.scss';
+// …
+```
+
+- **In the stylesheet you use the tokens directly** — `$background-color`, `$accent`, `$rounded-m`,
+  `spacing()`, the `on-colorset()` mixin — with **no `@use`**. Three layers are prepended to every SCSS file by
+  the build — `initial` (values, functions, mixins), `derived` (the derived colours) and `interactions`
+  (the interaction mixins) — so a stylesheet is just the rules:
+
+```js
+// styles.config.mjs — shared by next.config and Storybook (one source of truth)
+export const SCSS_PRELUDE = '@use "initial" as *;\n@use "derived" as *;\n@use "interactions" as *;';
+```
+
+```scss
+.button {
+	// Strict Rule: Never use hardcoded pixels/rems for spacing. Always use spacing() functions.
+	padding-block: spacing(m);
+
+	// Strict Rule: Nest modifier classes on the element itself, never use BEM &__ notation.
+	&.is-primary {
+		background-color: $accent;
+	}
+
+	// Strict Rule: Use breakpoint aliases, not @include desktop.
+	@include bp(l) {
+		padding-block: spacing(l);
+	}
+}
+```
+
+> **Why global, not CSS Modules?** The same class names live in the data, the components and the
+> stylesheets. Keeping them unhashed lets a `[data-colorset]` selector reach across component
+> boundaries — something hashed, locally-scoped classes can't do.
+
+### Scope every part under the root class
+
+Because nothing is hashed, every stylesheet must scope its parts under the component's own root
+class — `.feature-cards .card`, `.text-media .body` — never a bare `.card` or `.grid`. That keeps the
+one global namespace collision-free as you add components.
+
+The only intentionally global classes are the type-role classes (`.title`, `.content`, `.is-N`); those
+stay at the top level on purpose (see [Typography](?path=/docs/look-feel-typography--docs)).
+
+## Barrels and imports
+
+Each component folder has an `index.ts` that re-exports its components — a "barrel" — so you can pull
+several from one path:
+
+```ts
+import { Button, Title, Section } from '@/components/basics';
+```
+
+Add a component, add one export line to the barrel. The file is `index.ts`, not `_index.ts` — the
+leading underscore is a reserved Next.js routing signal.
+
+> **Why barrels?** One import path per layer, and the layer's public surface is the barrel — internals
+> can move without touching callers.
+> **CRITICAL RULE**: To prevent "Cannot read properties of undefined" errors caused by circular dependencies, the export order in `index.ts` matters. If component A imports component B, component B MUST be exported before component A.
+
+Three rules around imports:
+
+- **Always use the `@/` alias**, never `./` or `../`. (The only exception is config files importing
+  other config files, outside the bundler.) Import a barrel by its bare directory: `@/components/basics`.
+- **In a `'use client'` file, import components and hooks directly** — `@/components/basics/Button`,
+  not the barrel. Importing the barrel would pull the whole folder into the browser bundle.
+- **Import order is enforced** by ESLint (`import/order`): external packages first, then `@/` internal,
+  alphabetized, with a blank line between the groups. Run `eslint --fix` and it sorts them for you.
+
+## Server and client islands
+
+A component runs on the [server](https://nextjs.org/docs/app/getting-started/server-and-client-components)
+by default. Does it need click handlers, state, an effect or a ref? Put `'use client'` at the top and
+keep the island small — leave the static markup on the server and wrap only the interactive piece.
+`Button` does exactly this: it stays a Server Component and delegates the click to `Interactive`, which
+is the `'use client'` file.
+
+## Colour and theming
+
+You never set colour per component. A `Section` gets a `colorset`, everything beneath it inherits, and
+in SCSS you read the runtime properties it sets (`$background-color`, `$color`, `$color-secondary`);
+reach for the `on-colorset()` mixin only when a part needs to change inside one specific colorset.
+
+The full theme → colorset → component cascade, with live swatches, is in
+[Look & feel → Colors](?path=/docs/look-feel-colors--docs).
+
+## Direction (LTR / RTL)
+
+Write styles with [logical properties](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_logical_properties_and_values)
+— `margin-inline`, `padding-block`, `text-align: start` — never physical ones. They follow the text
+direction, so the layout mirrors automatically under `dir="rtl"` with no separate RTL stylesheet.
+
+The **Direction** toolbar at the top of this Storybook flips any story between LTR and RTL so you can
+check both; see the RTL note in [Look & feel → Spacing](?path=/docs/look-feel-spacing--docs).
+
+## Environment variables
+
+Env is a validated contract, just like content. `src/lib/env.ts` defines it with
+[T3 Env](https://env.t3.gg/) + Zod, split into `server` / `client` / `shared`; `process.env` is checked
+against that schema once, when `env` is first imported, so a missing or malformed value **fails the
+build** instead of surfacing as `undefined` at request time. Every variable is documented in
+`.env.example` at the repo root.
+
+The one rule that matters is the prefix:
+
+- **`NEXT_PUBLIC_*`** is inlined into the browser bundle — public by design, only for values safe to
+  ship to the client.
+- **No prefix means server-only** — secrets go here and never reach the browser; T3 Env throws if a
+  Client Component reads one.
+
+Read values through the typed `env`, never `process.env` directly. `src/lib/site.ts` shows it:
+
+```ts
+import { env } from '@/lib/env';
+
+export const site = {
+	name: 'Dutch Anime Community',
+	description: 'De grootste anime community van Nederland en België. …',
+	url: env.NEXT_PUBLIC_SITE_URL, // validated as a URL, falls back to a placeholder
+	locale: 'nl', // BCP-47 language tag for the content
+};
+```
+
+> **Why not `process.env.X ?? '…'`?** A scattered fallback is an untyped guess that can drift per
+> call-site. The contract validates the value once and gives every reader the same typed `env`, so a
+> bad URL fails the build and a typo'd key won't compile.
+
+The full add-a-variable steps live in [Adding things](?path=/docs/for-developers-3-adding-things--docs).
+
+---
+
+**Next:** [3. Adding things](?path=/docs/for-developers-3-adding-things--docs) — the recipes for a new
+basic, a content block, a page, and a third-party dependency.

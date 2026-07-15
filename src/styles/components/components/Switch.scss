@@ -1,0 +1,64 @@
+.switch {
+	--switch-width: 2.5rem;
+	--switch-height: 1.5rem;
+	--switch-pad: 0.125rem;
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	inline-size: var(--switch-width);
+	block-size: var(--switch-height);
+	padding: var(--switch-pad);
+	border: none;
+	border-radius: $rounded-full;
+	background-color: $surface-track;
+	cursor: pointer;
+
+	transition: background-color $speed-fast $ease;
+
+	&:not([data-disabled]):not([data-readonly]) {
+		@include interactive {
+			background-color: $surface-strong;
+		}
+	}
+
+	&[data-checked] {
+		background-color: $accent;
+
+		&:not([data-disabled]):not([data-readonly]) {
+			@include interactive {
+				background-color: $accent-hover;
+			}
+		}
+	}
+
+	&[data-disabled] {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	&[data-readonly] {
+		cursor: default;
+	}
+
+
+	.thumb {
+		display: block;
+		inline-size: calc(var(--switch-height) - (var(--switch-pad) * 2));
+		block-size: calc(var(--switch-height) - (var(--switch-pad) * 2));
+		border-radius: $rounded-full;
+		background-color: $white;
+		box-shadow: $shadow-small;
+
+		transition:
+			translate $speed-fast $ease,
+			inline-size $speed-fast $ease;
+	}
+
+	&:not([data-disabled]):not([data-readonly]):active .thumb {
+		inline-size: calc((var(--switch-height) - (var(--switch-pad) * 2)) * 1.15);
+	}
+
+	&[data-checked] .thumb {
+		translate: calc(var(--switch-width) - var(--switch-height)) 0;
+	}
+}

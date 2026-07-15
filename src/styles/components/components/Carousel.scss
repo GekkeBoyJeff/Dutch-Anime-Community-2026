@@ -1,0 +1,158 @@
+.carousel {
+	--carousel-radius: #{$rounded-m};
+	--carousel-gap: #{spacing(m)};
+	display: flex;
+	flex-direction: column;
+	gap: spacing(m);
+
+	.viewport {
+		overflow: hidden;
+		border-radius: var(--carousel-radius);
+
+		.track {
+			display: flex;
+			gap: var(--carousel-gap);
+
+			.slide {
+				flex: 0 0 100%;
+				min-inline-size: 0;
+				display: flex;
+				flex-direction: column;
+				gap: spacing(s);
+
+				.frame {
+					position: relative;
+					overflow: hidden;
+					border-radius: var(--carousel-radius);
+					background-color: $surface-muted;
+					--media-radius: 0;
+					--media-block-size: 100%;
+
+					.carousel-link,
+					.play {
+						display: block;
+						inline-size: 100%;
+						block-size: 100%;
+					}
+
+					.play {
+						position: relative;
+						cursor: pointer;
+
+						.play-icon {
+							position: absolute;
+							inset-block-start: 50%;
+							inset-inline-start: 50%;
+							translate: -50% -50%;
+							inline-size: 3.5rem;
+							block-size: 3.5rem;
+							border-radius: $rounded-full;
+							background-color: $white;
+							box-shadow: $shadow-medium;
+
+							transition: scale $speed-fast $ease;
+
+							&::after {
+								content: '';
+								position: absolute;
+								inset-block-start: 50%;
+								inset-inline-start: 54%;
+								translate: -50% -50%;
+								border-block: 0.6rem solid transparent;
+								border-inline-start: 1rem solid $accent;
+							}
+						}
+
+
+						@include interactive {
+							.play-icon {
+								scale: 1.08;
+							}
+						}
+					}
+				}
+
+				.caption {
+					display: flex;
+					flex-direction: column;
+					gap: spacing(2);
+
+					.caption-title {
+						margin: 0;
+						font-weight: $weight-medium;
+					}
+
+					.caption-text {
+						--font-size: 0.875rem;
+						margin: 0;
+						color: $color-secondary;
+					}
+				}
+			}
+		}
+	}
+
+	.controls {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: spacing(m);
+
+		.counter {
+			--font-size: 0.875rem;
+			margin: 0;
+			color: $color-secondary;
+			font-variant-numeric: tabular-nums;
+		}
+
+		.control {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			inline-size: 2.5rem;
+			block-size: 2.5rem;
+			border-radius: $rounded-full;
+			background-color: transparent;
+			color: $color;
+			font-size: 1.5rem;
+			line-height: 1;
+			cursor: pointer;
+			box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+
+			transition:
+				background-color $speed-fast $ease,
+				opacity $speed-fast $ease;
+
+			@include interactive {
+				background-color: $surface-muted;
+			}
+
+
+			&:disabled,
+			&[aria-disabled='true'] {
+				opacity: 0.4;
+				cursor: not-allowed;
+			}
+		}
+	}
+
+	&.is-rounded-s {
+		--carousel-radius: #{$rounded-s};
+	}
+
+	&.is-rounded-m {
+		--carousel-radius: #{$rounded-m};
+	}
+
+	&.is-rounded-l {
+		--carousel-radius: #{$rounded-l};
+	}
+
+	&.is-rounded-xl {
+		--carousel-radius: #{$rounded-l};
+	}
+
+	&.is-rounded-full {
+		--carousel-radius: #{$rounded-full};
+	}
+}

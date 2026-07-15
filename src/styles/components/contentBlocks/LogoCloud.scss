@@ -1,0 +1,88 @@
+.logo-cloud {
+	--marquee-speed: 32s;
+
+	text-align: center;
+
+	.description {
+		color: $color-secondary;
+		margin-inline: auto;
+		margin-block-start: spacing(s);
+	}
+
+	.logo-cloud-heading + .description {
+		margin-block-start: spacing(s);
+	}
+
+	.row,
+	.track {
+		display: flex;
+		align-items: center;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.row {
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: spacing(2xl);
+		margin-block-start: spacing(2xl);
+	}
+
+	.logo {
+		display: flex;
+		align-items: center;
+	}
+
+	.logo-media .asset {
+		block-size: auto;
+		max-block-size: 2.5rem;
+		inline-size: auto;
+		filter: grayscale(1);
+		opacity: 0.7;
+
+		transition:
+			filter $speed $ease,
+			opacity $speed $ease;
+	}
+
+	.logo:hover .asset,
+	.logo-cloud-link:focus-visible .asset {
+		filter: grayscale(0);
+		opacity: 1;
+	}
+
+	.marquee {
+		display: flex;
+		align-items: center;
+		margin-block-start: spacing(2xl);
+		overflow: hidden;
+		mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+	}
+
+	.marquee .track {
+		gap: spacing(2xl);
+		padding-inline: spacing(l);
+		flex-shrink: 0;
+		min-inline-size: 100%;
+		justify-content: space-around;
+	}
+
+	.marquee .track {
+		animation: logo-cloud-scroll var(--marquee-speed) linear infinite;
+	}
+
+	.marquee:hover .track,
+	.marquee:focus-within .track {
+		animation-play-state: paused;
+	}
+
+	@keyframes logo-cloud-scroll {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-100%);
+		}
+	}
+}

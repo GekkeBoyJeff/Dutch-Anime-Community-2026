@@ -1,0 +1,70 @@
+.checkbox-group {
+	--checkbox-size: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: spacing(m);
+
+	.option {
+		display: inline-flex;
+		align-items: center;
+		gap: spacing(s);
+		cursor: pointer;
+
+		.control {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			inline-size: var(--checkbox-size);
+			block-size: var(--checkbox-size);
+			flex-shrink: 0;
+			padding: 0;
+			border: none;
+			border-radius: $rounded-s;
+			background-color: $background-color;
+			box-shadow: inset 0 0 0 0.0625rem var(--color-secondary);
+			color: $accent-contrast;
+			cursor: pointer;
+
+			transition:
+				background-color $speed-fast $ease,
+				box-shadow $speed-fast $ease,
+				scale $speed-fast $ease;
+
+			&:not([data-checked]):not([data-disabled]) {
+				@include interactive {
+					box-shadow: inset 0 0 0 0.0625rem var(--border-strong);
+				}
+
+				&:active {
+					scale: 0.94;
+				}
+			}
+
+			&[data-checked] {
+				background-color: $accent;
+				box-shadow: none;
+			}
+
+			&[data-disabled] {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+
+
+			.indicator {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 0.875em;
+
+				&[data-unchecked] {
+					display: none;
+				}
+			}
+		}
+
+		.label {
+			color: $color;
+		}
+	}
+}

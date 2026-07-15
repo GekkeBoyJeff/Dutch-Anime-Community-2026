@@ -1,0 +1,46 @@
+.columns {
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	gap: var(--columns-gap, #{spacing(l)});
+	align-items: stretch;
+
+	&.is-stretch {
+		align-items: stretch;
+	}
+
+	&.is-start {
+		align-items: start;
+	}
+
+	&.is-center {
+		align-items: center;
+	}
+
+	&.is-end {
+		align-items: end;
+	}
+
+	&.is-baseline {
+		align-items: baseline;
+	}
+
+	&.gap-none {
+		--columns-gap: 0;
+	}
+
+	&.gap-s {
+		--columns-gap: #{spacing(s)};
+	}
+
+	&.gap-m {
+		--columns-gap: #{spacing(m)};
+	}
+
+	&.gap-l {
+		--columns-gap: #{spacing(l)};
+	}
+
+	&.gap-xl {
+		--columns-gap: #{spacing(xl)};
+	}
+}

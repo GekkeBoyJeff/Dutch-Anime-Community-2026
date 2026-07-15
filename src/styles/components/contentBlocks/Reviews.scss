@@ -1,0 +1,32 @@
+.reviews {
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: spacing(xl);
+		margin-block-start: spacing(xl);
+
+		@include bp(m) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		@include bp(l) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		> li {
+			display: flex;
+
+			.reviews-card {
+				flex: 1;
+			}
+		}
+
+		.reviews-card {
+			background-color: $surface-faint;
+
+			.author {
+				color: $color-secondary;
+				font-weight: $weight-medium;
+			}
+		}
+	}
+}

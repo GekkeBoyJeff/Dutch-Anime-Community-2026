@@ -1,0 +1,51 @@
+.popover-positioner {
+	z-index: $z-popover;
+}
+
+.popover {
+	--popover-width: 20rem;
+
+	max-inline-size: min(var(--popover-width), calc(100vw - #{spacing(4xl)}));
+	padding: spacing(l);
+	border-radius: $rounded-m;
+	background-color: $white;
+	color: $grey-darkest;
+	box-shadow: $shadow-medium;
+	--font-size: 0.875rem;
+
+	transform-origin: var(--transform-origin);
+
+	.popover-title {
+		margin-block-end: spacing(s);
+		font-weight: $weight-bold;
+	}
+
+	.popover-arrow {
+		.popover-arrow-glyph {
+			display: block;
+			inline-size: 0.625rem;
+			block-size: 0.625rem;
+			background-color: $white;
+			transform: rotate(45deg);
+			box-shadow: $shadow-small;
+		}
+
+		&[data-side='top'] {
+			inset-block-end: -0.25rem;
+		}
+
+		&[data-side='bottom'] {
+			inset-block-start: -0.25rem;
+		}
+
+		&[data-side='left'] {
+			inset-inline-end: -0.25rem;
+		}
+
+		&[data-side='right'] {
+			inset-inline-start: -0.25rem;
+		}
+	}
+
+	@include popup-enter-exit($scale: 0.96);
+}

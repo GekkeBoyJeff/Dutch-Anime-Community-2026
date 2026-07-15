@@ -1,0 +1,130 @@
+.footer {
+	--footer-rotation: -1deg;
+
+	background-color: $background-color;
+	border-block-start: 0.0625rem solid $border-color;
+	color: $color-secondary;
+
+	.inner {
+		padding-block: spacing(5xl);
+		display: flex;
+		flex-direction: column;
+		gap: spacing(4xl);
+
+		.top {
+			display: grid;
+			gap: spacing(4xl);
+
+			@include bp(m) {
+				grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+			}
+
+			.brand {
+				.title {
+					margin: 0;
+					--font-size: 1.1875rem;
+					font-weight: $weight-bold;
+					color: $color;
+				}
+
+				.tagline {
+					margin-block: spacing(s) 0;
+				}
+
+				.social {
+					display: flex;
+					flex-wrap: wrap;
+					gap: spacing(m);
+					margin-block: spacing(l) 0;
+					padding: 0;
+					list-style: none;
+
+					.social-link {
+						display: inline-flex;
+						align-items: center;
+						justify-content: center;
+						min-inline-size: $tap-target;
+						min-block-size: $tap-target;
+						padding-inline: spacing(s);
+						border-radius: $rounded-m;
+						color: $color-secondary;
+						text-decoration: none;
+						box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+
+						@include interactive {
+							color: $color;
+							box-shadow: inset 0 0 0 0.0625rem var(--border-strong);
+						}
+
+						.social-icon {
+							font-size: 1.125rem;
+						}
+					}
+				}
+			}
+
+			.columns {
+				display: grid;
+				gap: spacing(2xl);
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+
+				@include bp(m) {
+					grid-template-columns: repeat(3, minmax(0, 1fr));
+				}
+
+				.column {
+					.heading {
+						margin: 0 0 spacing(m);
+						--font-size: 0.875rem;
+						font-weight: $weight-bold;
+						text-transform: uppercase;
+						letter-spacing: $tracking-wide;
+						color: $color;
+					}
+
+					ul {
+						display: flex;
+						flex-direction: column;
+						gap: spacing(s);
+						margin: 0;
+						padding: 0;
+						list-style: none;
+					}
+				}
+			}
+		}
+
+		.legal {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: spacing(m);
+			padding-block-start: spacing(2xl);
+			border-block-start: 0.0625rem solid $border-color;
+			--font-size: 0.875rem;
+
+			.copyright {
+				margin: 0;
+
+				.credit {
+					color: $color-secondary;
+				}
+			}
+
+			.legal-links {
+				display: flex;
+				flex-wrap: wrap;
+				gap: spacing(l);
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+		}
+	}
+
+	&.is-decorated {
+		transform: rotate(var(--footer-rotation));
+		transform-origin: center top;
+	}
+}

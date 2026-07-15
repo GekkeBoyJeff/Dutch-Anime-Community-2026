@@ -1,0 +1,44 @@
+@use "initial" as *;
+@use "derived" as *;
+
+@mixin interactive {
+	&:not(:disabled):not([aria-disabled='true']) {
+		@media (hover: hover) {
+			&:hover {
+				@content;
+			}
+		}
+
+		&:focus,
+		&:focus-visible {
+			@content;
+		}
+	}
+}
+
+@mixin overlay-backdrop($color: $scrim) {
+	position: fixed;
+	inset: 0;
+	z-index: $z-overlay;
+	background-color: $color;
+	transition: opacity $speed $ease;
+
+	&[data-starting-style],
+	&[data-ending-style] {
+		opacity: 0;
+	}
+}
+
+@mixin popup-enter-exit($scale: null, $duration: $speed-fast) {
+	transition:
+		opacity $duration $ease-out,
+		transform $duration $ease-out;
+
+	&[data-starting-style],
+	&[data-ending-style] {
+		opacity: 0;
+		@if $scale != null {
+			transform: scale($scale);
+		}
+	}
+}

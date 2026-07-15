@@ -1,0 +1,67 @@
+.radio-group {
+	--radio-size: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: spacing(m);
+
+	.option {
+		display: inline-flex;
+		align-items: center;
+		gap: spacing(s);
+		cursor: pointer;
+
+		.control {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			inline-size: var(--radio-size);
+			block-size: var(--radio-size);
+			flex-shrink: 0;
+			padding: 0;
+			border: none;
+			border-radius: $rounded-full;
+			background-color: $background-color;
+			box-shadow: inset 0 0 0 0.0625rem var(--color-secondary);
+			cursor: pointer;
+
+			transition:
+				box-shadow $speed-fast $ease,
+				scale $speed-fast $ease;
+
+			&:not([data-checked]):not([data-disabled]) {
+				@include interactive {
+					box-shadow: inset 0 0 0 0.0625rem var(--border-strong);
+				}
+
+				&:active {
+					scale: 0.94;
+				}
+			}
+
+			&[data-checked] {
+				box-shadow: inset 0 0 0 0.125rem $accent;
+			}
+
+			&[data-disabled] {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+
+
+			.indicator {
+				inline-size: 50%;
+				block-size: 50%;
+				border-radius: $rounded-full;
+				background-color: $accent;
+
+				&[data-unchecked] {
+					display: none;
+				}
+			}
+		}
+
+		.label {
+			color: $color;
+		}
+	}
+}

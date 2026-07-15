@@ -1,0 +1,41 @@
+.stat-band {
+	background-color: $surface-muted;
+
+	.header {
+		margin-block-end: spacing(3xl);
+	}
+
+	.stats {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: spacing(2xl) spacing(xl);
+		margin: 0;
+
+		@include bp(l) {
+			grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+		}
+	}
+
+	.stat {
+		display: flex;
+		flex-direction: column-reverse;
+		gap: spacing(xs);
+		border-inline-start: 0.125rem solid $accent;
+		padding-inline-start: spacing(l);
+
+		.stat-number {
+			--font-size: clamp(2.25rem, 4.5vw, 3.75rem);
+			margin: 0;
+			font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
+			font-weight: $weight-semibold;
+			font-variant-numeric: tabular-nums;
+			line-height: 1.05;
+			color: $accent-text;
+		}
+
+		.stat-label {
+			--font-size: 0.9375rem;
+			color: $color-secondary;
+		}
+	}
+}

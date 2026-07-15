@@ -1,0 +1,197 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="For developers/6. SEO & sharing" />
+
+# SEO & sharing
+
+Step 6: what the content automatically produces for search engines, social shares and install. It all
+derives from the same content plus `src/lib/site.ts` — the one source of the site name, description and
+URL (which reads `env.NEXT_PUBLIC_SITE_URL`, see [Validation](?path=/docs/for-developers-5-validation--docs)).
+
+## Page metadata
+
+The root layout (`src/app/layout.tsx`) sets the defaults once, using Next's
+[Metadata API](https://nextjs.org/docs/app/getting-started/metadata-and-og-images): a `metadataBase`
+(so relative OG/canonical URLs resolve to absolute), a title template, and the site-wide Open Graph,
+Twitter and Apple fields.
+
+```tsx
+export const metadata: Metadata = {
+	metadataBase: new URL(site.url),
+	title: { default: site.name, template: `%s — ${site.name}` },
+	description: site.description,
+	openGraph: { type: 'website', siteName: site.name, locale: 'en_US' },
+};
+```
+
+Each route then overrides only what it needs in
+[`generateMetadata`](https://nextjs.org/docs/app/api-reference/functions/generate-metadata). Both routes
+(`app/(website)/page.tsx` for `/` and the `app/(website)/[...slug]` catch-all for everything else) stay thin and hand the work
+to `pageMetadata` in `lib/seo.ts`, so a route's metadata is defined once, not per file:
+
+```tsx
+// src/app/(website)/page.tsx — the home route
+export const generateMetadata = (): Promise<Metadata> => {
+	return pageMetadata('/');
+};
+```
+
+`pageMetadata` looks the page up and fills in the title, description, canonical and OG image. The home
+title is `absolute` so the layout's `%s — Next Starter` template doesn't append the site name twice:
+
+```ts
+// src/lib/seo.ts
+export const pageMetadata = async (path: string): Promise<Metadata> => {
+	const page = await getPageByPath(path);
+	if (!page) return {};
+
+	return {
+		title: path === '/' ? { absolute: page.meta.title } : page.meta.title,
+		description: page.meta.description,
+		alternates: { canonical: path },
+		// points the OG image at the generated per-page card; a bespoke meta.image overrides it (below)
+		...ogImageMeta(path, page.meta.image),
+	};
+};
+```
+
+> **Why one shared `pageMetadata`?** Home and the catch-all are identical apart from how they derive the
+> path. Routing both through one helper (and one renderer, `PageView`) means the two route files can't
+> drift.
+
+## Structured data (JSON-LD)
+
+Structured data tells search engines what a page *is*, so they can show rich results (star ratings,
+article cards). Builders in `src/lib/seo.ts` return plain [schema.org](https://schema.org/) objects;
+the `JsonLd` basic serialises one into a `<script type="application/ld+json">`.
+
+- The **layout** emits an [Organization](https://schema.org/Organization) node site-wide
+  (`organizationJsonLd()`), with a stable `@id` so everything that references the company points at one
+  entity.
+- A **block can contribute its own data**: `PageView` calls `pageJsonLd(page.blocks)`, which walks the
+  page's blocks and merges each builder's output into one `@graph`.
+
+A builder is one entry in `BLOCK_BUILDERS`, keyed on the block's `type`. The map is typed over the `Block`
+union, so a builder always receives its own variant — and a key that isn't a real block type is a compile
+error. The `reviews` block adds an [AggregateRating](https://schema.org/AggregateRating):
+
+```ts
+const BLOCK_BUILDERS: {
+	[B in Block as B['type']]?: (block: Extract<Block, { type: B['type'] }>) => unknown;
+} = {
+	reviews: ({ subject, items = [] }) => {
+		if (!items.length) return null;
+		return {
+			'@type': 'Organization',
+			'@id': subject ? undefined : ORGANIZATION_ID,
+			name: subject ?? site.name,
+			aggregateRating: { '@type': 'AggregateRating', ratingValue: averageRating(items), reviewCount: items.length, bestRating: 5 },
+			review: items.map((r) => ({ '@type': 'Review', author: { '@type': 'Person', name: r.author }, reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 }, reviewBody: r.body })),
+		};
+	},
+};
+```
+
+> **Why wrap reviews in an Organization?** Google rejects a bare `AggregateRating`/`Review` — it must be
+> nested inside a reviewable item, so the builder encloses the ratings in an `Organization`. When the
+> reviews are about the site itself (no explicit `subject`), it reuses the canonical `ORGANIZATION_ID` so
+> the rating attaches to the same entity instead of minting a duplicate company. The rating values are
+> always safe to emit: the schema guarantees each `rating` is a whole number 1–5 (see
+> [Validation](?path=/docs/for-developers-5-validation--docs)), so they can't fall out of range.
+
+To give a new block structured data, add a builder keyed by its `type`. That string is the same key that
+ties the content, the render registry and the builder together — change a block once and TypeScript flags
+every side that disagrees (see [Content & data](?path=/docs/for-developers-4-content-data--docs)).
+
+For the rare node that no block can derive (a `LocalBusiness` profile, a `Product`), a page can carry
+bespoke nodes in `meta.structuredData` — an optional array validated by `StructuredDataNode` (each entry
+must at least have an `@type`). `pageJsonLd` appends them to the same `@graph`, so derived and bespoke
+data always ship as one script.
+
+> **Why escape the JSON?** `jsonLdString` (in `components/basics/JsonLd.tsx`) replaces every `<` with its Unicode escape
+> `U+003C` before it reaches the `<script>` tag, so no content value (say, a CMS title containing
+> `</script>`) can break out of the tag. `JsonLd.tsx` is the *only* place in the codebase using
+> `dangerouslySetInnerHTML`, and it only ever receives an escaped, non-executing string. Validation
+> guarantees a value's *shape*; this escaping guards its *output* — the two are complementary.
+> ([Next.js JSON-LD guide](https://nextjs.org/docs/app/guides/json-ld))
+
+## Open Graph images
+
+Each page gets its own generated 1200×630 share card, drawn with
+[`next/og`](https://nextjs.org/docs/app/api-reference/functions/image-response) — so `/how-it-works` shows
+*“How it works”*, not the homepage card. The card layout lives once in `OgCard`
+(`src/lib/ogImage.tsx`); two callers render it:
+
+- **`src/app/api/og/route.tsx`** — a route handler that takes `?path=`, looks the page up, and draws a
+  card with that page's title and description. `ogImageMeta` (in `src/lib/seo.ts`) points each route's
+  `openGraph.images` at it. The raw query is never drawn into the image, so a crafted `?path=` can't
+  inject text into a card served under your own origin.
+- **`src/app/opengraph-image.tsx`** — the site-wide default (site name + description), the fallback for
+  routes that generate no card of their own (e.g. the 404).
+
+> **Why a route handler and not per-segment `opengraph-image.tsx` files?** The card depends on the page
+> title, so it has to be generated dynamically. A single route handler (`/api/og`) does that for every
+> path — the home route, the `[...slug]` catch-all and the 404 fallback — from one generator, instead of
+> repeating a metadata image file in each route segment. `ogImageMeta` wires every page to it in one
+> place. This also sidestepped the optional-catch-all limitation on metadata image files.
+
+> **Why a JS `brand` palette for the OG image?** `next/og` (satori) renders outside the DOM and can't read
+> CSS variables, so the share image — and the manifest/viewport theme colour — read the `brand` object in
+> `src/lib/site.ts` instead of the SCSS tokens. One JS source, kept in lockstep with the tokens in
+> `_initial.scss`.
+
+To use a **specific** image for one page instead of the generated card, set `meta.image` on its content:
+
+```ts
+meta: { title: '…', image: { url: '/og/launch.png', alt: 'Launch', width: 1200, height: 630 } }
+```
+
+A bespoke `meta.image` wins; routes without one keep the generated per-page card. Put the asset in `public/`.
+
+> **On a static host.** A route handler can't run there, and Next forbids an
+> `opengraph-image` file inside the `[...slug]` catch-all, so the per-path cards are **pre-generated**
+> PNGs committed at `public/og/<slug>.png` and pointed to by `ogImageMeta` (an absolute URL, so the
+> project subpath stays correct). Regenerate them from the very same `/api/og` route: `npm run build`,
+> `npm run start`, then `curl 'http://localhost:3000/api/og?path=/how-it-works' -o public/og/how-it-works.png` (and
+> `?path=/` → `home.png`). Add a page → add its card. The deploy is wired in `.github/workflows/deploy.yml`.
+
+## Sitemap & robots
+
+`src/app/sitemap.ts` and `src/app/robots.ts` build `sitemap.xml` and `robots.txt` from the content
+accessor (`getAllPagePaths`), so a new page is listed automatically — nothing to maintain by hand. The
+sitemap draws from the same content layer as the pages, so it can't list a path that doesn't exist.
+([sitemap](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap),
+[robots](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots))
+
+## Installable & offline (PWA)
+
+`src/app/manifest.ts` emits a [web manifest](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/manifest),
+so the app is **installable out of the box** — that part is low-risk and always on. Its `theme_color` and
+`background_color` read the same `brand` palette as the viewport theme colour, so they can't drift.
+
+Offline support is a [Serwist](https://serwist.pages.dev/) service worker that caches visited pages. It is
+**opt-in and off by default**, so you don't inherit aggressive caching you didn't ask for. Enable it at
+build time:
+
+```bash
+ENABLE_PWA=true next build --webpack
+```
+
+`ENABLE_PWA=true` wraps the config with Serwist in `next.config.mjs` (`withSerwistInit`). Serwist hooks
+Webpack, so only the PWA build uses `--webpack`; the default build stays on Turbopack. The worker source is
+`src/sw.ts`, the generated `public/sw.js` is a build artifact, and the layout only registers it
+(`ServiceWorker`) when `env.ENABLE_PWA` is set — production only.
+
+> **Why off by default?** A starter shouldn't hand every new project a stale-content/cache-invalidation
+> liability. Like `create-next-app`, it's there when you want it and silent when you don't — one of the
+> consciously deferred capabilities.
+
+> **Letting a third party through.** Security headers (including the CSP) are set statically in
+> `next.config.mjs` so the site stays prerendered. An external script, frame, image or network call is
+> blocked until you add its host to the matching CSP directive
+> ([Adding things](?path=/docs/for-developers-3-adding-things--docs) covers this).
+
+---
+
+**Next:** [Hooks](?path=/docs/for-developers-7-hooks--docs) — the client-side utilities, and the last page
+of the guide.

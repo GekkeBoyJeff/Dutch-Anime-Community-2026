@@ -1,0 +1,15 @@
+.field-legend {
+	color: $color;
+
+	&.is-legend {
+		--font-size: 1.0625rem;
+		font-weight: $weight-bold;
+		padding: 0;
+	}
+
+	&.is-label {
+		--font-size: 0.875rem;
+		font-weight: $weight-medium;
+		padding: 0;
+	}
+}

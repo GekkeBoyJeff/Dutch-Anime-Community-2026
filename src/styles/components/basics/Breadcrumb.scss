@@ -1,0 +1,29 @@
+.breadcrumb {
+	ol {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: spacing(xs);
+
+		li {
+			display: inline-flex;
+			align-items: center;
+			gap: spacing(xs);
+
+			.crumb {
+				--font-size: 0.875rem;
+				border-radius: $rounded-s;
+			}
+
+			.crumb.is-current {
+				color: $color;
+				font-weight: $weight-medium;
+			}
+
+			.separator {
+				color: $color-secondary;
+				user-select: none;
+			}
+		}
+	}
+}
