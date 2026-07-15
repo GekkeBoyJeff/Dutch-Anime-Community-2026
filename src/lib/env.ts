@@ -16,6 +16,7 @@ export const env = createEnv({
 		// they must be non-empty. Reads go through `env`, so a gate can't depend on a stray process.env typo.
 		DEBUG_SECRET: z.string().min(1).optional(),
 		REVALIDATE_SECRET: z.string().min(1).optional(),
+		SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
 		// Build-time PWA opt-in (Serwist), exposed as a boolean — only the literal 'true' enables it.
 		// (next.config.mjs reads the raw var itself: it runs before the @/ aliases resolve.)
 		ENABLE_PWA: z
@@ -46,11 +47,14 @@ export const env = createEnv({
 		// Build stamp (date + time) injected by next.config.mjs at build time; versions the PWA page
 		// caches and drives the "new version" toast. Falls back to 'dev' outside a real build.
 		NEXT_PUBLIC_BUILD_VERSION: z.string().default('dev'),
+		NEXT_PUBLIC_SUPABASE_URL: z.url().optional(),
+		NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
 	},
 	// Next strips env vars that aren't referenced literally, so each one is mapped here explicitly.
 	runtimeEnv: {
 		DEBUG_SECRET: process.env.DEBUG_SECRET,
 		REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
+		SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
 		ENABLE_PWA: process.env.ENABLE_PWA,
 		NODE_ENV: process.env.NODE_ENV,
 		HOST_TYPE: process.env.HOST_TYPE,
@@ -58,6 +62,8 @@ export const env = createEnv({
 		NEXT_PUBLIC_BASE_PATH: process.env.NEXT_PUBLIC_BASE_PATH,
 		NEXT_PUBLIC_ENABLE_BUILDER: process.env.NEXT_PUBLIC_ENABLE_BUILDER,
 		NEXT_PUBLIC_BUILD_VERSION: process.env.NEXT_PUBLIC_BUILD_VERSION,
+		NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+		NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 	},
 	// Treat `KEY=` (empty) as unset, so copying .env.example — which ships the secrets empty — keeps the
 	// documented "empty = off / 404" behaviour instead of failing validation.
