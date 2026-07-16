@@ -20,5 +20,6 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
 	{ key: 'access', title: 'Toegangsbeheer', navLabel: 'Toegang', description: 'Ken rollen en permissies toe aan gebruikers.', href: '/dashboard/access', permission: 'roles.manage' },
 	{ key: 'inventory', title: 'Inventory & conventies', navLabel: 'Inventory', description: 'Beheer items, conventies, toewijzingen en tickets.', href: '/dashboard/inventory', permission: 'inventory.manage' },
 	{ key: 'my-inventory', title: 'Mijn inventory & conventies', navLabel: 'Mijn spullen', description: 'Je eigen items en wat je moet meenemen.', href: '/dashboard/my-inventory', permission: 'inventory.view' },
+	{ key: 'logs', title: 'Logs', navLabel: 'Logs', description: 'Activiteit en audit-trail van het beheer.', href: '/dashboard/logs', permission: 'logs.view' },
 	// Future: a moderation panel gated on 'moderation.view'.
 ];
