@@ -5,13 +5,14 @@ import { useEffect } from 'react';
 
 import Container from '@/components/basics/Container';
 import Spinner from '@/components/basics/Spinner';
+import { safeNext } from '@/lib/auth/permissions';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 // Discord OAuth returns here with a `?code=`. supabase-js (detectSessionInUrl, default) exchanges it
-// for a session on load; we then redirect to `next`. Entirely client-side — no server route needed.
+// for a session on load; we then redirect to `next` (open-redirect-guarded). Client-side only.
 const CallbackInner = () => {
 	const router = useRouter();
-	const next = useSearchParams().get('next') ?? '/dashboard';
+	const next = safeNext(useSearchParams().get('next'));
 	useEffect(() => {
 		const db = getBrowserClient();
 		const { data: sub } = db.auth.onAuthStateChange((_event, session) => {

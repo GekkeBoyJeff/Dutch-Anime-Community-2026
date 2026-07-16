@@ -18,9 +18,16 @@ export type Permission =
 	| 'inventory.view'
 	| 'inventory.manage';
 
+// Open-redirect guard: only same-site relative paths are allowed as a post-login destination.
+// Rejects absolute URLs, protocol-relative (`//evil`), and backslash tricks (`/\evil`).
+export const safeNext = (raw: string | null | undefined): string => {
+	if (!raw || !raw.startsWith('/') || raw.startsWith('//') || raw.startsWith('/\\')) return '/dashboard';
+	return raw;
+};
+
 // Discord OAuth (PKCE) — returns to /auth/callback, which finishes the exchange and redirects to `next`.
 export const signInWithDiscord = async (next = '/dashboard'): Promise<void> => {
-	const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
+	const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeNext(next))}`;
 	await getBrowserClient().auth.signInWithOAuth({ provider: 'discord', options: { redirectTo, scopes: 'identify email' } });
 };
 

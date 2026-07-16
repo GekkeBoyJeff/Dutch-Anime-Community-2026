@@ -16,6 +16,8 @@ export type FileUploadProps = FileUploadSchemaProps & {
 	hint?: ReactNode;
 	/** Fires with the chosen FileList whenever the selection changes */
 	onFilesChange?: (files: File[]) => void;
+	/** Reject files larger than this many bytes (enforced on both the picker and drag-drop) */
+	maxSize?: number;
 };
 
 // A drag-and-drop file picker over a real <input type="file">, so files still participate in native
@@ -26,6 +28,7 @@ const FileUpload = ({
 	accept,
 	multiple = false,
 	disabled = false,
+	maxSize,
 	label = 'Drop files here or click to browse',
 	hint,
 	onFilesChange,
@@ -40,8 +43,18 @@ const FileUpload = ({
 	const [files, setFiles] = useState<File[]>([]);
 	const [isDragging, setIsDragging] = useState(false);
 
+	// Enforce accept + maxSize on BOTH the picker and drag-drop — native `accept` doesn't cover drops.
+	const accepts = (file: File): boolean => {
+		if (maxSize && file.size > maxSize) return false;
+		if (!accept) return true;
+		const patterns = accept.split(',').map((pattern) => pattern.trim().toLowerCase());
+		const type = file.type.toLowerCase();
+		const ext = `.${(file.name.split('.').pop() ?? '').toLowerCase()}`;
+		return patterns.some((pattern) => pattern === type || pattern === ext || (pattern.endsWith('/*') && type.startsWith(pattern.slice(0, -1))));
+	};
+
 	const commit = (list: FileList | null) => {
-		const next = list ? Array.from(list) : [];
+		const next = (list ? Array.from(list) : []).filter(accepts);
 		setFiles(next);
 		onFilesChange?.(next);
 	};

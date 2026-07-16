@@ -19,8 +19,9 @@ export const getBrowserClient = (): SupabaseClient => {
 			throw new Error('Supabase browser client requires NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
 		}
 		// One client per tab; it persists the session in localStorage and refreshes the JWT on its own.
+		// Explicit PKCE: the OAuth flow returns a ?code we exchange client-side (see /auth/callback).
 		cached = createClient(url, anonKey, {
-			auth: { persistSession: true, autoRefreshToken: true },
+			auth: { persistSession: true, autoRefreshToken: true, flowType: 'pkce', detectSessionInUrl: true },
 		});
 	}
 	return cached;

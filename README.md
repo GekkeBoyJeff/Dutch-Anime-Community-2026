@@ -24,7 +24,7 @@ DAC-specific changes are deliberately concentrated in `src/content/`, the `[data
 
 ## Requirements
 
-- **Node.js 20.9+** (Next.js 16 baseline)
+- **Node.js 22+** (see `.nvmrc` / `engines`; required by the Supabase build — supabase-js needs a global WebSocket)
 - npm (a `package-lock.json` is committed)
 
 ## Getting started

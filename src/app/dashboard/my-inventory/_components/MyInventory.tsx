@@ -78,10 +78,12 @@ const MyInventory = () => {
 		}
 		let active = true;
 		const db = getBrowserClient();
+		// Explicitly scope to the current user: a manager's RLS would otherwise return ALL rows here,
+		// making "mijn items/toewijzingen/tickets" show everyone's.
 		Promise.all([
-			db.from('inventory_items').select('*').order('name'),
-			db.from('event_item_assignments').select('*'),
-			db.from('event_tickets').select('*').order('day'),
+			db.from('inventory_items').select('*').eq('owner_user_id', session.user.id).order('name'),
+			db.from('event_item_assignments').select('*').eq('assigned_user_id', session.user.id),
+			db.from('event_tickets').select('*').eq('assigned_user_id', session.user.id).order('day'),
 			db.from('events').select('id, name'),
 		]).then(([{ data: itemRows }, { data: assignRows }, { data: ticketRows }, { data: eventRows }]) => {
 			if (!active) return;

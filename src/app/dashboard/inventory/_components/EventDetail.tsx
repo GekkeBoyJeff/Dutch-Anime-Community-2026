@@ -166,11 +166,15 @@ const EventDetail = ({
 	};
 
 	const deleteTicket = async (id: string) => {
-		const { error } = await getBrowserClient().from('event_tickets').delete().eq('id', id);
+		const db = getBrowserClient();
+		const ticket = tickets.find((t) => t.id === id);
+		const { error } = await db.from('event_tickets').delete().eq('id', id);
 		if (error) {
 			onError(error.message);
 			return;
 		}
+		// Remove the PDF too, so deleting a ticket doesn't orphan its object in the private bucket.
+		if (ticket?.ticket_pdf_path) await db.storage.from('tickets').remove([ticket.ticket_pdf_path]);
 		setRefreshKey((key) => key + 1);
 	};
 
