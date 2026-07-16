@@ -1,0 +1,17 @@
+.dashboard {
+	display: grid;
+	gap: 1.5rem;
+	margin-block: 3rem;
+}
+
+.dashboard-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+	gap: 1rem;
+}
+
+.access-page {
+	display: grid;
+	gap: 1rem;
+	margin-block: 3rem;
+}
