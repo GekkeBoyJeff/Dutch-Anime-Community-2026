@@ -35,3 +35,41 @@
 	object-fit: cover;
 	border-radius: 0.5rem;
 }
+
+.media-thumb-pdf {
+	display: grid;
+	place-items: center;
+	inline-size: 100%;
+	block-size: 7rem;
+	background: rgba(127, 127, 127, 0.15);
+	border-radius: 0.5rem;
+	font-weight: 700;
+}
+
+.media-detail {
+	display: grid;
+	gap: 1rem;
+}
+
+.media-detail-preview {
+	max-inline-size: 100%;
+	max-block-size: 40vh;
+	object-fit: contain;
+	border-radius: 0.5rem;
+}
+
+.media-detail dl {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 0.35rem 1rem;
+	margin: 0;
+}
+
+.media-detail dt {
+	font-weight: 700;
+}
+
+.media-detail dd {
+	margin: 0;
+	overflow-wrap: anywhere;
+}

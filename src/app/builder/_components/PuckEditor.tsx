@@ -76,6 +76,9 @@ const PuckEditor = () => {
 	// until the load for the current editorKey lands. setState stays inside the async callback.
 	const [loaded, setLoaded] = useState<{ key: number; data: BuilderData } | null>(null);
 	const loadedStructuresRef = useRef<SiteStructures>(EMPTY_STRUCTURES);
+	// The live editor data, kept via Puck's onChange so the "Opslaan" button can save without Puck's
+	// (confusingly-named) default Publish button.
+	const latestDataRef = useRef<BuilderData | null>(null);
 
 	const templates = useMemo(() => pageTemplates(), []);
 
@@ -131,7 +134,9 @@ const PuckEditor = () => {
 					page = pParsed.success ? pParsed.data : null;
 				}
 			}
-			setLoaded({ key: currentKey, data: toPuckData(page, structures) });
+			const puckData = toPuckData(page, structures);
+			latestDataRef.current = puckData;
+			setLoaded({ key: currentKey, data: puckData });
 		});
 		return () => {
 			active = false;
@@ -160,7 +165,7 @@ const PuckEditor = () => {
 	};
 
 	// Validate → sanitize → upsert. The modal only surfaces validation errors or a save result.
-	const onPublish = async (data: Data) => {
+	const savePage = async (data: Data) => {
 		const result = fromPuckData(data as BuilderData);
 		if (result.issues.length) {
 			setFeedback({ title: 'Validatiefouten', issues: result.issues });
@@ -236,7 +241,9 @@ const PuckEditor = () => {
 					// Keep richtext props plain HTML strings in the canvas (Puck's default swaps in a ReactNode
 					// editor, breaking components typed to the string contract). Rich editing stays in the sidebar.
 					fieldTransforms={{ richtext: ({ value }) => value as string }}
-					onPublish={onPublish}
+					onChange={(nextData) => {
+						latestDataRef.current = nextData as BuilderData;
+					}}
 					// A dragged story preset only carries its component type through Puck's dnd; right after the
 					// insert lands, swap the default props for the story's props (see presetBridge).
 					onAction={(action, newState) => {
@@ -263,7 +270,7 @@ const PuckEditor = () => {
 					}}
 					overrides={{
 						drawer: () => <BlockDrawer />,
-						headerActions: ({ children }) => (
+						headerActions: () => (
 							<>
 								<label className="builder-page-select">
 									<span className="visually-hidden">Pagina</span>
@@ -305,12 +312,20 @@ const PuckEditor = () => {
 										</select>
 									</label>
 								)}
+								<Button
+									variant="primary"
+									icon="check"
+									onClick={() => {
+										if (latestDataRef.current) savePage(latestDataRef.current);
+									}}
+								>
+									Opslaan
+								</Button>
 								{canPublish && (
-									<Button variant="primary" icon="upload" onClick={publishLive}>
+									<Button variant="secondary" icon="upload" onClick={publishLive}>
 										Publiceren naar live
 									</Button>
 								)}
-								{children}
 							</>
 						),
 					}}
