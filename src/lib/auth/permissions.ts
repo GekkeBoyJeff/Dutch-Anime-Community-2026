@@ -19,6 +19,12 @@ export const APP_PERMISSIONS = [
 	'roles.manage',
 	'inventory.view',
 	'inventory.manage',
+	'expenses.view',
+	'expenses.manage',
+	'logs.view',
+	'badges.manage',
+	'records.delete',
+	'notifications.send',
 ] as const;
 export type Permission = (typeof APP_PERMISSIONS)[number];
 
