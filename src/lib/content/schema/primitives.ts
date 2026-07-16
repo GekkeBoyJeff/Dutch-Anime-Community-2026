@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+// The strict CSP has no 'unsafe-eval', so Zod v4's JIT probe (`new Function`) is reported as a
+// securitypolicyviolation — even though Zod swallows the throw and falls back. `jitless` skips the
+// probe entirely: no console CSP error, validation stays correct (non-JIT path). Set here because
+// this module is the foundation every schema imports, so it runs before any runtime parse.
+z.config({ jitless: true });
+
 // Shared value objects used across blocks and documents. These are the small, reusable pieces the
 // content contract is built from — not blocks themselves.
 
