@@ -31,6 +31,37 @@
 	gap: 1rem;
 }
 
+.logs-detail {
+	display: grid;
+	gap: 0.85rem;
+	margin: 0;
+}
+
+.logs-detail-row {
+	display: grid;
+	gap: 0.15rem;
+}
+
+.logs-detail-row dt {
+	font-weight: 700;
+	font-size: 0.8125rem;
+	color: var(--color-secondary);
+}
+
+.logs-detail-row dd {
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+
+.logs-before {
+	text-decoration: line-through;
+	color: var(--color-secondary);
+}
+
+.logs-detail-empty {
+	color: var(--color-secondary);
+}
+
 .access-role-select {
 	min-inline-size: 7rem;
 }
