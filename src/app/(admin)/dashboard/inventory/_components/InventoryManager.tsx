@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
-import PersonPicker, { type PersonOption, type PersonValue } from '@/app/dashboard/_components/PersonPicker';
-import EventDetail from '@/app/dashboard/inventory/_components/EventDetail';
+import PersonPicker, { type PersonOption, type PersonValue } from '@/app/(admin)/dashboard/_components/PersonPicker';
+import EventDetail from '@/app/(admin)/dashboard/inventory/_components/EventDetail';
 import Alert from '@/components/basics/Alert';
 import Button from '@/components/basics/Button';
 import Container from '@/components/basics/Container';

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
-import PersonPicker, { type PersonOption, type PersonValue } from '@/app/dashboard/_components/PersonPicker';
+import PersonPicker, { type PersonOption, type PersonValue } from '@/app/(admin)/dashboard/_components/PersonPicker';
 import Button from '@/components/basics/Button';
 import Title from '@/components/basics/Title';
 import Modal from '@/components/components/Modal';

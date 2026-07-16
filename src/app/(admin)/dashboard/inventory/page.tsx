@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
-import InventoryManager from '@/app/dashboard/inventory/_components/InventoryManager';
+import InventoryManager from '@/app/(admin)/dashboard/inventory/_components/InventoryManager';
 
-import '@/app/dashboard/inventory.scss';
+import '@/app/(admin)/dashboard/inventory.scss';
 
 export const metadata: Metadata = { title: 'Inventory & conventies', robots: { index: false, follow: false } };
 

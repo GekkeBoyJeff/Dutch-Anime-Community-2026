@@ -121,23 +121,28 @@ export const config: Config = {
 			navigation: requiredField('navigation', SiteStructures.shape.navigation),
 			footer: requiredField('footer', SiteStructures.shape.footer),
 		},
-		// The preview shares SiteChrome and the <main> wrapper with the real page (layout + PageView),
-		// so what you see in the canvas is what the site renders.
+		// The preview mirrors the real page's frame exactly: .page-frame > .page-frame-scroll > SiteChrome
+		// > <main> (same nesting as the (website) layout + PageView), so the canvas is what the live,
+		// framed site renders. This render is preview-only — published pages render via PageView/Blocks.
 		render: (props: Record<string, unknown>) => {
 			const { children, announcementBar, navigation, footer } = props as React.PropsWithChildren<BuilderRootProps>;
 
 			return (
 				<>
 					<PreviewTheme />
-					<SiteChrome
-						structures={{
-							announcementBar: announcementBar?.message ? announcementBar : undefined,
-							navigation: navigation ?? {},
-							footer: footer ?? {},
-						}}
-					>
-						<main>{children}</main>
-					</SiteChrome>
+					<div className="page-frame">
+						<div className="page-frame-scroll">
+							<SiteChrome
+								structures={{
+									announcementBar: announcementBar?.message ? announcementBar : undefined,
+									navigation: navigation ?? {},
+									footer: footer ?? {},
+								}}
+							>
+								<main>{children}</main>
+							</SiteChrome>
+						</div>
+					</div>
 				</>
 			);
 		},

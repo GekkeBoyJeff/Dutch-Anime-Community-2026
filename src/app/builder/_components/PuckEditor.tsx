@@ -232,6 +232,67 @@ const PuckEditor = () => {
 
 	return (
 		<div className="builder">
+			<div className="builder-topbar">
+				<Button variant="ghost" icon="chevron-left" url="/dashboard" className="builder-back">
+					Terug naar dashboard
+				</Button>
+				<div className="builder-topbar-actions">
+					<label className="builder-page-select">
+						<span className="sr-only">Pagina</span>
+						<select
+							value={source.kind === 'page' ? source.path : NEW_PAGE}
+							onChange={(event) => {
+								const path = event.currentTarget.value;
+								loadSource(path === NEW_PAGE ? { kind: 'new' } : { kind: 'page', path });
+							}}
+						>
+							<option value={NEW_PAGE}>Nieuwe pagina</option>
+							{paths.map((path) => (
+								<option key={path} value={path}>
+									{path === '/' ? 'Home' : path}
+								</option>
+							))}
+						</select>
+					</label>
+					{templates.length > 0 && (
+						<label className="builder-page-select">
+							<span className="sr-only">Template</span>
+							<select
+								value=""
+								onChange={(event) => {
+									const template = templates[Number(event.currentTarget.value)];
+									if (template) {
+										loadSource({ kind: 'template', template });
+									}
+								}}
+							>
+								<option value="" disabled>
+									Template…
+								</option>
+								{templates.map((template, index) => (
+									<option key={template.label} value={index}>
+										{template.label}
+									</option>
+								))}
+							</select>
+						</label>
+					)}
+					<Button
+						variant="primary"
+						icon="check"
+						onClick={() => {
+							if (latestDataRef.current) savePage(latestDataRef.current);
+						}}
+					>
+						Opslaan
+					</Button>
+					{canPublish && (
+						<Button variant="secondary" icon="upload" onClick={publishLive}>
+							Publiceren naar live
+						</Button>
+					)}
+				</div>
+			</div>
 			{initialData ? (
 				<Puck
 					key={editorKey}
@@ -270,64 +331,6 @@ const PuckEditor = () => {
 					}}
 					overrides={{
 						drawer: () => <BlockDrawer />,
-						headerActions: () => (
-							<>
-								<label className="builder-page-select">
-									<span className="visually-hidden">Pagina</span>
-									<select
-										value={source.kind === 'page' ? source.path : NEW_PAGE}
-										onChange={(event) => {
-											const path = event.currentTarget.value;
-											loadSource(path === NEW_PAGE ? { kind: 'new' } : { kind: 'page', path });
-										}}
-									>
-										<option value={NEW_PAGE}>Nieuwe pagina</option>
-										{paths.map((path) => (
-											<option key={path} value={path}>
-												{path === '/' ? 'Home' : path}
-											</option>
-										))}
-									</select>
-								</label>
-								{templates.length > 0 && (
-									<label className="builder-page-select">
-										<span className="visually-hidden">Template</span>
-										<select
-											value=""
-											onChange={(event) => {
-												const template = templates[Number(event.currentTarget.value)];
-												if (template) {
-													loadSource({ kind: 'template', template });
-												}
-											}}
-										>
-											<option value="" disabled>
-												Template…
-											</option>
-											{templates.map((template, index) => (
-												<option key={template.label} value={index}>
-													{template.label}
-												</option>
-											))}
-										</select>
-									</label>
-								)}
-								<Button
-									variant="primary"
-									icon="check"
-									onClick={() => {
-										if (latestDataRef.current) savePage(latestDataRef.current);
-									}}
-								>
-									Opslaan
-								</Button>
-								{canPublish && (
-									<Button variant="secondary" icon="upload" onClick={publishLive}>
-										Publiceren naar live
-									</Button>
-								)}
-							</>
-						),
 					}}
 				/>
 			) : (

@@ -3,7 +3,10 @@
 // documented exception to the central style index — see the rebuild design doc).
 
 .builder {
-	min-block-size: 100dvh;
+	display: flex;
+	flex-direction: column;
+	block-size: 100%;
+	overflow: hidden;
 
 	// Dark editor chrome, default on. Puck 0.22 styles its UI through these SEMANTIC custom
 	// properties (surface/border/text/interactive…), so overriding them on .builder re-themes every
@@ -54,6 +57,56 @@
 		}
 	}
 
+	.builder-topbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex: none;
+		gap: spacing(m);
+		padding-inline: spacing(m);
+		padding-block: spacing(xs);
+		font-size: 0.8125rem;
+		background-color: var(--puck-color-surface);
+		border-block-end: 1px solid var(--puck-color-border);
+
+		.builder-topbar-actions {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: spacing(s);
+
+			.button {
+				padding-block: spacing(xs);
+				padding-inline: spacing(m);
+			}
+		}
+	}
+
+	> :not(.builder-topbar) {
+		flex: 1;
+		min-block-size: 0;
+	}
+
+	[class*='_PuckLayout_'] {
+		block-size: 100% !important;
+	}
+
+	@media (min-width: 638px) {
+		[class*='_PuckLayout-inner_'] {
+			--puck-pluginbar-width: 96px;
+		}
+	}
+
+	.button.builder-back {
+		white-space: nowrap;
+		color: var(--puck-color-text-secondary);
+
+		&:hover,
+		&:focus-visible {
+			color: var(--puck-color-text);
+		}
+	}
+
 	// Header refinements. Puck's MenuBar (undo/redo + our selects + Publish) uses hashed class
 	// names, so we match on a stable fragment — the same technique as the _ExternalInput overrides
 	// further down. These live inside .builder because the header renders in the editor shell (only
@@ -94,7 +147,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-block-size: 100dvh;
+	min-block-size: 100%;
 }
 
 .builder-export {

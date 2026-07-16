@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
-import DashboardShell from '@/app/dashboard/_components/DashboardShell';
+import DashboardShell from '@/app/(admin)/dashboard/_components/DashboardShell';
 
-import '@/app/dashboard/dashboard.scss';
+import '@/app/(admin)/dashboard/dashboard.scss';
 
 export const metadata: Metadata = { title: 'Dashboard', robots: { index: false, follow: false } };
 

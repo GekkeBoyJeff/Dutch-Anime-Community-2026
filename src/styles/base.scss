@@ -38,7 +38,9 @@ body:has(> .announcement-bar) {
 
 // The window itself never scrolls: the body is a fixed page mat around the frame, and the frame
 // is the scroll container. That keeps the gap and rounded corners visible on every scroll position.
-body:has(> .page-frame) {
+// Descendant (not direct-child) match so the mat also applies inside the Puck preview iframe, where
+// .page-frame is nested under #frame-root; on the real pages .page-frame is always a direct body child.
+body:has(.page-frame) {
 	block-size: 100dvh;
 	overflow: hidden;
 	padding-block: spacing(m);
@@ -445,7 +447,7 @@ h6,
 	--scrim-strong: #{rgba(#241a22, 0.78)};
 }
 
-[data-theme='beheer'] {
+[data-theme='admin'] {
 	--accent: #3b5bdb;
 	--accent-hover: #3450c1;
 	--accent-active: #2e47ab;

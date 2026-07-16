@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
-import Uploader from '@/app/upload/_components/Uploader';
+import Uploader from '@/app/(admin)/upload/_components/Uploader';
 
-import '@/app/dashboard/dashboard.scss';
+import '@/app/(admin)/dashboard/dashboard.scss';
 
 export const metadata: Metadata = { title: 'Media', robots: { index: false, follow: false } };
 

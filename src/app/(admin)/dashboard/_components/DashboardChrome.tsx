@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import DashboardNav from '@/app/dashboard/_components/DashboardNav';
+import DashboardNav from '@/app/(admin)/dashboard/_components/DashboardNav';
 
 interface DashboardChromeProps {
 	/** The routed dashboard page */

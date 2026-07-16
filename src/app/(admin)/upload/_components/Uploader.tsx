@@ -1,18 +1,16 @@
 'use client';
 
 import imageCompression from 'browser-image-compression';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import Alert from '@/components/basics/Alert';
 import Button from '@/components/basics/Button';
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
-import Spinner from '@/components/basics/Spinner';
 import Title from '@/components/basics/Title';
 import FileUpload from '@/components/components/FileUpload';
 import Modal from '@/components/components/Modal';
-import { usePermissions } from '@/lib/auth/permissions';
+import { useDashboardGuard } from '@/hooks/useDashboardGuard';
 import { compressPdf } from '@/lib/pdf/compressPdf';
 import { getBrowserClient } from '@/lib/supabase/client';
 
@@ -41,24 +39,14 @@ const formatDate = (iso: string | null): string =>
 // Media manager: browser-compress images to webp, upload to the public `media` bucket, browse the
 // bucket, and inspect/copy/delete each file. Gated on media.manage; RLS enforces the same server-side.
 const Uploader = () => {
-	const router = useRouter();
-	const { permissions, loading, session } = usePermissions();
-	const canManage = permissions.has('media.manage');
+	const { ready, fallback } = useDashboardGuard('media.manage', { className: 'dashboard', label: 'Media laden' });
 	const [items, setItems] = useState<MediaItem[]>([]);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [status, setStatus] = useState<{ variant: 'info' | 'success' | 'error'; text: string } | null>(null);
 	const [selected, setSelected] = useState<MediaItem | null>(null);
 
 	useEffect(() => {
-		if (loading) return;
-		if (!session) {
-			router.replace('/login?next=/upload');
-			return;
-		}
-		if (!canManage) {
-			router.replace('/dashboard');
-			return;
-		}
+		if (!ready) return;
 		let active = true;
 		const db = getBrowserClient();
 		db.storage
@@ -81,7 +69,7 @@ const Uploader = () => {
 		return () => {
 			active = false;
 		};
-	}, [loading, session, canManage, router, refreshKey]);
+	}, [ready, refreshKey]);
 
 	const copyUrl = async (url: string) => {
 		await navigator.clipboard.writeText(url).catch(() => {});
@@ -148,16 +136,10 @@ const Uploader = () => {
 		setRefreshKey((key) => key + 1);
 	};
 
-	if (loading || !session || !canManage) {
-		return (
-			<Container element="main" className="dashboard">
-				<Spinner label="Media laden" />
-			</Container>
-		);
-	}
+	if (!ready) return fallback;
 
 	return (
-		<Container element="main" className="dashboard">
+		<Container className="dashboard">
 			<Title size={2}>Media</Title>
 			<FileUpload
 				accept="image/*,application/pdf"
