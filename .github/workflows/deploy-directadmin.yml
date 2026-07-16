@@ -1,0 +1,37 @@
+name: Deploy to DirectAdmin
+
+on:
+  repository_dispatch:
+    types: [publish]
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Strip runtime route handlers (static host cannot run them)
+        run: rm -rf src/app/api
+      - name: Build static export from Supabase
+        env:
+          HOST_TYPE: static
+          NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.SITE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npm run build
+      - name: SFTP upload out/ to DirectAdmin
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
+        with:
+          server: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USER }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          local_path: './out/*'
+          remote_path: ${{ secrets.SFTP_REMOTE_DIR }}
+          delete_remote_files: true
