@@ -26,12 +26,16 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: npm run build
-      - name: SFTP upload out/ to DirectAdmin
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
+      - name: FTP upload out/ to DirectAdmin
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.SFTP_HOST }}
-          username: ${{ secrets.SFTP_USER }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          local_path: './out/*'
-          remote_path: ${{ secrets.SFTP_REMOTE_DIR }}
-          delete_remote_files: true
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Explicit FTPS (encrypted). If your host has no valid TLS cert, change to `ftp`.
+          protocol: ftps
+          local-dir: ./out/
+          # FTP_REMOTE_DIR must end with a slash (the deploy secret is normalized to).
+          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
+          # Wipe the docroot first so removed pages don't linger — the docroot must hold ONLY the site.
+          dangerous-clean-slate: true
