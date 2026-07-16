@@ -47,9 +47,9 @@ const itemSummary = (item: Record<string, unknown>, index?: number): string => {
 	return text ?? `Item ${(index ?? 0) + 1}`;
 };
 
-/** A media file under /public, as served by the dev-only /api/builder/images route. */
+/** A media file in the Supabase `media` bucket, as listed by the picker. */
 interface PublicMediaFile {
-	/** Web path under the site root, e.g. '/media/demo.png' */
+	/** The object's public URL (becomes Media.src), e.g. 'https://<ref>.supabase.co/storage/v1/object/public/media/x.webp' */
 	path: string;
 	name: string;
 	dir: string;
