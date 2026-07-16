@@ -1,23 +1,17 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
 import Alert from '@/components/basics/Alert';
 import Container from '@/components/basics/Container';
-import Spinner from '@/components/basics/Spinner';
 import Title from '@/components/basics/Title';
 import Table from '@/components/components/Table';
 import Checkbox from '@/components/forms/Checkbox';
 import Select from '@/components/forms/Select';
-import { usePermissions, type Permission } from '@/lib/auth/permissions';
+import { useDashboardGuard } from '@/hooks/useDashboardGuard';
+import { APP_PERMISSIONS, APP_ROLES, type Permission } from '@/lib/auth/permissions';
 import { getBrowserClient } from '@/lib/supabase/client';
-
-const ROLES = ['user', 'author', 'yakuza', 'admin'] as const;
-const PERMISSIONS: Permission[] = [
-	'pages.edit', 'pages.delete', 'structures.edit', 'media.manage', 'site.publish', 'moderation.view', 'moderation.manage', 'roles.manage',
-];
 
 interface Row {
 	id: string;
@@ -30,23 +24,13 @@ interface Row {
 // RLS requires roles.manage AND a target other than self, so the UI disables self-editing to match.
 // Mutations bump refreshKey, which re-runs the fetch effect (setState stays inside the async callback).
 const AccessManager = () => {
-	const router = useRouter();
-	const { permissions, loading, session } = usePermissions();
-	const canManage = permissions.has('roles.manage');
+	const { ready, fallback, session } = useDashboardGuard('roles.manage', { className: 'access-page', label: 'Toegangsbeheer laden' });
 	const [rows, setRows] = useState<Row[]>([]);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (loading) return;
-		if (!session) {
-			router.replace('/login?next=/dashboard/access');
-			return;
-		}
-		if (!canManage) {
-			router.replace('/dashboard');
-			return;
-		}
+		if (!ready || !session) return;
 		let active = true;
 		const db = getBrowserClient();
 		Promise.all([
@@ -74,7 +58,7 @@ const AccessManager = () => {
 		return () => {
 			active = false;
 		};
-	}, [loading, session, canManage, router, refreshKey]);
+	}, [ready, session, refreshKey]);
 
 	const setRole = async (userId: string, role: string) => {
 		const { error: err } = await getBrowserClient().from('user_roles').upsert({ user_id: userId, role }, { onConflict: 'user_id' });
@@ -99,18 +83,12 @@ const AccessManager = () => {
 		setRefreshKey((k) => k + 1);
 	};
 
-	if (loading || !session || !canManage) {
-		return (
-			<Container element="main" className="access-page">
-				<Spinner label="Toegangsbeheer laden" />
-			</Container>
-		);
-	}
+	if (!ready || !session) return fallback;
 
 	const columns = [
 		{ header: 'Gebruiker' },
 		{ header: 'Rol' },
-		...PERMISSIONS.map((p) => ({ header: p, align: 'center' as const })),
+		...APP_PERMISSIONS.map((p) => ({ header: p, align: 'center' as const })),
 	];
 
 	const tableRows: ReactNode[][] = rows.map((r) => {
@@ -125,10 +103,10 @@ const AccessManager = () => {
 				aria-label={`Rol voor ${who}`}
 				disabled={self}
 				value={r.role}
-				options={ROLES.map((role) => ({ value: role, label: role }))}
+				options={APP_ROLES.map((role) => ({ value: role, label: role }))}
 				onValueChange={(value) => setRole(r.id, value as string)}
 			/>,
-			...PERMISSIONS.map((p) => (
+			...APP_PERMISSIONS.map((p) => (
 				<Checkbox
 					key={p}
 					aria-label={`${p} voor ${who}`}
@@ -141,7 +119,7 @@ const AccessManager = () => {
 	});
 
 	return (
-		<Container element="main" className="access-page">
+		<Container className="access-page">
 			<Title size={2}>Toegangsbeheer</Title>
 			<Alert variant="info">Je kunt je eigen rol of permissies niet wijzigen.</Alert>
 			{error && (

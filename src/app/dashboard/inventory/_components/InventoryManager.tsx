@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
@@ -9,7 +8,6 @@ import EventDetail from '@/app/dashboard/inventory/_components/EventDetail';
 import Alert from '@/components/basics/Alert';
 import Button from '@/components/basics/Button';
 import Container from '@/components/basics/Container';
-import Spinner from '@/components/basics/Spinner';
 import Title from '@/components/basics/Title';
 import Modal from '@/components/components/Modal';
 import Table from '@/components/components/Table';
@@ -17,7 +15,7 @@ import Checkbox from '@/components/forms/Checkbox';
 import Field from '@/components/forms/Field';
 import TextArea from '@/components/forms/TextArea';
 import TextInput from '@/components/forms/TextInput';
-import { usePermissions } from '@/lib/auth/permissions';
+import { useDashboardGuard } from '@/hooks/useDashboardGuard';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 interface Item {
@@ -60,9 +58,7 @@ const EMPTY_ITEM: ItemForm = { name: '', owner: { userId: null, label: null }, q
 const EMPTY_EVENT: EventForm = { name: '', location: '', starts_on: '', ends_on: '', notes: '' };
 
 const InventoryManager = () => {
-	const router = useRouter();
-	const { permissions, loading, session } = usePermissions();
-	const canManage = permissions.has('inventory.manage');
+	const { ready, fallback, session } = useDashboardGuard('inventory.manage', { className: 'inventory', label: 'Inventory laden' });
 
 	const [users, setUsers] = useState<PersonOption[]>([]);
 	const [items, setItems] = useState<Item[]>([]);
@@ -74,15 +70,7 @@ const InventoryManager = () => {
 	const [selectedEvent, setSelectedEvent] = useState<EventRow | null>(null);
 
 	useEffect(() => {
-		if (loading) return;
-		if (!session) {
-			router.replace('/login?next=/dashboard/inventory');
-			return;
-		}
-		if (!canManage) {
-			router.replace('/dashboard');
-			return;
-		}
+		if (!ready || !session) return;
 		let active = true;
 		const db = getBrowserClient();
 		Promise.all([
@@ -98,7 +86,7 @@ const InventoryManager = () => {
 		return () => {
 			active = false;
 		};
-	}, [loading, session, canManage, router, refreshKey]);
+	}, [ready, session, refreshKey]);
 
 	const personName = (userId: string | null, label: string | null): string => {
 		if (userId) return users.find((u) => u.id === userId)?.username ?? userId.slice(0, 8);
@@ -176,13 +164,7 @@ const InventoryManager = () => {
 		setRefreshKey((key) => key + 1);
 	};
 
-	if (loading || !session || !canManage) {
-		return (
-			<Container element="main" className="inventory">
-				<Spinner label="Inventory laden" />
-			</Container>
-		);
-	}
+	if (!ready || !session) return fallback;
 
 	const itemRows: ReactNode[][] = items.map((item) => [
 		item.name,
@@ -218,7 +200,7 @@ const InventoryManager = () => {
 	]);
 
 	return (
-		<Container element="main" className="inventory">
+		<Container className="inventory">
 			<Title size={2}>Inventory &amp; conventies</Title>
 			{error && (
 				<Alert variant="error" title="Er ging iets mis">

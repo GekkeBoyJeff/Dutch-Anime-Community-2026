@@ -5,18 +5,26 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { getBrowserClient } from '@/lib/supabase/client';
 
-// The permission vocabulary — mirrors the public.app_permission enum (migration 0001). Keep in sync.
-export type Permission =
-	| 'pages.edit'
-	| 'pages.delete'
-	| 'structures.edit'
-	| 'media.manage'
-	| 'site.publish'
-	| 'moderation.view'
-	| 'moderation.manage'
-	| 'roles.manage'
-	| 'inventory.view'
-	| 'inventory.manage';
+// The permission vocabulary — mirrors the public.app_permission enum. SINGLE SOURCE: the runtime array
+// drives both the `Permission` type and the AccessManager UI, so adding a permission is one edit here
+// (+ the DB enum migration). Keep the order/values in sync with the enum.
+export const APP_PERMISSIONS = [
+	'pages.edit',
+	'pages.delete',
+	'structures.edit',
+	'media.manage',
+	'site.publish',
+	'moderation.view',
+	'moderation.manage',
+	'roles.manage',
+	'inventory.view',
+	'inventory.manage',
+] as const;
+export type Permission = (typeof APP_PERMISSIONS)[number];
+
+// Mirrors the public.app_role enum (user/author/yakuza/admin + stand-staff added later).
+export const APP_ROLES = ['user', 'author', 'yakuza', 'stand-staff', 'admin'] as const;
+export type AppRole = (typeof APP_ROLES)[number];
 
 // Open-redirect guard: only same-site relative paths are allowed as a post-login destination.
 // Rejects absolute URLs, protocol-relative (`//evil`), and backslash tricks (`/\evil`).

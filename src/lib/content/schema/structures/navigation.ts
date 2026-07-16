@@ -4,6 +4,7 @@ export const NavItem = z
 	.object({
 		label: z.string().min(1).describe('The link label'),
 		url: z.string().min(1).describe('The link destination'),
+		exact: z.boolean().optional().describe('Match active state on the exact path only (like a home/index link), not nested routes'),
 		icon: z.string().optional().describe('Icon glyph shown next to the label in the mobile menu').meta({ editor: 'icon' }),
 		target: z
 			.literal('_blank')
@@ -18,6 +19,7 @@ export const NavCta = z
 		label: z.string().min(1).describe('The link label'),
 		url: z.string().min(1).describe('The link destination'),
 		variant: z.enum(['primary', 'secondary', 'ghost']).optional().describe('Visual variant; defaults to primary'),
+		target: z.enum(['_blank', '_self']).optional().describe('Link target; defaults to _blank so the CTA opens in a new tab'),
 	})
 	.meta({ title: 'NavCta' });
 export type NavCta = z.infer<typeof NavCta>;

@@ -445,6 +445,16 @@ h6,
 	--scrim-strong: #{rgba(#241a22, 0.78)};
 }
 
+[data-theme='beheer'] {
+	--accent: #3b5bdb;
+	--accent-hover: #3450c1;
+	--accent-active: #2e47ab;
+	--accent-contrast: #{$white};
+	--tint-accent: #{rgba(#3b5bdb, 0.16)};
+	--accent-text-light: #3b5bdb;
+	--accent-text-dark: #94a8ef;
+}
+
 @each $scheme in 'light', 'dark' {
 	$baseline: '';
 	@if $scheme == 'light' {

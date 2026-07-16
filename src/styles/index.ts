@@ -42,6 +42,7 @@ import '@/styles/components/components/CheckboxGroup.scss';
 import '@/styles/components/components/Combobox.scss';
 import '@/styles/components/components/CookieConsent.scss';
 import '@/styles/components/components/CustomCursor.scss';
+import '@/styles/components/components/DataTable.scss';
 import '@/styles/components/components/DescriptionList.scss';
 import '@/styles/components/components/Drawer.scss';
 import '@/styles/components/components/EmbedWidget.scss';

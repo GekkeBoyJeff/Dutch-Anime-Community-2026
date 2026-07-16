@@ -9,6 +9,8 @@ export { default as Content } from '@/components/basics/Content';
 export { default as Media } from '@/components/basics/Media';
 export { default as Section } from '@/components/basics/Section';
 export { default as Badge } from '@/components/basics/Badge';
+export { default as StatusBadge } from '@/components/basics/StatusBadge';
+export type { StatusDomain } from '@/components/basics/StatusBadge';
 export { default as Divider } from '@/components/basics/Divider';
 export { default as Spinner } from '@/components/basics/Spinner';
 export { default as Progress } from '@/components/basics/Progress';

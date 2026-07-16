@@ -1,20 +1,18 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
 import Alert from '@/components/basics/Alert';
 import Button from '@/components/basics/Button';
 import Container from '@/components/basics/Container';
-import Spinner from '@/components/basics/Spinner';
 import Title from '@/components/basics/Title';
 import Modal from '@/components/components/Modal';
 import Table from '@/components/components/Table';
 import Field from '@/components/forms/Field';
 import TextArea from '@/components/forms/TextArea';
 import TextInput from '@/components/forms/TextInput';
-import { usePermissions } from '@/lib/auth/permissions';
+import { useDashboardGuard } from '@/hooks/useDashboardGuard';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 interface Item {
@@ -54,9 +52,7 @@ const TICKET_DEFAULT_NOTE = 'Wordt per bandje op de dag zelf geregeld.';
 // The personal view for stand-staff / any member granted inventory.view: manage YOUR OWN items
 // (add + toggle availability), see what you must bring per convention, and see your tickets.
 const MyInventory = () => {
-	const router = useRouter();
-	const { permissions, loading, session } = usePermissions();
-	const canView = permissions.has('inventory.view');
+	const { ready, fallback, session } = useDashboardGuard('inventory.view', { className: 'inventory', label: 'Laden' });
 
 	const [items, setItems] = useState<Item[]>([]);
 	const [assignments, setAssignments] = useState<Assignment[]>([]);
@@ -67,15 +63,7 @@ const MyInventory = () => {
 	const [ownForm, setOwnForm] = useState<OwnItemForm | null>(null);
 
 	useEffect(() => {
-		if (loading) return;
-		if (!session) {
-			router.replace('/login?next=/dashboard/my-inventory');
-			return;
-		}
-		if (!canView) {
-			router.replace('/dashboard');
-			return;
-		}
+		if (!ready || !session) return;
 		let active = true;
 		const db = getBrowserClient();
 		// Explicitly scope to the current user: a manager's RLS would otherwise return ALL rows here,
@@ -95,7 +83,7 @@ const MyInventory = () => {
 		return () => {
 			active = false;
 		};
-	}, [loading, session, canView, router, refreshKey]);
+	}, [ready, session, refreshKey]);
 
 	const toggleAvailable = async (item: Item) => {
 		const { error: err } = await getBrowserClient().from('inventory_items').update({ available: !item.available }).eq('id', item.id);
@@ -142,13 +130,7 @@ const MyInventory = () => {
 	const itemName = (id: string): string => items.find((i) => i.id === id)?.name ?? id.slice(0, 8);
 	const eventName = (id: string): string => eventNames.get(id) ?? id.slice(0, 8);
 
-	if (loading || !session || !canView) {
-		return (
-			<Container element="main" className="inventory">
-				<Spinner label="Laden" />
-			</Container>
-		);
-	}
+	if (!ready || !session) return fallback;
 
 	const itemRows: ReactNode[][] = items.map((item) => [
 		item.name,
@@ -182,7 +164,7 @@ const MyInventory = () => {
 	]);
 
 	return (
-		<Container element="main" className="inventory">
+		<Container className="inventory">
 			<Title size={2}>Mijn inventory &amp; conventies</Title>
 			{error && (
 				<Alert variant="error" title="Er ging iets mis">

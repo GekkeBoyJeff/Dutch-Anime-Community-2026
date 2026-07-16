@@ -179,6 +179,23 @@
 		}
 	}
 
+	&.is-dashboard .navigation-bar .navigation-brand {
+		inline-size: auto;
+		gap: spacing(xs);
+		padding-inline: spacing(xs) spacing(m);
+
+		.navigation-wordmark {
+			position: static;
+			inline-size: auto;
+			block-size: auto;
+			overflow: visible;
+			clip-path: none;
+			white-space: nowrap;
+			font-weight: $weight-bold;
+			letter-spacing: $tracking-tight;
+		}
+	}
+
 	&.is-open .navigation-bar {
 		position: relative;
 		z-index: calc(#{$z-overlay} + 1);

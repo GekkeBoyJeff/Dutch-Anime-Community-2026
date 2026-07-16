@@ -20,12 +20,12 @@ type NavigationProps = NavigationSchemaProps;
 
 // A nav item is active on its exact route and on any route nested below it (so /blog stays lit on
 // /blog/post). Home ('/') matches only its exact path; external and anchor links never light up.
-const isActivePath = (pathname: string, url: string): boolean => {
+const isActivePath = (pathname: string, url: string, exact = false): boolean => {
 	if (!url.startsWith('/')) {
 		return false;
 	}
-	if (url === '/') {
-		return pathname === '/';
+	if (exact || url === '/') {
+		return pathname === url;
 	}
 	return pathname === url || pathname.startsWith(`${url}/`);
 };
@@ -174,7 +174,7 @@ const Navigation = ({ items = [], cta, brand, className, ref }: NavigationProps 
 							/>
 							<ul ref={listRef}>
 								{items.map((item) => {
-									const active = isActivePath(pathname, item.url);
+									const active = isActivePath(pathname, item.url, item.exact);
 									return (
 										<li key={item.url} className={active ? 'is-active' : undefined}>
 											<Interactive
@@ -197,7 +197,7 @@ const Navigation = ({ items = [], cta, brand, className, ref }: NavigationProps 
 			{cta && (
 				<div className="navigation-cta-tab">
 					<span className="corner is-scoop-bl is-start" aria-hidden="true" />
-					<Button url={cta.url} target="_blank" variant={cta.variant ?? 'primary'} className="navigation-cta">
+					<Button url={cta.url} target={cta.target ?? '_blank'} variant={cta.variant ?? 'primary'} className="navigation-cta">
 						{cta.label}
 					</Button>
 					<span className="corner is-scoop-bl is-end" aria-hidden="true" />
@@ -211,7 +211,7 @@ const Navigation = ({ items = [], cta, brand, className, ref }: NavigationProps 
 						<nav aria-label="Mobile">
 							<ul>
 								{items.map((item, index) => {
-									const active = isActivePath(pathname, item.url);
+									const active = isActivePath(pathname, item.url, item.exact);
 									return (
 										<li
 											key={item.url}
@@ -236,7 +236,7 @@ const Navigation = ({ items = [], cta, brand, className, ref }: NavigationProps 
 							{cta && (
 								<Button
 									url={cta.url}
-									target="_blank"
+									target={cta.target ?? '_blank'}
 									variant={cta.variant ?? 'primary'}
 									className="navigation-overlay-cta"
 									onClick={() => setOpen(false)}
