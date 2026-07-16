@@ -2,6 +2,7 @@ import { FieldLabel, type Field } from '@puckeditor/core';
 import { z } from 'zod';
 
 import { ICONS } from '@/components/basics/Icon';
+import { getBrowserClient } from '@/lib/supabase/client';
 
 // Zod → Puck field mapping. Driven ONLY by schema types and explicit `.meta({ editor })` hints —
 // never by field names — so the schema stays the single contract (see the rebuild design doc).
@@ -64,21 +65,21 @@ const fileField = (label: string): Field => {
 		placeholder: 'Kies een bestand…',
 		showSearch: true,
 		fetchList: async ({ query }) => {
-			const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-			const fetchUrl =
-				process.env.NODE_ENV === 'development' ? `${basePath}/api/builder/images` : `${basePath}/builder-images.json`;
-			const response = await fetch(fetchUrl);
-			if (!response.ok) {
-				return [];
-			}
-			const files = (await response.json()) as PublicMediaFile[];
+			// List the Supabase `media` bucket; each item's `path` is the object's public URL, which
+			// becomes Media.src. getImage() returns undefined for remote URLs, so Media renders a plain
+			// lazy <img> — no manifest lookup needed.
+			const db = getBrowserClient();
+			const { data } = await db.storage.from('media').list('', { limit: 1000, sortBy: { column: 'created_at', order: 'desc' } });
+			const files: PublicMediaFile[] = (data ?? [])
+				.filter((object) => object.id)
+				.map((object) => ({ path: db.storage.from('media').getPublicUrl(object.name).data.publicUrl, name: object.name, dir: 'media' }));
 			const needle = query?.toLowerCase() ?? '';
 			return needle ? files.filter((file) => file.path.toLowerCase().includes(needle)) : files;
 		},
 		mapProp: (file: PublicMediaFile) => file.path,
 		mapRow: (file: PublicMediaFile) => ({
 			'': THUMB_EXTENSIONS.test(file.name) ? (
-				<img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${file.path}`} alt="" className="builder-file-thumb" />
+				<img src={file.path} alt="" className="builder-file-thumb" />
 			) : (
 				''
 			),

@@ -5,10 +5,11 @@ import type { MediaProps as MediaData } from '@/lib/content/schema/basics/media'
 import { compileSizes, getImage, variantsToSrcSet, withBasePath } from '@/lib/images';
 
 // Source URL per embed provider in one place, so no caller has to hand-write an <iframe>.
-const EMBEDS: Record<'youtube' | 'vimeo' | 'tiktok', (id: string) => string> = {
+const EMBEDS: Record<'youtube' | 'vimeo' | 'tiktok' | 'wistia', (id: string) => string> = {
 	youtube: (id) => `https://www.youtube-nocookie.com/embed/${id}`,
 	vimeo: (id) => `https://player.vimeo.com/video/${id}`,
 	tiktok: (id) => `https://www.tiktok.com/embed/v2/${id}`,
+	wistia: (id) => `https://fast.wistia.net/embed/iframe/${id}`,
 };
 
 // The Media content shape from the schema, so the component can't drift from the contract.

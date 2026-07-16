@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
 import PuckEditor from '@/app/builder/_components/PuckEditor';
 
@@ -12,15 +11,8 @@ export const metadata: Metadata = {
 	robots: { index: false, follow: false },
 };
 
-// The visual builder is developer tooling: development only. Production servers 404 the route at the
-// routing layer (next.config rewrite) before this ever renders; the guard below is defence in depth,
-// so even a misconfigured server renders the not-found boundary instead of shipping the editor.
-const BuilderPage = () => {
-	if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_ENABLE_BUILDER) {
-		notFound();
-	}
-
-	return <PuckEditor />;
-};
+// The visual builder ships in the static export now; access is gated client-side by the `pages.edit`
+// permission (PuckEditor) with RLS as the real boundary.
+const BuilderPage = () => <PuckEditor />;
 
 export default BuilderPage;

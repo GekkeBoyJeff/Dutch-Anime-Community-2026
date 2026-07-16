@@ -22,13 +22,19 @@ const buildVersion = new Date().toISOString().slice(0, 16).replace('T', ' ');
 // No upgrade-insecure-requests: WebKit applies it to http://localhost (Chromium exempts it), so a
 // local `next start` serves a page whose subresources all upgrade to https and fail TLS — a fully
 // unstyled site in Safari. All assets are same-origin, so on a real https deploy it adds nothing.
+// Supabase origin (+ its websocket) for the CSP — derived from the public env so it tracks the project.
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseOrigin = supabaseUrl ? new URL(supabaseUrl).origin : '';
+const supabaseWs = supabaseOrigin ? supabaseOrigin.replace(/^https/, 'wss') : '';
+
 const cspHeader = `
 	default-src 'self';
 	script-src 'self' 'unsafe-inline';
 	style-src 'self' 'unsafe-inline';
-	img-src 'self' blob: data:;
+	img-src 'self' blob: data: ${supabaseOrigin};
 	font-src 'self';
-	frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com https://www.tiktok.com;
+	connect-src 'self' ${supabaseOrigin} ${supabaseWs};
+	frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com https://www.tiktok.com https://fast.wistia.net https://fast.wistia.com;
 	object-src 'none';
 	base-uri 'self';
 	form-action 'self';
@@ -57,6 +63,11 @@ const builderEnabled = isDev || process.env.NEXT_PUBLIC_ENABLE_BUILDER === 'true
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	// Static hosts (DirectAdmin/Apache) resolve <route>/index.html natively via DirectoryIndex. Without
+	// a trailing slash the export writes <route>.html, which collides with the per-route RSC payload
+	// directory of the same name — so requests to /dashboard hit an index-less folder. Trailing slash
+	// keeps every route directory-based and needs zero rewrite rules or host-specific Options.
+	trailingSlash: true,
 	env: {
 		NEXT_PUBLIC_BUILD_VERSION: buildVersion,
 	},

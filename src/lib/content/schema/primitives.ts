@@ -9,7 +9,7 @@ export type Colorset = z.infer<typeof Colorset>;
 export const Id = z.union([z.string(), z.number()]).meta({ title: 'Id' });
 export type Id = z.infer<typeof Id>;
 
-export const MediaProvider = z.enum(['youtube', 'vimeo', 'tiktok']).meta({ title: 'MediaProvider' });
+export const MediaProvider = z.enum(['youtube', 'vimeo', 'tiktok', 'wistia']).meta({ title: 'MediaProvider' });
 export type MediaProvider = z.infer<typeof MediaProvider>;
 
 // Unrefined base shape: zod 4 forbids .pick()/.partial()/.omit() on refined objects, so derived
