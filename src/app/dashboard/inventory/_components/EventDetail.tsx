@@ -13,6 +13,7 @@ import Field from '@/components/forms/Field';
 import Select from '@/components/forms/Select';
 import TextArea from '@/components/forms/TextArea';
 import TextInput from '@/components/forms/TextInput';
+import { compressPdf } from '@/lib/pdf/compressPdf';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 interface EventRow {
@@ -128,9 +129,10 @@ const EventDetail = ({
 		const db = getBrowserClient();
 		let ticketPdfPath: string | null = null;
 		if (ticketForm.file) {
+			const pdf = await compressPdf(ticketForm.file, 'ebook'); // best-effort; original on any failure
 			const folder = ticketForm.person.userId ?? '_shared';
-			const path = `${folder}/${Date.now()}-${ticketForm.file.name}`;
-			const { error: upErr } = await db.storage.from('tickets').upload(path, ticketForm.file, { contentType: 'application/pdf', upsert: false });
+			const path = `${folder}/${Date.now()}-${pdf.name}`;
+			const { error: upErr } = await db.storage.from('tickets').upload(path, pdf, { contentType: 'application/pdf', upsert: false });
 			if (upErr) {
 				onError(`PDF upload mislukt: ${upErr.message}`);
 				return;

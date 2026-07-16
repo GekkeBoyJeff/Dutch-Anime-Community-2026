@@ -13,6 +13,7 @@ import Title from '@/components/basics/Title';
 import FileUpload from '@/components/components/FileUpload';
 import Modal from '@/components/components/Modal';
 import { usePermissions } from '@/lib/auth/permissions';
+import { compressPdf } from '@/lib/pdf/compressPdf';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 interface MediaItem {
@@ -111,14 +112,21 @@ const Uploader = () => {
 					text: `Afbeelding → webp (${formatBytes(file.size)} → ${formatBytes(compressed.size)}). URL gekopieerd.`,
 				});
 			} else if (file.type === 'application/pdf') {
-				const name = `${Date.now()}-${file.name}`;
-				const { error } = await db.storage.from('media').upload(name, file, { contentType: 'application/pdf', upsert: false });
+				const pdf = await compressPdf(file, 'ebook'); // best-effort; returns the original on any failure
+				const name = `${Date.now()}-${pdf.name}`;
+				const { error } = await db.storage.from('media').upload(name, pdf, { contentType: 'application/pdf', upsert: false });
 				if (error) {
 					setStatus({ variant: 'error', text: `Upload mislukt: ${error.message}` });
 					return;
 				}
 				await navigator.clipboard.writeText(db.storage.from('media').getPublicUrl(name).data.publicUrl).catch(() => {});
-				setStatus({ variant: 'info', text: `PDF geüpload (${formatBytes(file.size)}) — nog niet gecomprimeerd.` });
+				const shrunk = pdf.size < file.size;
+				setStatus({
+					variant: 'success',
+					text: shrunk
+						? `PDF gecomprimeerd (${formatBytes(file.size)} → ${formatBytes(pdf.size)}). URL gekopieerd.`
+						: `PDF geüpload (${formatBytes(file.size)}). URL gekopieerd.`,
+				});
 			} else {
 				setStatus({ variant: 'error', text: `Type niet toegestaan: ${file.type || 'onbekend'}. Alleen afbeeldingen en PDF.` });
 				return;
