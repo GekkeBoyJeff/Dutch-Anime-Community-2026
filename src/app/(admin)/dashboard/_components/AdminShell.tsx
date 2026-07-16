@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import DashboardChrome from '@/app/(admin)/dashboard/_components/DashboardChrome';
+import TermsGate from '@/app/_components/TermsGate';
 import Notification from '@/components/components/Notification';
 import NotificationProvider from '@/components/components/NotificationProvider';
 
@@ -19,7 +20,9 @@ const AdminShell = ({ children }: AdminShellProps) => {
 		<div className="page-frame" data-theme="admin" data-colorset="light">
 			<div className="page-frame-scroll">
 				<NotificationProvider>
-					<DashboardChrome>{children}</DashboardChrome>
+					<DashboardChrome>
+						<TermsGate>{children}</TermsGate>
+					</DashboardChrome>
 					<Notification position="bottom-right" />
 				</NotificationProvider>
 			</div>

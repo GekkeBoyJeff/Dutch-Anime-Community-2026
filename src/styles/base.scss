@@ -480,3 +480,23 @@ h6,
 		--border-strong: var(--border-strong-#{$scheme});
 	}
 }
+
+.terms-gate {
+	display: grid;
+	place-items: center;
+	min-block-size: 60vh;
+	padding-block: 3rem;
+}
+
+.terms-gate-card {
+	display: grid;
+	gap: 1rem;
+	max-inline-size: 40rem;
+}
+
+.terms-gate-list {
+	display: grid;
+	gap: 0.35rem;
+	margin: 0;
+	padding-inline-start: 1.25rem;
+}
