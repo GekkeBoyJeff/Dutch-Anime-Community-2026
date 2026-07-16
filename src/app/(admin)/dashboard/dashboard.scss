@@ -24,6 +24,25 @@
 	min-inline-size: 7rem;
 }
 
+.access-default {
+	color: var(--color-secondary);
+}
+
+.access-drawer-body {
+	display: grid;
+	gap: 1.5rem;
+}
+
+.access-drawer-role {
+	display: grid;
+	gap: 0.35rem;
+}
+
+.access-drawer-label {
+	font-weight: 700;
+	font-size: 0.8125rem;
+}
+
 .media-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
