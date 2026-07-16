@@ -14,7 +14,9 @@ export type Permission =
 	| 'site.publish'
 	| 'moderation.view'
 	| 'moderation.manage'
-	| 'roles.manage';
+	| 'roles.manage'
+	| 'inventory.view'
+	| 'inventory.manage';
 
 // Discord OAuth (PKCE) — returns to /auth/callback, which finishes the exchange and redirects to `next`.
 export const signInWithDiscord = async (next = '/dashboard'): Promise<void> => {

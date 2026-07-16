@@ -1,0 +1,30 @@
+.inventory {
+	display: grid;
+	gap: 2.5rem;
+	margin-block: 3rem;
+}
+
+.inventory-section {
+	display: grid;
+	gap: 1rem;
+}
+
+.inventory-toolbar {
+	display: flex;
+	gap: 0.75rem;
+	align-items: center;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.inventory-form {
+	display: grid;
+	gap: 0.85rem;
+	min-inline-size: min(28rem, 80vw);
+}
+
+.inventory-row-actions {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
