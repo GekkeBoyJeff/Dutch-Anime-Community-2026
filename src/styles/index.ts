@@ -60,6 +60,7 @@ import '@/styles/components/components/Modal.scss';
 import '@/styles/components/components/Notification.scss';
 import '@/styles/components/components/NumberField.scss';
 import '@/styles/components/components/Pagination.scss';
+import '@/styles/components/components/PermissionGroups.scss';
 import '@/styles/components/components/Popover.scss';
 import '@/styles/components/components/RadioGroup.scss';
 import '@/styles/components/components/ScrollArea.scss';
