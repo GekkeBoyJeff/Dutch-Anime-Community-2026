@@ -6,29 +6,53 @@ alter table public.mod_notes      add column if not exists archived_at timestamp
 
 -- Hard-delete-splitsing. De bestaande `for all`-manage-policies bundelen DELETE onder inventory.manage.
 -- Vervang ze door select/insert/update-manage-policies — directe client-DELETE vervalt (archiveren =
--- UPDATE archived_at; hard delete gaat via de RPC hieronder). inventory_items: eigen-scope-policies
--- blijven, behalve de eigen-DELETE (eigen archiveren gebruikt de bestaande eigen-UPDATE).
+-- UPDATE archived_at; hard delete gaat via de RPC hieronder). Idempotent: drop-if-exists vóór elke create.
+
+-- inventory_items: eigen-scope-policies blijven, behalve de eigen-DELETE (eigen archiveren = eigen-UPDATE).
 drop policy if exists "inv items manage" on public.inventory_items;
+drop policy if exists "inv items manage select" on public.inventory_items;
+drop policy if exists "inv items manage insert" on public.inventory_items;
+drop policy if exists "inv items manage update" on public.inventory_items;
 create policy "inv items manage select" on public.inventory_items for select to authenticated using ((select public.authorize('inventory.manage')));
 create policy "inv items manage insert" on public.inventory_items for insert to authenticated with check ((select public.authorize('inventory.manage')));
 create policy "inv items manage update" on public.inventory_items for update to authenticated using ((select public.authorize('inventory.manage'))) with check ((select public.authorize('inventory.manage')));
 drop policy if exists "inv items own delete" on public.inventory_items;
 
-do $$
-declare r record;
-begin
-	for r in select * from (values
-		('events', 'events manage', 'inventory.manage'),
-		('event_item_assignments', 'assignments manage', 'inventory.manage'),
-		('event_tickets', 'tickets manage', 'inventory.manage'),
-		('inventory_history', 'history manage', 'inventory.manage')
-	) as v(tbl, pol, perm) loop
-		execute format('drop policy if exists %L on public.%I', r.pol, r.tbl);
-		execute format('create policy "%1$s select" on public.%2$I for select to authenticated using ((select public.authorize(%3$L)))', r.pol, r.tbl, r.perm);
-		execute format('create policy "%1$s insert" on public.%2$I for insert to authenticated with check ((select public.authorize(%3$L)))', r.pol, r.tbl, r.perm);
-		execute format('create policy "%1$s update" on public.%2$I for update to authenticated using ((select public.authorize(%3$L))) with check ((select public.authorize(%3$L)))', r.pol, r.tbl, r.perm);
-	end loop;
-end $$;
+-- events
+drop policy if exists "events manage" on public.events;
+drop policy if exists "events manage select" on public.events;
+drop policy if exists "events manage insert" on public.events;
+drop policy if exists "events manage update" on public.events;
+create policy "events manage select" on public.events for select to authenticated using ((select public.authorize('inventory.manage')));
+create policy "events manage insert" on public.events for insert to authenticated with check ((select public.authorize('inventory.manage')));
+create policy "events manage update" on public.events for update to authenticated using ((select public.authorize('inventory.manage'))) with check ((select public.authorize('inventory.manage')));
+
+-- event_item_assignments
+drop policy if exists "assignments manage" on public.event_item_assignments;
+drop policy if exists "assignments manage select" on public.event_item_assignments;
+drop policy if exists "assignments manage insert" on public.event_item_assignments;
+drop policy if exists "assignments manage update" on public.event_item_assignments;
+create policy "assignments manage select" on public.event_item_assignments for select to authenticated using ((select public.authorize('inventory.manage')));
+create policy "assignments manage insert" on public.event_item_assignments for insert to authenticated with check ((select public.authorize('inventory.manage')));
+create policy "assignments manage update" on public.event_item_assignments for update to authenticated using ((select public.authorize('inventory.manage'))) with check ((select public.authorize('inventory.manage')));
+
+-- event_tickets
+drop policy if exists "tickets manage" on public.event_tickets;
+drop policy if exists "tickets manage select" on public.event_tickets;
+drop policy if exists "tickets manage insert" on public.event_tickets;
+drop policy if exists "tickets manage update" on public.event_tickets;
+create policy "tickets manage select" on public.event_tickets for select to authenticated using ((select public.authorize('inventory.manage')));
+create policy "tickets manage insert" on public.event_tickets for insert to authenticated with check ((select public.authorize('inventory.manage')));
+create policy "tickets manage update" on public.event_tickets for update to authenticated using ((select public.authorize('inventory.manage'))) with check ((select public.authorize('inventory.manage')));
+
+-- inventory_history
+drop policy if exists "history manage" on public.inventory_history;
+drop policy if exists "history manage select" on public.inventory_history;
+drop policy if exists "history manage insert" on public.inventory_history;
+drop policy if exists "history manage update" on public.inventory_history;
+create policy "history manage select" on public.inventory_history for select to authenticated using ((select public.authorize('inventory.manage')));
+create policy "history manage insert" on public.inventory_history for insert to authenticated with check ((select public.authorize('inventory.manage')));
+create policy "history manage update" on public.inventory_history for update to authenticated using ((select public.authorize('inventory.manage'))) with check ((select public.authorize('inventory.manage')));
 
 -- Moderation: DELETE-policies (nu moderation.manage) → records.delete (admin-only). Insert/update/select
 -- blijven moderation.manage/moderation.view.
