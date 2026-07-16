@@ -21,7 +21,7 @@ const DashboardNav = () => {
 	return (
 		<Navigation
 			className="is-dashboard"
-			brand={{ title: 'Beheer', src: '/media/dac-logo.png' }}
+			brand={{ title: 'Beheer', src: '/media/dac-logo.png', interactive: false }}
 			items={items}
 			cta={{ label: 'Terug naar de website', url: '/', target: '_self', variant: 'ghost' }}
 		/>

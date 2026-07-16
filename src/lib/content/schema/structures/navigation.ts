@@ -28,6 +28,7 @@ const NavBrand = z
 	.object({
 		title: z.string().optional().describe('Wordmark text shown next to (or instead of) an image'),
 		src: z.string().optional().describe('Image source').meta({ editor: 'file' }),
+		interactive: z.boolean().optional().describe('Of de brand-roundel klikt naar / (default) of puur decoratief is'),
 	})
 	.meta({ title: 'NavBrand' });
 

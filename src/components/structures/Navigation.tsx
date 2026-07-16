@@ -135,6 +135,15 @@ const Navigation = ({ items = [], cta, brand, className, ref }: NavigationProps 
 		document.fonts?.ready.then(measure);
 	}, [measure]);
 
+	// The brand roundel links to / on the public site, but is decorative (a plain span) in the beheer
+	// nav — there "Dashboard" is home and a link to the public / would be confusing.
+	const brandContent = (
+		<>
+			{brand?.src && <Media variant="plain" type="image" src={brand.src} alt="" width={48} height={48} className="navigation-logo" />}
+			{brand?.title && <Content element="span" className="navigation-wordmark" value={brand.title} />}
+		</>
+	);
+
 	return (
 		<header
 			ref={(element) => {
@@ -148,10 +157,13 @@ const Navigation = ({ items = [], cta, brand, className, ref }: NavigationProps 
 			className={classNames('navigation', open && 'is-open', className)}
 		>
 			<div className="navigation-bar">
-				<Interactive url="/" className="navigation-brand" aria-label={brand?.title ?? 'Home'}>
-					{brand?.src && <Media variant="plain" type="image" src={brand.src} alt="" width={48} height={48} className="navigation-logo" />}
-					{brand?.title && <Content element="span" className="navigation-wordmark" value={brand.title} />}
-				</Interactive>
+				{brand?.interactive === false ? (
+					<span className="navigation-brand">{brandContent}</span>
+				) : (
+					<Interactive url="/" className="navigation-brand" aria-label={brand?.title ?? 'Home'}>
+						{brandContent}
+					</Interactive>
+				)}
 
 				<nav className="navigation-pill" aria-label="Primary">
 					<Interactive
