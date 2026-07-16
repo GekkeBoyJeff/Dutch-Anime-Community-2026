@@ -42,7 +42,7 @@ export const safeNext = (raw: string | null | undefined): string => {
 // Discord OAuth (PKCE) — returns to /auth/callback, which finishes the exchange and redirects to `next`.
 export const signInWithDiscord = async (next = '/dashboard'): Promise<void> => {
 	const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeNext(next))}`;
-	await getBrowserClient().auth.signInWithOAuth({ provider: 'discord', options: { redirectTo, scopes: 'identify email' } });
+	await getBrowserClient().auth.signInWithOAuth({ provider: 'discord', options: { redirectTo, scopes: 'identify email guilds guilds.members.read' } });
 };
 
 export const signOut = async (): Promise<void> => {

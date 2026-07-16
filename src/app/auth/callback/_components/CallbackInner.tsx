@@ -1,5 +1,6 @@
 'use client';
 
+import type { Session } from '@supabase/supabase-js';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -9,17 +10,32 @@ import { safeNext } from '@/lib/auth/permissions';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 // Discord OAuth returns here with a `?code=`. supabase-js (detectSessionInUrl, default) exchanges it
-// for a session on load; we then redirect to `next` (open-redirect-guarded). Client-side only.
+// for a session on load; we then redirect to `next` (open-redirect-guarded). The provider_token is only
+// present right after OAuth — fire the guild-sync Edge Function once (best-effort) before redirecting.
+// Client-side only.
 const CallbackInner = () => {
 	const router = useRouter();
 	const next = safeNext(useSearchParams().get('next'));
 	useEffect(() => {
 		const db = getBrowserClient();
+		const synced = { current: false };
+		const syncGuild = (session: Session | null) => {
+			if (session?.provider_token && !synced.current) {
+				synced.current = true;
+				db.functions.invoke('discord-sync', { body: { provider_token: session.provider_token } }).catch(() => {});
+			}
+		};
 		const { data: sub } = db.auth.onAuthStateChange((_event, session) => {
-			if (session) router.replace(next);
+			if (session) {
+				syncGuild(session);
+				router.replace(next);
+			}
 		});
 		db.auth.getSession().then(({ data }) => {
-			if (data.session) router.replace(next);
+			if (data.session) {
+				syncGuild(data.session);
+				router.replace(next);
+			}
 		});
 		return () => sub.subscription.unsubscribe();
 	}, [router, next]);
