@@ -3,6 +3,7 @@ import type { HTMLAttributes, ReactNode, Ref } from 'react';
 
 import { classNames } from '@/lib/classNames';
 import type { ContentProps as ContentSchemaProps } from '@/lib/content/schema/basics/content';
+import { sanitizeHtml } from '@/lib/sanitize';
 
 // Extends the common HTML attribute surface so any text element can become a Content without losing
 // its `id` / `role` / `aria-*` (e.g. a NumberField error `<p role="alert" id=…>` or a live counter).
@@ -28,7 +29,7 @@ const Content = ({
 
 	return (
 		<Tag ref={ref} className={classNames('content', size !== 'standard' && `is-${size}`, className)} {...rest}>
-			{children ? children : value && parse(value)}
+			{children ? children : value && parse(sanitizeHtml(value))}
 		</Tag>
 	);
 };
