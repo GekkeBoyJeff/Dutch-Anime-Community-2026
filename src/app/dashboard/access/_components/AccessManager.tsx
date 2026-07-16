@@ -121,6 +121,7 @@ const AccessManager = () => {
 			<Select
 				key="role"
 				native
+				className="access-role-select"
 				aria-label={`Rol voor ${who}`}
 				disabled={self}
 				value={r.role}
