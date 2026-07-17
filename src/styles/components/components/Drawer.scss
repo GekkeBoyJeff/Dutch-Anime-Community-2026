@@ -90,4 +90,25 @@
 	&.is-bottom[data-ending-style] {
 		transform: translateY(100%);
 	}
+
+	@media (max-width: breakpoint(m)) {
+		padding-block-end: 0;
+
+		&.is-left,
+		&.is-right {
+			inline-size: 100%;
+			max-inline-size: 100%;
+			border-radius: 0;
+		}
+
+		.drawer-footer {
+			position: sticky;
+			inset-block-end: 0;
+			margin-block-start: spacing(s);
+			margin-inline: calc(#{spacing(xl)} * -1);
+			padding: spacing(m) spacing(xl);
+			background-color: $white;
+			border-block-start: 1px solid rgba(0, 0, 0, 0.08);
+		}
+	}
 }

@@ -13,7 +13,8 @@ import Select from '@/components/forms/Select';
 import TextArea from '@/components/forms/TextArea';
 import type { ReportData, ReportReceipt } from '@/lib/expenses/pdf/ExpenseReport';
 import { renderExpensePdf } from '@/lib/expenses/pdf/renderExpensePdf';
-import { type Expense, type ExpenseStatus, formatEur, quarterOf } from '@/lib/expenses/types';
+import { CATEGORY_OPTIONS, categoryLabel, type Expense, type ExpenseStatus, formatEur, quarterOf, statusLabel } from '@/lib/expenses/types';
+import { formatDate } from '@/lib/formatDate';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 const REVIEW_OPTIONS: { value: ExpenseStatus; label: string }[] = [
@@ -36,6 +37,7 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 	const [fEvent, setFEvent] = useState('');
 	const [fQuarter, setFQuarter] = useState('');
 	const [fPerson, setFPerson] = useState('');
+	const [fCategory, setFCategory] = useState('');
 	const [reviewFor, setReviewFor] = useState<Expense | null>(null);
 	const [reviewStatus, setReviewStatus] = useState<ExpenseStatus>('approved');
 	const [reviewNote, setReviewNote] = useState('');
@@ -89,9 +91,10 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 					(fStatus === '' || e.status === fStatus) &&
 					(fEvent === '' || e.event_id === fEvent) &&
 					(fQuarter === '' || quarterOf(e.incurred_on) === fQuarter) &&
-					(fPerson === '' || e.user_id === fPerson),
+					(fPerson === '' || e.user_id === fPerson) &&
+					(fCategory === '' || e.category === fCategory),
 			),
-		[expenses, fStatus, fEvent, fQuarter, fPerson],
+		[expenses, fStatus, fEvent, fQuarter, fPerson, fCategory],
 	);
 
 	const downloadReceipt = async (path: string) => {
@@ -142,12 +145,17 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 				if (data) receipts.push({ label: `${personName(e.user_id)} — ${e.description}`, url: data.signedUrl });
 			}
 			const byPersonMap = new Map<string, number>();
-			for (const e of filtered) byPersonMap.set(personName(e.user_id), (byPersonMap.get(personName(e.user_id)) ?? 0) + Number(e.amount_eur));
+			const byCategoryMap = new Map<string, number>();
+			for (const e of filtered) {
+				byPersonMap.set(personName(e.user_id), (byPersonMap.get(personName(e.user_id)) ?? 0) + Number(e.amount_eur));
+				byCategoryMap.set(categoryLabel(e.category), (byCategoryMap.get(categoryLabel(e.category)) ?? 0) + Number(e.amount_eur));
+			}
 			const parts = [
 				fPerson && `Persoon: ${personName(fPerson)}`,
 				fEvent && `Conventie: ${eventName(fEvent)}`,
 				fQuarter && `Kwartaal: ${fQuarter}`,
-				fStatus && `Status: ${fStatus}`,
+				fCategory && `Categorie: ${categoryLabel(fCategory)}`,
+				fStatus && `Status: ${statusLabel(fStatus)}`,
 			].filter(Boolean);
 			const data: ReportData = {
 				title: 'Declaratie-overzicht',
@@ -157,13 +165,17 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 				rows: filtered.map((e) => ({
 					description: e.description,
 					person: personName(e.user_id),
-					date: e.incurred_on,
+					date: formatDate(e.incurred_on, { dateStyle: 'medium' }) ?? e.incurred_on,
 					event: eventName(e.event_id),
+					category: categoryLabel(e.category),
 					amount: Number(e.amount_eur),
 					status: e.status,
+					iban: e.iban ?? '',
+					accountHolder: e.account_holder ?? '',
 				})),
 				total: filtered.reduce((sum, e) => sum + Number(e.amount_eur), 0),
 				byPerson: [...byPersonMap.entries()].map(([person, total]) => ({ person, total })).sort((a, b) => b.total - a.total),
+				byCategory: [...byCategoryMap.entries()].map(([category, total]) => ({ category, total })).sort((a, b) => b.total - a.total),
 				receipts,
 			};
 			const blob = await renderExpensePdf(data);
@@ -185,8 +197,19 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 			{ key: 'person', header: 'Wie', sortable: true, sortValue: (e) => personName(e.user_id), cell: (e) => personName(e.user_id) },
 			{ key: 'description', header: 'Omschrijving', sortable: true, sortValue: (e) => e.description, cell: (e) => e.description },
 			{ key: 'event', header: 'Conventie', cell: (e) => eventName(e.event_id) },
-			{ key: 'date', header: 'Datum', align: 'center', sortable: true, sortValue: (e) => e.incurred_on, cell: (e) => e.incurred_on },
-			{ key: 'amount', header: 'Bedrag', align: 'end', sortable: true, sortValue: (e) => e.amount_eur, cell: (e) => formatEur(e.amount_eur) },
+			{ key: 'category', header: 'Categorie', cell: (e) => categoryLabel(e.category) },
+			{ key: 'date', header: 'Datum', align: 'center', sortable: true, sortValue: (e) => e.incurred_on, cell: (e) => formatDate(e.incurred_on, { dateStyle: 'medium' }) ?? e.incurred_on },
+			{ key: 'amount', header: 'Bedrag', align: 'end', sortable: true, sortValue: (e) => Number(e.amount_eur), cell: (e) => formatEur(e.amount_eur) },
+			{
+				key: 'payout',
+				header: 'Uitbetaling',
+				cell: (e) => (
+					<div className="con-line-info">
+						<span className="con-line-main">{e.iban ?? '—'}</span>
+						{e.account_holder && <span className="con-note">{e.account_holder}</span>}
+					</div>
+				),
+			},
 			{ key: 'status', header: 'Status', align: 'center', cell: (e) => <StatusBadge domain="expense" status={e.status} /> },
 			{
 				key: 'actions',
@@ -218,6 +241,7 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 				<Select native value={fPerson} onValueChange={(v) => setFPerson((v as string) ?? '')} aria-label="Persoon" options={[{ value: '', label: 'Iedereen' }, ...personOptions]} />
 				<Select native value={fEvent} onValueChange={(v) => setFEvent((v as string) ?? '')} aria-label="Conventie" options={[{ value: '', label: 'Alle conventies' }, ...eventOptions]} />
 				<Select native value={fQuarter} onValueChange={(v) => setFQuarter((v as string) ?? '')} aria-label="Kwartaal" options={[{ value: '', label: 'Alle kwartalen' }, ...quarters.map((q) => ({ value: q, label: q }))]} />
+				<Select native value={fCategory} onValueChange={(v) => setFCategory((v as string) ?? '')} aria-label="Categorie" options={[{ value: '', label: 'Alle categorieën' }, ...CATEGORY_OPTIONS]} />
 				<Button variant="secondary" icon="download" onClick={exportPdf} disabled={exporting}>
 					{exporting ? 'Bezig…' : 'Exporteer PDF'}
 				</Button>

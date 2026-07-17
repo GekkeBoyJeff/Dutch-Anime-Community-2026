@@ -4,6 +4,7 @@ import { Toast } from '@base-ui/react/toast';
 import type { Session } from '@supabase/supabase-js';
 import { useEffect, useMemo, useState } from 'react';
 
+import PayoutDetailsDrawer from '@/app/(admin)/dashboard/expenses/_components/PayoutDetailsDrawer';
 import Button from '@/components/basics/Button';
 import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
@@ -14,7 +15,8 @@ import Field from '@/components/forms/Field';
 import Select from '@/components/forms/Select';
 import TextArea from '@/components/forms/TextArea';
 import TextInput from '@/components/forms/TextInput';
-import { type Expense, formatEur } from '@/lib/expenses/types';
+import { CATEGORY_OPTIONS, categoryLabel, type Expense, type ExpenseCategory, formatEur } from '@/lib/expenses/types';
+import { formatDate } from '@/lib/formatDate';
 import { prepareReceipt } from '@/lib/receipts/prepareReceipt';
 import { getBrowserClient } from '@/lib/supabase/client';
 import { genUuid } from '@/lib/uuid';
@@ -29,10 +31,13 @@ interface ExpenseForm {
 	amount: string;
 	incurred_on: string;
 	event_id: string;
+	category: ExpenseCategory;
+	iban: string;
+	account_holder: string;
 	file: File | null;
 }
 
-const EMPTY: ExpenseForm = { description: '', amount: '', incurred_on: '', event_id: '', file: null };
+const EMPTY: ExpenseForm = { description: '', amount: '', incurred_on: '', event_id: '', category: 'other', iban: '', account_holder: '', file: null };
 
 // De persoonlijke declaratie-view (expenses.view): eigen declaraties indienen (met verplicht bonnetje),
 // bewerken zolang ze 'ingediend' zijn, intrekken, de bon downloaden en de reden van een afwijzing zien.
@@ -44,6 +49,8 @@ const MyExpenses = ({ session }: { session: Session }) => {
 	const [form, setForm] = useState<ExpenseForm | null>(null);
 	const [busy, setBusy] = useState(false);
 	const [toWithdraw, setToWithdraw] = useState<Expense | null>(null);
+	const [payout, setPayout] = useState<{ iban: string; account_holder: string }>({ iban: '', account_holder: '' });
+	const [payoutOpen, setPayoutOpen] = useState(false);
 
 	useEffect(() => {
 		let active = true;
@@ -52,6 +59,7 @@ const MyExpenses = ({ session }: { session: Session }) => {
 		Promise.all([
 			db.from('expenses').select('*').eq('user_id', session.user.id).is('archived_at', null).order('incurred_on', { ascending: false }),
 			db.from('events').select('id, name').order('starts_on', { ascending: false, nullsFirst: false }),
+			db.from('payout_details').select('iban, account_holder').eq('user_id', session.user.id).maybeSingle(),
 		]).then((res) => {
 			if (!active) return;
 			const failed = res.find((r) => r.error)?.error;
@@ -59,9 +67,10 @@ const MyExpenses = ({ session }: { session: Session }) => {
 				toast.add({ title: 'Kon je declaraties niet laden', description: failed.message, type: 'error' });
 				return;
 			}
-			const [{ data: rows }, { data: eventRows }] = res;
+			const [{ data: rows }, { data: eventRows }, { data: payoutRow }] = res;
 			setExpenses((rows ?? []) as Expense[]);
 			setEvents((eventRows ?? []) as EventOpt[]);
+			setPayout({ iban: payoutRow?.iban ?? '', account_holder: payoutRow?.account_holder ?? '' });
 		});
 		return () => {
 			active = false;
@@ -80,6 +89,10 @@ const MyExpenses = ({ session }: { session: Session }) => {
 			toast.add({ title: 'Vul omschrijving, bedrag (> 0) en datum in.', type: 'error' });
 			return;
 		}
+		if (!form.iban.trim()) {
+			toast.add({ title: 'Vul een IBAN in', description: 'Zonder rekeningnummer kan de declaratie niet uitbetaald worden — sla ’m op bij Uitbetaalgegevens of vul ’m hier in.', type: 'error' });
+			return;
+		}
 		const db = getBrowserClient();
 		setBusy(true);
 		try {
@@ -88,7 +101,15 @@ const MyExpenses = ({ session }: { session: Session }) => {
 				// 0-rijen no-op (bv. intussen beoordeeld → USING matcht niet, géén error) niet als succes leest.
 				const { data, error } = await db
 					.from('expenses')
-					.update({ description: form.description.trim(), amount_eur: amount, incurred_on: form.incurred_on, event_id: form.event_id || null })
+					.update({
+						description: form.description.trim(),
+						amount_eur: amount,
+						incurred_on: form.incurred_on,
+						event_id: form.event_id || null,
+						category: form.category,
+						iban: form.iban.trim() || null,
+						account_holder: form.account_holder.trim() || null,
+					})
 					.eq('id', form.id)
 					.select();
 				if (error) {
@@ -130,7 +151,10 @@ const MyExpenses = ({ session }: { session: Session }) => {
 					amount_eur: amount,
 					incurred_on: form.incurred_on,
 					status: 'submitted',
+					category: form.category,
 					receipt_path: path,
+					iban: form.iban.trim() || null,
+					account_holder: form.account_holder.trim() || null,
 				});
 				if (error) {
 					await db.storage.from('receipts').remove([path]); // ruim de wees-bon op als de rij niet lukt.
@@ -191,8 +215,9 @@ const MyExpenses = ({ session }: { session: Session }) => {
 				),
 			},
 			{ key: 'event', header: 'Conventie', cell: (e) => eventName(e.event_id) },
-			{ key: 'date', header: 'Datum', align: 'center', sortable: true, sortValue: (e) => e.incurred_on, cell: (e) => e.incurred_on },
-			{ key: 'amount', header: 'Bedrag', align: 'end', sortable: true, sortValue: (e) => e.amount_eur, cell: (e) => formatEur(e.amount_eur) },
+			{ key: 'category', header: 'Categorie', cell: (e) => categoryLabel(e.category) },
+			{ key: 'date', header: 'Datum', align: 'center', sortable: true, sortValue: (e) => e.incurred_on, cell: (e) => formatDate(e.incurred_on, { dateStyle: 'medium' }) ?? e.incurred_on },
+			{ key: 'amount', header: 'Bedrag', align: 'end', sortable: true, sortValue: (e) => Number(e.amount_eur), cell: (e) => formatEur(e.amount_eur) },
 			{ key: 'status', header: 'Status', align: 'center', cell: (e) => <StatusBadge domain="expense" status={e.status} /> },
 			{
 				key: 'actions',
@@ -208,7 +233,7 @@ const MyExpenses = ({ session }: { session: Session }) => {
 								<Button
 									variant="secondary"
 									onClick={() =>
-										setForm({ id: e.id, description: e.description, amount: String(e.amount_eur), incurred_on: e.incurred_on, event_id: e.event_id ?? '', file: null })
+										setForm({ id: e.id, description: e.description, amount: String(e.amount_eur), incurred_on: e.incurred_on, event_id: e.event_id ?? '', category: e.category, iban: e.iban ?? '', account_holder: e.account_holder ?? '', file: null })
 									}
 								>
 									Bewerk
@@ -230,9 +255,14 @@ const MyExpenses = ({ session }: { session: Session }) => {
 		<div className="inventory-tab">
 			<div className="inventory-toolbar">
 				<Title element="h3" size={4}>Mijn declaraties</Title>
-				<Button variant="primary" icon="plus" onClick={() => setForm({ ...EMPTY })}>
-					Nieuwe declaratie
-				</Button>
+				<span className="inventory-row-actions">
+					<Button variant="secondary" onClick={() => setPayoutOpen(true)}>
+						Uitbetaalgegevens
+					</Button>
+					<Button variant="primary" icon="plus" onClick={() => setForm({ ...EMPTY, iban: payout.iban, account_holder: payout.account_holder })}>
+						Nieuwe declaratie
+					</Button>
+				</span>
 			</div>
 			<DataTable columns={columns} data={expenses} empty={{ title: 'Nog geen declaraties', description: 'Dien je eerste declaratie in met een bonnetje.' }} />
 
@@ -256,15 +286,24 @@ const MyExpenses = ({ session }: { session: Session }) => {
 					<div className="inventory-form">
 						<Field name="description">
 							<Field.Label>Omschrijving</Field.Label>
-							<TextInput value={form.description} onChange={(e) => setForm({ ...form, description: e.currentTarget.value })} />
+							<TextArea value={form.description} onChange={(e) => setForm({ ...form, description: e.currentTarget.value })} />
 						</Field>
 						<Field name="amount">
 							<Field.Label>Bedrag (€)</Field.Label>
-							<TextInput type="number" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.currentTarget.value })} />
+							<TextInput type="number" inputMode="decimal" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.currentTarget.value })} />
 						</Field>
 						<Field name="incurred_on">
 							<Field.Label>Datum</Field.Label>
 							<TextInput type="date" value={form.incurred_on} onChange={(e) => setForm({ ...form, incurred_on: e.currentTarget.value })} />
+						</Field>
+						<Field name="category">
+							<Field.Label>Categorie</Field.Label>
+							<Select
+								native
+								value={form.category}
+								onValueChange={(v) => setForm({ ...form, category: ((v as string) ?? 'other') as ExpenseCategory })}
+								options={CATEGORY_OPTIONS}
+							/>
 						</Field>
 						<Field name="event">
 							<Field.Label>Conventie (optioneel)</Field.Label>
@@ -285,6 +324,15 @@ const MyExpenses = ({ session }: { session: Session }) => {
 								/>
 							</Field>
 						)}
+						<Field name="iban">
+							<Field.Label>IBAN</Field.Label>
+							<TextInput value={form.iban} onChange={(e) => setForm({ ...form, iban: e.currentTarget.value })} placeholder="NL00 BANK 0000 0000 00" />
+							<Field.Description>Voorgevuld vanuit je uitbetaalgegevens; hier te overschrijven voor deze declaratie.</Field.Description>
+						</Field>
+						<Field name="account_holder">
+							<Field.Label>Tenaamstelling (optioneel)</Field.Label>
+							<TextInput value={form.account_holder} onChange={(e) => setForm({ ...form, account_holder: e.currentTarget.value })} placeholder="Voor- en achternaam" />
+						</Field>
 					</div>
 				)}
 			</Drawer>
@@ -301,6 +349,8 @@ const MyExpenses = ({ session }: { session: Session }) => {
 					setToWithdraw(null);
 				}}
 			/>
+			<PayoutDetailsDrawer session={session} open={payoutOpen} onOpenChange={setPayoutOpen} onSaved={() => setRefreshKey((k) => k + 1)} />
+
 		</div>
 	);
 };

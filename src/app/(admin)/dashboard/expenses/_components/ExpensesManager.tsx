@@ -1,5 +1,6 @@
 'use client';
 
+import ExpensesOverview from '@/app/(admin)/dashboard/expenses/_components/ExpensesOverview';
 import ExpensesReview from '@/app/(admin)/dashboard/expenses/_components/ExpensesReview';
 import MyExpenses from '@/app/(admin)/dashboard/expenses/_components/MyExpenses';
 import Container from '@/components/basics/Container';
@@ -16,7 +17,12 @@ const ExpensesManager = () => {
 
 	const tabs: DetailTab[] = [
 		{ label: 'Mijn declaraties', panel: <MyExpenses session={session} /> },
-		...(permissions.has('expenses.manage') ? [{ label: 'Beheer', panel: <ExpensesReview session={session} /> }] : []),
+		...(permissions.has('expenses.manage')
+			? [
+					{ label: 'Beheer', panel: <ExpensesReview session={session} /> },
+					{ label: 'Overzicht', panel: <ExpensesOverview /> },
+				]
+			: []),
 	];
 
 	return (

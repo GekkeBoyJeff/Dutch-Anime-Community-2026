@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { PersonOption } from '@/app/(admin)/dashboard/_components/PersonPicker';
 import ActivitiesTab from '@/app/(admin)/dashboard/events/_components/ActivitiesTab';
 import AgendaTab from '@/app/(admin)/dashboard/events/_components/AgendaTab';
+import CostsTab from '@/app/(admin)/dashboard/events/_components/CostsTab';
 import EventDetail from '@/app/(admin)/dashboard/inventory/_components/EventDetail';
 import Alert from '@/components/basics/Alert';
 import Button from '@/components/basics/Button';
@@ -33,6 +34,7 @@ interface EventRow {
 	signups_open_at: string | null;
 	signups_close_at: string | null;
 	notes: string | null;
+	budget_eur: number | null;
 }
 interface SubjectName {
 	id: string;
@@ -339,6 +341,10 @@ const EventEditor = () => {
 						{
 							label: 'Activiteiten',
 							panel: <ActivitiesTab eventId={eventId} sessionUserId={session.user.id} items={items} subjects={subjects} subjectName={subjectName} />,
+						},
+						{
+							label: 'Kosten',
+							panel: <CostsTab eventId={eventId} initialBudget={event.budget_eur} onBudgetSaved={(b) => setEvent((ev) => (ev ? { ...ev, budget_eur: b } : ev))} />,
 						},
 						{
 							label: 'Items & tickets',
