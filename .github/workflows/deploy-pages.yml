@@ -1,0 +1,56 @@
+name: Deploy to GitHub Pages (staging)
+
+# Staging op github.io (gratis SSL). Live gaat later via deploy-directadmin.yml. De site draait hier onder
+# het repo-subpad /Dutch-Anime-Community-2026/, dus we bouwen met dat basePath.
+on:
+  push:
+    branches: [main]
+  repository_dispatch:
+    types: [publish]
+  workflow_dispatch:
+
+# OIDC-token zodat de deploy naar Pages mag publiceren.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Eén staging-deploy tegelijk; een nieuwere run vervangt een lopende.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Strip runtime route handlers (static host cannot run them)
+        run: rm -rf src/app/api
+      - name: Build static export from Supabase (served under the repo subpath)
+        env:
+          HOST_TYPE: static
+          NEXT_PUBLIC_BASE_PATH: /Dutch-Anime-Community-2026
+          NEXT_PUBLIC_SITE_URL: https://gekkeboyjeff.github.io/Dutch-Anime-Community-2026
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_VAPID_PUBLIC_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npm run build
+      - name: Disable Jekyll so Next's _next/ assets are served as-is
+        run: touch out/.nojekyll
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

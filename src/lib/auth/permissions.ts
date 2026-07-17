@@ -3,6 +3,7 @@
 import type { Session } from '@supabase/supabase-js';
 import { useEffect, useMemo, useState } from 'react';
 
+import { env } from '@/lib/env';
 import { unsubscribePush } from '@/lib/push';
 import { getBrowserClient } from '@/lib/supabase/client';
 
@@ -41,8 +42,10 @@ export const safeNext = (raw: string | null | undefined): string => {
 };
 
 // Discord OAuth (PKCE) — returns to /auth/callback, which finishes the exchange and redirects to `next`.
+// window.location.origin mist het basePath (Next bakt dat alleen in router/Link, niet in origin), dus voeg
+// NEXT_PUBLIC_BASE_PATH handmatig toe — anders 404't de callback op een subpad-host (bv. GitHub Pages).
 export const signInWithDiscord = async (next = '/dashboard'): Promise<void> => {
-	const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeNext(next))}`;
+	const redirectTo = `${window.location.origin}${env.NEXT_PUBLIC_BASE_PATH}/auth/callback?next=${encodeURIComponent(safeNext(next))}`;
 	await getBrowserClient().auth.signInWithOAuth({ provider: 'discord', options: { redirectTo, scopes: 'identify email guilds guilds.members.read' } });
 };
 
