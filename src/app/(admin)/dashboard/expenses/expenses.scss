@@ -1,0 +1,8 @@
+// De declaratie-schermen hergebruiken de gedeelde beheer-layoutklassen uit inventory.scss
+// (inventory-tab / inventory-toolbar / inventory-row-actions / con-line-*). Alleen de filterbalk
+// van het beheer-tabblad is specifiek: laat de selects netjes teruglopen op smalle schermen.
+.expenses-filters {
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	align-items: center;
+}
