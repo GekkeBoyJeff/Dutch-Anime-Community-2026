@@ -80,7 +80,7 @@ const InventoryManager = () => {
 	const [users, setUsers] = useState<PersonOption[]>([]);
 	const [items, setItems] = useState<Item[]>([]);
 	const [events, setEvents] = useState<EventRow[]>([]);
-	const [unavail, setUnavail] = useState<{ item_id: string; starts_on: string; ends_on: string | null }[]>([]);
+	const [unavail, setUnavail] = useState<{ item_id: string; starts_on: string; ends_on: string | null; status: string }[]>([]);
 	const [availItem, setAvailItem] = useState<Item | null>(null);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [itemForm, setItemForm] = useState<ItemForm | null>(null);
@@ -106,13 +106,20 @@ const InventoryManager = () => {
 			db.from('profiles').select('id, username').order('username'),
 			db.from('inventory_items').select('*').order('name'),
 			db.from('events').select('*').order('starts_on', { ascending: false, nullsFirst: false }),
-			db.from('item_unavailability').select('item_id, starts_on, ends_on, status').eq('status', 'active'),
-		]).then(([{ data: profiles }, { data: itemRows }, { data: eventRows }, { data: unavailRows }]) => {
+			db.from('item_unavailability').select('item_id, starts_on, ends_on, status').in('status', ['active', 'requested']),
+		]).then((res) => {
 			if (!active) return;
+			// Fout op één van de queries niet stil inslikken tot een misleidend lege tabel — toon 'm.
+			const failed = res.find((r) => r.error)?.error;
+			if (failed) {
+				toast.add({ title: 'Kon inventory niet laden', description: failed.message, type: 'error' });
+				return;
+			}
+			const [{ data: profiles }, { data: itemRows }, { data: eventRows }, { data: unavailRows }] = res;
 			setUsers((profiles ?? []) as PersonOption[]);
 			setItems((itemRows ?? []) as Item[]);
 			setEvents((eventRows ?? []) as EventRow[]);
-			setUnavail((unavailRows ?? []) as { item_id: string; starts_on: string; ends_on: string | null }[]);
+			setUnavail((unavailRows ?? []) as { item_id: string; starts_on: string; ends_on: string | null; status: string }[]);
 		});
 		return () => {
 			active = false;
@@ -228,15 +235,30 @@ const InventoryManager = () => {
 		toast.add({ title: 'Conventie definitief verwijderd', type: 'success' });
 	};
 
+	// Effectieve beschikbaarheid = available én geen ACTIEF venster vandaag (spiegelt item_available_on);
+	// een requested-venster markeert een openstaand verzoek, geen onbeschikbaarheid.
+	const unavailTodayIds = useMemo(
+		() => new Set(unavail.filter((u) => u.status === 'active' && u.starts_on <= today && (u.ends_on === null || u.ends_on >= today)).map((u) => u.item_id)),
+		[unavail, today],
+	);
+	const pendingRequestIds = useMemo(() => new Set(unavail.filter((u) => u.status === 'requested').map((u) => u.item_id)), [unavail]);
+
 	const filteredItems = useMemo(() => {
 		const q = itemSearch.trim().toLowerCase();
 		return items.filter((item) => {
 			const matchesSearch = q === '' || item.name.toLowerCase().includes(q) || ownerName(item, users).toLowerCase().includes(q);
-			const matchesFilter = itemFilter === '' || (itemFilter === 'available' ? item.available : !item.available);
+			const effectiveAvailable = item.available && !unavailTodayIds.has(item.id);
+			const matchesFilter =
+				itemFilter === '' ||
+				(itemFilter === 'available'
+					? effectiveAvailable
+					: itemFilter === 'pending'
+						? pendingRequestIds.has(item.id)
+						: !effectiveAvailable);
 			const matchesArchived = showArchivedItems || item.archived_at === null;
 			return matchesSearch && matchesFilter && matchesArchived;
 		});
-	}, [items, users, itemSearch, itemFilter, showArchivedItems]);
+	}, [items, users, itemSearch, itemFilter, showArchivedItems, unavailTodayIds, pendingRequestIds]);
 
 	const filteredEvents = useMemo(() => {
 		const q = eventSearch.trim().toLowerCase();
@@ -252,7 +274,6 @@ const InventoryManager = () => {
 	if (!ready || !session) return fallback;
 
 	const canHardDelete = permissions.has('records.delete');
-	const unavailTodayIds = new Set(unavail.filter((u) => u.starts_on <= today && (u.ends_on === null || u.ends_on >= today)).map((u) => u.item_id));
 
 	const itemColumns: DataTableColumn<Item>[] = [
 		{ key: 'name', header: 'Naam', sortable: true, sortValue: (item) => item.name, cell: (item) => item.name },
@@ -273,9 +294,19 @@ const InventoryManager = () => {
 			sortable: true,
 			sortValue: (item) => (item.available ? 1 : 0),
 			cell: (item) => {
-				if (!item.available) return <StatusBadge domain="request" status="cancelled" label="Niet beschikbaar" />;
-				if (unavailTodayIds.has(item.id)) return <StatusBadge domain="request" status="requested" label="Venster actief" />;
-				return <StatusBadge domain="request" status="active" label="Beschikbaar" />;
+				const status = !item.available ? (
+					<StatusBadge domain="request" status="cancelled" label="Niet beschikbaar" />
+				) : unavailTodayIds.has(item.id) ? (
+					<StatusBadge domain="request" status="requested" label="Venster actief" />
+				) : (
+					<StatusBadge domain="request" status="active" label="Beschikbaar" />
+				);
+				return (
+					<span className="inventory-avail-cell">
+						{status}
+						{pendingRequestIds.has(item.id) && <StatusBadge domain="request" status="requested" label="Verzoek open" dot />}
+					</span>
+				);
 			},
 		},
 		{
@@ -396,6 +427,7 @@ const InventoryManager = () => {
 						{ label: 'Alle', value: '' },
 						{ label: 'Beschikbaar', value: 'available' },
 						{ label: 'Niet beschikbaar', value: 'unavailable' },
+						{ label: 'Openstaande verzoeken', value: 'pending' },
 					]}
 					value={itemFilter}
 					onValueChange={setItemFilter}

@@ -33,6 +33,14 @@
 	flex-wrap: wrap;
 }
 
+.inventory-avail-cell {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	flex-wrap: wrap;
+}
+
 .con-groups {
 	display: grid;
 	gap: 1rem;

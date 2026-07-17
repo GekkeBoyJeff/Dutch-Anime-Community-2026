@@ -56,6 +56,14 @@ interface OwnItemForm {
 	value_eur: string;
 	notes: string;
 }
+interface UnavailWindow {
+	id: string;
+	item_id: string;
+	starts_on: string;
+	ends_on: string | null;
+	reason: string | null;
+	status: string;
+}
 
 const EMPTY_OWN: OwnItemForm = { name: '', quantity: '1', value_eur: '', notes: '' };
 const TICKET_DEFAULT_NOTE = 'Wordt per bandje op de dag zelf geregeld.';
@@ -72,6 +80,7 @@ const MyInventory = () => {
 	const [eventNames, setEventNames] = useState<Map<string, string>>(new Map());
 	const [itemNames, setItemNames] = useState<Map<string, string>>(new Map());
 	const [shifts, setShifts] = useState<Shift[]>([]);
+	const [windows, setWindows] = useState<UnavailWindow[]>([]);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [ownForm, setOwnForm] = useState<OwnItemForm | null>(null);
 	const [unavailFor, setUnavailFor] = useState<Item | null>(null);
@@ -79,6 +88,8 @@ const MyInventory = () => {
 	const [uEnd, setUEnd] = useState('');
 	const [uReason, setUReason] = useState('');
 	const toast = Toast.useToastManager();
+
+	const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
 	useEffect(() => {
 		if (!ready || !session) return;
@@ -93,13 +104,33 @@ const MyInventory = () => {
 			db.from('events').select('id, name'),
 			db.rpc('my_subject_id'),
 			db.rpc('my_assignment_item_names'),
-		]).then(async ([{ data: itemRows }, { data: assignRows }, { data: ticketRows }, { data: eventRows }, { data: subjectId }, { data: nameRows }]) => {
+		]).then(async (res) => {
 			if (!active) return;
-			setItems((itemRows ?? []) as Item[]);
+			// Fout niet stil inslikken tot een misleidend lege lijst — toon 'm.
+			const failed = res.find((r) => r.error)?.error;
+			if (failed) {
+				toast.add({ title: 'Kon je inventory niet laden', description: failed.message, type: 'error' });
+				return;
+			}
+			const [{ data: itemRows }, { data: assignRows }, { data: ticketRows }, { data: eventRows }, { data: subjectId }, { data: nameRows }] = res;
+			const ownItems = (itemRows ?? []) as Item[];
+			setItems(ownItems);
 			setAssignments((assignRows ?? []) as Assignment[]);
 			setTickets((ticketRows ?? []) as Ticket[]);
 			setEventNames(new Map((eventRows ?? []).map((e) => [e.id as string, e.name as string])));
 			setItemNames(new Map(((nameRows ?? []) as { item_id: string; name: string }[]).map((r) => [r.item_id, r.name])));
+			// Eigen onbeschikbaarheidsvensters — RLS geeft anders álle vensters terug, dus client-side op eigen items scopen.
+			const ownedIds = ownItems.map((i) => i.id);
+			if (ownedIds.length > 0) {
+				const { data: winRows } = await db
+					.from('item_unavailability')
+					.select('id, item_id, starts_on, ends_on, reason, status')
+					.in('item_id', ownedIds)
+					.order('starts_on', { ascending: false });
+				if (active) setWindows((winRows ?? []) as UnavailWindow[]);
+			} else if (active) {
+				setWindows([]);
+			}
 			if (subjectId) {
 				const { data: shiftRows } = await db
 					.from('event_shifts')
@@ -193,6 +224,18 @@ const MyInventory = () => {
 		});
 	};
 
+	// Eigen venster intrekken (aanvrager of eigenaar) via de SECURITY DEFINER-RPC — een view-only houder
+	// mag de rij zelf niet verwijderen (dat is inventory.manage), dus dit loopt via de RPC.
+	const cancelWindow = async (id: string) => {
+		const { error: err } = await getBrowserClient().rpc('cancel_own_item_unavailability', { p_id: id });
+		if (err) {
+			toast.add({ title: 'Er ging iets mis', description: err.message, type: 'error' });
+			return;
+		}
+		setRefreshKey((key) => key + 1);
+		toast.add({ title: 'Venster ingetrokken', type: 'success' });
+	};
+
 	const itemName = (id: string): string => itemNames.get(id) ?? items.find((i) => i.id === id)?.name ?? id.slice(0, 8);
 	const eventName = (id: string): string => eventNames.get(id) ?? id.slice(0, 8);
 
@@ -220,7 +263,19 @@ const MyInventory = () => {
 			key: 'available',
 			header: 'Beschikbaar',
 			align: 'center',
-			cell: (item) => <Switch checked={item.available} aria-label={`${item.name} beschikbaar`} onCheckedChange={() => toggleAvailable(item)} />,
+			cell: (item) => {
+				const active = windows.some(
+					(w) => w.item_id === item.id && w.status === 'active' && w.starts_on <= today && (w.ends_on === null || w.ends_on >= today),
+				);
+				const requested = windows.some((w) => w.item_id === item.id && w.status === 'requested');
+				return (
+					<span className="inventory-avail-cell">
+						<Switch checked={item.available} aria-label={`${item.name} beschikbaar`} onCheckedChange={() => toggleAvailable(item)} />
+						{item.available && active && <StatusBadge domain="request" status="requested" label="Venster actief" />}
+						{item.available && !active && requested && <StatusBadge domain="request" status="requested" label="Aangevraagd" dot />}
+					</span>
+				);
+			},
 		},
 		{
 			key: 'actions',
@@ -387,6 +442,37 @@ const MyInventory = () => {
 			>
 				{unavailFor && (
 					<div className="inventory-form">
+						{windows.filter((w) => w.item_id === unavailFor.id).length > 0 && (
+							<div className="con-block">
+								<Title element="h5" size={6} value="Gemelde vensters" />
+								<ul className="con-list">
+									{windows
+										.filter((w) => w.item_id === unavailFor.id)
+										.map((w) => (
+											<li key={w.id} className="con-line">
+												<div className="con-line-info">
+													<span className="con-line-main">
+														{w.starts_on} – {w.ends_on ?? 'onbepaald'}
+													</span>
+													{w.reason && <span className="con-note">{w.reason}</span>}
+												</div>
+												<div className="con-line-actions">
+													<StatusBadge
+														domain="request"
+														status={w.status === 'active' ? 'active' : w.status === 'requested' ? 'requested' : 'cancelled'}
+														label={w.status === 'active' ? 'Actief' : w.status === 'requested' ? 'Aangevraagd' : 'Afgewezen'}
+													/>
+													{w.status !== 'rejected' && (
+														<Button variant="ghost" onClick={() => cancelWindow(w.id)}>
+															Intrekken
+														</Button>
+													)}
+												</div>
+											</li>
+										))}
+								</ul>
+							</div>
+						)}
 						<Field name="ustart">
 							<Field.Label>Onbeschikbaar vanaf</Field.Label>
 							<TextInput type="date" value={uStart} onChange={(e) => setUStart(e.currentTarget.value)} />

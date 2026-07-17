@@ -31,6 +31,20 @@ const ItemAvailabilityDrawer = ({ item, onClose, onChanged }: Props) => {
 	const [ends, setEnds] = useState('');
 	const [reason, setReason] = useState('');
 
+	// Reset lokale state zodra we naar een ander item wisselen (of sluiten): de drawer is één vaste
+	// instance, dus zonder reset renderen we de vensters én actieknoppen van het vórige item onder de
+	// nieuwe titel tot de nieuwe fetch binnen is — een klik daarin zou decide/remove op het verkeerde
+	// item uitvoeren. Aanpassen-tijdens-render (i.p.v. een effect) is het aanbevolen React-patroon
+	// hiervoor en behoudt de sluit-animatie (geen remount).
+	const [shownItemId, setShownItemId] = useState<string | undefined>(item?.id);
+	if (item?.id !== shownItemId) {
+		setShownItemId(item?.id);
+		setWindows([]);
+		setStarts('');
+		setEnds('');
+		setReason('');
+	}
+
 	useEffect(() => {
 		if (!item) return;
 		let active = true;
@@ -39,8 +53,13 @@ const ItemAvailabilityDrawer = ({ item, onClose, onChanged }: Props) => {
 			.select('id, starts_on, ends_on, reason, status')
 			.eq('item_id', item.id)
 			.order('starts_on', { ascending: false })
-			.then(({ data }) => {
-				if (active) setWindows((data ?? []) as UnavailWindow[]);
+			.then(({ data, error }) => {
+				if (!active) return;
+				if (error) {
+					toast.add({ title: 'Kon vensters niet laden', description: error.message, type: 'error' });
+					return;
+				}
+				setWindows((data ?? []) as UnavailWindow[]);
 			});
 		return () => {
 			active = false;
