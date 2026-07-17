@@ -1,0 +1,84 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Onboarding — DAC website architectuur",
+  "description": "Een rondleiding voor wie nieuw is in de dac-website. In dertien stappen zie je hoe de publieke site werkt en hoe het besloten beheergedeelte in elkaar zit. Volg de stappen op volgorde — elke stap bouwt voort op de vorige. Alle details staan in docs/codebase-report.md.",
+  "ref": "main",
+  "steps": [
+    {
+      "directory": "src",
+      "title": "1 · Welkom — het grote plaatje",
+      "description": "Alle code van de website staat hier, in `src/`. Het handigste om te onthouden: deze ene codebase heeft twee kanten. Er is de **publieke website** die iedereen ziet (de map `app/(website)`), en er is een **besloten beheergedeelte** achter een login waar het team het werk regelt (de map `app/(admin)`). Beide kanten delen dezelfde bouwstenen in `components/` en dezelfde logica in `lib/`.\n\nBijna elke vraag die je gaat hebben — 'waar hoort dit thuis?' — valt uiteen in die twee kanten: gaat het om publieke content, of om het beheergedeelte? De map `content/` bevat geen programmeercode, maar de teksten van de pagina's als vangnet en startpunt: de live site haalt zijn pagina's uit de database (Supabase), en valt alleen zónder databaseverbinding terug op deze bestanden. Daar gaan stap 3 en 5 dieper op in."
+    },
+    {
+      "file": "next.config.mjs",
+      "pattern": "const isStatic = process.env.HOST_TYPE === 'static'",
+      "title": "2 · Dezelfde code, twee manieren van publiceren",
+      "description": "Dezelfde website kan op twee manieren live gaan, en die schakelaar staat hier. In de ene stand wordt de hele site vooraf omgezet naar kant-en-klare bestanden die je op een simpele webhosting kunt zetten. In de andere stand draait de site op een echte server, met extra beveiligingsinstellingen.\n\nWaarom dit belangrijk is: sommige onderdelen bestaan alléén in de serverstand. Als iets 'het niet doet', is de eerste vraag vaak: naar welke stand is er gepubliceerd? Die keuze verandert echt wat er wel en niet meedraait."
+    },
+    {
+      "file": "src/content/pages/index.ts",
+      "pattern": "export const pages",
+      "title": "3 · Een pagina is gewoon gegevens",
+      "description": "Dit bestand is de lijst van publieke pagina's zoals ze in code zijn vastgelegd — het vangnet en de startset uit stap 1. De live site bewaart diezelfde pagina's in de database, in exact dezelfde vorm. En die vorm is heerlijk simpel: een pagina is een titel plus een reeks 'blokken' — een hero-blok, een tekstblok, een rij kaarten. Elk blok zegt zelf welk type het is; de rest zijn de teksten en plaatjes van dat blok.\n\nHet mooie gevolg: een sectie is gewoon een stukje gegevens, geen apart geprogrammeerd scherm. Je voegt er een toe of wisselt de volgorde door de gegevens aan te passen — in de visuele bouwer, die naar de database schrijft, of hier in code (waarna `npm run seed` het naar de database brengt). Zelfs een blog zou gewoon een verzameling pagina's zijn — er is maar één soort 'pagina'."
+    },
+    {
+      "file": "src/lib/content/schema/blocks/index.ts",
+      "pattern": "discriminatedUnion",
+      "title": "4 · De regels waar alles zich aan houdt",
+      "description": "In stap 3 zag je losse gegevens; hier staat wélke blokken bestaan en hoe elk blok eruit hoort te zien. Dit is de officiële 'afspraak' van het systeem. Alles leidt zich hiervan af: de teksten die je invult, de code die de blokken tekent, en zelfs de visuele paginabouwer werken allemaal vanuit deze ene lijst.\n\nDaardoor kan niets stiekem uit de pas lopen. Vul je per ongeluk iets verkeerds in, dan merk je dat meteen bij het bouwen, niet pas als een bezoeker het scherm opent. Let op: wil je later een nieuw type blok toevoegen, dan moet het ook híer worden bijgeschreven — anders bestaat het nergens."
+    },
+    {
+      "file": "src/lib/content/pages.ts",
+      "pattern": "SUPABASE_SERVICE_ROLE_KEY",
+      "title": "5 · De inhoud wordt gecontroleerd binnengehaald",
+      "description": "Dit is de plek die de pagina-inhoud ophaalt. Het kan op twee plekken kijken: is er verbinding met de database (Supabase, de online opslag van dit project), dan komt de inhoud daarvandaan; zo niet, dan valt het terug op de vaste gegevens uit stap 3.\n\nWat er ook binnenkomt, het wordt eerst gecontroleerd tegen de afspraak uit stap 4. Foute of onvolledige inhoud haalt de site dus nooit. En omdat alle ophaalwerk hier gebundeld zit, hoef je maar op één plek iets te veranderen als je later de bron wilt omzetten naar een echt beheersysteem."
+    },
+    {
+      "file": "src/app/(website)/[...slug]/page.tsx",
+      "pattern": "generateStaticParams",
+      "title": "6 · Zo komt een publieke pagina op het scherm",
+      "description": "Dit bestand vangt zowat elk publiek webadres op en zet er de juiste pagina neer. Vooraf wordt van alle bekende adressen alvast een pagina klaargemaakt, en een adres dat niet bestaat leidt netjes naar een 'niet gevonden'-pagina.\n\nHiermee komt de keten uit de vorige stappen samen: de gegevens (stap 3), gecontroleerd binnengehaald (stap 5), belanden hier en worden getekend. De homepagina heeft nog een eigen bestandje ernaast; dit bestand doet al het overige."
+    },
+    {
+      "file": "src/components/contentBlocks/Blocks.tsx",
+      "pattern": "export const REGISTRY",
+      "title": "7 · Van bloktype naar het juiste schermonderdeel",
+      "description": "Elk blok uit een pagina zei in stap 3 zélf welk type het was ('hero', 'tekst', 'kaarten'…). Hier staat de vertaaltabel die zo'n type koppelt aan het schermonderdeel dat het daadwerkelijk tekent. De pagina loopt simpelweg z'n blokken langs en laat per blok het bijbehorende onderdeel verschijnen.\n\nDit sluit de cirkel van stap 4: die afspraak bepaalt welke bloktypes er zijn, en deze tabel bepaalt hoe ze getekend worden. Goed om te weten: deze blokken halen zelf nooit gegevens op — de pagina levert alles kant-en-klaar aan."
+    },
+    {
+      "file": "src/lib/env.ts",
+      "pattern": "export const env = createEnv",
+      "title": "8 · De instellingen en geheime sleutels",
+      "description": "Elk project heeft instellingen die per omgeving verschillen: het adres van de database, geheime sleutels, aan/uit-vlaggen. Ze staan niet los in de code, maar worden hier op één plek verzameld en meteen bij het opstarten gecontroleerd. Ontbreekt er iets of klopt het niet, dan stopt de boel meteen met een duidelijke melding — beter dan een onverklaarbare fout later.\n\nBelangrijk detail: geheime sleutels blijven strikt aan de serverkant en komen nooit mee naar de browser van de bezoeker. Deze stap is ook het bruggetje: vanaf hier duiken we in de beheerkant en de database. Het bestand `.env.example` toont welke waarden je zelf moet invullen."
+    },
+    {
+      "file": "src/lib/auth/permissions.ts",
+      "pattern": "export const APP_PERMISSIONS",
+      "title": "9 · Wie mag wat — de rechten",
+      "description": "In het beheergedeelte mag niet iedereen alles. Hier staat de lijst met rechten: pagina's bewerken, moderatie doen, kosten inzien, en zo verder. Iemand krijgt rechten via een rol (van gewoon lid tot beheerder), en kan daarbovenop losse extra rechten krijgen.\n\nDeze rechten bepalen welke onderdelen van het dashboard iemand te zien krijgt. Onthoud goed: dit gaat alléén over wat je ziét en kunt aanklikken — het is gemak voor de gebruiker, geen slot op de deur. Waar het écht wordt afgedwongen, zie je in stap 12."
+    },
+    {
+      "file": "src/lib/supabase/client.ts",
+      "pattern": "getBrowserClient",
+      "title": "10 · De verbinding met de database",
+      "description": "Vrijwel het hele beheergedeelte praat via dit ene onderdeel met de database. Elke keer dat een scherm gegevens opvraagt of opslaat, gebeurt dat namens de ingelogde gebruiker — en de database laat die persoon alleen bij wat mag.\n\nOpvallend: dit project heeft geen aparte tussenlaag; de schermen praten rechtstreeks met de database. De sleutel die daarvoor nodig is, mag zelfs openbaar zijn, want de beveiliging zit in de database zelf, niet in het geheimhouden van de sleutel. Er bestaat nog een tweede, krachtiger verbinding (`admin.ts`) die álle regels mag omzeilen, maar die wordt uitsluitend gebruikt tijdens het bouwen van de site, nooit vanuit de browser."
+    },
+    {
+      "file": "src/hooks/useDashboardGuard.tsx",
+      "pattern": "export const useDashboardGuard",
+      "title": "11 · De portier van het dashboard",
+      "description": "Elk beheerscherm laat dit stukje eerst even nadenken: ben je niet ingelogd, dan word je naar de loginpagina gestuurd; ben je wel ingelogd maar mis je het juiste recht uit stap 9, dan kom je er niet in. Zolang het aan het controleren is, toont het netjes een laadscherm.\n\nDit voorkomt dat iemand naar een verwarrend leeg of half scherm staart. Maar ook dit is vooral gebruikersvriendelijkheid — het echte slot zit een niveau dieper, in de database."
+    },
+    {
+      "file": "supabase/migrations/20260716090001_access_control.sql",
+      "pattern": "create or replace function public.authorize",
+      "title": "12 · Hier zit het échte slot",
+      "description": "Dit is de kern van de beveiliging. De database controleert bij élke opvraging zelf of de betreffende gebruiker het juiste recht heeft — via de functie die hier wordt gedefinieerd. De controles uit stap 9 en 11 in de schermen zijn handig, maar iemand met kwade wil kan die omzeilen; deze controle in de database niet.\n\nMet andere woorden: de knoppen in het scherm bepalen wat je zíet, maar de database bepaalt wat er écht mag gebeuren. Gevoelige acties, zoals iets definitief verwijderen, lopen bewust via speciale beveiligde databasefuncties in plaats van rechtstreeks vanuit een scherm."
+    },
+    {
+      "directory": "src/app/(admin)/dashboard",
+      "title": "13 · Je bent er",
+      "description": "Je bent aangekomen bij het dashboard — de beheerkant zelf. Je kunt nu een publieke pagina van begin tot eind volgen: van de gegevens, langs de afspraak en de controle, tot het moment dat ze op het scherm verschijnen. En je weet hoe deze kant in elkaar zit: rechten bepalen wat iemand ziet, de verbinding met de database doet het werk, en de database zelf bewaakt wat mag.\n\nEen goede volgende stap: open hier een van de schermen — bijvoorbeeld `moderation/` of `expenses/` — en herken het patroon dat je nu kent. Elk scherm bestaat uit een dun `page.tsx` plus de echte inhoud in een `_components`-map ernaast. Voor het volledige overzicht van alle databasetabellen en hun onderlinge verbanden: zie `docs/codebase-report.md`, of de prettig leesbare webversie ervan."
+    }
+  ]
+}
