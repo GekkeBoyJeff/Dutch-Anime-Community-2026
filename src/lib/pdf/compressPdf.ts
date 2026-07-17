@@ -1,45 +1,25 @@
-'use client';
+import { PDFDocument } from 'pdf-lib';
 
-// Best-effort client-side PDF compression via vendored Ghostscript-WASM (see public/gs/). Runs in a
-// Web Worker so the UI stays responsive. ALWAYS safe: on any error, timeout, or a result that isn't
-// smaller, it returns the original file — compression is an enhancement, never a gate on the upload.
-// AGPL note: Ghostscript is AGPL-3.0; used here as an internal, self-hosted staff tool.
+// Best-effort client-side PDF-optimalisatie via pdf-lib — puur TypeScript, geen WASM, geen worker, geen
+// public/-vendoring en geen build-copy-script. pdf-lib herserialiseert het document met object-streams (een
+// compacte cross-reference) en laat pdf-lib de mod-date/producer niet bijwerken; dat levert winst op bij
+// "digitale" PDF's. Let op: pdf-lib doet GEEN image-downsampling (dat vereist WASM) — fotobonnen worden al
+// als afbeelding gecomprimeerd (zie prepareReceipt), dus dat gat doet er hier nauwelijks toe. Op élke fout of
+// een niet-kleiner resultaat wordt het origineel teruggegeven: optimalisatie is nooit een blokkade.
 
-export type PdfPreset = 'ebook' | 'screen' | 'printer';
+// Kleine PDF's leveren de moeite niet op.
+const MIN_SIZE_TO_COMPRESS = 1.5 * 1024 * 1024; // 1,5 MB
 
-// Skip small PDFs: Ghostscript can't meaningfully shrink them and the wasm load isn't worth it.
-const MIN_SIZE_TO_COMPRESS = 1.5 * 1024 * 1024;
-const TIMEOUT_MS = 90_000;
-
-export const compressPdf = async (file: File, preset: PdfPreset = 'ebook'): Promise<File> => {
+export const compressPdf = async (file: File): Promise<File> => {
 	if (file.type !== 'application/pdf' || file.size < MIN_SIZE_TO_COMPRESS) return file;
 	try {
-		const base = process.env.NEXT_PUBLIC_BASE_PATH || '';
-		const input = await file.arrayBuffer();
-		const worker = new Worker(`${base}/gs/pdf-worker.js`);
-
-		const out = await new Promise<ArrayBuffer | null>((resolve) => {
-			const timer = setTimeout(() => {
-				worker.terminate();
-				resolve(null);
-			}, TIMEOUT_MS);
-			worker.onmessage = (event: MessageEvent) => {
-				clearTimeout(timer);
-				worker.terminate();
-				const data = event.data as { ok?: boolean; out?: ArrayBuffer };
-				resolve(data?.ok && data.out ? data.out : null);
-			};
-			worker.onerror = () => {
-				clearTimeout(timer);
-				worker.terminate();
-				resolve(null);
-			};
-			worker.postMessage({ input, wasmUrl: `${base}/gs/gs.wasm`, gsJsUrl: `${base}/gs/gs.js`, preset }, [input]);
-		});
-
-		// Keep the smaller of {compressed, original} — GS can occasionally grow already-optimised PDFs.
-		if (!out || out.byteLength === 0 || out.byteLength >= file.size) return file;
-		return new File([out], file.name, { type: 'application/pdf' });
+		const doc = await PDFDocument.load(await file.arrayBuffer(), { updateMetadata: false });
+		const saved = await doc.save({ useObjectStreams: true });
+		// Houd de kleinste van {geoptimaliseerd, origineel} — een al-geoptimaliseerde PDF kan groeien.
+		if (saved.byteLength === 0 || saved.byteLength >= file.size) return file;
+		const bytes = new Uint8Array(saved.byteLength); // eigen ArrayBuffer → geldige BlobPart.
+		bytes.set(saved);
+		return new File([bytes], file.name, { type: 'application/pdf' });
 	} catch {
 		return file;
 	}

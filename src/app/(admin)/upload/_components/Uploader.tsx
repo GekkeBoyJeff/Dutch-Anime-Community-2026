@@ -100,7 +100,7 @@ const Uploader = () => {
 					text: `Afbeelding → webp (${formatBytes(file.size)} → ${formatBytes(compressed.size)}). URL gekopieerd.`,
 				});
 			} else if (file.type === 'application/pdf') {
-				const pdf = await compressPdf(file, 'ebook'); // best-effort; returns the original on any failure
+				const pdf = await compressPdf(file); // best-effort; returns the original on any failure
 				const name = `${Date.now()}-${pdf.name}`;
 				const { error } = await db.storage.from('media').upload(name, pdf, { contentType: 'application/pdf', upsert: false });
 				if (error) {

@@ -129,7 +129,7 @@ const EventDetail = ({
 		const db = getBrowserClient();
 		let ticketPdfPath: string | null = null;
 		if (ticketForm.file) {
-			const pdf = await compressPdf(ticketForm.file, 'ebook'); // best-effort; original on any failure
+			const pdf = await compressPdf(ticketForm.file); // best-effort; original on any failure
 			const folder = ticketForm.person.userId ?? '_shared';
 			const path = `${folder}/${Date.now()}-${pdf.name}`;
 			const { error: upErr } = await db.storage.from('tickets').upload(path, pdf, { contentType: 'application/pdf', upsert: false });
