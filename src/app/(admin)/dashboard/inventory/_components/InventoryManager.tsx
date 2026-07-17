@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import PersonPicker, { type PersonOption, type PersonValue } from '@/app/(admin)/dashboard/_components/PersonPicker';
+import ItemAvailabilityDrawer from '@/app/(admin)/dashboard/inventory/_components/ItemAvailabilityDrawer';
 import Button from '@/components/basics/Button';
 import Container from '@/components/basics/Container';
 import StatusBadge from '@/components/basics/StatusBadge';
@@ -79,6 +80,8 @@ const InventoryManager = () => {
 	const [users, setUsers] = useState<PersonOption[]>([]);
 	const [items, setItems] = useState<Item[]>([]);
 	const [events, setEvents] = useState<EventRow[]>([]);
+	const [unavail, setUnavail] = useState<{ item_id: string; starts_on: string; ends_on: string | null }[]>([]);
+	const [availItem, setAvailItem] = useState<Item | null>(null);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [itemForm, setItemForm] = useState<ItemForm | null>(null);
 	const [eventForm, setEventForm] = useState<EventForm | null>(null);
@@ -103,11 +106,13 @@ const InventoryManager = () => {
 			db.from('profiles').select('id, username').order('username'),
 			db.from('inventory_items').select('*').order('name'),
 			db.from('events').select('*').order('starts_on', { ascending: false, nullsFirst: false }),
-		]).then(([{ data: profiles }, { data: itemRows }, { data: eventRows }]) => {
+			db.from('item_unavailability').select('item_id, starts_on, ends_on, status').eq('status', 'active'),
+		]).then(([{ data: profiles }, { data: itemRows }, { data: eventRows }, { data: unavailRows }]) => {
 			if (!active) return;
 			setUsers((profiles ?? []) as PersonOption[]);
 			setItems((itemRows ?? []) as Item[]);
 			setEvents((eventRows ?? []) as EventRow[]);
+			setUnavail((unavailRows ?? []) as { item_id: string; starts_on: string; ends_on: string | null }[]);
 		});
 		return () => {
 			active = false;
@@ -247,6 +252,7 @@ const InventoryManager = () => {
 	if (!ready || !session) return fallback;
 
 	const canHardDelete = permissions.has('records.delete');
+	const unavailTodayIds = new Set(unavail.filter((u) => u.starts_on <= today && (u.ends_on === null || u.ends_on >= today)).map((u) => u.item_id));
 
 	const itemColumns: DataTableColumn<Item>[] = [
 		{ key: 'name', header: 'Naam', sortable: true, sortValue: (item) => item.name, cell: (item) => item.name },
@@ -266,9 +272,11 @@ const InventoryManager = () => {
 			align: 'center',
 			sortable: true,
 			sortValue: (item) => (item.available ? 1 : 0),
-			cell: (item) => (
-				<StatusBadge domain="request" status={item.available ? 'active' : 'cancelled'} label={item.available ? 'Beschikbaar' : 'Niet beschikbaar'} />
-			),
+			cell: (item) => {
+				if (!item.available) return <StatusBadge domain="request" status="cancelled" label="Niet beschikbaar" />;
+				if (unavailTodayIds.has(item.id)) return <StatusBadge domain="request" status="requested" label="Venster actief" />;
+				return <StatusBadge domain="request" status="active" label="Beschikbaar" />;
+			},
 		},
 		{
 			key: 'actions',
@@ -308,6 +316,9 @@ const InventoryManager = () => {
 							Verwijder
 						</Button>
 					)}
+					<Button variant="ghost" onClick={() => setAvailItem(item)}>
+						Beschikbaarheid
+					</Button>
 				</span>
 			),
 		},
@@ -538,6 +549,8 @@ const InventoryManager = () => {
 					</div>
 				)}
 			</Drawer>
+
+			<ItemAvailabilityDrawer item={availItem} onClose={() => setAvailItem(null)} onChanged={() => setRefreshKey((key) => key + 1)} />
 
 			<ConfirmDialog
 				open={itemToDelete !== null}

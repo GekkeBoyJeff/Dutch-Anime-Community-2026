@@ -74,6 +74,10 @@ const MyInventory = () => {
 	const [shifts, setShifts] = useState<Shift[]>([]);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [ownForm, setOwnForm] = useState<OwnItemForm | null>(null);
+	const [unavailFor, setUnavailFor] = useState<Item | null>(null);
+	const [uStart, setUStart] = useState('');
+	const [uEnd, setUEnd] = useState('');
+	const [uReason, setUReason] = useState('');
 	const toast = Toast.useToastManager();
 
 	useEffect(() => {
@@ -162,6 +166,33 @@ const MyInventory = () => {
 		setRefreshKey((key) => key + 1);
 	};
 
+	const requestUnavail = async () => {
+		if (!unavailFor || !uStart) {
+			toast.add({ title: 'Startdatum is verplicht.', type: 'error' });
+			return;
+		}
+		const { data, error: err } = await getBrowserClient().rpc('request_item_unavailability', {
+			p_item: unavailFor.id,
+			p_starts: uStart,
+			p_ends: uEnd || null,
+			p_reason: uReason.trim() || null,
+		});
+		if (err) {
+			toast.add({ title: 'Er ging iets mis', description: err.message, type: 'error' });
+			return;
+		}
+		const status = (data as { status?: string } | null)?.status;
+		setUnavailFor(null);
+		setUStart('');
+		setUEnd('');
+		setUReason('');
+		setRefreshKey((key) => key + 1);
+		toast.add({
+			title: status === 'requested' ? 'Verzoek naar yakuza gestuurd (er wordt op gerekend)' : 'Op onbeschikbaar gezet',
+			type: 'success',
+		});
+	};
+
 	const itemName = (id: string): string => itemNames.get(id) ?? items.find((i) => i.id === id)?.name ?? id.slice(0, 8);
 	const eventName = (id: string): string => eventNames.get(id) ?? id.slice(0, 8);
 
@@ -190,6 +221,16 @@ const MyInventory = () => {
 			header: 'Beschikbaar',
 			align: 'center',
 			cell: (item) => <Switch checked={item.available} aria-label={`${item.name} beschikbaar`} onCheckedChange={() => toggleAvailable(item)} />,
+		},
+		{
+			key: 'actions',
+			header: '',
+			align: 'end',
+			cell: (item) => (
+				<Button variant="ghost" onClick={() => setUnavailFor(item)}>
+					Onbeschikbaar melden
+				</Button>
+			),
 		},
 	];
 
@@ -323,6 +364,40 @@ const MyInventory = () => {
 						<Field name="notes">
 							<Field.Label>Notities</Field.Label>
 							<TextArea value={ownForm.notes} onChange={(e) => setOwnForm({ ...ownForm, notes: e.currentTarget.value })} />
+						</Field>
+					</div>
+				)}
+			</Drawer>
+
+			<Drawer
+				open={unavailFor !== null}
+				onOpenChange={(open) => !open && setUnavailFor(null)}
+				title={unavailFor ? `Onbeschikbaar melden — ${unavailFor.name}` : 'Onbeschikbaar melden'}
+				size="30rem"
+				footer={
+					<>
+						<Button variant="secondary" onClick={() => setUnavailFor(null)}>
+							Annuleren
+						</Button>
+						<Button variant="primary" onClick={requestUnavail}>
+							Melden
+						</Button>
+					</>
+				}
+			>
+				{unavailFor && (
+					<div className="inventory-form">
+						<Field name="ustart">
+							<Field.Label>Onbeschikbaar vanaf</Field.Label>
+							<TextInput type="date" value={uStart} onChange={(e) => setUStart(e.currentTarget.value)} />
+						</Field>
+						<Field name="uend">
+							<Field.Label>Tot (leeg = onbepaald)</Field.Label>
+							<TextInput type="date" value={uEnd} onChange={(e) => setUEnd(e.currentTarget.value)} />
+						</Field>
+						<Field name="ureason">
+							<Field.Label>Reden</Field.Label>
+							<TextArea value={uReason} onChange={(e) => setUReason(e.currentTarget.value)} />
 						</Field>
 					</div>
 				)}
