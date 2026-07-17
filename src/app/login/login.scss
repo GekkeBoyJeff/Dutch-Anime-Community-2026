@@ -40,4 +40,36 @@
 			font-size: 0.8125rem;
 		}
 	}
+
+	.account-badges {
+		inline-size: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+
+		.badge-grid {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1rem;
+			justify-content: center;
+
+			.badge-card {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 0.25rem;
+				inline-size: 8rem;
+
+				.badge-img {
+					inline-size: 4rem;
+					block-size: 4rem;
+					object-fit: contain;
+				}
+
+				.badge-title {
+					font-weight: 600;
+				}
+			}
+		}
+	}
 }

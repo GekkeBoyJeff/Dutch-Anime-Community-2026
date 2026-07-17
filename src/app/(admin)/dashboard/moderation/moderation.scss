@@ -21,4 +21,29 @@
 		align-items: center;
 		margin-block-start: 0.25rem;
 	}
+
+	.badge-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+
+		.badge-card {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 0.25rem;
+			text-align: center;
+			inline-size: 9rem;
+
+			.badge-img {
+				inline-size: 4rem;
+				block-size: 4rem;
+				object-fit: contain;
+			}
+
+			.badge-title {
+				font-weight: 600;
+			}
+		}
+	}
 }

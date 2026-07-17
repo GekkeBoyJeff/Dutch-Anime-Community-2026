@@ -18,11 +18,19 @@ const ModerationManager = () => {
 	if (!ready || !session) return fallback;
 	const canManage = permissions.has('moderation.manage');
 	const canDelete = permissions.has('records.delete');
+	const canBadges = permissions.has('badges.manage');
 
 	return (
 		<Container className="inventory moderation">
 			{subjectId ? (
-				<ProfileDetail subjectId={subjectId} sessionUserId={session.user.id} canManage={canManage} canDelete={canDelete} onBack={() => router.push('/dashboard/moderation')} />
+				<ProfileDetail
+					subjectId={subjectId}
+					sessionUserId={session.user.id}
+					canManage={canManage}
+					canDelete={canDelete}
+					canBadges={canBadges}
+					onBack={() => router.push('/dashboard/moderation')}
+				/>
 			) : (
 				<ProfileList canManage={canManage} onOpen={(id) => router.push(`/dashboard/moderation?id=${id}`)} />
 			)}

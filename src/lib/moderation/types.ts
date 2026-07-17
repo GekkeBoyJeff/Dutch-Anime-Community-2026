@@ -73,3 +73,12 @@ export interface ConductNote {
 	event_id: string | null;
 	created_at: string;
 }
+export interface Badge {
+	id: string;
+	subject_id: string;
+	title: string;
+	description: string | null;
+	awarded_on: string;
+	image_path: string | null;
+	archived_at: string | null;
+}

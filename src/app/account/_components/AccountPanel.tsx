@@ -18,6 +18,12 @@ interface MyWarning {
 	reason: string;
 	issued_at: string;
 }
+interface MyBadge {
+	title: string;
+	description: string | null;
+	awarded_on: string;
+	image_path: string | null;
+}
 
 // Minimal member page: profile + logout, and a link into the dashboard when the user has any access.
 const AccountPanel = () => {
@@ -25,6 +31,7 @@ const AccountPanel = () => {
 	const { permissions, loading, session } = usePermissions();
 	const [username, setUsername] = useState<string | null>(null);
 	const [warnings, setWarnings] = useState<MyWarning[]>([]);
+	const [badges, setBadges] = useState<MyBadge[]>([]);
 
 	useEffect(() => {
 		if (loading) return;
@@ -40,7 +47,10 @@ const AccountPanel = () => {
 			.then(({ data }) => setUsername((data?.username as string | null) ?? null));
 		// Eigen actieve warnings (kolom-afgeschermde RPC: alleen kleur/reden/datum, volgt merges).
 		db.rpc('my_warnings').then(({ data }) => setWarnings((data ?? []) as MyWarning[]));
+		db.rpc('my_badges').then(({ data }) => setBadges((data ?? []) as MyBadge[]));
 	}, [loading, session, router]);
+
+	const badgeUrl = (path: string): string => getBrowserClient().storage.from('badges').getPublicUrl(path).data.publicUrl;
 
 	if (loading || !session) {
 		return (
@@ -69,6 +79,22 @@ const AccountPanel = () => {
 							</li>
 						))}
 					</ul>
+				</section>
+			)}
+
+			{badges.length > 0 && (
+				<section className="account-badges">
+					<Title element="h2" size={4}>Mijn badges</Title>
+					<div className="badge-grid">
+						{badges.map((b, i) => (
+							<article key={i} className="badge-card">
+								{/* eslint-disable-next-line @next/next/no-img-element -- publieke badge-bucket, geen next/image in static export */}
+								{b.image_path && <img className="badge-img" src={badgeUrl(b.image_path)} alt="" width={64} height={64} />}
+								<span className="badge-title">{b.title}</span>
+								{b.description && <span className="con-note">{b.description}</span>}
+							</article>
+						))}
+					</div>
 				</section>
 			)}
 
