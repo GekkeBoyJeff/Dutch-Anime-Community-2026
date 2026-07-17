@@ -41,7 +41,12 @@ yarn-error.log*
 *.tsbuildinfo
 .sass-cache
 
-docs/
+# Ignore the docs/ working area (plans, specs, notes) but keep the generated codebase report,
+# which the README links to (a directory-level `docs/` ignore would block these negations, so
+# ignore the contents instead and re-include the report + tour).
+docs/*
+!docs/codebase-report.md
+!docs/codebase-report.html
 
 #next-env
 next-env.d.ts
