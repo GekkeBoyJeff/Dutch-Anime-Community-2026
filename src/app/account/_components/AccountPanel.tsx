@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import NotificationsList from '@/app/account/_components/NotificationsList';
+import PushToggle from '@/app/account/_components/PushToggle';
 import Button from '@/components/basics/Button';
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
@@ -97,6 +99,9 @@ const AccountPanel = () => {
 					</div>
 				</section>
 			)}
+
+			<NotificationsList userId={session.user.id} />
+			<PushToggle />
 
 			{permissions.size > 0 && (
 				<Button variant="primary" url="/dashboard">

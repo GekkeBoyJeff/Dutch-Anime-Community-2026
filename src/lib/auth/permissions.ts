@@ -3,6 +3,7 @@
 import type { Session } from '@supabase/supabase-js';
 import { useEffect, useMemo, useState } from 'react';
 
+import { unsubscribePush } from '@/lib/push';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 // The permission vocabulary — mirrors the public.app_permission enum. SINGLE SOURCE: the runtime array
@@ -45,7 +46,11 @@ export const signInWithDiscord = async (next = '/dashboard'): Promise<void> => {
 	await getBrowserClient().auth.signInWithOAuth({ provider: 'discord', options: { redirectTo, scopes: 'identify email guilds guilds.members.read' } });
 };
 
+// Ruim eerst het push-abonnement op (nog ingelogd → de RLS-scoped DELETE raakt de eigen rij), pas daarna
+// uitloggen. Andersom zou de DELETE anoniem draaien en stil 0 rijen raken, waardoor een gedeeld/opnieuw
+// toegewezen apparaat de meldingen van de vorige gebruiker zou blijven ontvangen.
 export const signOut = async (): Promise<void> => {
+	await unsubscribePush().catch(() => undefined);
 	await getBrowserClient().auth.signOut();
 };
 

@@ -49,6 +49,10 @@ export const env = createEnv({
 		NEXT_PUBLIC_BUILD_VERSION: z.string().default('dev'),
 		NEXT_PUBLIC_SUPABASE_URL: z.url().optional(),
 		NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
+		// Publieke VAPID-sleutel voor web-push (PWA-meldingen). De browser gebruikt 'm om te abonneren.
+		// Optioneel: leeg = push uit (de "meldingen aanzetten"-knop verschijnt dan niet). De PRIVÉ-sleutel
+		// hoort NIET hier — die staat alleen als Edge-Function-secret.
+		NEXT_PUBLIC_VAPID_PUBLIC_KEY: z.string().min(1).optional(),
 	},
 	// Next strips env vars that aren't referenced literally, so each one is mapped here explicitly.
 	runtimeEnv: {
@@ -64,6 +68,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_BUILD_VERSION: process.env.NEXT_PUBLIC_BUILD_VERSION,
 		NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
 		NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+		NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
 	},
 	// Treat `KEY=` (empty) as unset, so copying .env.example — which ships the secrets empty — keeps the
 	// documented "empty = off / 404" behaviour instead of failing validation.

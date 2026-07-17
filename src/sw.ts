@@ -68,4 +68,47 @@ self.addEventListener('activate', (event) => {
 	);
 });
 
+// Web-push (fase 8): toon de melding uit de payload; open bij een klik de bijbehorende pagina (of focus een
+// bestaand tabblad). De payload komt van de send-push Edge Function: { title, body, url }.
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
+// De composer-link is root-relatief ("/dashboard/…"); op een subpad-host leeft de hele app onder BASE, dus
+// prefix hem net als de eigen SW-URL's (no-op als BASE leeg is of de link al geprefixt/absoluut is).
+const withBase = (u: string): string => (BASE && u.startsWith('/') && !u.startsWith(`${BASE}/`) ? `${BASE}${u}` : u);
+
+self.addEventListener('push', (event) => {
+	let data: { title?: string; body?: string; url?: string } = {};
+	try {
+		data = event.data?.json() ?? {};
+	} catch {
+		data = { body: event.data?.text() ?? '' };
+	}
+	event.waitUntil(
+		self.registration.showNotification(data.title ?? 'Dutch Anime Community', {
+			body: data.body ?? '',
+			icon: `${BASE}/icon-192.png`,
+			badge: `${BASE}/icon-192.png`,
+			data: { url: data.url ? withBase(data.url) : `${BASE}/account` },
+		}),
+	);
+});
+
+self.addEventListener('notificationclick', (event) => {
+	event.notification.close();
+	const raw = (event.notification.data as { url?: string } | undefined)?.url;
+	const url = raw ? withBase(raw) : `${BASE}/account`;
+	event.waitUntil(
+		(async () => {
+			const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+			const open = windows.find((client) => 'focus' in client) as WindowClient | undefined;
+			if (open) {
+				await open.focus();
+				await open.navigate(url).catch(() => undefined);
+			} else {
+				await self.clients.openWindow(url);
+			}
+		})(),
+	);
+});
+
 serwist.addEventListeners();
