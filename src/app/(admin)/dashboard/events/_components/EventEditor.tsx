@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import type { PersonOption } from '@/app/(admin)/dashboard/_components/PersonPicker';
+import ActivitiesTab from '@/app/(admin)/dashboard/events/_components/ActivitiesTab';
+import AgendaTab from '@/app/(admin)/dashboard/events/_components/AgendaTab';
 import EventDetail from '@/app/(admin)/dashboard/inventory/_components/EventDetail';
 import Alert from '@/components/basics/Alert';
 import Button from '@/components/basics/Button';
@@ -117,7 +119,7 @@ const EventEditor = () => {
 		};
 	}, [ready, session, eventId, refreshKey]);
 
-	const subjectName = (id: string): string => subjects.find((s) => s.id === id)?.display_name ?? id.slice(0, 8);
+	const subjectName = (id: string | null): string => (id ? subjects.find((s) => s.id === id)?.display_name ?? id.slice(0, 8) : '—');
 
 	const attendanceRows = useMemo(() => [...attendance], [attendance]);
 	const availableSubjects = useMemo(
@@ -333,6 +335,11 @@ const EventEditor = () => {
 					tabs={[
 						{ label: 'Info', panel: infoPanel },
 						{ label: 'Aanwezigheid', panel: attendancePanel },
+						{ label: 'Agenda', panel: <AgendaTab eventId={eventId} sessionUserId={session.user.id} subjects={subjects} subjectName={subjectName} /> },
+						{
+							label: 'Activiteiten',
+							panel: <ActivitiesTab eventId={eventId} sessionUserId={session.user.id} items={items} subjects={subjects} subjectName={subjectName} />,
+						},
 						{
 							label: 'Items & tickets',
 							panel: (
