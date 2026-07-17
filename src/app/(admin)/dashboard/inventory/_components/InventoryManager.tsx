@@ -1,10 +1,10 @@
 'use client';
 
 import { Toast } from '@base-ui/react/toast';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import PersonPicker, { type PersonOption, type PersonValue } from '@/app/(admin)/dashboard/_components/PersonPicker';
-import EventDetail from '@/app/(admin)/dashboard/inventory/_components/EventDetail';
 import Button from '@/components/basics/Button';
 import Container from '@/components/basics/Container';
 import StatusBadge from '@/components/basics/StatusBadge';
@@ -82,8 +82,8 @@ const InventoryManager = () => {
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [itemForm, setItemForm] = useState<ItemForm | null>(null);
 	const [eventForm, setEventForm] = useState<EventForm | null>(null);
-	const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
 	const toast = Toast.useToastManager();
+	const router = useRouter();
 	const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
 	const [eventToDelete, setEventToDelete] = useState<EventRow | null>(null);
 	const [itemSearch, setItemSearch] = useState('');
@@ -205,7 +205,6 @@ const InventoryManager = () => {
 			toast.add({ title: 'Er ging iets mis', description: err.message, type: 'error' });
 			return;
 		}
-		if (archived && selectedEventId === id) setSelectedEventId(null);
 		setRefreshKey((key) => key + 1);
 		toast.add({ title: archived ? 'Conventie gearchiveerd' : 'Conventie hersteld', type: 'success' });
 	};
@@ -220,7 +219,6 @@ const InventoryManager = () => {
 		for (const row of (data ?? []) as { bucket_id: string; path: string }[]) {
 			if (row.path) await db.storage.from(row.bucket_id).remove([row.path]);
 		}
-		if (selectedEventId === id) setSelectedEventId(null);
 		setRefreshKey((key) => key + 1);
 		toast.add({ title: 'Conventie definitief verwijderd', type: 'success' });
 	};
@@ -248,7 +246,6 @@ const InventoryManager = () => {
 
 	if (!ready || !session) return fallback;
 
-	const selectedEvent = selectedEventId ? events.find((event) => event.id === selectedEventId) ?? null : null;
 	const canHardDelete = permissions.has('records.delete');
 
 	const itemColumns: DataTableColumn<Item>[] = [
@@ -341,7 +338,7 @@ const InventoryManager = () => {
 			align: 'end',
 			cell: (event) => (
 				<span className="inventory-row-actions">
-					<Button variant="primary" onClick={() => setSelectedEventId(event.id)}>
+					<Button variant="primary" onClick={() => router.push(`/dashboard/events?id=${event.id}`)}>
 						Beheer
 					</Button>
 					{event.archived_at ? (
@@ -459,16 +456,6 @@ const InventoryManager = () => {
 					{ label: 'Conventies', panel: eventsPanel },
 				]}
 			/>
-
-			{selectedEvent && (
-				<EventDetail
-					event={selectedEvent}
-					items={items}
-					users={users}
-					onClose={() => setSelectedEventId(null)}
-					onError={(message) => toast.add({ title: 'Er ging iets mis', description: message, type: 'error' })}
-				/>
-			)}
 
 			<Drawer
 				open={itemForm !== null}
