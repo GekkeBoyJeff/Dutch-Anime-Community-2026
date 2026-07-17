@@ -70,6 +70,7 @@ const MyInventory = () => {
 	const [assignments, setAssignments] = useState<Assignment[]>([]);
 	const [tickets, setTickets] = useState<Ticket[]>([]);
 	const [eventNames, setEventNames] = useState<Map<string, string>>(new Map());
+	const [itemNames, setItemNames] = useState<Map<string, string>>(new Map());
 	const [shifts, setShifts] = useState<Shift[]>([]);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [ownForm, setOwnForm] = useState<OwnItemForm | null>(null);
@@ -87,12 +88,14 @@ const MyInventory = () => {
 			db.from('event_tickets').select('*').eq('assigned_user_id', session.user.id).order('day'),
 			db.from('events').select('id, name'),
 			db.rpc('my_subject_id'),
-		]).then(async ([{ data: itemRows }, { data: assignRows }, { data: ticketRows }, { data: eventRows }, { data: subjectId }]) => {
+			db.rpc('my_assignment_item_names'),
+		]).then(async ([{ data: itemRows }, { data: assignRows }, { data: ticketRows }, { data: eventRows }, { data: subjectId }, { data: nameRows }]) => {
 			if (!active) return;
 			setItems((itemRows ?? []) as Item[]);
 			setAssignments((assignRows ?? []) as Assignment[]);
 			setTickets((ticketRows ?? []) as Ticket[]);
 			setEventNames(new Map((eventRows ?? []).map((e) => [e.id as string, e.name as string])));
+			setItemNames(new Map(((nameRows ?? []) as { item_id: string; name: string }[]).map((r) => [r.item_id, r.name])));
 			if (subjectId) {
 				const { data: shiftRows } = await db
 					.from('event_shifts')
@@ -159,7 +162,7 @@ const MyInventory = () => {
 		setRefreshKey((key) => key + 1);
 	};
 
-	const itemName = (id: string): string => items.find((i) => i.id === id)?.name ?? id.slice(0, 8);
+	const itemName = (id: string): string => itemNames.get(id) ?? items.find((i) => i.id === id)?.name ?? id.slice(0, 8);
 	const eventName = (id: string): string => eventNames.get(id) ?? id.slice(0, 8);
 
 	// One card per convention you're involved with — union of the events you must bring items to and the

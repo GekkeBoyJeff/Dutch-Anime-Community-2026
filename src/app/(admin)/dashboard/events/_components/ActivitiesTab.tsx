@@ -146,7 +146,11 @@ const ActivitiesTab = ({ eventId, sessionUserId, items, subjects, subjectName }:
 	};
 
 	const removeRequirement = async (id: string) => {
-		await getBrowserClient().from('activity_requirements').delete().eq('id', id);
+		const { error } = await getBrowserClient().from('activity_requirements').delete().eq('id', id);
+		if (error) {
+			toast.add({ title: 'Er ging iets mis', description: error.message, type: 'error' });
+			return;
+		}
 		setRefreshKey((k) => k + 1);
 	};
 
@@ -162,7 +166,11 @@ const ActivitiesTab = ({ eventId, sessionUserId, items, subjects, subjectName }:
 	};
 
 	const removeHost = async (id: string) => {
-		await getBrowserClient().from('activity_hosts').delete().eq('id', id);
+		const { error } = await getBrowserClient().from('activity_hosts').delete().eq('id', id);
+		if (error) {
+			toast.add({ title: 'Er ging iets mis', description: error.message, type: 'error' });
+			return;
+		}
 		setRefreshKey((k) => k + 1);
 	};
 
