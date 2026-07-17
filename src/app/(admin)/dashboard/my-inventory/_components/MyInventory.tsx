@@ -3,6 +3,7 @@
 import { Toast } from '@base-ui/react/toast';
 import { useEffect, useMemo, useState } from 'react';
 
+import { fmtRange } from '@/app/(admin)/dashboard/events/_components/datetime';
 import Alert from '@/components/basics/Alert';
 import Button from '@/components/basics/Button';
 import Container from '@/components/basics/Container';
@@ -32,6 +33,14 @@ interface Assignment {
 	quantity: number;
 	expected_to_bring: boolean;
 	notes: string | null;
+	packed_at: string | null;
+}
+interface Shift {
+	id: string;
+	event_id: string;
+	starts_at: string;
+	ends_at: string;
+	station: string | null;
 }
 interface Ticket {
 	id: string;
@@ -61,6 +70,7 @@ const MyInventory = () => {
 	const [assignments, setAssignments] = useState<Assignment[]>([]);
 	const [tickets, setTickets] = useState<Ticket[]>([]);
 	const [eventNames, setEventNames] = useState<Map<string, string>>(new Map());
+	const [shifts, setShifts] = useState<Shift[]>([]);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [ownForm, setOwnForm] = useState<OwnItemForm | null>(null);
 	const toast = Toast.useToastManager();
@@ -76,12 +86,21 @@ const MyInventory = () => {
 			db.from('event_item_assignments').select('*').eq('assigned_user_id', session.user.id),
 			db.from('event_tickets').select('*').eq('assigned_user_id', session.user.id).order('day'),
 			db.from('events').select('id, name'),
-		]).then(([{ data: itemRows }, { data: assignRows }, { data: ticketRows }, { data: eventRows }]) => {
+			db.rpc('my_subject_id'),
+		]).then(async ([{ data: itemRows }, { data: assignRows }, { data: ticketRows }, { data: eventRows }, { data: subjectId }]) => {
 			if (!active) return;
 			setItems((itemRows ?? []) as Item[]);
 			setAssignments((assignRows ?? []) as Assignment[]);
 			setTickets((ticketRows ?? []) as Ticket[]);
 			setEventNames(new Map((eventRows ?? []).map((e) => [e.id as string, e.name as string])));
+			if (subjectId) {
+				const { data: shiftRows } = await db
+					.from('event_shifts')
+					.select('id, event_id, starts_at, ends_at, station')
+					.eq('subject_id', subjectId as string)
+					.order('starts_at');
+				if (active) setShifts((shiftRows ?? []) as Shift[]);
+			}
 		});
 		return () => {
 			active = false;
@@ -131,14 +150,23 @@ const MyInventory = () => {
 		window.open(data.signedUrl, '_blank', 'noopener');
 	};
 
+	const setPacked = async (assignmentId: string, packed: boolean) => {
+		const { error: err } = await getBrowserClient().rpc('set_packed', { assignment_id: assignmentId, packed });
+		if (err) {
+			toast.add({ title: 'Er ging iets mis', description: err.message, type: 'error' });
+			return;
+		}
+		setRefreshKey((key) => key + 1);
+	};
+
 	const itemName = (id: string): string => items.find((i) => i.id === id)?.name ?? id.slice(0, 8);
 	const eventName = (id: string): string => eventNames.get(id) ?? id.slice(0, 8);
 
 	// One card per convention you're involved with — union of the events you must bring items to and the
 	// events you hold tickets for.
 	const conIds = useMemo(
-		() => [...new Set([...assignments.map((a) => a.event_id), ...tickets.map((t) => t.event_id)])],
-		[assignments, tickets],
+		() => [...new Set([...assignments.map((a) => a.event_id), ...tickets.map((t) => t.event_id), ...shifts.map((s) => s.event_id)])],
+		[assignments, tickets, shifts],
 	);
 
 	if (!ready || !session) return fallback;
@@ -185,6 +213,7 @@ const MyInventory = () => {
 						{conIds.map((id) => {
 							const myAssignments = assignments.filter((a) => a.event_id === id);
 							const myTickets = tickets.filter((t) => t.event_id === id);
+							const myShifts = shifts.filter((s) => s.event_id === id);
 							return (
 								<article key={id} className="con-group">
 									<Title element="h4" size={5} value={eventName(id)} />
@@ -200,11 +229,17 @@ const MyInventory = () => {
 															</span>
 															{a.notes && <span className="con-note">{a.notes}</span>}
 														</div>
-														<StatusBadge
-															domain="request"
-															status={a.expected_to_bring ? 'requested' : 'cancelled'}
-															label={a.expected_to_bring ? 'Meenemen' : 'Optioneel'}
-														/>
+														<div className="con-line-actions">
+															<StatusBadge
+																domain="request"
+																status={a.expected_to_bring ? 'requested' : 'cancelled'}
+																label={a.expected_to_bring ? 'Meenemen' : 'Optioneel'}
+															/>
+															<label className="con-packed">
+																<Switch checked={a.packed_at !== null} aria-label={`${itemName(a.item_id)} ingepakt`} onCheckedChange={(on) => setPacked(a.id, on)} />
+																Ingepakt
+															</label>
+														</div>
 													</li>
 												))}
 											</ul>
@@ -227,6 +262,19 @@ const MyInventory = () => {
 														) : (
 															<span className="con-note">{t.note ?? TICKET_DEFAULT_NOTE}</span>
 														)}
+													</li>
+												))}
+											</ul>
+										</div>
+									)}
+									{myShifts.length > 0 && (
+										<div className="con-block">
+											<Title element="h5" size={6} value="Mijn shifts" />
+											<ul className="con-list">
+												{myShifts.map((s) => (
+													<li key={s.id} className="con-line">
+														<span className="con-line-main">{fmtRange(s.starts_at, s.ends_at)}</span>
+														{s.station && <span className="con-note">{s.station}</span>}
 													</li>
 												))}
 											</ul>
