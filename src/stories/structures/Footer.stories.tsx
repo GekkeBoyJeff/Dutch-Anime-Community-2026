@@ -30,8 +30,6 @@ export const Default: Story = {
 					{ label: 'Wat we doen', url: '/community' },
 					{ label: 'Evenementen', url: '/evenementen' },
 					{ label: 'Word lid', url: '/word-lid' },
-					// TODO: Remove when I built an idea on how to enable the dashboard for yakuza
-					{ label: 'Dashboard', url: '/dashboard' },
 				],
 			},
 			{

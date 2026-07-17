@@ -6,6 +6,8 @@ const navItems: NavItem[] = [
 	{ label: 'Home', url: '/', icon: 'home' },
 	{ label: 'Community', url: '/community', icon: 'heart' },
 	{ label: 'Evenementen', url: '/evenementen', icon: 'calendar' },
+	// TODO: Remove when I built an idea on how to enable the dashboard for yakuza
+	{ label: 'Dashboard', url: '/dashboard' },
 ];
 
 // Pure data for the site-wide chrome. Edit by hand or export a new version from the visual
