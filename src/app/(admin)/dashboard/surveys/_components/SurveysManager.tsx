@@ -15,6 +15,7 @@ import Drawer from '@/components/components/Drawer';
 import FilterBar from '@/components/components/FilterBar';
 import Checkbox from '@/components/forms/Checkbox';
 import { useDashboardGuard } from '@/hooks/useDashboardGuard';
+import { env } from '@/lib/env';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 interface SurveyRow {
@@ -113,6 +114,19 @@ const SurveysManager = () => {
 		toast.add({ title: 'Enquête definitief verwijderd', type: 'success' });
 	};
 
+	// De deelbare invul-URL. window.location.origin mist het basePath (dat bakt Next alleen in router/Link),
+	// dus voeg NEXT_PUBLIC_BASE_PATH handmatig toe — net als bij de Discord-callback.
+	const shareUrl = (id: string): string => `${window.location.origin}${env.NEXT_PUBLIC_BASE_PATH}/enquete?id=${id}`;
+	const copyLink = async (id: string) => {
+		const url = shareUrl(id);
+		try {
+			await navigator.clipboard.writeText(url);
+			toast.add({ title: 'Link gekopieerd', description: url, type: 'success' });
+		} catch {
+			toast.add({ title: 'Kopiëren mislukt — hier is de link', description: url, type: 'error' });
+		}
+	};
+
 	const filtered = useMemo(() => {
 		const q = search.trim().toLowerCase();
 		return surveys.filter((s) => {
@@ -162,6 +176,9 @@ const SurveysManager = () => {
 								Heropenen
 							</Button>
 						)}
+						<Button variant="ghost" icon="link" onClick={() => copyLink(s.id)}>
+							Link
+						</Button>
 						<Button variant="secondary" onClick={() => setResultsId(s.id)}>
 							Resultaten
 						</Button>
