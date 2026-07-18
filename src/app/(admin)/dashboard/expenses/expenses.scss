@@ -1,14 +1,14 @@
 .inventory {
 	.expenses-filters {
 		flex-wrap: wrap;
-		gap: 0.5rem;
+		gap: spacing(s);
 		align-items: center;
 	}
 
 	.expenses-overview {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: spacing(l);
 	}
 
 	.expenses-budget {

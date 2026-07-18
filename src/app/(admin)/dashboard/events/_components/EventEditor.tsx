@@ -11,6 +11,7 @@ import CostsTab from '@/app/(admin)/dashboard/events/_components/CostsTab';
 import EvaluationTab from '@/app/(admin)/dashboard/events/_components/EvaluationTab';
 import EventDetail from '@/app/(admin)/dashboard/inventory/_components/EventDetail';
 import Alert from '@/components/basics/Alert';
+import Breadcrumb from '@/components/basics/Breadcrumb';
 import Button from '@/components/basics/Button';
 import Container from '@/components/basics/Container';
 import Spinner from '@/components/basics/Spinner';
@@ -206,9 +207,16 @@ const EventEditor = () => {
 		);
 	}
 
+	const crumbs = [
+		{ label: 'Dashboard', url: '/dashboard' },
+		{ label: 'Inventory & conventies', url: '/dashboard/inventory' },
+		{ label: event ? event.name : 'Conventie' },
+	];
+
 	if (!loaded) {
 		return (
 			<Container className="inventory">
+				<Breadcrumb items={crumbs} />
 				<Spinner label="Conventie laden" />
 			</Container>
 		);
@@ -325,6 +333,7 @@ const EventEditor = () => {
 
 	return (
 		<Container className="inventory">
+			<Breadcrumb items={crumbs} />
 			<Title size={2}>{event ? event.name : 'Conventie'}</Title>
 			{event === null ? (
 				<>

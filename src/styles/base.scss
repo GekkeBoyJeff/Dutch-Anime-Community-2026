@@ -455,6 +455,11 @@ h6,
 	--tint-accent: #{rgba(#3b5bdb, 0.16)};
 	--accent-text-light: #3b5bdb;
 	--accent-text-dark: #94a8ef;
+
+	// Denser card/gap and table-cell rhythm than the site-wide spacing scale (tool-like density).
+	--admin-gap: #{spacing(m)};
+	--admin-cell-padding-block: #{spacing(xs)};
+	--admin-cell-padding-inline: #{spacing(s)};
 }
 
 @each $scheme in 'light', 'dark' {

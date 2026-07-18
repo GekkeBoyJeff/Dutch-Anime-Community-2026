@@ -35,6 +35,19 @@ export type Permission = (typeof APP_PERMISSIONS)[number];
 export const APP_ROLES = ['user', 'author', 'yakuza', 'stand-staff', 'admin'] as const;
 export type AppRole = (typeof APP_ROLES)[number];
 
+// Human labels for the role chip. APP_ROLES is ordered least → most privileged, so a later index wins.
+export const ROLE_LABELS: Record<AppRole, string> = {
+	user: 'Lid',
+	author: 'Auteur',
+	yakuza: 'Yakuza',
+	'stand-staff': 'Standteam',
+	admin: 'Beheerder',
+};
+
+// The most privileged role a user holds (null when none), for the display chip only — never a gate.
+export const highestRole = (roles: readonly AppRole[]): AppRole | null =>
+	roles.reduce<AppRole | null>((best, role) => (best === null || APP_ROLES.indexOf(role) > APP_ROLES.indexOf(best) ? role : best), null);
+
 // Open-redirect guard: only same-site relative paths are allowed as a post-login destination.
 // Rejects absolute URLs, protocol-relative (`//evil`), and backslash tricks (`/\evil`).
 export const safeNext = (raw: string | null | undefined): string => {

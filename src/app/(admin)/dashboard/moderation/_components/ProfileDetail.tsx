@@ -9,6 +9,7 @@ import LinksTab from '@/app/(admin)/dashboard/moderation/_components/LinksTab';
 import NotesTab from '@/app/(admin)/dashboard/moderation/_components/NotesTab';
 import WarningsTab from '@/app/(admin)/dashboard/moderation/_components/WarningsTab';
 import Alert from '@/components/basics/Alert';
+import Breadcrumb from '@/components/basics/Breadcrumb';
 import Button from '@/components/basics/Button';
 import Spinner from '@/components/basics/Spinner';
 import StatusBadge from '@/components/basics/StatusBadge';
@@ -89,10 +90,24 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 		toast.add({ title: 'Profiel losgekoppeld', type: 'success' });
 	};
 
-	if (!loaded) return <Spinner label="Profiel laden" />;
+	const crumbs = [
+		{ label: 'Dashboard', url: '/dashboard' },
+		{ label: 'Moderatie', url: '/dashboard/moderation' },
+		{ label: display || 'Profiel' },
+	];
+
+	if (!loaded) {
+		return (
+			<>
+				<Breadcrumb items={crumbs} />
+				<Spinner label="Profiel laden" />
+			</>
+		);
+	}
 	if (!subject) {
 		return (
 			<>
+				<Breadcrumb items={crumbs} />
 				<Alert variant="error" title="Niet gevonden">Dit profiel bestaat niet of je hebt er geen toegang toe.</Alert>
 				<Button variant="secondary" onClick={onBack}>
 					Terug
@@ -162,6 +177,7 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 
 	return (
 		<div>
+			<Breadcrumb items={crumbs} />
 			<div className="profile-head">
 				<Title size={2}>{display}</Title>
 				<span className="mod-meta">

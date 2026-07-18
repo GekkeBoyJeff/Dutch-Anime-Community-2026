@@ -1,0 +1,498 @@
+// The admin top bar mirrors the public nav's fixed placement so the shell's existing top padding on
+// .dashboard-main clears it, but reads as a dense tool: one card bar, grouped triggers, click-to-open
+// panels. Tokens only; the portaled popup carries data-theme/data-colorset so admin tokens resolve there.
+.mega-menu {
+	position: fixed;
+	inset-block-start: spacing(m);
+	inset-inline: spacing(m);
+	max-inline-size: 105rem;
+	margin-inline: auto;
+	z-index: $z-sticky;
+	pointer-events: none;
+
+	.mega-menu-bar {
+		pointer-events: auto;
+		display: flex;
+		align-items: center;
+		gap: spacing(m);
+		padding-block: spacing(s);
+		padding-inline: spacing(m);
+		background-color: $page;
+		border: 0.0625rem solid $border-color;
+		border-radius: $rounded-l;
+		box-shadow: $shadow-card;
+
+		@include bp(l) {
+			padding-inline: spacing(l);
+		}
+	}
+
+	.mega-menu-brand {
+		display: inline-flex;
+		align-items: center;
+		gap: spacing(s);
+		flex: none;
+		font-weight: $weight-bold;
+		letter-spacing: $tracking-tight;
+		color: $color;
+		border-radius: $rounded-m;
+
+		.mega-menu-logo {
+			inline-size: 2.25rem;
+			block-size: 2.25rem;
+
+			.asset {
+				inline-size: 100%;
+				block-size: 100%;
+				object-fit: contain;
+				border-radius: $rounded-full;
+			}
+		}
+	}
+}
+
+// Trigger row — hidden on mobile, where the overlay takes over.
+.mega-menu-nav {
+	display: none;
+	flex: 1;
+	min-inline-size: 0;
+
+	@include bp(l) {
+		display: block;
+	}
+
+	.mega-menu-triggers {
+		display: flex;
+		align-items: center;
+		gap: spacing(xs);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+}
+
+.mega-menu-home-link,
+.mega-menu-trigger {
+	display: inline-flex;
+	align-items: center;
+	gap: spacing(xs);
+	padding-block: spacing(xs);
+	padding-inline: spacing(m);
+	min-block-size: 2.25rem;
+	border: 0;
+	border-radius: $rounded-m;
+	background: transparent;
+	color: $color-secondary;
+	font-weight: $weight-medium;
+	cursor: pointer;
+	transition: color $speed-fast $ease, background-color $speed-fast $ease;
+
+	@include interactive {
+		color: $color;
+		background-color: $surface-muted;
+	}
+
+	&.is-active {
+		color: $accent-text;
+		background-color: $tint-accent;
+	}
+
+	.mega-menu-chevron {
+		inline-size: 1rem;
+		block-size: 1rem;
+		transition: transform $speed-fast $ease;
+	}
+
+	&[data-popup-open] {
+		color: $color;
+		background-color: $surface-muted;
+
+		.mega-menu-chevron {
+			transform: rotate(180deg);
+		}
+	}
+}
+
+// Portaled panel. The positioner carries the admin scope so accent/surface tokens resolve outside the
+// frame; the popup is a floating card that animates in from its transform origin.
+// The positioner never intercepts pointer events (an invisible closed panel must not block the content
+// below it); only the visible popup card is interactive, and only while open.
+.mega-menu-positioner {
+	z-index: $z-popover;
+	pointer-events: none;
+}
+
+.mega-menu-popup {
+	pointer-events: auto;
+	transform-origin: var(--transform-origin);
+	background-color: $page;
+	border: 0.0625rem solid $border-color;
+	border-radius: $rounded-l;
+	box-shadow: $shadow-card;
+	overflow: hidden;
+	transition:
+		transform $speed-fast $ease-out,
+		opacity $speed-fast $ease-out;
+
+	&[data-starting-style],
+	&[data-ending-style] {
+		opacity: 0;
+		transform: scale(0.97) translateY(-0.25rem);
+	}
+
+	&[data-closed] {
+		opacity: 0;
+		pointer-events: none;
+	}
+}
+
+.mega-menu-viewport {
+	position: relative;
+}
+
+.mega-menu-panel {
+	display: grid;
+	grid-template-columns: 14rem minmax(18rem, 1fr);
+	gap: spacing(l);
+	padding: spacing(l);
+	inline-size: max-content;
+	max-inline-size: min(60rem, calc(100vw - #{spacing(5xl)}));
+
+	&.has-highlight {
+		grid-template-columns: 14rem minmax(16rem, 1fr) 16rem;
+	}
+
+	.mega-menu-intro {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(xs);
+		padding: spacing(m);
+		background-color: $surface-faint;
+		border-radius: $rounded-m;
+
+		.mega-menu-intro-label {
+			font-weight: $weight-semibold;
+			font-size: 1.0625rem;
+			color: $color;
+		}
+
+		.mega-menu-intro-description {
+			font-size: 0.875rem;
+			line-height: 1.4;
+			color: $color-secondary;
+		}
+	}
+
+	.mega-menu-link-list {
+		display: grid;
+		grid-auto-rows: min-content;
+		gap: spacing(xs);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.mega-menu-highlight {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: spacing(m);
+		background-color: $surface-faint;
+		border-radius: $rounded-m;
+	}
+}
+
+.mega-menu-link {
+	display: flex;
+	align-items: flex-start;
+	gap: spacing(m);
+	padding: spacing(s) spacing(m);
+	border-radius: $rounded-m;
+	color: $color;
+	text-decoration: none;
+	transition: background-color $speed-fast $ease;
+
+	@include interactive {
+		background-color: $surface-muted;
+	}
+
+	&.is-active {
+		background-color: $tint-accent;
+
+		.mega-menu-link-icon {
+			color: $accent-text;
+		}
+
+		.mega-menu-link-label {
+			color: $accent-text;
+		}
+	}
+
+	.mega-menu-link-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: none;
+		inline-size: 2rem;
+		block-size: 2rem;
+		border-radius: $rounded-m;
+		background-color: $surface-muted;
+		color: $color-secondary;
+
+		.icon {
+			inline-size: 1.1rem;
+			block-size: 1.1rem;
+		}
+	}
+
+	.mega-menu-link-text {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		min-inline-size: 0;
+	}
+
+	.mega-menu-link-label {
+		font-weight: $weight-medium;
+		color: $color;
+	}
+
+	.mega-menu-link-description {
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		color: $color-secondary;
+	}
+}
+
+// Right cluster: user/role chip, back link, and the mobile toggle.
+.mega-menu-side {
+	display: flex;
+	align-items: center;
+	gap: spacing(s);
+	margin-inline-start: auto;
+	flex: none;
+
+	.mega-menu-user {
+		display: none;
+		align-items: center;
+		gap: spacing(s);
+
+		@include bp(l) {
+			display: inline-flex;
+		}
+
+		.mega-menu-user-text {
+			display: flex;
+			flex-direction: column;
+			gap: 0.1rem;
+			line-height: 1.2;
+		}
+
+		.mega-menu-user-name {
+			font-weight: $weight-medium;
+			font-size: 0.875rem;
+			color: $color;
+		}
+
+		.mega-menu-user-role {
+			align-self: flex-start;
+		}
+	}
+
+	.mega-menu-back {
+		display: none;
+		align-items: center;
+		gap: spacing(xs);
+		padding-block: spacing(xs);
+		padding-inline: spacing(m);
+		min-block-size: 2.25rem;
+		border-radius: $rounded-m;
+		color: $color-secondary;
+		font-weight: $weight-medium;
+		font-size: 0.875rem;
+		transition: color $speed-fast $ease, background-color $speed-fast $ease;
+
+		@include bp(l) {
+			display: inline-flex;
+		}
+
+		@include interactive {
+			color: $color;
+			background-color: $surface-muted;
+		}
+
+		.icon {
+			inline-size: 1rem;
+			block-size: 1rem;
+		}
+	}
+
+	.mega-menu-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 2.5rem;
+		block-size: 2.5rem;
+		border: 0;
+		border-radius: $rounded-m;
+		background: transparent;
+		color: $color;
+		cursor: pointer;
+
+		@include interactive {
+			background-color: $surface-muted;
+		}
+
+		@include bp(l) {
+			display: none;
+		}
+	}
+}
+
+// Mobile overlay: a full-screen, group-sectioned sheet. Scrim + overlay only render meaningfully while
+// .is-open; the focus trap lives in the component.
+.mega-menu-scrim {
+	position: fixed;
+	inset: 0;
+	z-index: $z-overlay;
+	background-color: $scrim;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity $speed $ease, visibility $speed $ease;
+}
+
+.mega-menu-overlay {
+	position: fixed;
+	inset-block-start: 0;
+	inset-inline-end: 0;
+	z-index: calc(#{$z-overlay} + 1);
+	inline-size: min(22rem, 100vw);
+	max-block-size: 100dvh;
+	overflow-y: auto;
+	padding: spacing(5xl) spacing(l) spacing(l);
+	background-color: $page;
+	box-shadow: $shadow-card;
+	transform: translateX(100%);
+	visibility: hidden;
+	pointer-events: none;
+	transition: transform $speed $ease-snappy, visibility $speed $ease-snappy;
+
+	@include bp(l) {
+		display: none;
+	}
+
+	nav {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(l);
+	}
+
+	.mega-menu-overlay-home {
+		display: block;
+		padding: spacing(s) spacing(m);
+		border-radius: $rounded-m;
+		font-weight: $weight-semibold;
+		color: $color;
+
+		&.is-active {
+			color: $accent-text;
+			background-color: $tint-accent;
+		}
+	}
+
+	.mega-menu-overlay-group {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(xs);
+
+		.mega-menu-overlay-heading {
+			margin: 0;
+			padding-inline: spacing(m);
+			font-size: 0.75rem;
+			font-weight: $weight-semibold;
+			letter-spacing: $tracking-wide;
+			text-transform: uppercase;
+			color: $color-secondary;
+		}
+
+		ul {
+			display: flex;
+			flex-direction: column;
+			gap: 0.125rem;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+	}
+
+	.mega-menu-overlay-link {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: spacing(s);
+		padding: spacing(s) spacing(m);
+		border-radius: $rounded-m;
+		color: $color;
+
+		@include interactive {
+			background-color: $surface-muted;
+		}
+
+		&.is-active {
+			color: $accent-text;
+			background-color: $tint-accent;
+		}
+
+		.icon {
+			inline-size: 1.1rem;
+			block-size: 1.1rem;
+			flex: none;
+		}
+	}
+
+	.mega-menu-overlay-back {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: spacing(s);
+		padding: spacing(s) spacing(m);
+		border-radius: $rounded-m;
+		color: $color-secondary;
+		font-weight: $weight-medium;
+
+		@include interactive {
+			color: $color;
+			background-color: $surface-muted;
+		}
+
+		.icon {
+			inline-size: 1.1rem;
+			block-size: 1.1rem;
+			flex: none;
+		}
+	}
+}
+
+.mega-menu.is-open {
+	.mega-menu-scrim {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+	}
+
+	.mega-menu-overlay {
+		transform: translateX(0);
+		visibility: visible;
+		pointer-events: auto;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mega-menu-popup,
+	.mega-menu-scrim,
+	.mega-menu-overlay,
+	.mega-menu-trigger .mega-menu-chevron {
+		transition: none;
+	}
+}

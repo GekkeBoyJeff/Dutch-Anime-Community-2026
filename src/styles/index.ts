@@ -124,5 +124,7 @@ import '@/styles/components/forms/TextInput.scss';
 
 // structures
 import '@/styles/components/structures/AnnouncementBar.scss';
+import '@/styles/components/structures/BottomTabBar.scss';
 import '@/styles/components/structures/Footer.scss';
+import '@/styles/components/structures/MegaMenu.scss';
 import '@/styles/components/structures/Navigation.scss';

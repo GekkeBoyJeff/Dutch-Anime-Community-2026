@@ -1,22 +1,22 @@
 .inventory {
 	display: grid;
-	gap: 2.5rem;
-	margin-block: 3rem;
+	gap: spacing(5xl);
+	margin-block: spacing(12);
 }
 
 .inventory-section {
 	display: grid;
-	gap: 1rem;
+	gap: spacing(l);
 }
 
 .inventory-tab {
 	display: grid;
-	gap: 1rem;
+	gap: spacing(l);
 }
 
 .inventory-toolbar {
 	display: flex;
-	gap: 0.75rem;
+	gap: spacing(m);
 	align-items: center;
 	flex-wrap: wrap;
 	justify-content: space-between;
@@ -24,12 +24,12 @@
 
 .inventory-form {
 	display: grid;
-	gap: 0.85rem;
+	gap: var(--admin-gap);
 }
 
 .inventory-row-actions {
 	display: flex;
-	gap: 0.5rem;
+	gap: spacing(s);
 	flex-wrap: wrap;
 }
 
@@ -43,25 +43,25 @@
 
 .con-groups {
 	display: grid;
-	gap: 1rem;
+	gap: spacing(l);
 }
 
 .con-group {
 	display: grid;
-	gap: 0.85rem;
-	padding: 1rem;
+	gap: var(--admin-gap);
+	padding: var(--admin-gap);
 	border: 0.0625rem solid var(--border-color);
 	border-radius: 0.75rem;
 }
 
 .con-block {
 	display: grid;
-	gap: 0.5rem;
+	gap: spacing(s);
 }
 
 .con-list {
 	display: grid;
-	gap: 0.5rem;
+	gap: spacing(s);
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -71,7 +71,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 0.75rem;
+	gap: spacing(m);
 	flex-wrap: wrap;
 }
 
@@ -87,7 +87,7 @@
 .con-line-actions {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.5rem;
+	gap: spacing(s);
 	flex-wrap: wrap;
 }
 
