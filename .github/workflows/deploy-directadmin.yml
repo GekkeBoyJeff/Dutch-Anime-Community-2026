@@ -27,17 +27,20 @@ jobs:
           NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_VAPID_PUBLIC_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: npm run build
-      - name: FTP upload out/ to DirectAdmin
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          # Explicit FTPS (encrypted). If your host has no valid TLS cert, change to `ftp`.
-          protocol: ftps
-          local-dir: ./out/
-          # FTP_REMOTE_DIR must end with a slash (the deploy secret is normalized to).
-          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
-          # No clean-slate: the action keeps a sync-state manifest on the server and uploads ONLY
-          # changed files (and deletes removed ones), instead of re-uploading the whole docroot every
-          # deploy. The first run after this change is still full; every run after is incremental.
+      - name: Deploy out/ to DirectAdmin via rsync over SSH
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          # Docroot is relative to the SSH home (/home/<user>); the account has a separate
+          # test.<domain> docroot, so this path is explicit to avoid deploying to the wrong one.
+          REMOTE_DIR: domains/dutchanimecommunity.nl/public_html/
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          # -a archive, -z compress, --delete mirrors out/ exactly (removed pages don't linger).
+          # Trailing slash on ./out/ syncs its CONTENTS, not the folder itself. SSH is on port 22.
+          rsync -az --delete \
+            -e "ssh -p 22 -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20" \
+            ./out/ "$SSH_USER@$SSH_HOST:$REMOTE_DIR"
