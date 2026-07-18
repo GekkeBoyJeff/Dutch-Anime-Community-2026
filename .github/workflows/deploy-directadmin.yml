@@ -38,5 +38,6 @@ jobs:
           local-dir: ./out/
           # FTP_REMOTE_DIR must end with a slash (the deploy secret is normalized to).
           server-dir: ${{ secrets.FTP_REMOTE_DIR }}
-          # Wipe the docroot first so removed pages don't linger — the docroot must hold ONLY the site.
-          dangerous-clean-slate: true
+          # No clean-slate: the action keeps a sync-state manifest on the server and uploads ONLY
+          # changed files (and deletes removed ones), instead of re-uploading the whole docroot every
+          # deploy. The first run after this change is still full; every run after is incremental.
