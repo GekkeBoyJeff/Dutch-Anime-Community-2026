@@ -27,8 +27,14 @@ jobs:
 
       - name: SSH reachable, rsync present, discover docroot
         run: |
-          ssh -p "$SSH_PORT" -i ~/.ssh/id_ed25519 \
+          case "$SSH_USER" in
+            *@*) echo "WAARSCHUWING: SSH-user bevat '@' — dat is een FTP-subaccount en kan niet via SSH inloggen. Gebruik je hoofd-accountnaam." ;;
+            *)   echo "SSH-user-vorm ziet er ok uit (geen '@')." ;;
+          esac
+          echo "=== ssh -v trace (verwacht: key offer + accept/reject) ==="
+          ssh -v -p "$SSH_PORT" -i ~/.ssh/id_ed25519 \
             -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 \
+            -o BatchMode=yes -o PreferredAuthentications=publickey \
             "$SSH_USER@$SSH_HOST" \
             'echo "=== CONNECTED ==="; echo "rsync: $(command -v rsync || echo NOT-FOUND)"; echo "HOME=$HOME"; echo "PWD=$(pwd)"; echo "=== docroots under ~/domains ==="; ls -d ~/domains/*/public_html 2>/dev/null || echo "(no ~/domains/*/public_html found)"; echo "=== END ==="'
 
