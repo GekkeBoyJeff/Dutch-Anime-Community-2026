@@ -116,7 +116,7 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 		if (!reviewFor) return;
 		setBusy(true);
 		try {
-			const { error } = await getBrowserClient().rpc('review_expense', { p_id: reviewFor.id, p_status: reviewStatus, p_note: reviewNote.trim() || null });
+			const { error } = await getBrowserClient().rpc('review_expense', { p_id: reviewFor.id, p_status: reviewStatus, p_note: reviewNote.trim() || undefined });
 			if (error) {
 				toast.add({ title: 'Er ging iets mis', description: error.message, type: 'error' });
 				return;

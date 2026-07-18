@@ -69,7 +69,9 @@ const AgendaTab = ({ eventId, sessionUserId, subjects, subjectName }: AgendaTabP
 
 	const saveShift = async () => {
 		if (!form) return;
-		if (!form.starts_at || !form.ends_at) {
+		const startsAt = fromInput(form.starts_at);
+		const endsAt = fromInput(form.ends_at);
+		if (!startsAt || !endsAt) {
 			toast.add({ title: 'Start- en eindtijd zijn verplicht.', type: 'error' });
 			return;
 		}
@@ -77,8 +79,8 @@ const AgendaTab = ({ eventId, sessionUserId, subjects, subjectName }: AgendaTabP
 			...(form.id ? { id: form.id } : {}),
 			event_id: eventId,
 			subject_id: form.subject_id || null,
-			starts_at: fromInput(form.starts_at),
-			ends_at: fromInput(form.ends_at),
+			starts_at: startsAt,
+			ends_at: endsAt,
 			station: form.station.trim() || null,
 			note: form.note.trim() || null,
 			created_by: sessionUserId,

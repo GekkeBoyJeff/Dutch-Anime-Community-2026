@@ -13,6 +13,7 @@ import Select from '@/components/forms/Select';
 import TextArea from '@/components/forms/TextArea';
 import TextInput from '@/components/forms/TextInput';
 import { getBrowserClient } from '@/lib/supabase/client';
+import type { Enums } from '@/types/database.types';
 
 type ItemOption = { id: string; name: string };
 type SubjectName = { id: string; display_name: string };
@@ -95,7 +96,7 @@ const ActivitiesTab = ({ eventId, sessionUserId, items, subjects, subjectName }:
 		const payload = {
 			...(form.id ? { id: form.id } : {}),
 			event_id: eventId,
-			venue: form.venue,
+			venue: form.venue as Enums<'activity_venue'>,
 			title: form.title.trim(),
 			description: form.description.trim() || null,
 			starts_at: fromInput(form.starts_at),

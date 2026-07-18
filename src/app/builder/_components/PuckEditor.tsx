@@ -19,6 +19,7 @@ import { pageTemplates, type PageTemplate } from '@/lib/puck/templates';
 import { fromPuckData, structuresChanged, toPuckData, type BuilderData } from '@/lib/puck/transform';
 import { sanitizePage } from '@/lib/sanitize';
 import { getBrowserClient } from '@/lib/supabase/client';
+import type { Json } from '@/types/database.types';
 
 // The visual builder island. Content now lives in Supabase: the editor loads the selected page +
 // site structures with the browser client (under the author's JWT / RLS), and publishing upserts the
@@ -180,7 +181,7 @@ const PuckEditor = () => {
 		}
 		if (result.page && path) {
 			const clean = sanitizePage(result.page);
-			const { error } = await db.from('pages').upsert({ path, data: clean }, { onConflict: 'path' });
+			const { error } = await db.from('pages').upsert({ path, data: clean as unknown as Json }, { onConflict: 'path' });
 			if (error) {
 				setFeedback({ title: 'Opslaan mislukt', issues: [error.message] });
 				return;

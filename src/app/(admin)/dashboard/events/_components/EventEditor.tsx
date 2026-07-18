@@ -23,6 +23,7 @@ import TextArea from '@/components/forms/TextArea';
 import TextInput from '@/components/forms/TextInput';
 import { useDashboardGuard } from '@/hooks/useDashboardGuard';
 import { getBrowserClient } from '@/lib/supabase/client';
+import type { Enums } from '@/types/database.types';
 
 interface EventRow {
 	id: string;
@@ -140,7 +141,7 @@ const EventEditor = () => {
 			.update({
 				name: form.name.trim(),
 				location: form.location.trim() || null,
-				kind: form.kind,
+				kind: form.kind as Enums<'event_kind'>,
 				starts_on: form.starts_on || null,
 				ends_on: form.ends_on || null,
 				signups_open_at: fromInput(form.signups_open_at),
@@ -158,7 +159,7 @@ const EventEditor = () => {
 	};
 
 	const setStatus = async (id: string, status: string) => {
-		const { error: err } = await getBrowserClient().from('event_attendance').update({ status }).eq('id', id);
+		const { error: err } = await getBrowserClient().from('event_attendance').update({ status: status as Enums<'attendance_status'> }).eq('id', id);
 		if (err) {
 			toast.add({ title: 'Er ging iets mis', description: err.message, type: 'error' });
 			return;

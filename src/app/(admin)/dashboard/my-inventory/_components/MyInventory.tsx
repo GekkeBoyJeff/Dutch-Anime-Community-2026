@@ -205,8 +205,8 @@ const MyInventory = () => {
 		const { data, error: err } = await getBrowserClient().rpc('request_item_unavailability', {
 			p_item: unavailFor.id,
 			p_starts: uStart,
-			p_ends: uEnd || null,
-			p_reason: uReason.trim() || null,
+			p_ends: (uEnd || null) as string,
+			p_reason: (uReason.trim() || null) as string,
 		});
 		if (err) {
 			toast.add({ title: 'Er ging iets mis', description: err.message, type: 'error' });

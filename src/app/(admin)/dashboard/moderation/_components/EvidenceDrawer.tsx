@@ -1,6 +1,7 @@
 'use client';
 
 import { Toast } from '@base-ui/react/toast';
+import { type SupabaseClient } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
 import Button from '@/components/basics/Button';
@@ -56,7 +57,7 @@ const EvidenceDrawer = ({ table, fkColumn, fkValue, title, canManage, canDelete,
 		getBrowserClient()
 			.from(table)
 			.select('id, kind, storage_path, url, body')
-			.eq(fkColumn, fkValue)
+			.eq(fkColumn as never, fkValue)
 			.order('created_at', { ascending: false })
 			.then(({ data, error }) => {
 				if (!active) return;
@@ -97,7 +98,7 @@ const EvidenceDrawer = ({ table, fkColumn, fkValue, title, canManage, canDelete,
 					return;
 				}
 			}
-			const { error } = await db.from(table).insert({
+			const { error } = await (db as unknown as SupabaseClient).from(table).insert({
 				[fkColumn]: fkValue,
 				kind,
 				storage_path: storagePath,

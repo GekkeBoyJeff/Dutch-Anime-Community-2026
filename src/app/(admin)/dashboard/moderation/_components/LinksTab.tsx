@@ -70,7 +70,7 @@ const LinksTab = ({ subjectId, sessionUserId, canManage, canDelete }: Props) => 
 			toast.add({ title: 'Kies een profiel.', type: 'error' });
 			return;
 		}
-		const [low, high] = [subjectId, form.other].sort();
+		const [low, high] = [subjectId, form.other].sort() as [string, string];
 		const { error } = await getBrowserClient()
 			.from('mod_subject_links')
 			.insert({ subject_low: low, subject_high: high, reason: form.reason.trim() || null, created_by: sessionUserId });

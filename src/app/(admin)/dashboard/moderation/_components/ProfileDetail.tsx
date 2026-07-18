@@ -25,7 +25,7 @@ interface AttendanceRow {
 	status: string;
 }
 interface ActivityRow {
-	id: string;
+	id: number;
 	kind: string;
 	summary: string | null;
 	created_at: string;

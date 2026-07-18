@@ -16,6 +16,7 @@ import Select from '@/components/forms/Select';
 import { useDashboardGuard } from '@/hooks/useDashboardGuard';
 import { APP_ROLES, type Permission } from '@/lib/auth/permissions';
 import { getBrowserClient } from '@/lib/supabase/client';
+import type { Enums } from '@/types/database.types';
 
 interface Row {
 	id: string;
@@ -82,7 +83,7 @@ const AccessManager = () => {
 	}, [ready, session, refreshKey]);
 
 	const setRole = async (userId: string, role: string) => {
-		const { error: err } = await getBrowserClient().from('user_roles').upsert({ user_id: userId, role }, { onConflict: 'user_id' });
+		const { error: err } = await getBrowserClient().from('user_roles').upsert({ user_id: userId, role: role as Enums<'app_role'> }, { onConflict: 'user_id' });
 		if (err) {
 			toast.add({ title: 'Er ging iets mis', description: err.message, type: 'error' });
 			return;
