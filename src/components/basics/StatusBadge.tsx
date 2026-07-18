@@ -33,6 +33,12 @@ const STATUS: Record<string, Record<string, { variant: StatusVariant; label: str
 		rejected: { variant: 'error', label: 'Afgewezen' },
 		cancelled: { variant: 'neutral', label: 'Ingetrokken' },
 	},
+	survey: {
+		concept: { variant: 'neutral', label: 'Concept' },
+		open: { variant: 'success', label: 'Open' },
+		closed: { variant: 'info', label: 'Gesloten' },
+		archived: { variant: 'neutral', label: 'Gearchiveerd' },
+	},
 };
 
 export type StatusDomain = keyof typeof STATUS;

@@ -2079,6 +2079,13 @@ export type Database = {
         Args: { p_answers: Json; p_id: string }
         Returns: string
       }
+      survey_response_counts: {
+        Args: never
+        Returns: {
+          response_count: number
+          survey_id: string
+        }[]
+      }
       unmerge_subject: { Args: { p_id: string }; Returns: undefined }
     }
     Enums: {

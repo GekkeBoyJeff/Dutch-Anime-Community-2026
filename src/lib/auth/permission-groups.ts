@@ -16,5 +16,6 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
 	{ key: 'inventory', title: 'Inventory & conventies', permissions: ['inventory.view', 'inventory.manage'] },
 	{ key: 'expenses', title: 'Declaraties', permissions: ['expenses.view', 'expenses.manage'] },
 	{ key: 'badges', title: 'Badges', permissions: ['badges.manage'] },
+	{ key: 'surveys', title: 'Enquêtes', permissions: ['surveys.manage'] },
 	{ key: 'logs', title: 'Logs & systeem', permissions: ['logs.view', 'records.delete', 'notifications.send'] },
 ];
