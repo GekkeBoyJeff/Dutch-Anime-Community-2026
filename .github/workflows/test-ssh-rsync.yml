@@ -1,0 +1,39 @@
+name: Test SSH + rsync (diagnostic)
+
+# Manual-only probe: confirms the DirectAdmin box accepts SSH on 2222, has rsync,
+# and prints the real docroot path (→ the REMOTE_DIR for the rsync deploy).
+# Reuses the existing FTP_* secrets with password auth; touches nothing on the server.
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install sshpass + rsync
+        run: sudo apt-get update && sudo apt-get install -y sshpass rsync
+
+      - name: SSH reachable, rsync present, discover docroot
+        env:
+          SSH_HOST: ${{ secrets.FTP_HOST }}
+          SSH_USER: ${{ secrets.FTP_USER }}
+          SSH_PASS: ${{ secrets.FTP_PASSWORD }}
+          SSH_PORT: '2222'
+        run: |
+          sshpass -p "$SSH_PASS" ssh -p "$SSH_PORT" \
+            -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 \
+            "$SSH_USER@$SSH_HOST" \
+            'echo "=== CONNECTED ==="; echo "rsync: $(command -v rsync || echo NOT-FOUND)"; echo "HOME=$HOME"; echo "PWD=$(pwd)"; echo "=== docroots under ~/domains ==="; ls -d ~/domains/*/public_html 2>/dev/null || echo "(no ~/domains/*/public_html found)"; echo "=== END ==="'
+
+      - name: End-to-end rsync-over-SSH dry-run (writes nothing, -n)
+        env:
+          SSH_HOST: ${{ secrets.FTP_HOST }}
+          SSH_USER: ${{ secrets.FTP_USER }}
+          SSH_PASS: ${{ secrets.FTP_PASSWORD }}
+          SSH_PORT: '2222'
+        run: |
+          mkdir -p _probe && echo "rsync probe" > _probe/_probe.txt
+          sshpass -p "$SSH_PASS" rsync -azvn \
+            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20" \
+            _probe/ "$SSH_USER@$SSH_HOST:_rsync_probe_dir/"
+          echo "rsync transport OK (dry-run, no files written)"
