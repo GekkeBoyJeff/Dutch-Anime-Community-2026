@@ -69,7 +69,7 @@ const NotificationsComposer = () => {
 		try {
 			// 'Alle leden' laat de Edge Function de ontvangers zelf bepalen (audience:'all', service-role) — dan
 			// hangt de doelgroep niet af van de RLS-breedte of paginering van de client.
-			const common = { kind: 'message', title: title.trim(), body: body.trim() || null, url: url.trim() || null };
+			const common = { kind: 'message', type: 'handmatige-melding', title: title.trim(), body: body.trim() || null, url: url.trim() || null };
 			const payload = all ? { ...common, audience: 'all' } : { ...common, user_ids: selected };
 			const { data, error } = await getBrowserClient().functions.invoke('send-push', { body: payload });
 			if (error) {

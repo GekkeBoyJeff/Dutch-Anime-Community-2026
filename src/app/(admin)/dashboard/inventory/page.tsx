@@ -4,7 +4,7 @@ import InventoryManager from '@/app/(admin)/dashboard/inventory/_components/Inve
 
 import '@/app/(admin)/dashboard/inventory.scss';
 
-export const metadata: Metadata = { title: 'Inventory & conventies', robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: 'Inventaris', robots: { index: false, follow: false } };
 
 const InventoryPage = () => <InventoryManager />;
 

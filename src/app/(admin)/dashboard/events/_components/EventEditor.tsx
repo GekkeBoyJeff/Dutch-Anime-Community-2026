@@ -9,6 +9,7 @@ import ActivitiesTab from '@/app/(admin)/dashboard/events/_components/Activities
 import AgendaTab from '@/app/(admin)/dashboard/events/_components/AgendaTab';
 import CostsTab from '@/app/(admin)/dashboard/events/_components/CostsTab';
 import EvaluationTab from '@/app/(admin)/dashboard/events/_components/EvaluationTab';
+import PostTab from '@/app/(admin)/dashboard/events/_components/PostTab';
 import EventDetail from '@/app/(admin)/dashboard/inventory/_components/EventDetail';
 import Alert from '@/components/basics/Alert';
 import Breadcrumb from '@/components/basics/Breadcrumb';
@@ -87,7 +88,8 @@ const fromInput = (s: string): string | null => (s ? new Date(s).toISOString() :
 const EventEditor = () => {
 	const { ready, fallback, session } = useDashboardGuard('inventory.manage', { className: 'inventory', label: 'Conventie laden' });
 	const router = useRouter();
-	const eventId = useSearchParams().get('id');
+	// EventsRouter only mounts this component when ?id= is present.
+	const eventId = useSearchParams().get('id') as string;
 	const toast = Toast.useToastManager();
 
 	const [event, setEvent] = useState<EventRow | null>(null);
@@ -196,20 +198,9 @@ const EventEditor = () => {
 
 	if (!ready || !session) return fallback;
 
-	if (!eventId) {
-		return (
-			<Container className="inventory">
-				<Alert variant="info">Geen conventie gekozen.</Alert>
-				<Button variant="secondary" onClick={() => router.push('/dashboard/inventory')}>
-					Terug naar Inventory
-				</Button>
-			</Container>
-		);
-	}
-
 	const crumbs = [
 		{ label: 'Dashboard', url: '/dashboard' },
-		{ label: 'Inventory & conventies', url: '/dashboard/inventory' },
+		{ label: 'Conventies & events', url: '/dashboard/events' },
 		{ label: event ? event.name : 'Conventie' },
 	];
 
@@ -301,8 +292,8 @@ const EventEditor = () => {
 				<Button variant="primary" onClick={saveInfo} disabled={form === null}>
 					Opslaan
 				</Button>
-				<Button variant="secondary" onClick={() => router.push('/dashboard/inventory')}>
-					Terug naar Inventory
+				<Button variant="secondary" onClick={() => router.push('/dashboard/events')}>
+					Terug naar Conventies &amp; events
 				</Button>
 			</div>
 		</div>
@@ -338,8 +329,8 @@ const EventEditor = () => {
 			{event === null ? (
 				<>
 					<Alert variant="error" title="Niet gevonden">Deze conventie bestaat niet of je hebt er geen toegang toe.</Alert>
-					<Button variant="secondary" onClick={() => router.push('/dashboard/inventory')}>
-						Terug naar Inventory
+					<Button variant="secondary" onClick={() => router.push('/dashboard/events')}>
+						Terug naar Conventies &amp; events
 					</Button>
 				</>
 			) : (
@@ -365,8 +356,22 @@ const EventEditor = () => {
 									event={event}
 									items={items}
 									users={users}
-									onClose={() => router.push('/dashboard/inventory')}
+									onClose={() => router.push('/dashboard/events')}
 									onError={(message) => toast.add({ title: 'Er ging iets mis', description: message, type: 'error' })}
+								/>
+							),
+						},
+						{
+							label: 'Post',
+							panel: (
+								<PostTab
+									eventId={eventId}
+									sessionUserId={session.user.id}
+									eventName={event.name}
+									startsOn={event.starts_on}
+									attendance={attendance}
+									users={users}
+									subjectName={subjectName}
 								/>
 							),
 						},

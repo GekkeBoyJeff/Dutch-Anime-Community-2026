@@ -18,10 +18,12 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
 	{ key: 'builder', title: 'Pagina-editor', navLabel: "Pagina's", description: "Bewerk pagina's met de visuele builder.", href: '/builder', permission: 'pages.edit' },
 	{ key: 'media', title: 'Media', navLabel: 'Media', description: 'Upload en beheer afbeeldingen.', href: '/upload', permission: 'media.manage' },
 	{ key: 'access', title: 'Toegangsbeheer', navLabel: 'Toegang', description: 'Ken rollen en permissies toe aan gebruikers.', href: '/dashboard/access', permission: 'roles.manage' },
-	{ key: 'inventory', title: 'Inventory & conventies', navLabel: 'Inventory', description: 'Beheer items, conventies, toewijzingen en tickets.', href: '/dashboard/inventory', permission: 'inventory.manage' },
+	{ key: 'events', title: 'Conventies & events', navLabel: 'Conventies & events', description: 'Beheer conventies, aanwezigheid en agenda.', href: '/dashboard/events', permission: 'inventory.manage' },
+	{ key: 'inventory', title: 'Inventaris', navLabel: 'Inventaris', description: 'Beheer items en toewijzingen.', href: '/dashboard/inventory', permission: 'inventory.manage' },
 	{ key: 'my-inventory', title: 'Mijn inventory & conventies', navLabel: 'Mijn spullen', description: 'Je eigen items en wat je moet meenemen.', href: '/dashboard/my-inventory', permission: 'inventory.view' },
 	// Eén route: tab "Mijn declaraties" (expenses.view) + tab "Beheer" die alleen verschijnt bij expenses.manage.
 	{ key: 'expenses', title: 'Declaraties', navLabel: 'Declaraties', description: 'Dien kosten in met bon en beoordeel declaraties.', href: '/dashboard/expenses', permission: 'expenses.view' },
+	{ key: 'finance', title: 'Financiën', navLabel: 'Financiën', description: 'Org-breed overzicht van kosten en declaraties.', href: '/dashboard/finance', permission: 'expenses.manage' },
 	{ key: 'moderation', title: 'Moderatie', navLabel: 'Moderatie', description: 'Profielen, warnings, links en bans.', href: '/dashboard/moderation', permission: 'moderation.view' },
 	{ key: 'notifications', title: 'Meldingen', navLabel: 'Meldingen', description: 'Stuur meldingen naar leden.', href: '/dashboard/notifications', permission: 'notifications.send' },
 	{ key: 'surveys', title: 'Enquêtes & polls', navLabel: 'Enquêtes', description: 'Maak en beheer enquêtes en polls.', href: '/dashboard/surveys', permission: 'surveys.manage' },
@@ -42,11 +44,9 @@ export interface NavGroupLink {
 }
 
 // Dashboard routes that aren't sections themselves but are reached from one, so the nav group they belong
-// to still lights up. E.g. the event editor (/dashboard/events?id=…) is opened from Inventory's Conventies
-// tab, not nested under /dashboard/inventory. Extend this map as future detail routes appear.
-export const DASHBOARD_ROUTE_OWNERSHIP: Record<string, string> = {
-	'/dashboard/events': 'inventory',
-};
+// to still lights up. The event editor (/dashboard/events?id=…) nests under its own section's href, so it
+// needs no entry here. Extend this map as future detail routes appear that don't nest under their section.
+export const DASHBOARD_ROUTE_OWNERSHIP: Record<string, string> = {};
 
 export interface NavGroup {
 	key: string;
@@ -95,9 +95,16 @@ export const DASHBOARD_GROUPS: DashboardGroupMeta[] = [
 		label: 'Operaties',
 		description: 'Voorraad, conventies en moderatie.',
 		entries: [
-			{ section: 'inventory', icon: 'calendar' },
+			{ section: 'events', icon: 'calendar' },
+			{ section: 'inventory', icon: 'list' },
 			{ section: 'moderation', icon: 'warning' },
 		],
+	},
+	{
+		key: 'financien',
+		label: 'Financiën',
+		description: 'Org-breed overzicht van kosten en declaraties.',
+		entries: [{ section: 'finance', icon: 'file' }],
 	},
 	{
 		key: 'content',

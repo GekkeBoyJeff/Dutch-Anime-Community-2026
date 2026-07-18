@@ -41,6 +41,30 @@
 	flex-wrap: wrap;
 }
 
+.events-stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+	gap: var(--admin-gap);
+}
+
+.events-stat {
+	display: grid;
+	gap: spacing(xs);
+	padding: var(--admin-gap);
+	border: 0.0625rem solid var(--border-color);
+	border-radius: 0.75rem;
+}
+
+.events-stat-label {
+	color: var(--color-secondary);
+	font-size: 0.875rem;
+}
+
+.events-stat-value {
+	font-weight: 700;
+	font-size: 1.25rem;
+}
+
 .con-groups {
 	display: grid;
 	gap: spacing(l);

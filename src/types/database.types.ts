@@ -494,6 +494,50 @@ export type Database = {
           },
         ]
       }
+      event_posts: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          event_id: string
+          generated_at: string | null
+          id: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          event_id: string
+          generated_at?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          event_id?: string
+          generated_at?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_posts_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_shifts: {
         Row: {
           created_at: string
@@ -1356,6 +1400,71 @@ export type Database = {
           },
         ]
       }
+      notification_history: {
+        Row: {
+          audience: Json | null
+          body: string | null
+          id: string
+          sender_user_id: string | null
+          sent_at: string
+          title: string
+          type_key: string | null
+        }
+        Insert: {
+          audience?: Json | null
+          body?: string | null
+          id?: string
+          sender_user_id?: string | null
+          sent_at?: string
+          title: string
+          type_key?: string | null
+        }
+        Update: {
+          audience?: Json | null
+          body?: string | null
+          id?: string
+          sender_user_id?: string | null
+          sent_at?: string
+          title?: string
+          type_key?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_history_type_key_fkey"
+            columns: ["type_key"]
+            isOneToOne: false
+            referencedRelation: "notification_types"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
+      notification_types: {
+        Row: {
+          created_at: string
+          description: string | null
+          enabled: boolean
+          key: string
+          label: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          enabled?: boolean
+          key: string
+          label: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          enabled?: boolean
+          key?: string
+          label?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -1541,6 +1650,35 @@ export type Database = {
           role?: Database["public"]["Enums"]["app_role"]
         }
         Relationships: []
+      }
+      shift_reminder_sends: {
+        Row: {
+          sent_at: string
+          shift_id: string
+          user_id: string
+          window_minutes: number
+        }
+        Insert: {
+          sent_at?: string
+          shift_id: string
+          user_id: string
+          window_minutes: number
+        }
+        Update: {
+          sent_at?: string
+          shift_id?: string
+          user_id?: string
+          window_minutes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shift_reminder_sends_shift_id_fkey"
+            columns: ["shift_id"]
+            isOneToOne: false
+            referencedRelation: "event_shifts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shift_swap_requests: {
         Row: {
@@ -1938,6 +2076,21 @@ export type Database = {
         Args: { p_approve: boolean; p_id: string }
         Returns: undefined
       }
+      finance_rollup: {
+        Args: { p_event_id?: string; p_from?: string; p_to?: string }
+        Returns: {
+          bedrag: number
+          bron: string
+          categorie: Database["public"]["Enums"]["expense_category"]
+          datum: string
+          event_id: string
+          event_naam: string
+          id: string
+          omschrijving: string
+          richting: string
+          status: Database["public"]["Enums"]["expense_status"]
+        }[]
+      }
       get_survey_for_fill: { Args: { p_id: string }; Returns: Json }
       get_survey_results: { Args: { p_id: string }; Returns: Json }
       hard_delete: {
@@ -2078,6 +2231,7 @@ export type Database = {
         }
       }
       role_rank_of: { Args: { uid: string }; Returns: number }
+      run_shift_reminders: { Args: never; Returns: undefined }
       set_packed: {
         Args: { assignment_id: string; packed: boolean }
         Returns: undefined

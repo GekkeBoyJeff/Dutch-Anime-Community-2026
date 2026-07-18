@@ -385,6 +385,12 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+# send-push accepteert twee auth-modi (auth:['user','secret']): een ingelogde announcer (user-JWT) én
+# de cron/pg_net-aanroep met de service-key (apikey-header, geen JWT). Daarom de platform-JWT-check uit;
+# withSupabase verifieert het user-pad zelf, dus het user-pad blijft even streng beveiligd.
+[functions.send-push]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327
