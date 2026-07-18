@@ -8,6 +8,7 @@ import type { PersonOption } from '@/app/(admin)/dashboard/_components/PersonPic
 import ActivitiesTab from '@/app/(admin)/dashboard/events/_components/ActivitiesTab';
 import AgendaTab from '@/app/(admin)/dashboard/events/_components/AgendaTab';
 import CostsTab from '@/app/(admin)/dashboard/events/_components/CostsTab';
+import EvaluationTab from '@/app/(admin)/dashboard/events/_components/EvaluationTab';
 import EventDetail from '@/app/(admin)/dashboard/inventory/_components/EventDetail';
 import Alert from '@/components/basics/Alert';
 import Button from '@/components/basics/Button';
@@ -347,6 +348,7 @@ const EventEditor = () => {
 							label: 'Kosten',
 							panel: <CostsTab eventId={eventId} initialBudget={event.budget_eur} onBudgetSaved={(b) => setEvent((ev) => (ev ? { ...ev, budget_eur: b } : ev))} />,
 						},
+						{ label: 'Evaluatie', panel: <EvaluationTab eventId={eventId} /> },
 						{
 							label: 'Items & tickets',
 							panel: (

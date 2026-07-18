@@ -2000,6 +2000,14 @@ export type Database = {
         Returns: Database["public"]["Enums"]["app_permission"][]
       }
       my_subject_id: { Args: never; Returns: string }
+      my_survey_history: {
+        Args: never
+        Returns: {
+          submitted_at: string
+          survey_id: string
+          title: string
+        }[]
+      }
       my_warnings: {
         Args: never
         Returns: {

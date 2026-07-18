@@ -49,6 +49,15 @@ const answered = (a: AnswerInput | undefined, kind: Kind): boolean => {
 	return a.value_number !== undefined && a.value_number !== null;
 };
 
+const fmtValue = (q: Question, a: (AnswerInput & { question_id: string }) | undefined): string => {
+	if (!a) return '—';
+	if (q.kind === 'text') return a.value_text ?? '—';
+	if (q.kind === 'date') return a.value_date ?? '—';
+	if (q.kind === 'yes_no') return a.value_number === 1 ? 'Ja' : a.value_number === 0 ? 'Nee' : '—';
+	if (isChoice(q.kind)) return (a.option_ids ?? []).map((id) => q.options.find((o) => o.id === id)?.label).filter(Boolean).join(', ') || '—';
+	return a.value_number != null ? String(a.value_number) : '—';
+};
+
 const Message = ({ title, children }: { title: string; children?: React.ReactNode }) => (
 	<Container className="enquete">
 		<div className="enquete-card enquete-message">
@@ -135,12 +144,32 @@ const SurveyFill = () => {
 			</Message>
 		);
 	if (!eligible) return <Message title={survey.title}>{<p>Deze enquête is niet voor jou bedoeld.</p>}</Message>;
-	if (submitted || already_submitted)
+	if (submitted)
 		return (
 			<Message title="Bedankt!">
 				<p>Je antwoorden zijn opgeslagen.</p>
 				{session && <Link href="/account">Bekijk je ingevulde enquêtes op je account</Link>}
 			</Message>
+		);
+	if (already_submitted)
+		return (
+			<Container className="enquete">
+				<div className="enquete-card">
+					<Title size={2}>{survey.title}</Title>
+					<p className="enquete-anon">Je hebt deze enquête al ingevuld. Dit zijn je antwoorden:</p>
+					<div className="enquete-questions">
+						{questions.map((q) => (
+							<div className="enquete-question" key={q.id}>
+								<span className="enquete-q-label">{q.label}</span>
+								<span className="enquete-answer">{fmtValue(q, data.my_answers?.find((x) => x.question_id === q.id))}</span>
+							</div>
+						))}
+					</div>
+					<Link href="/" className="enquete-back">
+						← Terug naar de website
+					</Link>
+				</div>
+			</Container>
 		);
 
 	return (

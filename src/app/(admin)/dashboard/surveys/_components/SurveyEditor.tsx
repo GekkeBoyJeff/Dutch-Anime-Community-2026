@@ -91,6 +91,7 @@ const SurveyEditor = ({ surveyId, open, events, otherSurveys, userId, onClose, o
 	const [locked, setLocked] = useState(false);
 	const [saving, setSaving] = useState(false);
 	const [loadedFor, setLoadedFor] = useState<string | null>(null);
+	const [frozen, setFrozen] = useState(false); // opengezet → anonymous/access_mode staan vast (DB-trigger)
 
 	// Reset bij openen/wisselen van doel — tijdens render, niet in een effect (setState-in-effect = eslint-error).
 	const target = open ? surveyId ?? 'new' : null;
@@ -98,6 +99,7 @@ const SurveyEditor = ({ surveyId, open, events, otherSurveys, userId, onClose, o
 		setLoadedFor(target);
 		setForm(target === 'new' ? { ...EMPTY, questions: [] } : null);
 		setLocked(false);
+		setFrozen(false);
 	}
 
 	useEffect(() => {
@@ -124,6 +126,7 @@ const SurveyEditor = ({ surveyId, open, events, otherSurveys, userId, onClose, o
 			}));
 			const count = ((c.data ?? []) as { survey_id: string; response_count: number }[]).find((r) => r.survey_id === surveyId)?.response_count ?? 0;
 			setLocked(count > 0);
+			setFrozen(s.data.opens_at !== null);
 			setForm({
 				title: s.data.title,
 				description: s.data.description ?? '',
@@ -277,23 +280,31 @@ const SurveyEditor = ({ surveyId, open, events, otherSurveys, userId, onClose, o
 						<TextArea value={form.description} onChange={(e) => setForm({ ...form, description: e.currentTarget.value })} />
 					</Field>
 
-					<Field name="access">
-						<Field.Label>Toegang</Field.Label>
-						<Select
-							native
-							aria-label="Toegang"
-							value={form.access_mode}
-							options={[
-								{ value: 'authenticated', label: 'Ingelogd (Discord)' },
-								{ value: 'public', label: 'Publiek (link, anoniem)' },
-							]}
-							onValueChange={(v) => setForm({ ...form, access_mode: v as Form['access_mode'], anonymous: v === 'public' ? false : form.anonymous })}
-						/>
-					</Field>
-					{form.access_mode === 'public' ? (
-						<p className="survey-note">Publieke enquêtes zijn altijd anoniem — iedereen met de link kan invullen.</p>
+					{frozen ? (
+						<p className="survey-note">
+							Toegang: {form.access_mode === 'public' ? 'Publiek (anoniem)' : form.anonymous ? 'Ingelogd · anoniem' : 'Ingelogd · op naam'} — vast na openzetten.
+						</p>
 					) : (
-						<Checkbox checked={form.anonymous} onCheckedChange={(anonymous) => setForm({ ...form, anonymous })} label="Anoniem (namen niet zichtbaar in resultaten)" />
+						<>
+							<Field name="access">
+								<Field.Label>Toegang</Field.Label>
+								<Select
+									native
+									aria-label="Toegang"
+									value={form.access_mode}
+									options={[
+										{ value: 'authenticated', label: 'Ingelogd (Discord)' },
+										{ value: 'public', label: 'Publiek (link, anoniem)' },
+									]}
+									onValueChange={(v) => setForm({ ...form, access_mode: v as Form['access_mode'], anonymous: v === 'public' ? false : form.anonymous })}
+								/>
+							</Field>
+							{form.access_mode === 'public' ? (
+								<p className="survey-note">Publieke enquêtes zijn altijd anoniem — iedereen met de link kan invullen.</p>
+							) : (
+								<Checkbox checked={form.anonymous} onCheckedChange={(anonymous) => setForm({ ...form, anonymous })} label="Anoniem (namen niet zichtbaar in resultaten)" />
+							)}
+						</>
 					)}
 
 					<Field name="audience">

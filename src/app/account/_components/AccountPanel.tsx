@@ -26,6 +26,15 @@ interface MyBadge {
 	awarded_on: string;
 	image_path: string | null;
 }
+interface OpenSurvey {
+	survey_id: string;
+	title: string;
+}
+interface HistorySurvey {
+	survey_id: string;
+	title: string;
+	submitted_at: string;
+}
 
 // Minimal member page: profile + logout, and a link into the dashboard when the user has any access.
 const AccountPanel = () => {
@@ -34,6 +43,8 @@ const AccountPanel = () => {
 	const [username, setUsername] = useState<string | null>(null);
 	const [warnings, setWarnings] = useState<MyWarning[]>([]);
 	const [badges, setBadges] = useState<MyBadge[]>([]);
+	const [openSurveys, setOpenSurveys] = useState<OpenSurvey[]>([]);
+	const [surveyHistory, setSurveyHistory] = useState<HistorySurvey[]>([]);
 
 	useEffect(() => {
 		if (loading) return;
@@ -50,6 +61,8 @@ const AccountPanel = () => {
 		// Eigen actieve warnings (kolom-afgeschermde RPC: alleen kleur/reden/datum, volgt merges).
 		db.rpc('my_warnings').then(({ data }) => setWarnings((data ?? []) as MyWarning[]));
 		db.rpc('my_badges').then(({ data }) => setBadges((data ?? []) as MyBadge[]));
+		db.rpc('my_open_surveys').then(({ data }) => setOpenSurveys((data ?? []) as OpenSurvey[]));
+		db.rpc('my_survey_history').then(({ data }) => setSurveyHistory((data ?? []) as HistorySurvey[]));
 	}, [loading, session, router]);
 
 	const badgeUrl = (path: string): string => getBrowserClient().storage.from('badges').getPublicUrl(path).data.publicUrl;
@@ -97,6 +110,39 @@ const AccountPanel = () => {
 							</article>
 						))}
 					</div>
+				</section>
+			)}
+
+			{(openSurveys.length > 0 || surveyHistory.length > 0) && (
+				<section className="account-surveys">
+					<Title element="h2" size={4}>Mijn enquêtes</Title>
+					{openSurveys.length > 0 && (
+						<ul className="con-list">
+							{openSurveys.map((s) => (
+								<li key={s.survey_id} className="con-line">
+									<span className="con-line-main">{s.title}</span>
+									<Button variant="secondary" url={`/enquete?id=${s.survey_id}`}>
+										Invullen
+									</Button>
+								</li>
+							))}
+						</ul>
+					)}
+					{surveyHistory.length > 0 && (
+						<ul className="con-list">
+							{surveyHistory.map((s) => (
+								<li key={s.survey_id} className="con-line">
+									<div className="con-line-info">
+										<span className="con-line-main">{s.title}</span>
+										<span className="con-note">{formatDate(s.submitted_at, { dateStyle: 'medium' }) ?? s.submitted_at}</span>
+									</div>
+									<Button variant="ghost" url={`/enquete?id=${s.survey_id}`}>
+										Bekijk
+									</Button>
+								</li>
+							))}
+						</ul>
+					)}
 				</section>
 			)}
 

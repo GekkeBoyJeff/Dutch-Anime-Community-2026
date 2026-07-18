@@ -4,12 +4,14 @@ import { Toast } from '@base-ui/react/toast';
 import { useEffect, useMemo, useState } from 'react';
 
 import SurveyEditor from '@/app/(admin)/dashboard/surveys/_components/SurveyEditor';
+import SurveyResults from '@/app/(admin)/dashboard/surveys/_components/SurveyResults';
 import Button from '@/components/basics/Button';
 import Container from '@/components/basics/Container';
 import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
 import ConfirmDialog from '@/components/components/ConfirmDialog';
 import DataTable, { type DataTableColumn } from '@/components/components/DataTable';
+import Drawer from '@/components/components/Drawer';
 import FilterBar from '@/components/components/FilterBar';
 import Checkbox from '@/components/forms/Checkbox';
 import { useDashboardGuard } from '@/hooks/useDashboardGuard';
@@ -46,6 +48,7 @@ const SurveysManager = () => {
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [editorOpen, setEditorOpen] = useState(false);
 	const [editId, setEditId] = useState<string | null>(null);
+	const [resultsId, setResultsId] = useState<string | null>(null);
 	const [toDelete, setToDelete] = useState<SurveyRow | null>(null);
 	const [search, setSearch] = useState('');
 	const [statusFilter, setStatusFilter] = useState('');
@@ -159,6 +162,9 @@ const SurveysManager = () => {
 								Heropenen
 							</Button>
 						)}
+						<Button variant="secondary" onClick={() => setResultsId(s.id)}>
+							Resultaten
+						</Button>
 						<Button variant="secondary" onClick={() => openEditor(s.id)}>
 							Bewerk
 						</Button>
@@ -227,6 +233,10 @@ const SurveysManager = () => {
 				onClose={() => setEditorOpen(false)}
 				onSaved={() => setRefreshKey((k) => k + 1)}
 			/>
+
+			<Drawer open={resultsId !== null} onOpenChange={(open) => !open && setResultsId(null)} title="Resultaten" size="46rem">
+				<SurveyResults surveyId={resultsId} />
+			</Drawer>
 
 			<ConfirmDialog
 				open={toDelete !== null}

@@ -103,3 +103,66 @@
 	gap: 0.5rem;
 	align-items: center;
 }
+
+.survey-results {
+	display: grid;
+	gap: 1rem;
+}
+
+.survey-results-count {
+	font-weight: 600;
+	margin: 0;
+}
+
+.survey-results-summary {
+	display: grid;
+	gap: 1rem;
+}
+
+.survey-result-block {
+	display: grid;
+	gap: 0.35rem;
+	padding: 0.75rem;
+	border: 0.0625rem solid var(--border-color);
+	border-radius: 0.6rem;
+}
+
+.survey-result-label {
+	font-weight: 600;
+}
+
+.survey-result-stat {
+	color: var(--color-secondary);
+}
+
+.survey-result-tally,
+.survey-result-list {
+	display: grid;
+	gap: 0.25rem;
+	margin: 0;
+	padding-left: 1.1rem;
+
+	li {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.75rem;
+	}
+}
+
+.survey-results-table-wrap {
+	overflow-x: auto;
+}
+
+.survey-results-table {
+	border-collapse: collapse;
+	width: 100%;
+	font-size: 0.875rem;
+
+	th,
+	td {
+		border: 0.0625rem solid var(--border-color);
+		padding: 0.4rem 0.6rem;
+		text-align: left;
+		vertical-align: top;
+	}
+}
