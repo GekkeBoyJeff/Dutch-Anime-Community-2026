@@ -1629,6 +1629,236 @@ export type Database = {
         }
         Relationships: []
       }
+      survey_answer_choices: {
+        Row: {
+          answer_id: string
+          id: string
+          option_id: string
+        }
+        Insert: {
+          answer_id: string
+          id?: string
+          option_id: string
+        }
+        Update: {
+          answer_id?: string
+          id?: string
+          option_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_answer_choices_answer_id_fkey"
+            columns: ["answer_id"]
+            isOneToOne: false
+            referencedRelation: "survey_answers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "survey_answer_choices_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "survey_question_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_answers: {
+        Row: {
+          id: string
+          question_id: string
+          response_id: string
+          value_date: string | null
+          value_number: number | null
+          value_text: string | null
+        }
+        Insert: {
+          id?: string
+          question_id: string
+          response_id: string
+          value_date?: string | null
+          value_number?: number | null
+          value_text?: string | null
+        }
+        Update: {
+          id?: string
+          question_id?: string
+          response_id?: string
+          value_date?: string | null
+          value_number?: number | null
+          value_text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "survey_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "survey_answers_response_id_fkey"
+            columns: ["response_id"]
+            isOneToOne: false
+            referencedRelation: "survey_responses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_question_options: {
+        Row: {
+          id: string
+          label: string
+          position: number
+          question_id: string
+        }
+        Insert: {
+          id?: string
+          label: string
+          position?: number
+          question_id: string
+        }
+        Update: {
+          id?: string
+          label?: string
+          position?: number
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_question_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "survey_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_questions: {
+        Row: {
+          id: string
+          kind: Database["public"]["Enums"]["survey_question_kind"]
+          label: string
+          position: number
+          required: boolean
+          survey_id: string
+        }
+        Insert: {
+          id?: string
+          kind: Database["public"]["Enums"]["survey_question_kind"]
+          label: string
+          position?: number
+          required?: boolean
+          survey_id: string
+        }
+        Update: {
+          id?: string
+          kind?: Database["public"]["Enums"]["survey_question_kind"]
+          label?: string
+          position?: number
+          required?: boolean
+          survey_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_questions_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_responses: {
+        Row: {
+          id: string
+          submitted_at: string
+          survey_id: string
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          submitted_at?: string
+          survey_id: string
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          submitted_at?: string
+          survey_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_responses_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      surveys: {
+        Row: {
+          access_mode: Database["public"]["Enums"]["survey_access_mode"]
+          anonymous: boolean
+          archived_at: string | null
+          archived_by: string | null
+          audience: Database["public"]["Enums"]["survey_audience"]
+          audience_role: Database["public"]["Enums"]["app_role"] | null
+          closes_at: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          event_id: string | null
+          id: string
+          opens_at: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          access_mode?: Database["public"]["Enums"]["survey_access_mode"]
+          anonymous?: boolean
+          archived_at?: string | null
+          archived_by?: string | null
+          audience?: Database["public"]["Enums"]["survey_audience"]
+          audience_role?: Database["public"]["Enums"]["app_role"] | null
+          closes_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_id?: string | null
+          id?: string
+          opens_at?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          access_mode?: Database["public"]["Enums"]["survey_access_mode"]
+          anonymous?: boolean
+          archived_at?: string | null
+          archived_by?: string | null
+          audience?: Database["public"]["Enums"]["survey_audience"]
+          audience_role?: Database["public"]["Enums"]["app_role"] | null
+          closes_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_id?: string | null
+          id?: string
+          opens_at?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "surveys_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_permissions: {
         Row: {
           created_at: string
@@ -1699,6 +1929,7 @@ export type Database = {
       }
       cancel_swap: { Args: { request_id: string }; Returns: undefined }
       canonical_subject_id: { Args: { p_id: string }; Returns: string }
+      close_survey: { Args: { p_id: string }; Returns: undefined }
       complete_event: {
         Args: { present_subjects: string[]; target_event: string }
         Returns: undefined
@@ -1707,6 +1938,8 @@ export type Database = {
         Args: { p_approve: boolean; p_id: string }
         Returns: undefined
       }
+      get_survey_for_fill: { Args: { p_id: string }; Returns: Json }
+      get_survey_results: { Args: { p_id: string }; Returns: Json }
       hard_delete: {
         Args: { target_id: string; target_table: string }
         Returns: {
@@ -1753,6 +1986,15 @@ export type Database = {
           kind: Database["public"]["Enums"]["conduct_kind"]
         }[]
       }
+      my_open_surveys: {
+        Args: never
+        Returns: {
+          closes_at: string
+          question_count: number
+          survey_id: string
+          title: string
+        }[]
+      }
       my_permissions: {
         Args: never
         Returns: Database["public"]["Enums"]["app_permission"][]
@@ -1766,6 +2008,7 @@ export type Database = {
           reason: string
         }[]
       }
+      open_survey: { Args: { p_id: string }; Returns: undefined }
       request_item_unavailability: {
         Args: {
           p_ends: string
@@ -1832,6 +2075,10 @@ export type Database = {
         Returns: undefined
       }
       subject_cluster_rank: { Args: { p_subject: string }; Returns: number }
+      submit_survey_response: {
+        Args: { p_answers: Json; p_id: string }
+        Returns: string
+      }
       unmerge_subject: { Args: { p_id: string }; Returns: undefined }
     }
     Enums: {
@@ -1853,6 +2100,7 @@ export type Database = {
         | "badges.manage"
         | "records.delete"
         | "notifications.send"
+        | "surveys.manage"
       app_role: "user" | "author" | "yakuza" | "admin" | "stand-staff"
       attendance_status:
         | "signed_up"
@@ -1869,6 +2117,17 @@ export type Database = {
       mod_ban_scope: "discord" | "convention" | "site"
       mod_link_status: "suspected" | "confirmed" | "rejected"
       mod_warn_color: "yellow" | "red"
+      survey_access_mode: "public" | "authenticated"
+      survey_audience: "all_users" | "role" | "event_attendees"
+      survey_question_kind:
+        | "rating_1_5"
+        | "scale_0_10"
+        | "yes_no"
+        | "number"
+        | "date"
+        | "text"
+        | "single_choice"
+        | "multi_choice"
       unavailability_status: "active" | "requested" | "rejected"
     }
     CompositeTypes: {
@@ -2018,6 +2277,7 @@ export const Constants = {
         "badges.manage",
         "records.delete",
         "notifications.send",
+        "surveys.manage",
       ],
       app_role: ["user", "author", "yakuza", "admin", "stand-staff"],
       attendance_status: [
@@ -2036,6 +2296,18 @@ export const Constants = {
       mod_ban_scope: ["discord", "convention", "site"],
       mod_link_status: ["suspected", "confirmed", "rejected"],
       mod_warn_color: ["yellow", "red"],
+      survey_access_mode: ["public", "authenticated"],
+      survey_audience: ["all_users", "role", "event_attendees"],
+      survey_question_kind: [
+        "rating_1_5",
+        "scale_0_10",
+        "yes_no",
+        "number",
+        "date",
+        "text",
+        "single_choice",
+        "multi_choice",
+      ],
       unavailability_status: ["active", "requested", "rejected"],
     },
   },
