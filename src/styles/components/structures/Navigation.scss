@@ -131,16 +131,12 @@
 					position: absolute;
 					inset-block-start: 0;
 					inset-inline-start: 0;
+					z-index: 0;
 					block-size: 100%;
 					border-radius: $rounded-full;
 					opacity: 0;
 					background-color: $grey-darkest;
 					transition: transform $speed $ease-snappy, width $speed $ease-snappy, opacity $speed-fast $ease;
-
-					@supports (backdrop-filter: invert(1)) {
-						background-color: transparent;
-						backdrop-filter: invert(0.92);
-					}
 
 					&[data-visible] {
 						opacity: 1;
@@ -148,6 +144,8 @@
 				}
 
 				ul {
+					position: relative;
+					z-index: 1;
 					display: flex;
 					align-items: center;
 					gap: spacing(xs);
@@ -162,7 +160,7 @@
 							border-radius: $rounded-full;
 							color: $grey-darkest;
 							font-weight: $weight-medium;
-							transition: transform $speed-fast $ease;
+							transition: transform $speed-fast $ease, color $speed $ease;
 
 							@include interactive {
 								transform: scale(1.06);
@@ -170,6 +168,7 @@
 						}
 
 						&.is-active .navigation-link {
+							color: $white;
 							font-weight: $weight-bold;
 							transform: none;
 						}
@@ -180,19 +179,21 @@
 	}
 
 	&.is-dashboard .navigation-bar .navigation-brand {
-		inline-size: auto;
-		gap: spacing(xs);
-		padding-inline: spacing(xs) spacing(m);
-
-		.navigation-wordmark {
-			position: static;
+		@include bp(l) {
 			inline-size: auto;
-			block-size: auto;
-			overflow: visible;
-			clip-path: none;
-			white-space: nowrap;
-			font-weight: $weight-bold;
-			letter-spacing: $tracking-tight;
+			gap: spacing(xs);
+			padding-inline: spacing(xs) spacing(m);
+
+			.navigation-wordmark {
+				position: static;
+				inline-size: auto;
+				block-size: auto;
+				overflow: visible;
+				clip-path: none;
+				white-space: nowrap;
+				font-weight: $weight-bold;
+				letter-spacing: $tracking-tight;
+			}
 		}
 	}
 
