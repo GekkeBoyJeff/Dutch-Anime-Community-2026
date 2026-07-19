@@ -1,8 +1,7 @@
--- Fase 8 — ledenlijst voor de meldingen-composer. De 'profiles read'-policy geeft alleen alle rijen aan
--- roles.manage / moderation.view / logs.view / expenses.manage; iemand met alléén notifications.send zag
--- daardoor enkel zichzelf, waardoor 'Alle leden' stil naar één ontvanger stuurde. Deze RPC geeft id +
--- username aan houders van notifications.send (SECURITY DEFINER, dus los van de tabel-RLS), zonder de
--- volledige profielrij breder open te zetten. Niet-gerechtigden krijgen een lege set.
+-- Phase 8 — member list for the notifications composer. The 'profiles read' policy only grants all
+-- rows to roles.manage/moderation.view/logs.view/expenses.manage, so a notifications.send-only holder
+-- saw just themselves. This RPC gives id + username to notifications.send holders without widening
+-- profiles read access; unauthorized callers get an empty set.
 create or replace function public.list_notifiable_members()
 returns table(id uuid, username text)
 language sql stable security definer set search_path = '' as $$

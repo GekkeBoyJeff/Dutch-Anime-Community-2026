@@ -1,6 +1,6 @@
--- Fase 5: het declaratie-beheer (expenses.manage) toont de naam van de declarant, maar de profiles-read-
--- policy dekte expenses.manage nog niet → namen vielen terug op UUID's. Voeg expenses.manage toe (alleen
--- lezen van username; zelfde patroon als de logs.view-toevoeging in 110006).
+-- Phase 5: expense management (expenses.manage) shows the claimant's name, but the profiles-read policy
+-- didn't cover expenses.manage yet, so names fell back to UUIDs. Add expenses.manage (read-only username
+-- access; same pattern as the logs.view addition in 110006).
 drop policy if exists "profiles read" on public.profiles;
 create policy "profiles read" on public.profiles for select to authenticated
 	using (

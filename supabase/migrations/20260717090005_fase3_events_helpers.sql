@@ -1,12 +1,12 @@
--- Fase 3 — events-extensies + rang/subject-helpers (de spil voor alle Fase 3-RLS).
+-- Phase 3 — events extensions + rank/subject helpers (the pivot for all Phase 3 RLS).
 alter table public.events
 	add column if not exists kind public.event_kind not null default 'convention',
 	add column if not exists parent_event_id uuid references public.events(id) on delete set null,
 	add column if not exists signups_open_at timestamptz,
 	add column if not exists signups_close_at timestamptz;
 
--- Rang van een user: admin 3, yakuza 2, stand-staff 1, anders/onbekend 0. SECURITY DEFINER zodat het
--- user_roles kan lezen ongeacht RLS; rapporteert alleen een rang, geen escalatiepad.
+-- Rank of a user: admin 3, yakuza 2, stand-staff 1, else/unknown 0. SECURITY DEFINER so it can
+-- read user_roles regardless of RLS; reports only a rank, no escalation path.
 create or replace function public.role_rank_of(uid uuid)
 returns int language sql stable security definer set search_path = '' as $$
 	select coalesce((
@@ -21,7 +21,7 @@ returns int language sql stable security definer set search_path = '' as $$
 $$;
 grant execute on function public.role_rank_of(uuid) to authenticated;
 
--- Het subject-id (canoniek profiel) van de beller, voor eigen-inschrijving/-inzage.
+-- The caller's subject id (canonical profile), for self-signup/self-view.
 create or replace function public.my_subject_id()
 returns uuid language sql stable security definer set search_path = '' as $$
 	select s.id from public.mod_subjects s where s.user_id = (select auth.uid()) limit 1;

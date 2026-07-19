@@ -1,9 +1,9 @@
--- Fase 2 review-fixes.
+-- Phase 2 review fixes.
 
--- FIX A (medium, privacy): subject_names had geen WHERE → een definer-view granted aan elke authenticated
--- lekte ALLE mod_subjects, inclusief schaduwprofielen van niet-consenterende, gemodereerde personen
--- (RLS-bypass). Beperk tot echte accounts; schaduw-/bezoekernamen blijven moderation-only (Fase 3-lijn:
--- bezoekers-attendance is alleen leesbaar met moderation.view).
+-- FIX A (medium, privacy): subject_names had no WHERE → a definer view granted to every authenticated
+-- caller leaked ALL mod_subjects, including shadow profiles of non-consenting moderated people (RLS
+-- bypass). Restrict to real accounts; shadow/visitor names stay moderation-only (phase 3: visitor
+-- attendance is only readable with moderation.view).
 create or replace view public.subject_names
 with (security_invoker = false) as
 	select s.id,
@@ -13,16 +13,16 @@ with (security_invoker = false) as
 	join public.profiles p on p.id = s.user_id;
 grant select on public.subject_names to authenticated;
 
--- FIX B (low, defense-in-depth): profiles had table-brede UPDATE voor authenticated → een user kon eigen
--- guild_roles/guild_nick/global_name/discord_id vervalsen (geen consument nu, maar latente escalatie zodra
--- een latere fase daarop authz baseert). De client schrijft alléén terms_* (TermsGate); triggers (definer)
--- en de discord-sync-EF (service role) schrijven de rest. Zelfde patroon als 110006 voor notifications.
+-- FIX B (low, defense-in-depth): profiles granted table-wide UPDATE to authenticated → a user could forge
+-- their own guild_roles/guild_nick/global_name/discord_id (no consumer yet, but a latent escalation once
+-- a later phase bases authz on it). The client only writes terms_* (TermsGate); triggers (definer) and
+-- the discord-sync EF (service role) write the rest. Same pattern as 110006 for notifications.
 revoke update on public.profiles from authenticated;
 grant update (terms_accepted_at, terms_version) on public.profiles to authenticated;
 
--- FIX (low): hardening van de login-trigger — isoleer de subject-koppeling in een eigen savepoint zodat een
--- (theoretische) botsing met de partial unique index de profielsync/naamhistorie niet terugdraait, en
--- voorkom de botsing met een not-exists-guard.
+-- FIX (low): harden the login trigger — isolate the subject linking in its own savepoint so a
+-- (theoretical) collision with the partial unique index doesn't roll back the profile sync/name
+-- history, and prevent the collision with a not-exists guard.
 create or replace function public.handle_user_metadata_update()
 returns trigger language plpgsql security definer set search_path = '' as $$
 declare
@@ -65,6 +65,6 @@ begin
 
 	return new;
 exception when others then
-	return new;  -- login mag NOOIT breken door deze trigger
+	return new;  -- login must NEVER break because of this trigger
 end;
 $$;

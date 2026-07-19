@@ -1,17 +1,15 @@
--- Fase C — org_income: het geld dat DAC binnenkrijgt (Ko-fi-donaties, verkoop op de stand, sponsoring).
--- Bewust een aparte, lichte tabel i.p.v. public.expenses overladen: expenses draagt een volledige
--- declaratie-workflow (verplichte declarant user_id, receipt_path NOT NULL, expense_status, iban/
--- account_holder, reviewed_by/at, review_note) die voor inkomsten geen betekenis heeft. Overladen zou die
--- DB-afgedwongen invarianten (elke declaratie heeft een bon en een indiener) moeten opgeven en de op
--- eigenaarschap gebouwde expenses-RLS vertroebelen. org_income houdt alleen wat inkomsten nodig hebben en
--- spiegelt de expenses-conventies (set_updated_at + log_audit, numeric(10,2) met > 0-check).
+-- Phase C — org_income: money DAC receives (Ko-fi donations, stand sales, sponsorship). Deliberately
+-- a separate, light table instead of overloading public.expenses, which carries a full expense-claim
+-- workflow (mandatory claimant user_id, receipt_path NOT NULL, review fields) meaningless for income.
+-- org_income keeps only what income needs and mirrors the expenses conventions (set_updated_at +
+-- log_audit, numeric(10,2) with a > 0 check).
 create table public.org_income (
 	id          uuid primary key default gen_random_uuid(),
-	event_id    uuid references public.events(id) on delete set null,  -- con of los evenement (optioneel)
+	event_id    uuid references public.events(id) on delete set null,  -- convention-tied or standalone (optional)
 	description text not null,
 	amount_eur  numeric(10, 2) not null check (amount_eur > 0),
 	category    public.income_category not null default 'other',
-	received_on date not null,                                         -- periodefilter leidt hiervan af
+	received_on date not null,                                         -- period filter derives from this
 	created_by  uuid not null default auth.uid() references auth.users(id),
 	created_at  timestamptz not null default now(),
 	updated_at  timestamptz not null default now()
@@ -21,9 +19,9 @@ create trigger audit_org_income after insert or update or delete on public.org_i
 grant select, insert, update, delete on public.org_income to authenticated, service_role;
 alter table public.org_income enable row level security;
 
--- Lezen + schrijven vereist expenses.manage (het Financiën-recht); spiegelt de manage-tak van expenses.
--- Geen client-DELETE-policy: hard delete loopt uitsluitend via de records.delete-gated hard_delete-RPC,
--- precies zoals bij expenses/kosten (B3/B4). RLS weigert delete standaard, de SECURITY DEFINER-RPC bypasst.
+-- Read + write requires expenses.manage (the Finance permission); mirrors the manage branch of expenses.
+-- No client DELETE policy: hard delete goes exclusively through the records.delete-gated hard_delete
+-- RPC, same as expenses/costs (B3/B4). RLS denies delete by default; the SECURITY DEFINER RPC bypasses it.
 create policy "income read" on public.org_income for select to authenticated
 	using ((select public.authorize('expenses.manage')));
 create policy "income insert" on public.org_income for insert to authenticated
@@ -32,10 +30,9 @@ create policy "income update" on public.org_income for update to authenticated
 	using ((select public.authorize('expenses.manage')))
 	with check ((select public.authorize('expenses.manage')));
 
--- finance_rollup opnieuw: nu een UNION over expenses (richting='uitgaven') én org_income
--- (richting='inkomsten'). categorie wordt text zodat beide enums (expense_category + income_category) in
--- één kolom passen; status is null voor inkomsten (die kennen geen beoordelingsworkflow). De signatuur
--- (argumenten) blijft identiek, dus de client-aanroep verandert niet. DROP omdat het return-type wijzigt.
+-- finance_rollup redefined: now a UNION over expenses and org_income. The category column becomes text
+-- so both enums (expense_category + income_category) fit one column; status is null for income (no
+-- review workflow). Arguments are unchanged so the client call doesn't change; DROP because the return type does.
 drop function if exists public.finance_rollup(date, date, uuid);
 create function public.finance_rollup(
 	p_from date default null,
@@ -94,8 +91,8 @@ language sql security definer set search_path = '' as $$
 $$;
 grant execute on function public.finance_rollup(date, date, uuid) to authenticated;
 
--- hard_delete uitgebreid met een org_income-tak: inkomsten hebben geen storage-objecten, dus enkel de rij
--- wissen (geen paden terug, zoals de inventory_items-tak). Alle bestaande takken ongewijzigd overgenomen.
+-- hard_delete extended with an org_income branch: income has no storage objects, so just delete the
+-- row (no paths returned, like the inventory_items branch). All existing branches carried over unchanged.
 create or replace function public.hard_delete(target_table text, target_id uuid)
 returns table (bucket_id text, path text)
 language plpgsql security definer set search_path = '' as $$

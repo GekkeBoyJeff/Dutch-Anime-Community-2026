@@ -1,6 +1,6 @@
--- Generieke audit-trail: elke INSERT/UPDATE/DELETE op een beheertabel logt oud/nieuw + actor.
--- Custom i.p.v. supa_audit (gearchiveerd, logt geen actor). SECURITY DEFINER → de trigger schrijft
--- ongeacht de RLS van de beller; er zijn geen client-write-policies.
+-- Generic audit trail: every INSERT/UPDATE/DELETE on a managed table logs old/new + actor.
+-- Custom instead of supa_audit (archived, doesn't log an actor). SECURITY DEFINER → the trigger
+-- writes regardless of the caller's RLS; there are no client write policies.
 create table public.audit_log (
 	id         bigint generated always as identity primary key,
 	table_name text not null,
@@ -24,13 +24,13 @@ begin
 		case when tg_op in ('INSERT', 'UPDATE') then to_jsonb(new) else null end,
 		auth.uid()
 	);
-	return null;  -- AFTER-trigger: returnwaarde wordt genegeerd
+	return null;  -- AFTER trigger: return value is ignored
 end;
 $$;
 
--- Aanhaken op alle beheertabellen met een uuid `id`. profiles krijgt GEEN update-audit: elke OAuth-login
--- ververst username/avatar_url → dat zou het log vervuilen (fase 2 voegt een audit-UPDATE mét
--- WHEN-conditie toe zodra er niet-sync-kolommen zijn).
+-- Attach to all managed tables with a uuid `id`. profiles gets NO update-audit: every OAuth login
+-- refreshes username/avatar_url → that would flood the log (phase 2 adds an audit UPDATE with a
+-- WHEN condition once there are non-sync columns).
 do $$
 declare t text;
 begin
@@ -46,8 +46,8 @@ end $$;
 drop trigger if exists audit_profiles on public.profiles;
 create trigger audit_profiles after insert or delete on public.profiles for each row execute function public.log_audit();
 
--- Leesbaar domein-log: "rol gewijzigd", "warning uitgedeeld", enz. Geschreven door domein-triggers/RPC's
--- (latere fases vullen dit verder). Refs zijn nullable — niet elke regel raakt een subject/event/item.
+-- Human-readable domain log: "role changed", "warning issued", etc. Written by domain triggers/RPCs
+-- (later phases add more). Refs are nullable — not every row touches a subject/event/item.
 create table public.activity_log (
 	id         bigint generated always as identity primary key,
 	kind       text not null,
@@ -59,8 +59,8 @@ create table public.activity_log (
 	created_at timestamptz not null default now()
 );
 
--- Fase-1-domeinregel: rolwijzigingen leesbaar loggen (Toegang is nu al live). Andere domeinregels
--- (warnings, bans, verzoeken) komen in hun eigen fase.
+-- Phase-1 domain rule: log role changes in human-readable form (Access is already live). Other
+-- domain rules (warnings, bans, requests) land in their own phase.
 create or replace function public.log_role_activity()
 returns trigger language plpgsql security definer set search_path = '' as $$
 declare who text;
@@ -75,12 +75,12 @@ $$;
 drop trigger if exists activity_user_roles on public.user_roles;
 create trigger activity_user_roles after insert or update of role on public.user_roles for each row execute function public.log_role_activity();
 
--- Indexen: BRIN op created_at (tijdreeks, goedkoop), btree voor "toon historie van record X".
+-- Indexes: BRIN on created_at (time series, cheap), btree for "show history of record X".
 create index audit_log_created_brin on public.audit_log using brin (created_at);
 create index audit_log_table_record on public.audit_log (table_name, record_id);
 create index activity_log_created_brin on public.activity_log using brin (created_at);
 
--- Grants + RLS: alleen lezen met logs.view; geen client-writes (triggers zijn definer).
+-- Grants + RLS: read-only with logs.view; no client writes (triggers are definer).
 grant select on public.audit_log to authenticated;
 grant select on public.activity_log to authenticated;
 grant select, insert on public.audit_log to service_role;

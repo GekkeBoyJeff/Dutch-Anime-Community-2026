@@ -1,6 +1,6 @@
--- Fase 5 — privé bucket `receipts` (pad <user_id>/<expense_id>/…). Spiegelt de tickets-bucket + hardening:
--- de declarant schrijft/leest alléén in de eigen map (foldername[1] = auth.uid()); expenses.manage overal;
--- hard delete van objecten is records.delete-gated (zelfde als tickets). Mimes/size op de bucket zelf.
+-- Phase 5 — private bucket `receipts` (path <user_id>/<expense_id>/…). Mirrors the tickets bucket +
+-- hardening: the claimant writes/reads only in their own folder (foldername[1] = auth.uid());
+-- expenses.manage everywhere; hard delete of objects is records.delete-gated (same as tickets).
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 	values ('receipts', 'receipts', false, 10485760, array['image/jpeg', 'image/png', 'application/pdf'])
 	on conflict (id) do update set file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;

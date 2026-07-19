@@ -1,7 +1,7 @@
--- 20260719160001_fasec_tickets.sql herdefinieerde hard_delete vanaf een verouderde basis en liet daarbij
--- de surveys- én org_income-tak vallen plus de badges-opruiming binnen de mod_subjects-tak. Omdat die
--- migratie ná 20260719140002_fasec_income.sql sorteert, won de onvolledige versie. Deze migratie herstelt
--- hard_delete éénmalig als de volledige unie van álle takken ooit toegevoegd (11 stuks).
+-- 20260719160001_fasec_tickets.sql redefined hard_delete from an outdated base, dropping the surveys
+-- and org_income branches plus the badges cleanup within the mod_subjects branch (it sorts after
+-- 20260719140002_fasec_income.sql, so the incomplete version won). This migration restores hard_delete
+-- once as the full union of every branch ever added (11 total).
 create or replace function public.hard_delete(target_table text, target_id uuid)
 returns table (bucket_id text, path text)
 language plpgsql security definer set search_path = '' as $$
@@ -55,7 +55,7 @@ begin
 		delete from public.mod_bans where id = target_id;
 
 	elsif target_table = 'tickets' then
-		delete from public.tickets where id = target_id;  -- cascade ruimt messages + participants
+		delete from public.tickets where id = target_id;  -- cascade cleans up messages + participants
 
 	elsif target_table = 'badges' then
 		return query

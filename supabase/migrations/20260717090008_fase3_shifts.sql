@@ -1,5 +1,5 @@
--- Fase 3 — shifts (timestamptz, Europe/Amsterdam-bedoeld) + ruilverzoeken. Lezen voor alle inventory.view
--- (om te kunnen ruilen); direct bewerken alleen inventory.manage. Ruilen vóór het event via een RPC.
+-- Phase 3 — shifts (timestamptz, Europe/Amsterdam intended) + swap requests. Readable by all
+-- inventory.view (to be able to swap); direct edits only via inventory.manage. Swap RPC runs before the event.
 create table public.event_shifts (
 	id         uuid primary key default gen_random_uuid(),
 	event_id   uuid not null references public.events(id) on delete cascade,
@@ -38,7 +38,7 @@ create trigger audit_shift_swap_requests after insert or update or delete on pub
 grant select, insert, update, delete on public.shift_swap_requests to authenticated, service_role;
 alter table public.shift_swap_requests enable row level security;
 
--- Lezen: yakuza+, of betrokkene (from/to). Aanmaken: de huidige shift-eigenaar biedt zijn eigen shift aan.
+-- Read: yakuza+, or an involved party (from/to). Insert: the current shift owner offers up their own shift.
 create policy "swap read" on public.shift_swap_requests for select to authenticated
 	using (
 		(select public.authorize('inventory.manage'))
@@ -51,13 +51,13 @@ create policy "swap insert" on public.shift_swap_requests for insert to authenti
 		and from_subject = (select public.my_subject_id())
 		and exists (select 1 from public.event_shifts s where s.id = shift_swap_requests.shift_id and s.subject_id = (select public.my_subject_id()))
 	);
--- Intrekken (cancel) door de aanvrager; accepteren gaat via apply_shift_swap.
+-- Withdraw (cancel) by the requester; accepting goes through apply_shift_swap.
 create policy "swap cancel" on public.shift_swap_requests for update to authenticated
 	using (from_subject = (select public.my_subject_id()) or (select public.authorize('inventory.manage')))
 	with check (from_subject = (select public.my_subject_id()) or (select public.authorize('inventory.manage')));
 
--- Ruil toepassen: alleen de ontvanger (acceptatie) of yakuza+, verzoek nog pending (race-safe met FOR
--- UPDATE), en strikt vóór de eventstartdag (Europe/Amsterdam). Zet de shift om + markeer accepted.
+-- Apply swap: only the recipient (accepting) or yakuza+, request still pending (race-safe via FOR
+-- UPDATE), and strictly before the event start day (Europe/Amsterdam). Reassigns the shift + marks accepted.
 create or replace function public.apply_shift_swap(request_id uuid)
 returns void language plpgsql security definer set search_path = '' as $$
 declare

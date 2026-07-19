@@ -1,9 +1,6 @@
--- Fase B — Financiën: één vlakke, filterbare rollup over al het geld dat DAC uitgeeft. De org-brede
--- tegenhanger van de per-conventie "Kosten"-tab en de eigen "Declaraties". Bron is uitsluitend
--- public.expenses: event-gebonden declaraties tellen als 'kosten', losse als 'declaratie'. Er is (nog)
--- geen inkomstenbron in het schema, dus richting is altijd 'uitgaven' — de UI toont inkomsten leeg.
--- SECURITY DEFINER met authorize('expenses.manage') in de WHERE: zonder dat recht komt er niets terug
--- (spiegelt survey_response_counts). Geen iban/account_holder — PII blijft buiten deze rollup.
+-- Phase B — Finance: one flat, filterable rollup over all money DAC spends, sourced solely from
+-- public.expenses (no income source exists yet, so direction is always 'uitgaven'). Gated on
+-- authorize('expenses.manage') in the WHERE, mirroring survey_response_counts; no iban/account_holder.
 create or replace function public.finance_rollup(
 	p_from date default null,
 	p_to date default null,

@@ -1,5 +1,5 @@
--- Fase 3 — aanwezigheid per event (incl. bezoekers via schaduwprofielen) + zelf-inschrijven binnen het
--- inschrijfvenster. De "slots open"-regel zit in RLS, niet in de UI.
+-- Phase 3 — attendance per event (incl. visitors via shadow profiles) + self-signup within the
+-- signup window. The "slots open" rule lives in RLS, not the UI.
 create table public.event_attendance (
 	id         uuid primary key default gen_random_uuid(),
 	event_id   uuid not null references public.events(id) on delete cascade,
@@ -17,12 +17,12 @@ create trigger audit_event_attendance after insert or update or delete on public
 grant select, insert, update, delete on public.event_attendance to authenticated, service_role;
 alter table public.event_attendance enable row level security;
 
--- Beheer (yakuza/admin): volledige CRUD.
+-- Management (yakuza/admin): full CRUD.
 create policy "attendance manage" on public.event_attendance for all to authenticated
 	using ((select public.authorize('inventory.manage'))) with check ((select public.authorize('inventory.manage')));
 
--- Lezen: eigen rij altijd; staff-aanwezigheid (subject met staff-rol) voor inventory.view-houders;
--- bezoekers (rang 0 = schaduw/geen staff) alleen voor moderation.view.
+-- Read: own row always; staff attendance (subject with a staff role) for inventory.view holders;
+-- visitors (rank 0 = shadow/no staff role) only for moderation.view.
 create policy "attendance read" on public.event_attendance for select to authenticated
 	using (
 		subject_id = (select public.my_subject_id())
@@ -36,7 +36,7 @@ create policy "attendance read" on public.event_attendance for select to authent
 		)
 	);
 
--- Zelf inschrijven binnen het venster: eigen subject, status signed_up, now() tussen open/close.
+-- Self-signup within the window: own subject, status signed_up, now() between open/close.
 create policy "attendance self signup" on public.event_attendance for insert to authenticated
 	with check (
 		(select public.authorize('inventory.view'))
@@ -50,7 +50,7 @@ create policy "attendance self signup" on public.event_attendance for insert to 
 		)
 	);
 
--- Eigen signed_up intrekken binnen het venster (na bevestiging naar expected mag alleen yakuza wijzigen).
+-- Withdraw own signed_up within the window (once confirmed to expected, only yakuza may change it).
 create policy "attendance self withdraw" on public.event_attendance for delete to authenticated
 	using (
 		subject_id = (select public.my_subject_id())

@@ -1,9 +1,9 @@
--- Fase 1 fixes na adversarial review (fix-forward; 110004/110005 zijn al toegepast, die raken we niet).
+-- Phase 1 fixes after adversarial review (fix-forward; 110004/110005 are already applied, untouched here).
 
--- FIX A (critical): hard_delete('inventory_items', …) gaf ticket-PDF-paden van NIET-verwijderde tickets
--- terug — event_tickets hangen aan events (niet aan items) en cascaden dus niet mee bij een item-delete,
--- terwijl de client die paden wél uit storage wiste → verlies van live ticket-PDF's. Een item heeft zelf
--- geen storage-children (assignments/history dragen geen bestanden) → geef niets terug voor die tak.
+-- FIX A (critical): hard_delete('inventory_items', …) returned ticket-PDF paths of tickets that weren't
+-- actually deleted — event_tickets belong to events, not items, so they don't cascade on an item delete,
+-- yet the client wiped those paths from storage anyway → loss of live ticket PDFs. An item itself has
+-- no storage children (assignments/history carry no files), so return nothing for that branch.
 create or replace function public.hard_delete(target_table text, target_id uuid)
 returns table (bucket_id text, path text)
 language plpgsql security definer set search_path = '' as $$
@@ -43,11 +43,10 @@ begin
 end;
 $$;
 
--- FIX B (high): 110004 haalde de DELETE-policy van de operationele child-rijen weg zonder vervanging →
--- niemand kon nog een toewijzing/ticket/historie-regel verwijderen (EventDetail-knoppen faalden stil).
--- Deze rijen worden NIET gearchiveerd; managers (inventory.manage) verwijderen ze direct (de audit-trigger
--- uit 110003 logt het). Herstel de DELETE-policy, en zet de tickets-PDF-storage-delete terug naar
--- inventory.manage (een manager die een ticket verwijdert moet ook de PDF kunnen opruimen).
+-- FIX B (high): 110004 removed the DELETE policy on operational child rows with no replacement, so
+-- nobody could delete an assignment/ticket/history row anymore (EventDetail buttons failed silently).
+-- These rows are NOT archived; managers (inventory.manage) delete them directly (110003's audit trigger
+-- logs it). Restore the DELETE policy and put tickets-PDF storage delete back on inventory.manage.
 drop policy if exists "assignments manage delete" on public.event_item_assignments;
 create policy "assignments manage delete" on public.event_item_assignments for delete to authenticated using ((select public.authorize('inventory.manage')));
 drop policy if exists "tickets manage delete" on public.event_tickets;
@@ -58,12 +57,12 @@ create policy "history manage delete" on public.inventory_history for delete to 
 drop policy if exists "tickets pdf delete" on storage.objects;
 create policy "tickets pdf delete" on storage.objects for delete to authenticated using (bucket_id = 'tickets' and (select public.authorize('inventory.manage')));
 
--- FIX C (low): notifications gaf table-brede UPDATE (alle kolommen) → beperk tot alleen read_at markeren.
+-- FIX C (low): notifications granted table-wide UPDATE (all columns) → restrict to marking read_at only.
 revoke update on public.notifications from authenticated;
 grant update (read_at) on public.notifications to authenticated;
 
--- FIX D (low): een logs.view-houder zonder roles.manage/moderation.view kon geen profielnamen lezen →
--- actor-namen op het Logs-scherm vielen terug op UUID's. Voeg logs.view toe aan de profiles read-policy.
+-- FIX D (low): a logs.view holder without roles.manage/moderation.view couldn't read profile names →
+-- actor names on the Logs screen fell back to UUIDs. Add logs.view to the profiles read policy.
 drop policy if exists "profiles read" on public.profiles;
 create policy "profiles read" on public.profiles for select to authenticated
 	using (

@@ -1,5 +1,5 @@
--- Fase 2 — identiteitsschema (VEILIG: additief, geen auth.users-triggers en geen login-flow-wijziging).
--- discord_id is de onveranderlijke koppelsleutel (usernames wijzigen, het ID nooit).
+-- Phase 2 — identity schema (SAFE: additive, no auth.users triggers, no login-flow change).
+-- discord_id is the immutable linking key (usernames change, the ID never does).
 alter table public.profiles
 	add column if not exists discord_id        text unique,
 	add column if not exists global_name       text,
@@ -10,7 +10,7 @@ alter table public.profiles
 	add column if not exists terms_accepted_at timestamptz,
 	add column if not exists terms_version     text;
 
--- Username-historie voor echte accounts.
+-- Username history for real accounts.
 create table if not exists public.profile_name_history (
 	id         bigint generated always as identity primary key,
 	user_id    uuid not null references auth.users(id) on delete cascade,
@@ -20,7 +20,7 @@ create table if not exists public.profile_name_history (
 );
 create index if not exists profile_name_history_user on public.profile_name_history (user_id, changed_at);
 
--- Alias-/usernamehistorie voor (schaduw)profielen.
+-- Alias/username history for (shadow) profiles.
 create table if not exists public.mod_subject_aliases (
 	id         bigint generated always as identity primary key,
 	subject_id uuid not null references public.mod_subjects(id) on delete cascade,
@@ -32,14 +32,14 @@ create table if not exists public.mod_subject_aliases (
 	unique (subject_id, alias)
 );
 
--- Eén subject per user: auto-provision (fase 2 Task 2) mag niet twee subjects aan één user hangen.
+-- One subject per user: auto-provision (phase 2 Task 2) must not attach two subjects to one user.
 create unique index if not exists mod_subjects_user_uniq on public.mod_subjects (user_id) where user_id is not null;
 
--- Self-read op het eigen subject (nodig voor "mijn conventie"/inschrijven in fase 3).
+-- Self-read on the caller's own subject (needed for "my convention"/signing up in phase 3).
 drop policy if exists "mod_subjects self read" on public.mod_subjects;
 create policy "mod_subjects self read" on public.mod_subjects for select to authenticated using (user_id = (select auth.uid()));
 
--- profiles read: ook inventory.manage (iemand met alléén die grant zag anders een lege PersonPicker).
+-- profiles read: also inventory.manage (otherwise someone with only that grant saw an empty PersonPicker).
 drop policy if exists "profiles read" on public.profiles;
 create policy "profiles read" on public.profiles for select to authenticated
 	using (
@@ -50,10 +50,10 @@ create policy "profiles read" on public.profiles for select to authenticated
 		or (select public.authorize('inventory.manage'))
 	);
 
--- subject_names: id + weergavenaam + avatar voor iedere authenticated, zodat lijsten (agenda, aanwezigheid)
--- namen tonen zonder de afgeschermde mod_*-velden te lekken. Owner-view (security_invoker=false) met
--- kolom-subset; Supabase-linterwaarschuwing bewust geaccepteerd. Prioriteit: guild_nick → global_name →
--- username → discord_name.
+-- subject_names: id + display name + avatar for every authenticated caller, so lists (schedule,
+-- attendance) show names without leaking the gated mod_* fields. Owner view (security_invoker=false)
+-- with a column subset; Supabase linter warning accepted deliberately. Priority: guild_nick →
+-- global_name → username → discord_name.
 create or replace view public.subject_names
 with (security_invoker = false) as
 	select s.id,
@@ -64,7 +64,7 @@ with (security_invoker = false) as
 
 grant select on public.subject_names to authenticated;
 
--- Grants + RLS op de nieuwe tabellen.
+-- Grants + RLS on the new tables.
 grant select on public.profile_name_history to authenticated;
 grant select, insert, update, delete on public.profile_name_history to service_role;
 grant select on public.mod_subject_aliases to authenticated;

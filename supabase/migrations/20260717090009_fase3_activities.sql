@@ -1,5 +1,5 @@
--- Fase 3 — gehoste activiteiten op een event (stand/booth/podium), hun benodigdheden en hosts.
--- Operationele child-rijen: managers (inventory.manage) doen volledige CRUD; inventory.view leest.
+-- Phase 3 — hosted activities at an event (stand/booth/stage), their requirements and hosts.
+-- Operational child rows: managers (inventory.manage) get full CRUD; inventory.view reads.
 create table public.event_activities (
 	id          uuid primary key default gen_random_uuid(),
 	event_id    uuid not null references public.events(id) on delete cascade,

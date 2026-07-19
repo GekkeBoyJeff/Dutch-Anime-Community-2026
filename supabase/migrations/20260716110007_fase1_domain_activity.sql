@@ -1,6 +1,6 @@
--- Leesbare domein-activiteit voor inventory_items + events, zodat het Activiteit-tabblad "wat er gebeurde"
--- als één regel toont (het audit_log blijft de technische rij-historie incl. cascades). archived_at-
--- overgangen worden als archiveren/herstellen herkend i.p.v. een generieke wijziging.
+-- Human-readable domain activity for inventory_items + events, so the Activity tab shows "what happened"
+-- as one line (audit_log stays the technical row history incl. cascades). archived_at transitions are
+-- recognized as archive/restore instead of a generic update.
 create or replace function public.log_domain_activity()
 returns trigger language plpgsql security definer set search_path = '' as $$
 declare

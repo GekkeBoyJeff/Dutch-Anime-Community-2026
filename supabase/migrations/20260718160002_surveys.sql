@@ -1,7 +1,7 @@
--- Enquêtes & polls — tabellen, RLS, RPC's (respondent-lezen/-schrijven ook voor anon → static-export-safe,
--- geen Edge Function), permissie-seed en hard_delete-tak. Spec: docs/superpowers/specs/2026-07-18-surveys-design.md.
+-- Surveys & polls — tables, RLS, RPCs (respondent read/write also for anon → static-export-safe,
+-- no Edge Function), permission seed and hard_delete branch. Spec: docs/superpowers/specs/2026-07-18-surveys-design.md.
 
--- ---------- Tabellen ----------
+-- ---------- Tables ----------
 create table public.surveys (
 	id            uuid primary key default gen_random_uuid(),
 	title         text not null,
@@ -84,7 +84,7 @@ alter table public.survey_responses enable row level security;
 alter table public.survey_answers enable row level security;
 alter table public.survey_answer_choices enable row level security;
 
--- Definitie-tabellen: alleen beheer (respondent leest via get_survey_for_fill-RPC, niet hier).
+-- Definition tables: management-only (respondent reads via the get_survey_for_fill RPC, not here).
 create policy "surveys manage" on public.surveys for all to authenticated
 	using ((select public.authorize('surveys.manage'))) with check ((select public.authorize('surveys.manage')));
 create policy "survey_questions manage" on public.survey_questions for all to authenticated
@@ -92,7 +92,7 @@ create policy "survey_questions manage" on public.survey_questions for all to au
 create policy "survey_question_options manage" on public.survey_question_options for all to authenticated
 	using ((select public.authorize('surveys.manage'))) with check ((select public.authorize('surveys.manage')));
 
--- Inzendingen: eigen rij ∪ surveys.manage lezen; verwijderen alleen records.delete; schrijven uitsluitend via RPC.
+-- Submissions: read own row ∪ surveys.manage; delete requires records.delete; writes only via RPC.
 create policy "survey_responses read" on public.survey_responses for select to authenticated
 	using (user_id = (select auth.uid()) or (select public.authorize('surveys.manage')));
 create policy "survey_responses delete" on public.survey_responses for delete to authenticated
@@ -115,7 +115,7 @@ create policy "survey_answer_choices read" on public.survey_answer_choices for s
 create policy "survey_answer_choices delete" on public.survey_answer_choices for delete to authenticated
 	using ((select public.authorize('records.delete')));
 
--- ---------- RPC: lezen om in te vullen (anon + authenticated) ----------
+-- ---------- RPC: read to fill in (anon + authenticated) ----------
 create or replace function public.get_survey_for_fill(p_id uuid)
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare
@@ -179,7 +179,7 @@ end;
 $$;
 grant execute on function public.get_survey_for_fill(uuid) to anon, authenticated;
 
--- ---------- RPC: indienen (anon + authenticated) ----------
+-- ---------- RPC: submit (anon + authenticated) ----------
 create or replace function public.submit_survey_response(p_id uuid, p_answers jsonb)
 returns uuid language plpgsql security definer set search_path = '' as $$
 declare
@@ -277,7 +277,7 @@ end;
 $$;
 grant execute on function public.submit_survey_response(uuid, jsonb) to anon, authenticated;
 
--- ---------- RPC: openzetten (+ notificatie) / sluiten ----------
+-- ---------- RPC: open (+ notification) / close ----------
 create or replace function public.open_survey(p_id uuid)
 returns void language plpgsql security definer set search_path = '' as $$
 declare
@@ -325,7 +325,7 @@ end;
 $$;
 grant execute on function public.close_survey(uuid) to authenticated;
 
--- ---------- RPC: eigen openstaande enquêtes (taakkaart) ----------
+-- ---------- RPC: own open surveys (task card) ----------
 create or replace function public.my_open_surveys()
 returns table (survey_id uuid, title text, closes_at timestamptz, question_count bigint)
 language plpgsql security definer set search_path = '' as $$
@@ -352,12 +352,12 @@ end;
 $$;
 grant execute on function public.my_open_surveys() to authenticated;
 
--- ---------- Permissie-seed ----------
+-- ---------- Permission seed ----------
 insert into public.role_permissions (role, permission) values
 	('admin', 'surveys.manage'), ('yakuza', 'surveys.manage'), ('author', 'surveys.manage')
 on conflict (role, permission) do nothing;
 
--- ---------- hard_delete: surveys-tak (cascade ruimt de rest; geen storage) ----------
+-- ---------- hard_delete: surveys branch (cascade clears the rest; no storage) ----------
 create or replace function public.hard_delete(target_table text, target_id uuid)
 returns table (bucket_id text, path text)
 language plpgsql security definer set search_path = '' as $$

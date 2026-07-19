@@ -1,6 +1,6 @@
--- Brok D: resultaten-RPC geeft nu de respondent-NAAM mee bij niet-anonieme enquêtes (de definer
--- resolvet 'm zelf uit profiles, zodat managers geen profiles-leesrecht nodig hebben), en een
--- eigen-geschiedenis-RPC voor het teruglezen op /account.
+-- Results RPC now includes the respondent NAME for non-anonymous surveys (the definer resolves it
+-- itself from profiles, so managers don't need profiles read access), plus an own-history RPC
+-- for reading back on /account.
 
 create or replace function public.get_survey_results(p_id uuid)
 returns jsonb language plpgsql security definer set search_path = '' as $$

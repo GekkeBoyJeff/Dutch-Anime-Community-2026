@@ -1,5 +1,4 @@
--- Fase C — inkomsten. Enum apart (net als expense_category in fase5c): een net-aangemaakt type mag bij
--- sommige clients in dezelfde transactie nog niet als kolomtype gebruikt worden. Mirrors de aanpak van
--- public.expense_category (aparte enum-kolom als categorie), maar met inkomst-eigen waarden — donaties,
--- verkoop op de stand, sponsoring — die semantisch niet in de kosten-categorieën passen.
+-- Phase C — income. Enum kept separate (as with expense_category in phase 5c): some clients can't use
+-- a just-created type as a column type in the same transaction. Mirrors public.expense_category, but
+-- with income-specific values — donations, stand sales, sponsorship — that don't fit the expense categories.
 create type public.income_category as enum ('donation', 'sale', 'sponsorship', 'other');

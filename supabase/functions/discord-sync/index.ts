@@ -1,11 +1,9 @@
 import { withSupabase } from 'npm:@supabase/server';
 import { createClient } from 'npm:@supabase/supabase-js';
 
-// Discord guild-verrijking bij login. De client stuurt (alléén) het kortlevende provider_token; deze
-// functie haalt zélf /users/@me + de guild-member op bij Discord (client-data wordt nooit vertrouwd) en
-// schrijft guild_nick/roles/joined_at + global_name via de SERVICE ROLE naar het eigen profiel — die
-// kolommen zijn bewust niet client-schrijfbaar (zie migratie 090003). Best-effort: faalt 'ie, dan is de
-// login toch al gelukt. auth:'user' → we lezen de identiteit van de beller (eigen user-id).
+// Discord guild enrichment on login. Client sends only the short-lived provider_token; this function
+// fetches /users/@me + guild-member from Discord itself (client data is never trusted) and writes
+// guild_nick/roles/joined_at/global_name via the SERVICE ROLE (see migration 090003) — best-effort, login already succeeded either way.
 const GUILD_ID = Deno.env.get('DISCORD_GUILD_ID');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -47,8 +45,8 @@ const handler = {
 			patch.guild_roles = member.roles ?? null;
 			patch.guild_joined_at = member.joined_at ?? null;
 		} else if (memberRes.status === 404) {
-			// Geen lid (meer) van de guild → wis verouderde guild-data; transiënte fouten (401/429/5xx)
-			// laten we ongemoeid zodat een tijdelijke Discord-storing goede data niet wist.
+			// No longer a guild member → clear stale guild data; transient errors (401/429/5xx) are left alone
+			// so a temporary Discord outage doesn't wipe good data.
 			patch.guild_nick = null;
 			patch.guild_roles = null;
 			patch.guild_joined_at = null;

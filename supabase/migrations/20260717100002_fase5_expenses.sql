@@ -1,19 +1,19 @@
--- Fase 5 — expenses (declaraties) + expense_receipts (extra bonnen). Declarant (expenses.view) dient in
--- met verplicht bonnetje (receipt_path NOT NULL — DB-afgedwongen, want client-verplicht is omzeilbaar);
--- yakuza (expenses.manage) beoordeelt. Een declarant kan zichzelf niet goedkeuren: niet via de RPC, en
--- ook niet via een directe table-write (RLS-guard hieronder). Spiegelt de event_attendance-conventies
--- (set_updated_at + log_audit + archived_at/by) en de self-signup-vs-manage-RLS-split.
+-- Phase 5 — expenses + expense_receipts (extra receipts). Claimant (expenses.view) submits with a
+-- required receipt (receipt_path NOT NULL — DB-enforced, since client-side is bypassable); yakuza
+-- (expenses.manage) reviews. A claimant can't approve their own claim, neither via the RPC nor a direct
+-- table-write (RLS guard below). Mirrors the event_attendance conventions (set_updated_at + log_audit +
+-- archived_at/by) and the self-signup-vs-manage RLS split.
 
 create table public.expenses (
 	id           uuid primary key default gen_random_uuid(),
-	user_id      uuid not null references auth.users(id) on delete cascade,      -- declarant
-	event_id     uuid references public.events(id) on delete set null,           -- con of los evenement
-	activity_id  uuid references public.event_activities(id) on delete set null, -- extra's op een con
+	user_id      uuid not null references auth.users(id) on delete cascade,      -- claimant
+	event_id     uuid references public.events(id) on delete set null,           -- con or standalone event
+	activity_id  uuid references public.event_activities(id) on delete set null, -- extras at a con
 	description  text not null,
 	amount_eur   numeric(10, 2) not null check (amount_eur > 0),
-	incurred_on  date not null,                                                  -- kwartaalfilter leidt hiervan af
+	incurred_on  date not null,                                                  -- quarter filter derives from this
 	status       public.expense_status not null default 'submitted',
-	receipt_path text not null,                                                  -- hoofdbon; DB-afgedwongen verplicht
+	receipt_path text not null,                                                  -- main receipt; DB-enforced required
 	reviewed_by  uuid references auth.users(id),
 	reviewed_at  timestamptz,
 	review_note  text,
@@ -37,26 +37,26 @@ create trigger audit_expense_receipts after insert or update or delete on public
 grant select, insert, update, delete on public.expense_receipts to authenticated, service_role;
 alter table public.expense_receipts enable row level security;
 
--- Lezen: eigen declaraties, of expenses.manage.
+-- Read: own claims, or expenses.manage.
 create policy "expenses read" on public.expenses for select to authenticated
 	using (user_id = (select auth.uid()) or (select public.authorize('expenses.manage')));
--- Declarant maakt aan: alleen eigen, alleen als submitted (kan zichzelf niet goedkeuren).
+-- Claimant creates: only their own, only as submitted (can't approve themselves).
 create policy "expenses self insert" on public.expenses for insert to authenticated
 	with check ((select public.authorize('expenses.view')) and user_id = (select auth.uid()) and status = 'submitted');
--- Declarant bewerkt: alleen eigen én zolang submitted, blijft submitted.
+-- Claimant edits: only their own and only while submitted, stays submitted.
 create policy "expenses self update" on public.expenses for update to authenticated
 	using (user_id = (select auth.uid()) and status = 'submitted')
 	with check (user_id = (select auth.uid()) and status = 'submitted');
--- Beheer: mag alles behalve zichzelf goedkeuren — een eigen declaratie mag ook via een directe table-write
--- niet uit 'submitted' geduwd worden (anders omzeilt een manager review_expense's zelf-goedkeur-blok).
--- Geen client-DELETE (hard delete loopt via de records.delete-gated RPC).
+-- Manage: can do everything except approve their own — a manager's own claim also can't be pushed out
+-- of 'submitted' via a direct table-write (otherwise it bypasses review_expense's self-approval block).
+-- No client DELETE (hard delete goes through the records.delete-gated RPC).
 create policy "expenses manage insert" on public.expenses for insert to authenticated
 	with check ((select public.authorize('expenses.manage')) and (user_id <> (select auth.uid()) or status = 'submitted'));
 create policy "expenses manage update" on public.expenses for update to authenticated
 	using ((select public.authorize('expenses.manage')))
 	with check ((select public.authorize('expenses.manage')) and (user_id <> (select auth.uid()) or status = 'submitted'));
 
--- expense_receipts: lezen via de bovenliggende declaratie; schrijven door eigenaar-zolang-submitted of manage.
+-- expense_receipts: read via the parent claim; written by owner-while-submitted or manage.
 create policy "receipts read" on public.expense_receipts for select to authenticated
 	using (exists (select 1 from public.expenses e where e.id = expense_id
 		and (e.user_id = (select auth.uid()) or (select public.authorize('expenses.manage')))));
@@ -66,10 +66,10 @@ create policy "receipts self write" on public.expense_receipts for all to authen
 create policy "receipts manage write" on public.expense_receipts for all to authenticated
 	using ((select public.authorize('expenses.manage'))) with check ((select public.authorize('expenses.manage')));
 
--- activity_log krijgt een expense_id-koppeling voor leesbare declaratie-historie.
+-- activity_log gets an expense_id link for readable claim history.
 alter table public.activity_log add column if not exists expense_id uuid references public.expenses(id) on delete set null;
 
--- Domain-activity bij indienen (de enige manier waarop een rij ontstaat is status='submitted').
+-- Domain activity on submission (the only way a row is created is status='submitted').
 create or replace function public.log_expense_submitted() returns trigger
 language plpgsql security definer set search_path = '' as $$
 begin
@@ -81,9 +81,9 @@ end;
 $$;
 create trigger log_expense_submitted after insert on public.expenses for each row execute function public.log_expense_submitted();
 
--- Beoordelen door yakuza. Kan-niet-eigen-declaratie-beoordelen (rij-overschrijdende regel die een WITH CHECK
--- niet netjes uitdrukt samen met de statuswissel); zet reviewer atomisch en logt. Afgewezen mag terug naar
--- submitted (audit_log bewaart de historie).
+-- Reviewed by yakuza. Can't-review-own-claim (a cross-row rule a WITH CHECK can't express cleanly
+-- alongside the status change); sets reviewer atomically and logs. Rejected can go back to submitted
+-- (audit_log keeps the history).
 create or replace function public.review_expense(p_id uuid, p_status public.expense_status, p_note text default null)
 returns public.expenses language plpgsql security definer set search_path = '' as $$
 declare
@@ -117,9 +117,9 @@ end;
 $$;
 grant execute on function public.review_expense(uuid, public.expense_status, text) to authenticated;
 
--- hard_delete uitgebreid met een expenses-tak: geef eerst álle bon-paden (hoofdbon + extra bonnen) terug
--- zodat de client ze uit de 'receipts'-bucket verwijdert, dan pas de rij wissen (cascade ruimt de
--- expense_receipts-rijen op). Alle bestaande takken ongewijzigd overgenomen.
+-- hard_delete extended with an expenses branch: return all receipt paths (main + extra) first so the
+-- client removes them from the 'receipts' bucket, only then delete the row (cascade cleans up the
+-- expense_receipts rows). All existing branches carried over unchanged.
 create or replace function public.hard_delete(target_table text, target_id uuid)
 returns table (bucket_id text, path text)
 language plpgsql security definer set search_path = '' as $$

@@ -1,5 +1,5 @@
--- Fase 3 — enums. APARTE migratie: net-toegevoegde enum-waarden mogen niet in dezelfde transactie
--- gebruikt worden; de volgende migraties refereren deze types.
+-- Phase 3 — enums. SEPARATE migration: a just-added enum value can't be used in the same
+-- transaction; the following migrations reference these types.
 create type public.event_kind as enum ('convention', 'event');
 create type public.attendance_status as enum ('signed_up', 'expected', 'present', 'late', 'cancelled_late', 'no_show');
 create type public.conduct_kind as enum ('late', 'last_minute_cancel', 'gear_not_ready', 'other');

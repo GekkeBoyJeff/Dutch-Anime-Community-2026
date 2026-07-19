@@ -1,10 +1,9 @@
--- Fase 6a review-fix (2× HIGH, merge-integriteit).
+-- Phase 6a review fix (2x HIGH, merge integrity).
 
--- FIX 1 (HIGH): de rang-regel las de rang van het LETTERLIJKE subject i.p.v. de merge-cluster. Een yakuza
--- kon zo een schaduw (rang 0) mergen ín het subject van een yakuza/admin en die schaduw warnen/bannen — de
--- warning/ban komt via canonical_subject_id() op het slachtoffer terecht (zichtbaar in my_warnings). Voortaan
--- telt de HOOGSTE rang over de héle merge-cluster (mergen kán ook een echt subject ín een schaduw, waardoor
--- de canonical-rij zelf rang 0 zou zijn — max over de cluster dekt beide richtingen af).
+-- FIX 1 (HIGH): the rank rule read the LITERAL subject's rank instead of the merge cluster's, letting
+-- a yakuza merge a shadow (rank 0) into a yakuza/admin's subject and then warn/ban that shadow (the
+-- warning/ban lands on the victim via canonical_subject_id()). Now uses the HIGHEST rank over the
+-- whole merge cluster, covering both merge directions.
 create or replace function public.subject_cluster_rank(p_subject uuid)
 returns int language sql stable security definer set search_path = '' as $$
 	select coalesce(max(public.role_rank_of(s.user_id)), 0)
@@ -51,7 +50,7 @@ create policy "bans update" on public.mod_bans for update to authenticated
 		and public.role_rank_of((select auth.uid())) > public.subject_cluster_rank(mod_bans.subject_id)
 	);
 
--- conduct_notes erft dezelfde merge-transparantie-gap (rang-regel op letterlijk subject) → zelfde fix.
+-- conduct_notes inherits the same merge-transparency gap (rank rule on literal subject) → same fix.
 drop policy if exists "conduct write" on public.conduct_notes;
 create policy "conduct write" on public.conduct_notes for insert to authenticated
 	with check (
@@ -71,10 +70,9 @@ create policy "conduct update" on public.conduct_notes for update to authenticat
 		and public.role_rank_of((select auth.uid())) > public.subject_cluster_rank(conduct_notes.subject_id)
 	);
 
--- FIX 2 (HIGH): de cyclus-guard (`canonical(p_into) = p_from`) ving p_from alléén als TERMINALE root van
--- p_into's keten, niet als tussenknoop; en een al-gemergde bron kon opnieuw gemerged worden → meerhops-
--- cyclus → canonical_subject_id() geeft verkeerde roots → my_warnings() breekt. Voortaan: bron moet nog
--- ongemerged zijn, en we lopen p_into's héle keten af en weigeren als p_from er ergens in zit.
+-- FIX 2 (HIGH): the cycle guard (`canonical(p_into) = p_from`) only caught p_from as the TERMINAL root
+-- of p_into's chain, not as an intermediate node; an already-merged source could be merged again,
+-- creating a multi-hop cycle. Now: source must still be unmerged, and we walk p_into's whole chain.
 create or replace function public.merge_subjects(p_from uuid, p_into uuid)
 returns void language plpgsql security definer set search_path = '' as $$
 declare

@@ -1,6 +1,6 @@
--- Fase 3 — gedragsnotities met rang-regel. Noteren vereist rang ≥ yakuza én strikt hoger dan het doelwit
--- (stand-staff noteert dus niemand; op yakuza noteren mag alleen admin). Betrokkene ziet 'dát' er iets is
--- via my_conduct_notes() — kind + datum + event, geen body (kolomniveau-afscherming → RPC i.p.v. policy).
+-- Phase 3 — conduct notes with a rank rule. Writing requires rank >= yakuza AND strictly higher than
+-- the target (stand-staff notes no one; only admin can note a yakuza). The subject sees only THAT a
+-- note exists via my_conduct_notes() — kind + date + event, no body (column-level shielding via RPC).
 create table public.conduct_notes (
 	id         uuid primary key default gen_random_uuid(),
 	subject_id uuid not null references public.mod_subjects(id) on delete cascade,

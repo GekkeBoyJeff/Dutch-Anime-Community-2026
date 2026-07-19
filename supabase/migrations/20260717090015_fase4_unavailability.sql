@@ -1,6 +1,6 @@
--- Fase 4 — beschikbaarheidsvensters + yakuza-verzoekflow. Effectieve beschikbaarheid = inventory_items.available
--- (kapot/weg) én geen ACTIEF venster op die datum. Wordt op een item gerekend voor een event, dan wordt een
--- venster een VERZOEK (yakuza beslist); anders direct actief. Stand-staff gaat altijd via de RPC.
+-- Phase 4 — unavailability windows + yakuza request flow. Effective availability = inventory_items.available
+-- AND no ACTIVE window on that date. If the item is relied on for an event, a window becomes a REQUEST
+-- (yakuza decides); otherwise it's active immediately. Stand-staff always goes through the RPC.
 
 alter table public.inventory_history add column if not exists kind public.inventory_history_kind not null default 'note';
 
@@ -8,7 +8,7 @@ create table public.item_unavailability (
 	id           uuid primary key default gen_random_uuid(),
 	item_id      uuid not null references public.inventory_items(id) on delete cascade,
 	starts_on    date not null,
-	ends_on      date,                                   -- null = onbepaald
+	ends_on      date,                                   -- null = indefinite
 	reason       text,
 	status       public.unavailability_status not null default 'active',
 	requested_by uuid references auth.users(id),
@@ -21,13 +21,13 @@ create trigger audit_item_unavailability after insert or update or delete on pub
 grant select, insert, update, delete on public.item_unavailability to authenticated, service_role;
 alter table public.item_unavailability enable row level security;
 
--- Lezen: inventory.view. Direct schrijven (incl. delete): inventory.manage; stand-staff gaat via de RPC.
+-- Read: inventory.view. Direct writes (incl. delete): inventory.manage; stand-staff goes through the RPC.
 create policy "unavail read" on public.item_unavailability for select to authenticated using ((select public.authorize('inventory.view')));
 create policy "unavail manage" on public.item_unavailability for all to authenticated
 	using ((select public.authorize('inventory.manage'))) with check ((select public.authorize('inventory.manage')));
 
--- Verzoek/aanmaak: overlap met een event waarvoor dit item is toegewezen → status 'requested' (yakuza
--- beslist), anders direct 'active'. SECURITY DEFINER zodat een view-holder (stand-staff) 'm mag aanmaken.
+-- Request/create: overlap with an event this item is assigned to → status 'requested' (yakuza decides),
+-- otherwise 'active' immediately. SECURITY DEFINER so a view-holder (stand-staff) can create it.
 create or replace function public.request_item_unavailability(p_item uuid, p_starts date, p_ends date, p_reason text)
 returns public.item_unavailability
 language plpgsql security definer set search_path = '' as $$
@@ -69,7 +69,7 @@ end;
 $$;
 grant execute on function public.request_item_unavailability(uuid, date, date, text) to authenticated;
 
--- Yakuza beslist over een verzoek.
+-- Yakuza decides on a request.
 create or replace function public.decide_item_unavailability(p_id uuid, p_approve boolean)
 returns void language plpgsql security definer set search_path = '' as $$
 declare
@@ -97,7 +97,7 @@ end;
 $$;
 grant execute on function public.decide_item_unavailability(uuid, boolean) to authenticated;
 
--- Effectieve beschikbaarheid van een item op een datum.
+-- Effective availability of an item on a date.
 create or replace function public.item_available_on(p_item uuid, p_date date)
 returns boolean language sql stable security definer set search_path = '' as $$
 	select coalesce((select i.available from public.inventory_items i where i.id = p_item), false)

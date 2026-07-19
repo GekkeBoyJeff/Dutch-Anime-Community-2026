@@ -1,6 +1,6 @@
--- Managers lezen na de harde-anonimiteit-fix survey_responses niet meer direct. Voor de beheerlijst
--- (status + "heeft inzendingen → vragen op slot") is een NIET-identificerende telling nodig: alleen
--- aantallen per enquête, nooit wie. surveys.manage-gated.
+-- After the hard-anonymity fix, managers no longer read survey_responses directly. The management
+-- list (status + "has submissions → lock questions") needs a non-identifying count: totals per
+-- survey only, never who. surveys.manage-gated.
 create or replace function public.survey_response_counts()
 returns table (survey_id uuid, response_count bigint)
 language sql security definer set search_path = '' as $$

@@ -1,7 +1,7 @@
--- Adversarial-review-fix (Brok D): "harde anonimiteit" lekte via muteerbare vlaggen. Een surveys.manage-
--- houder (incl. author) kon een anonieme enquête laten invullen — user_id wordt bij authenticated altijd
--- opgeslagen — en daarna `anonymous`/`access_mode` omzetten, waarna get_survey_results de namen alsnog gaf.
--- Fix: bevries anonymous + access_mode zodra de enquête is opengezet (opens_at gezet).
+-- "Hard anonymity" leaked via mutable flags: a surveys.manage holder (incl. author) could let an
+-- anonymous survey be filled in — user_id is always stored for authenticated — then flip
+-- `anonymous`/`access_mode` afterward, so get_survey_results still returned names. Fix: freeze
+-- anonymous + access_mode once the survey has been opened (opens_at set).
 create or replace function public.survey_lock_identity_flags()
 returns trigger language plpgsql set search_path = '' as $$
 begin
@@ -15,9 +15,9 @@ $$;
 create trigger surveys_lock_identity_flags before update on public.surveys
 	for each row execute function public.survey_lock_identity_flags();
 
--- Defense-in-depth: individuele inzendingen zijn nergens los verwijderbaar in de UI (alleen de hele
--- enquête via hard_delete, dat cascadeert). Haal de directe DELETE-policies weg zodat er geen
--- DELETE ... RETURNING-oppervlak op respondent-data bestaat; de cascade omzeilt RLS en blijft werken.
+-- Defense-in-depth: individual submissions aren't separately deletable anywhere in the UI (only
+-- the whole survey via hard_delete, which cascades). Drop the direct DELETE policies so there's
+-- no DELETE ... RETURNING surface on respondent data; the cascade bypasses RLS and keeps working.
 drop policy "survey_responses delete" on public.survey_responses;
 drop policy "survey_answers delete" on public.survey_answers;
 drop policy "survey_answer_choices delete" on public.survey_answer_choices;

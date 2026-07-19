@@ -1,14 +1,14 @@
--- Archiveren i.p.v. verwijderen. Archief-filter hoort in de app-query, NIET in de SELECT-policy (een
--- filterende policy zou de archiverings-UPDATE zelf blokkeren).
+-- Archive instead of delete. The archive filter belongs in the app query, NOT in the SELECT policy
+-- (a filtering policy would block the archiving UPDATE itself).
 alter table public.inventory_items add column if not exists archived_at timestamptz, add column if not exists archived_by uuid references auth.users(id);
 alter table public.events         add column if not exists archived_at timestamptz, add column if not exists archived_by uuid references auth.users(id);
 alter table public.mod_notes      add column if not exists archived_at timestamptz, add column if not exists archived_by uuid references auth.users(id);
 
--- Hard-delete-splitsing. De bestaande `for all`-manage-policies bundelen DELETE onder inventory.manage.
--- Vervang ze door select/insert/update-manage-policies — directe client-DELETE vervalt (archiveren =
--- UPDATE archived_at; hard delete gaat via de RPC hieronder). Idempotent: drop-if-exists vóór elke create.
+-- Hard-delete split. The existing `for all` manage policies bundle DELETE under inventory.manage.
+-- Replace them with select/insert/update manage policies — direct client DELETE goes away (archiving =
+-- UPDATE archived_at; hard delete goes through the RPC below). Idempotent: drop-if-exists before each create.
 
--- inventory_items: eigen-scope-policies blijven, behalve de eigen-DELETE (eigen archiveren = eigen-UPDATE).
+-- inventory_items: own-scope policies stay, except own-DELETE (own archiving = own-UPDATE).
 drop policy if exists "inv items manage" on public.inventory_items;
 drop policy if exists "inv items manage select" on public.inventory_items;
 drop policy if exists "inv items manage insert" on public.inventory_items;
@@ -54,8 +54,8 @@ create policy "history manage select" on public.inventory_history for select to 
 create policy "history manage insert" on public.inventory_history for insert to authenticated with check ((select public.authorize('inventory.manage')));
 create policy "history manage update" on public.inventory_history for update to authenticated using ((select public.authorize('inventory.manage'))) with check ((select public.authorize('inventory.manage')));
 
--- Moderation: DELETE-policies (nu moderation.manage) → records.delete (admin-only). Insert/update/select
--- blijven moderation.manage/moderation.view.
+-- Moderation: DELETE policies (currently moderation.manage) → records.delete (admin-only). Insert/update/select
+-- stay moderation.manage/moderation.view.
 do $$
 declare t text;
 begin
@@ -65,11 +65,9 @@ begin
 	end loop;
 end $$;
 
--- Storage-bewuste hard-delete-RPC. Client-DELETE op de domeintabellen is weg; hard delete loopt via deze
--- SECURITY DEFINER-RPC. Ze checkt records.delete, verzamelt de storage-paden van de rij + cascade-kinderen
--- (Postgres kan een S3-object niet zelf wissen — alleen storage.objects-rijen, dat doen we hier bewust NIET
--- zodat de Storage-API de bron van waarheid blijft), verwijdert de rij (cascade ruimt kindrijen op) en
--- geeft de paden terug zodat de client ze via de Storage-API .remove()-t.
+-- Storage-aware hard-delete RPC (replaces client DELETE on the domain tables). Checks records.delete,
+-- collects storage paths of the row + cascaded children, deletes the row, and returns the paths for
+-- the client to remove() via the Storage API — this RPC never touches storage.objects directly.
 create or replace function public.hard_delete(target_table text, target_id uuid)
 returns table (bucket_id text, path text)
 language plpgsql security definer set search_path = '' as $$
@@ -116,7 +114,7 @@ $$;
 
 grant execute on function public.hard_delete(text, uuid) to authenticated;
 
--- Storage-DELETE naar records.delete (schrijven/lezen ongewijzigd).
+-- Storage DELETE gated on records.delete (write/read unchanged).
 drop policy if exists "tickets pdf delete" on storage.objects;
 create policy "tickets pdf delete" on storage.objects for delete to authenticated using (bucket_id = 'tickets' and (select public.authorize('records.delete')));
 

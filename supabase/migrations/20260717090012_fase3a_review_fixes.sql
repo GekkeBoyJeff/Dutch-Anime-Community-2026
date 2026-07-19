@@ -1,8 +1,8 @@
--- Fase 3a review-fixes (fix-forward; de 3b-UI bestaat nog niet, dus geen client raakt deze tabellen).
+-- Phase 3a review fixes (fix-forward; the 3b UI doesn't exist yet, so no client touches these tables).
 
--- FIX 1+3+5 (HIGH/med/low): shift-ruil dichttimmeren. De directe "swap cancel"-UPDATE-policy was
--- kolom-blind (from_subject kon shift_id/to_subject herrichten of status direct op 'accepted' zetten).
--- Beide mutaties (annuleren, toepassen) gaan voortaan via SECURITY DEFINER-RPC's; geen client-UPDATE meer.
+-- FIX 1+3+5 (HIGH/med/low): lock down shift swaps. The direct "swap cancel" UPDATE policy was
+-- column-blind (from_subject could rewrite shift_id/to_subject or set status straight to 'accepted').
+-- Both mutations (cancel, apply) now go through SECURITY DEFINER RPCs; no more client UPDATE.
 drop policy if exists "swap cancel" on public.shift_swap_requests;
 
 create or replace function public.cancel_swap(request_id uuid)
@@ -20,8 +20,8 @@ end;
 $$;
 grant execute on function public.cancel_swap(uuid) to authenticated;
 
--- apply_shift_swap: nu ook de shift met FOR UPDATE herlezen + eisen dat 'ie nog van from_subject is en
--- niet vergrendeld, en een dateless event blokkeren (conservatief).
+-- apply_shift_swap: also re-reads the shift with FOR UPDATE + requires it's still from_subject's and
+-- not locked, and blocks a dateless event (conservative).
 create or replace function public.apply_shift_swap(request_id uuid)
 returns void language plpgsql security definer set search_path = '' as $$
 declare
@@ -52,9 +52,8 @@ end;
 $$;
 grant execute on function public.apply_shift_swap(uuid) to authenticated;
 
--- FIX 2 (HIGH): conduct_notes UPDATE spiegelt nu de rang-regel van INSERT (USING op de OUDE rij, WITH
--- CHECK op de NIEUWE), zodat een moderator een notitie niet kan herrichten naar of bewerken over iemand
--- van gelijke/hogere rang.
+-- FIX 2 (HIGH): conduct_notes UPDATE now mirrors INSERT's rank rule (USING on the OLD row, WITH
+-- CHECK on the NEW), so a moderator can't retarget or edit a note about someone of equal/higher rank.
 drop policy if exists "conduct update" on public.conduct_notes;
 create policy "conduct update" on public.conduct_notes for update to authenticated
 	using (
@@ -68,8 +67,8 @@ create policy "conduct update" on public.conduct_notes for update to authenticat
 		and public.role_rank_of((select auth.uid())) > (select public.role_rank_of(s.user_id) from public.mod_subjects s where s.id = conduct_notes.subject_id)
 	);
 
--- FIX 4 (MEDIUM): packed_at niet meer via een kolom-blinde eigen-UPDATE-policy (assignee kon quantity/
--- item_id e.d. wijzigen), maar via een RPC die alléén packed_at op de eigen toewijzing zet.
+-- FIX 4 (MEDIUM): packed_at no longer via a column-blind own-UPDATE policy (assignee could change
+-- quantity/item_id etc.), but via an RPC that only sets packed_at on the caller's own assignment.
 drop policy if exists "assignments own packed" on public.event_item_assignments;
 create or replace function public.set_packed(assignment_id uuid, packed boolean)
 returns void language plpgsql security definer set search_path = '' as $$
@@ -82,7 +81,7 @@ end;
 $$;
 grant execute on function public.set_packed(uuid, boolean) to authenticated;
 
--- FIX 6 (LOW): eigen signed_up niet meer intrekbaar zodra de eventstartdag is aangebroken.
+-- FIX 6 (LOW): own signed_up can no longer be withdrawn once the event start day has arrived.
 drop policy if exists "attendance self withdraw" on public.event_attendance;
 create policy "attendance self withdraw" on public.event_attendance for delete to authenticated
 	using (
@@ -96,7 +95,7 @@ create policy "attendance self withdraw" on public.event_attendance for delete t
 		)
 	);
 
--- FIX 7 (LOW): complete_event idempotent — sla over als het event al is afgerond.
+-- FIX 7 (LOW): complete_event idempotent — skip if the event is already completed.
 create or replace function public.complete_event(target_event uuid, present_subjects uuid[])
 returns void language plpgsql security definer set search_path = '' as $$
 begin

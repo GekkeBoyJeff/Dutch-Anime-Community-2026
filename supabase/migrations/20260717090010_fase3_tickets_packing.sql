@@ -1,6 +1,6 @@
--- Fase 3 — ticket koppelbaar aan meerdere profielen + inpak-status per toewijzing. (De storage-pad-
--- conventie <ticket_id>/ i.p.v. <user_id>/ wordt met de ticket-UI-herbouw in 3b gemigreerd, samen met de
--- bestaande objecten; de huidige tickets pdf read-policy blijft tot dan ongewijzigd.)
+-- Phase 3 — a ticket can link to multiple profiles + a packing status per assignment. (The
+-- storage-path convention <ticket_id>/ vs <user_id>/ migrates with the 3b ticket UI rebuild, along
+-- with the existing objects; the current tickets pdf read policy stays unchanged until then.)
 create table public.event_ticket_subjects (
 	id         uuid primary key default gen_random_uuid(),
 	ticket_id  uuid not null references public.event_tickets(id) on delete cascade,
@@ -17,7 +17,7 @@ create policy "ticket_subjects manage" on public.event_ticket_subjects for all t
 create policy "ticket_subjects own read" on public.event_ticket_subjects for select to authenticated
 	using ((select public.authorize('inventory.view')) and subject_id = (select public.my_subject_id()));
 
--- packed_at: door de assignee zelf gezet ("check your bags"). Eigen toewijzing mag packed_at bijwerken.
+-- packed_at: set by the assignee themself ("check your bags"). Own assignment may update packed_at.
 alter table public.event_item_assignments add column if not exists packed_at timestamptz;
 create policy "assignments own packed" on public.event_item_assignments for update to authenticated
 	using ((select public.authorize('inventory.view')) and assigned_user_id = (select auth.uid()))

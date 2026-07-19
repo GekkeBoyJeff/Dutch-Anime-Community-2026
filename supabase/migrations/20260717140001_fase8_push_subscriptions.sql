@@ -1,6 +1,6 @@
--- Fase 8 — web-push-abonnementen. Eén rij per browser/apparaat (endpoint uniek). De client schrijft/leest
--- alléén zijn eigen abonnementen; de send-push Edge Function leest ze met de service-role (bypasst RLS) om
--- te versturen. Geen audit-trigger: dit zijn vluchtige apparaat-tokens, geen audit-waardige records.
+-- Phase 8 — web push subscriptions. One row per browser/device (endpoint unique). The client only
+-- writes/reads its own subscriptions; the send-push Edge Function reads them via service-role
+-- (bypasses RLS) to deliver. No audit trigger: these are transient device tokens, not audit-worthy.
 create table public.push_subscriptions (
 	id         uuid primary key default gen_random_uuid(),
 	user_id    uuid not null references auth.users(id) on delete cascade,

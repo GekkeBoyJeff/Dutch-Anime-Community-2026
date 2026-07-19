@@ -1,5 +1,5 @@
--- Fase 1 — nieuwe permissies. APARTE migratie: Postgres verbiedt een net-toegevoegde enum-waarde in
--- dezelfde transactie te gebruiken; de volgende migraties (…110002 e.v.) seeden/gebruiken deze waarden.
+-- Phase 1 — new permissions. SEPARATE migration: Postgres forbids using a freshly-added enum value
+-- in the same transaction; the following migrations (…110002 onward) seed/use these values.
 alter type public.app_permission add value if not exists 'expenses.view';
 alter type public.app_permission add value if not exists 'expenses.manage';
 alter type public.app_permission add value if not exists 'logs.view';

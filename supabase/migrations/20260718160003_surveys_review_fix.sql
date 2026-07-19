@@ -1,22 +1,22 @@
--- Enquêtes — adversarial-review-fixes (3-dim: security/RLS-PII/correctheid) + harde anonimiteit.
--- Bevindingen: grants-gat (managers konden niet schrijven), NULL-propagatie omzeilde verplichte vragen,
--- content-lek in get_survey_for_fill, open_survey her-notificeerde bij elke call, anon-DoS op p_answers,
--- dubbele keuze-opties, ontbrekende indexen, created_by mist FK, en anonimiteit werd niet afgedwongen.
+-- Surveys — adversarial review fixes (3 dimensions: security/RLS-PII/correctness) + hard anonymity.
+-- Findings: grants gap (managers couldn't write), NULL propagation bypassed required questions,
+-- content leak in get_survey_for_fill, open_survey re-notified on every call, anon DoS on p_answers,
+-- duplicate choice options, missing indexes, created_by lacked FK, anonymity wasn't enforced.
 
--- ---------- FIX 1 (CRITICAL): grants — RLS zonder table-privilege blokkeert managers ----------
+-- ---------- FIX 1 (CRITICAL): grants — RLS without table privilege blocks managers ----------
 grant insert, update, delete on public.surveys, public.survey_questions, public.survey_question_options to authenticated;
 grant delete on public.survey_responses, public.survey_answers, public.survey_answer_choices to authenticated;
 
--- ---------- FIX 6/8: dubbele keuze-opties + created_by-FK ----------
+-- ---------- FIX 6/8: duplicate choice options + created_by FK ----------
 alter table public.survey_answer_choices add constraint survey_answer_choices_unique unique (answer_id, option_id);
 alter table public.surveys add constraint surveys_created_by_fkey foreign key (created_by) references auth.users(id);
 
--- ---------- FIX 7: indexen voor aggregatie + /account-teruglezen ----------
+-- ---------- FIX 7: indexes for aggregation + reading back on /account ----------
 create index survey_answers_question on public.survey_answers (question_id);
 create index survey_responses_user on public.survey_responses (user_id);
 
--- ---------- HARDE ANONIMITEIT: manager leest inzendingen NIET meer direct (alleen eigen rij) ----------
--- Resultaten (incl. naam bij niet-anoniem) uitsluitend via get_survey_results (definer) hieronder.
+-- ---------- HARD ANONYMITY: manager no longer reads submissions directly (own row only) ----------
+-- Results (incl. name when not anonymous) only via get_survey_results (definer) below.
 drop policy "survey_responses read" on public.survey_responses;
 create policy "survey_responses read" on public.survey_responses for select to authenticated
 	using (user_id = (select auth.uid()));
@@ -34,7 +34,7 @@ create policy "survey_answer_choices read" on public.survey_answer_choices for s
 		join public.survey_responses r on r.id = a.response_id
 		where a.id = survey_answer_choices.answer_id and r.user_id = (select auth.uid())));
 
--- ---------- FIX 3: get_survey_for_fill — vragen alleen bij eligible (anders lekt besloten inhoud) ----------
+-- ---------- FIX 3: get_survey_for_fill — questions only when eligible (else leaks private content) ----------
 create or replace function public.get_survey_for_fill(p_id uuid)
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare
@@ -99,7 +99,7 @@ begin
 end;
 $$;
 
--- ---------- FIX 2/5: submit_survey_response — single-pass parse + cap + coalesce(v_valid) + distinct opties ----------
+-- ---------- FIX 2/5: submit_survey_response — single-pass parse + cap + coalesce(v_valid) + distinct options ----------
 create or replace function public.submit_survey_response(p_id uuid, p_answers jsonb)
 returns uuid language plpgsql security definer set search_path = '' as $$
 declare
@@ -153,7 +153,7 @@ begin
 
 	delete from public.survey_answers where response_id = v_response;
 
-	-- p_answers één keer indexeren op question_id (laatste dubbele wint niet: eerste per id).
+	-- Index p_answers once by question_id (last duplicate does not win: first per id).
 	select coalesce(jsonb_object_agg(d.qid, d.val), '{}'::jsonb) into v_by_q
 	from (
 		select distinct on (e.value->>'question_id') (e.value->>'question_id') as qid, e.value as val
@@ -209,7 +209,7 @@ begin
 end;
 $$;
 
--- ---------- FIX 4: open_survey — alleen notificeren bij een echte null→gezet-overgang ----------
+-- ---------- FIX 4: open_survey — only notify on a real null→set transition ----------
 create or replace function public.open_survey(p_id uuid)
 returns void language plpgsql security definer set search_path = '' as $$
 declare
@@ -247,7 +247,7 @@ begin
 end;
 $$;
 
--- ---------- HARDE ANONIMITEIT: resultaten-RPC (identiteit alleen bij niet-anoniem) ----------
+-- ---------- HARD ANONYMITY: results RPC (identity only when not anonymous) ----------
 create or replace function public.get_survey_results(p_id uuid)
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare
@@ -259,7 +259,7 @@ begin
 	end if;
 	select * into v_survey from public.surveys where id = p_id;
 	if not found then raise exception 'enquête niet gevonden'; end if;
-	-- Bij een anonieme of publieke enquête wordt de respondent-identiteit NOOIT teruggegeven.
+	-- For an anonymous or public survey, respondent identity is NEVER returned.
 	v_hide := v_survey.anonymous or v_survey.access_mode = 'public';
 
 	return jsonb_build_object(

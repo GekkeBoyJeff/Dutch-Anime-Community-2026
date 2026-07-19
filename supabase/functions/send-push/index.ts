@@ -1,13 +1,9 @@
 import { withSupabase } from 'npm:@supabase/server';
 import webpush from 'npm:web-push';
 
-// send-push: verstuurt meldingen naar leden. Twee auth-paden (auth:['user','secret'], first-match):
-//  • user  → een beller met notifications.send stuurt handmatig: schrijft een in-app rij per ontvanger
-//            (realtime bel), een notification_history-rij, én web-push naar geabonneerde apparaten.
-//  • secret → systeem/cron (run_shift_reminders via pg_net, apikey = service-key uit Vault). Push-only:
-//            de SQL-functie schreef historie + in-app rijen al, dus hier alléén web-push afleveren. Géén
-//            permissiecheck (de secret-key komt nooit in de browser), géén publiek ongeauth. pad.
-// VAPID-privésleutel staat alléén hier als Edge-Function-secret.
+// send-push: delivers notifications to members via two auth paths (auth:['user','secret'], first-match):
+// 'user' writes an in-app row + history row + web-push per recipient; 'secret' (cron) is push-only since
+// the SQL function already wrote history/rows. VAPID private key lives only here, as a function secret.
 
 const VAPID_PUBLIC_KEY = Deno.env.get('VAPID_PUBLIC_KEY') ?? '';
 const VAPID_PRIVATE_KEY = Deno.env.get('VAPID_PRIVATE_KEY') ?? '';
@@ -25,7 +21,7 @@ interface Body {
 	url?: unknown;
 }
 
-// Levert web-push aan de geabonneerde apparaten van userIds; ruimt verlopen abonnementen (404/410) op.
+// Delivers web-push to userIds' subscribed devices; prunes expired subscriptions (404/410).
 const deliverPush = async (
 	admin: { from: (t: string) => any },
 	userIds: string[],
@@ -57,7 +53,7 @@ const handler = {
 		const text = typeof body.body === 'string' && body.body.trim() ? body.body.trim() : null;
 		const url = typeof body.url === 'string' && body.url.trim() ? body.url.trim() : undefined;
 
-		// Systeem/cron-pad: alléén web-push afleveren aan de meegegeven user_ids.
+		// System/cron path: only deliver web-push to the given user_ids.
 		if (ctx.authMode === 'secret') {
 			const userIds = Array.isArray(body.user_ids) ? (body.user_ids.filter((v) => typeof v === 'string') as string[]) : [];
 			if (userIds.length === 0 || !title) return Response.json({ error: 'user_ids en title zijn verplicht' }, { status: 400 });
@@ -65,7 +61,7 @@ const handler = {
 			return Response.json({ pushed, pushEnabled });
 		}
 
-		// Gebruiker-pad: rechtencheck via de RLS-client van de beller (my_permissions = effectieve permissies).
+		// User path: permission check via the caller's RLS client (my_permissions = effective permissions).
 		const { data: perms } = await ctx.supabase.rpc('my_permissions');
 		if (!(Array.isArray(perms) && perms.includes('notifications.send'))) {
 			return Response.json({ error: 'notifications.send vereist' }, { status: 403 });
@@ -74,13 +70,13 @@ const handler = {
 		const kind = typeof body.kind === 'string' && body.kind ? body.kind : 'message';
 		const type = typeof body.type === 'string' && body.type ? body.type : 'handmatige-melding';
 
-		// Een uitgeschakeld meldingstype mag niet meer verstuurd worden (de toggle geldt ook manueel).
+		// A disabled notification type may not be sent (the toggle also applies to manual sends).
 		const { data: typeRow } = await admin.from('notification_types').select('enabled').eq('key', type).maybeSingle();
 		if (typeRow && typeRow.enabled === false) {
 			return Response.json({ error: 'dit meldingstype staat uit' }, { status: 400 });
 		}
 
-		// audience:'all' → de function bepaalt de ontvangers zelf (service-role), los van RLS/paginering.
+		// audience:'all' → the function resolves recipients itself (service-role), independent of RLS/pagination.
 		let userIds: string[];
 		let audience: Record<string, unknown>;
 		if (body.audience === 'all') {
@@ -96,12 +92,12 @@ const handler = {
 			return Response.json({ error: 'ontvangers en title zijn verplicht' }, { status: 400 });
 		}
 
-		// In-app notificaties (realtime) — één rij per ontvanger.
+		// In-app notifications (realtime) — one row per recipient.
 		const rows = userIds.map((id) => ({ user_id: id, kind, title, body: text, payload: url ? { url } : null }));
 		const { error: insErr } = await admin.from('notifications').insert(rows);
 		if (insErr) return Response.json({ error: insErr.message }, { status: 500 });
 
-		// Historie — sender = de beller (announcer).
+		// History — sender = the caller (announcer).
 		const { data: userData } = await ctx.supabase.auth.getUser();
 		await admin.from('notification_history').insert({
 			type_key: type,

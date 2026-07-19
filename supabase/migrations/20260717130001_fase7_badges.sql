@@ -1,7 +1,6 @@
--- Fase 7 — badges. Toegekend aan een subject (volgt merges via canonical). Afbeelding in een PUBLIEKE
--- bucket (badges staan op profielen/accountpagina, geen signed URL nodig). Lezen: moderation.view (voor de
--- moderatie-UI); een lid ziet z'n eigen badges via my_badges() (kolom-net, volgt merges). Schrijven:
--- badges.manage (admin/yakuza). Verwijderen: records.delete.
+-- Phase 7 — badges. Awarded to a subject (follows merges via canonical). Image lives in a PUBLIC
+-- bucket (no signed URL needed). Read: moderation.view, or a member's own badges via my_badges().
+-- Write: badges.manage (admin/yakuza). Delete: records.delete.
 
 create table public.badges (
 	id          uuid primary key default gen_random_uuid(),
@@ -23,8 +22,8 @@ create policy "badges insert" on public.badges for insert to authenticated with 
 create policy "badges update" on public.badges for update to authenticated using ((select public.authorize('badges.manage'))) with check ((select public.authorize('badges.manage')));
 create policy "badges delete" on public.badges for delete to authenticated using ((select public.authorize('records.delete')));
 
--- Publieke badge-bucket (afbeeldingen zijn niet gevoelig). Schrijven = badges.manage, verwijderen =
--- records.delete; plus een self-delete-orphan zodat de uploader een mislukte upload kan opruimen.
+-- Public badge bucket (images aren't sensitive). Write = badges.manage, delete = records.delete;
+-- plus a self-delete-orphan policy so an uploader can clean up a failed upload.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 	values ('badges', 'badges', true, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
 	on conflict (id) do update set public = true, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
@@ -38,7 +37,7 @@ create policy "badges image self delete orphan" on storage.objects for delete to
 	and not exists (select 1 from public.badges b where b.image_path = storage.objects.name)
 );
 
--- Eigen badges (volgt merges), voor de accountpagina.
+-- Own badges (follows merges), for the account page.
 create or replace function public.my_badges()
 returns table (title text, description text, awarded_on date, image_path text)
 language sql stable security definer set search_path = '' as $$
@@ -51,8 +50,8 @@ language sql stable security definer set search_path = '' as $$
 $$;
 grant execute on function public.my_badges() to authenticated;
 
--- hard_delete uitgebreid met een badges-tak (publieke bucket-afbeelding opruimen). Alle bestaande takken
--- ongewijzigd overgenomen.
+-- hard_delete extended with a badges branch (clean up the public bucket image). All existing
+-- branches carried over unchanged.
 create or replace function public.hard_delete(target_table text, target_id uuid)
 returns table (bucket_id text, path text)
 language plpgsql security definer set search_path = '' as $$

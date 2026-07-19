@@ -1,6 +1,6 @@
--- Fase 3b — itemnamen voor de eigen toewijzingen (ook community-/andermans items). inventory.view mag
--- via RLS alleen eigen inventory_items lezen; deze SECURITY DEFINER-RPC geeft de namen van de items die
--- aan de beller zijn toegewezen, zodat "Mijn conventie" de mee-te-nemen items met naam kan tonen.
+-- Phase 3b — item names for the caller's own assignments (including community/others' items).
+-- inventory.view can only read own inventory_items via RLS; this SECURITY DEFINER RPC returns the
+-- names of items assigned to the caller, so "My convention" can list what to bring by name.
 create or replace function public.my_assignment_item_names()
 returns table (item_id uuid, name text)
 language sql stable security definer set search_path = '' as $$

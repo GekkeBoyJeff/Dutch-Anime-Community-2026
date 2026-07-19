@@ -1,8 +1,8 @@
--- Fase 2 — auth.users-triggers (DEFENSIEF: exception-wrapper → login mag nooit breken) + backfill.
--- Discord-ID zit onder provider_id óf sub; global_name onder custom_claims.global_name (of top-level).
--- Koppeling schaduwprofiel→account op de onveranderlijke discord_id, niet op username.
+-- Phase 2 — auth.users triggers (DEFENSIVE: exception wrapper → login must never break) + backfill.
+-- Discord ID lives under provider_id or sub; global_name under custom_claims.global_name (or top-level).
+-- Links shadow-profile→account on the immutable discord_id, not on username.
 
--- Nieuwe account: profiel (met discord_id/global_name) + default rol + canoniek subject (koppel/maak).
+-- New account: profile (with discord_id/global_name) + default role + canonical subject (link or create).
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = '' as $$
 declare
@@ -29,12 +29,12 @@ begin
 
 	return new;
 exception when others then
-	return new;  -- login mag NOOIT breken door deze trigger
+	return new;  -- login must NEVER break because of this trigger
 end;
 $$;
 
--- Bij elke login ververst gotrue raw_user_meta_data → sync naar profiles, log naamswijziging + alias,
--- koppel schaduwprofiel. Alleen vuren als raw_user_meta_data wijzigt.
+-- On every login gotrue refreshes raw_user_meta_data → sync to profiles, log name change + alias,
+-- link shadow profile. Only fires when raw_user_meta_data changes.
 create or replace function public.handle_user_metadata_update()
 returns trigger language plpgsql security definer set search_path = '' as $$
 declare
@@ -72,7 +72,7 @@ begin
 
 	return new;
 exception when others then
-	return new;  -- login mag NOOIT breken door deze trigger
+	return new;  -- login must NEVER break because of this trigger
 end;
 $$;
 
@@ -80,8 +80,8 @@ drop trigger if exists on_auth_user_updated on auth.users;
 create trigger on_auth_user_updated after update of raw_user_meta_data on auth.users
 	for each row execute function public.handle_user_metadata_update();
 
--- Backfill: bestaande accounts krijgen discord_id/global_name + een gekoppeld subject (triggers vangen
--- alleen nieuwe/logins). Idempotent.
+-- Backfill: existing accounts get discord_id/global_name + a linked subject (triggers only catch
+-- new accounts/logins). Idempotent.
 do $$
 declare
 	u     record;

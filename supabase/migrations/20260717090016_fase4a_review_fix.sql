@@ -1,7 +1,7 @@
--- Fase 4a review-fix (HIGH): request_item_unavailability had geen eigendomscheck → elke inventory.view-
--- houder kon élk item onbeschikbaar maken, en zonder overlap werd het meteen 'active' (geen yakuza-
--- goedkeuring). Voortaan mag alléén de eigenaar direct 'active' (en enkel zonder overlap); al het andere
--- (niet-eigenaar, of overlap) wordt een 'requested'-venster dat yakuza beslist. Plus activity_log-pariteit.
+-- Phase 4a review-fix (HIGH): request_item_unavailability had no ownership check — any inventory.view
+-- holder could mark any item unavailable, and without overlap it went straight to 'active' (no yakuza
+-- approval). Now only the owner can go straight to 'active', and only without overlap; everything else
+-- becomes a 'requested' window that yakuza decides on.
 create or replace function public.request_item_unavailability(p_item uuid, p_starts date, p_ends date, p_reason text)
 returns public.item_unavailability
 language plpgsql security definer set search_path = '' as $$
@@ -32,7 +32,7 @@ begin
 			and coalesce(e.ends_on, e.starts_on) >= p_starts
 	) into has_overlap;
 
-	-- Direct actief mag alleen de eigenaar, en alleen zonder overlap; al het andere is een verzoek.
+	-- Only the owner can go straight to active, and only without overlap; anything else is a request.
 	new_status := (case when has_overlap or not coalesce(is_owner, false) then 'requested' else 'active' end)::public.unavailability_status;
 
 	insert into public.item_unavailability (item_id, starts_on, ends_on, reason, status, requested_by)

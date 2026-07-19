@@ -1,5 +1,5 @@
--- Fase 3 — "event afronden": aanwezigheid definitief maken, shifts locken, per toewijzing een
--- inventory_history-regel, en een leesbare activity_log-regel. inventory.manage-only.
+-- Phase 3 — "complete event": finalize attendance, lock shifts, add an inventory_history row per
+-- assignment, and a readable activity_log row. inventory.manage-only.
 create or replace function public.complete_event(target_event uuid, present_subjects uuid[])
 returns void language plpgsql security definer set search_path = '' as $$
 begin

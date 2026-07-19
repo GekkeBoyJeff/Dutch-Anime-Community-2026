@@ -1,9 +1,9 @@
--- Fase 6 — moderatie: merge (zonder rijen om te hangen), links + linkbewijs, bans, rang-regel op
--- warnings/bans, eigen-warnings-RPC, activity-logging en hard_delete-uitbreiding.
+-- Phase 6 — moderation: merge (without re-parenting rows), links + link evidence, bans, a rank rule
+-- on warnings/bans, an own-warnings RPC, activity logging, and a hard_delete extension.
 
--- === Merge: merged_into + canonical-resolutie ===
--- Rijen worden NIET omgehangen (anders botst o.a. unique(event_id, subject_id) op attendance); alle
--- leespaden resolven via canonical_subject_id(). merged_into wijst naar het overlevende subject.
+-- === Merge: merged_into + canonical resolution ===
+-- Rows are NOT re-parented (would collide with e.g. unique(event_id, subject_id) on attendance); all
+-- read paths resolve via canonical_subject_id(). merged_into points at the surviving subject.
 alter table public.mod_subjects add column if not exists merged_into uuid references public.mod_subjects(id) on delete set null;
 
 create or replace function public.canonical_subject_id(p_id uuid)
@@ -18,7 +18,7 @@ begin
 		select merged_into into nxt from public.mod_subjects where id = cur;
 		if nxt is null then return cur; end if;
 		hops := hops + 1;
-		if hops > 20 then return cur; end if; -- cyclus-guard
+		if hops > 20 then return cur; end if; -- cycle guard
 		cur := nxt;
 	end loop;
 end;
@@ -57,7 +57,7 @@ end;
 $$;
 grant execute on function public.unmerge_subject(uuid) to authenticated;
 
--- === Links: status + reviewer + linkbewijs ===
+-- === Links: status + reviewer + link evidence ===
 alter table public.mod_subject_links add column if not exists status public.mod_link_status not null default 'suspected';
 alter table public.mod_subject_links add column if not exists reviewed_by uuid references auth.users(id);
 alter table public.mod_subject_links add column if not exists reviewed_at timestamptz;
@@ -80,9 +80,9 @@ create policy "link evidence insert" on public.mod_link_evidence for insert to a
 create policy "link evidence update" on public.mod_link_evidence for update to authenticated using ((select public.authorize('moderation.manage'))) with check ((select public.authorize('moderation.manage')));
 create policy "link evidence delete" on public.mod_link_evidence for delete to authenticated using ((select public.authorize('records.delete')));
 
--- === Rang-regel op warnings (was: enkel moderation.manage) ===
--- Schrijven vereist rang ≥ yakuza (2) én strikt hoger dan het doelwit; op een yakuza/admin dus alleen door
--- admin. Shadow-subjects (user_id null) rangen 0 → elke yakuza+ mag. Spiegelt conduct_notes.
+-- === Rank rule on warnings (was: moderation.manage only) ===
+-- Writing requires rank >= yakuza (2) and strictly higher than the target; so on a yakuza/admin only
+-- admin can act. Shadow subjects (user_id null) rank 0, so any yakuza+ may act. Mirrors conduct_notes.
 drop policy if exists "mod insert mod_warnings" on public.mod_warnings;
 drop policy if exists "mod update mod_warnings" on public.mod_warnings;
 create policy "warnings write" on public.mod_warnings for insert to authenticated
@@ -133,7 +133,7 @@ create table public.mod_bans (
 create trigger audit_mod_bans after insert or update or delete on public.mod_bans for each row execute function public.log_audit();
 grant select, insert, update, delete on public.mod_bans to authenticated, service_role;
 alter table public.mod_bans enable row level security;
--- Lezen: moderation.view (GEEN self-read → een eigen ban is niet zichtbaar). Schrijven/wijzigen: rang-regel.
+-- Read: moderation.view (NO self-read, so one's own ban isn't visible). Write/update: rank rule.
 create policy "bans read" on public.mod_bans for select to authenticated using ((select public.authorize('moderation.view')));
 create policy "bans write" on public.mod_bans for insert to authenticated
 	with check (
@@ -168,7 +168,7 @@ end;
 $$;
 create trigger activity_mod_bans after insert or update on public.mod_bans for each row execute function public.log_ban_activity();
 
--- === Eigen warnings inzien (kolom-afgeschermd, volgt merges) ===
+-- === View own warnings (column-shielded, follows merges) ===
 create or replace function public.my_warnings()
 returns table (color public.mod_warn_color, reason text, issued_at timestamptz)
 language sql stable security definer set search_path = '' as $$
@@ -181,7 +181,7 @@ language sql stable security definer set search_path = '' as $$
 $$;
 grant execute on function public.my_warnings() to authenticated;
 
--- === hard_delete uitbreiden (bans + links; mod_subjects geeft nu óók link-bewijs terug) ===
+-- === Extend hard_delete (bans + links; mod_subjects now also returns link evidence) ===
 create or replace function public.hard_delete(target_table text, target_id uuid)
 returns table (bucket_id text, path text)
 language plpgsql security definer set search_path = '' as $$

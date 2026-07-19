@@ -1,4 +1,4 @@
--- Generieke updated_at-bijwerker (ontbrak overal — updated_at werd alleen bij insert gezet).
+-- Generic updated_at updater (was missing everywhere — updated_at was only ever set on insert).
 create or replace function public.set_updated_at()
 returns trigger language plpgsql as $$
 begin
@@ -16,8 +16,8 @@ begin
 	end loop;
 end $$;
 
--- Datumsanity: een conventie kan niet eindigen vóór ze begint (beide nullable → alleen checken als
--- beide gezet zijn; NULL maakt de check waar).
+-- Date sanity: a convention can't end before it starts (both nullable → only check when both are
+-- set; NULL makes the check true).
 alter table public.events drop constraint if exists events_dates_chk;
 alter table public.events add constraint events_dates_chk
 	check (ends_on is null or starts_on is null or ends_on >= starts_on);

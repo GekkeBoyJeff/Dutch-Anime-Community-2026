@@ -1,14 +1,13 @@
--- Fase C — Team-sectie: staff.manage-grant + één-round-trip roster voor het conventieteam.
--- Yakuza (organisatoren) beheren het team; admin's bundel somt elke permissie expliciet op (zie
--- access_control-seed), dus staff.manage wordt óók expliciet aan admin toegekend — niet impliciet geërfd.
+-- Phase C — Team section: staff.manage grant + a single-round-trip roster for the convention team.
+-- Yakuza (organizers) manage the team; admin's bundle enumerates every permission explicitly (see
+-- the access_control seed), so staff.manage is granted to admin explicitly too, not inherited implicitly.
 insert into public.role_permissions (role, permission) values
 	('admin', 'staff.manage'), ('yakuza', 'staff.manage')
 on conflict (role, permission) do nothing;
 
--- staff_overview(): het conventieteam (stand-staff ∪ yakuza) in één trip — naam, avatar, Discord-tag,
--- rol, eerstvolgende shift (datum + event) en open warnings. SECURITY DEFINER + een authorize-gate in de
--- WHERE (net als list_notifiable_members): zonder staff.manage — of anoniem — komt er een lege set terug,
--- niet de mod_*/profielvelden. search_path='' → alles volledig gekwalificeerd.
+-- staff_overview(): the convention team (stand-staff ∪ yakuza) in one trip — name, avatar, Discord tag,
+-- role, next shift, and open warnings. SECURITY DEFINER + an authorize gate in the WHERE (like
+-- list_notifiable_members): without staff.manage — or anonymous — an empty set comes back, not the mod_*/profile fields.
 create or replace function public.staff_overview()
 returns table (
 	user_id               uuid,

@@ -1,6 +1,6 @@
--- Fase B — conventie-post per editie: één bewerkbaar concept per event. De eerste versie wordt in de
--- app gegenereerd uit de aanwezigheids-/toewijzingsdata (bedankt helpers en item-brengers); daarna
--- handmatig bijgeschaafd. Interne concept-opslag; publiceren naar de publieke site valt buiten scope.
+-- Phase B — one editable draft "convention post" per event. The app generates a first version from
+-- attendance/assignment data (thanking helpers and item contributors); staff polish it manually.
+-- Internal draft storage only; publishing to the public site is out of scope.
 create table public.event_posts (
 	id           uuid primary key default gen_random_uuid(),
 	event_id     uuid not null unique references public.events(id) on delete cascade,
@@ -18,8 +18,8 @@ create trigger audit_event_posts after insert or update or delete on public.even
 grant select, insert, update, delete on public.event_posts to authenticated, service_role;
 alter table public.event_posts enable row level security;
 
--- Lezen/schrijven van het concept volgt de event-editor: die draait op inventory.manage, dezelfde
--- permissie die de events-tabel zelf voor beheer gebruikt.
+-- Read/write of the draft follows the event editor: it runs on inventory.manage, the same
+-- permission the events table itself uses for management.
 create policy "event posts manage select" on public.event_posts for select to authenticated
 	using ((select public.authorize('inventory.manage')));
 create policy "event posts manage insert" on public.event_posts for insert to authenticated
@@ -27,7 +27,7 @@ create policy "event posts manage insert" on public.event_posts for insert to au
 create policy "event posts manage update" on public.event_posts for update to authenticated
 	using ((select public.authorize('inventory.manage'))) with check ((select public.authorize('inventory.manage')));
 
--- Een concept wordt normaal geleegd, niet verwijderd; echte delete is admin-only, consistent met de
--- archiveer-vs-harddelete-discipline elders.
+-- A draft is normally cleared, not deleted; real delete is admin-only, consistent with the
+-- archive-vs-hard-delete discipline elsewhere.
 create policy "event posts delete" on public.event_posts for delete to authenticated
 	using ((select public.authorize('records.delete')));

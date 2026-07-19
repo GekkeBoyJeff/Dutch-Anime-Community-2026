@@ -1,15 +1,15 @@
--- Fase B — meldingen-infra: configureerbare types, verzonden-historie en geplande stand-dienst-
--- herinneringen (~30 en ~5 min voor een shift). Additief + idempotent. De UI-schermen (historie,
--- typenbeheer) komen in een latere fase; dit levert alleen het datamodel + de scheduler.
+-- Phase B — notification infra: configurable types, sent history, and scheduled shift reminders
+-- (~30 and ~5 min before a shift). Additive + idempotent; this ships only the data model + scheduler,
+-- the UI screens (history, type management) come in a later phase.
 --
--- Beveiligingsgrens: RLS + SECURITY DEFINER. run_shift_reminders() draait via pg_cron en levert de
--- web-push af door de send-push Edge Function (auth:'secret') via pg_net aan te roepen — nooit een
--- publiek, ongeauthenticeerd push-pad. De service-key en function-URL staan in Vault, niet hier.
+-- Security boundary: RLS + SECURITY DEFINER. run_shift_reminders() runs via pg_cron and delivers
+-- web-push by calling the send-push Edge Function (auth:'secret') through pg_net — never a public,
+-- unauthenticated push path. The service key and function URL live in Vault, not here.
 
 create extension if not exists pg_cron;
 create extension if not exists pg_net with schema extensions;
 
--- 1. notification_types — admin-configureerbare meldingstypes (beheer/UI: latere fase).
+-- 1. notification_types — admin-configurable notification types (management UI: later phase).
 create table if not exists public.notification_types (
 	key         text primary key,
 	label       text not null,
@@ -24,7 +24,7 @@ create trigger set_updated_at before update on public.notification_types for eac
 grant select, insert, update, delete on public.notification_types to authenticated, service_role;
 alter table public.notification_types enable row level security;
 
--- Lezen én beheren via de meldingen-permissie die de Meldingen-sectie al gebruikt (notifications.send).
+-- Read and manage via the notifications permission the Notifications section already uses (notifications.send).
 drop policy if exists "notification types read" on public.notification_types;
 create policy "notification types read" on public.notification_types for select to authenticated
 	using ((select public.authorize('notifications.send')));
@@ -38,16 +38,16 @@ insert into public.notification_types (key, label, description) values
 	('shift-reminder-5',   'Shift-herinnering (5 min)',  'Automatische push ~5 minuten voor een shift begint.')
 on conflict (key) do nothing;
 
--- 2. notification_history — verzonden meldingen. Inserts komen alléén van de service-role (send-push
--- Edge Function, manueel) of van run_shift_reminders() (SECURITY DEFINER); daarom geen insert-policy
--- voor authenticated. Lezen via dezelfde notifications.send-permissie.
+-- 2. notification_history — sent notifications. Inserts come only from the service role (send-push
+-- Edge Function, manual) or run_shift_reminders() (SECURITY DEFINER); hence no insert policy for
+-- authenticated. Read via the same notifications.send permission.
 create table if not exists public.notification_history (
 	id             uuid primary key default gen_random_uuid(),
 	type_key       text references public.notification_types(key) on delete set null,
 	title          text not null,
 	body           text,
-	sender_user_id uuid references auth.users(id) on delete set null,   -- null = systeem/cron
-	audience       jsonb,                                               -- bv. {kind, shift_id, window_minutes, user_count}
+	sender_user_id uuid references auth.users(id) on delete set null,   -- null = system/cron
+	audience       jsonb,                                               -- e.g. {kind, shift_id, window_minutes, user_count}
 	sent_at        timestamptz not null default now()
 );
 create index if not exists notification_history_sent_at on public.notification_history (sent_at desc);
@@ -60,9 +60,9 @@ drop policy if exists "notification history read" on public.notification_history
 create policy "notification history read" on public.notification_history for select to authenticated
 	using ((select public.authorize('notifications.send')));
 
--- 3. shift_reminder_sends — dedup-marker per (shift, venster, ontvanger) zodat elke herinnering precies
--- één keer valt, ook als de cron-cadans en het venster overlappen. Interne bookkeeping: RLS aan, geen
--- policies voor authenticated (alleen de SECURITY DEFINER-functie en service_role raken 'm aan).
+-- 3. shift_reminder_sends — dedup marker per (shift, window, recipient) so each reminder fires exactly
+-- once even if the cron cadence and window overlap. Internal bookkeeping: RLS on, no policies for
+-- authenticated (only the SECURITY DEFINER function and service_role touch it).
 create table if not exists public.shift_reminder_sends (
 	shift_id       uuid not null references public.event_shifts(id) on delete cascade,
 	window_minutes int  not null,
@@ -73,10 +73,9 @@ create table if not exists public.shift_reminder_sends (
 grant select, insert, delete on public.shift_reminder_sends to service_role;
 alter table public.shift_reminder_sends enable row level security;
 
--- 4. run_shift_reminders() — vindt shifts waarvan de start in het 30- of 5-min-venster valt, mikt op de
--- toegewezen (stand-dienst) persoon van die shift — de assignee is per definitie ingeschreven bij die
--- conventie — voorkomt dubbele sends, respecteert notification_types.enabled, schrijft historie + in-app
--- bel, en triggert web-push via send-push. SECURITY DEFINER (draait onder pg_cron) met lege search_path.
+-- 4. run_shift_reminders() — finds shifts whose start falls in the 30- or 5-min window, targets the
+-- assigned person of that shift, prevents duplicate sends, respects notification_types.enabled, writes
+-- history + in-app bell, and triggers web-push via send-push. SECURITY DEFINER (runs under pg_cron).
 create or replace function public.run_shift_reminders()
 returns void language plpgsql security definer set search_path = '' as $$
 declare
@@ -88,8 +87,8 @@ declare
 	v_title text;
 	v_body  text;
 begin
-	-- Push-transport is optioneel: zonder Vault-config schrijven we nog steeds historie + de in-app bel,
-	-- alleen de web-push blijft achterwege. (Zie het rapport voor de handmatige Vault-stap.)
+	-- Push transport is optional: without Vault config we still write history + the in-app bell,
+	-- only the web-push is skipped.
 	select decrypted_secret into v_url from vault.decrypted_secrets where name = 'send_push_url';
 	select decrypted_secret into v_key from vault.decrypted_secrets where name = 'send_push_secret_key';
 
@@ -113,7 +112,7 @@ begin
 					where d.shift_id = s.id and d.window_minutes = w and d.user_id = ms.user_id
 				)
 		loop
-			-- Dedup-marker eerst (race-safe via PK); als een parallelle run 'm net zette: overslaan.
+			-- Dedup marker first (race-safe via PK); skip if a parallel run just inserted it.
 			begin
 				insert into public.shift_reminder_sends (shift_id, window_minutes, user_id)
 				values (rec.shift_id, w, rec.recipient);
@@ -126,16 +125,16 @@ begin
 				|| coalesce(' — ' || rec.station, '')
 				|| ' start om ' || to_char(rec.starts_at at time zone 'Europe/Amsterdam', 'HH24:MI');
 
-			-- Historie (systeem-send: sender null).
+			-- History (system send: sender null).
 			insert into public.notification_history (type_key, title, body, sender_user_id, audience)
 			values (v_type, v_title, v_body, null,
 				jsonb_build_object('kind', 'shift-reminder', 'shift_id', rec.shift_id, 'window_minutes', w, 'user_count', 1));
 
-			-- In-app bel (realtime) voor de ontvanger.
+			-- In-app bell (realtime) for the recipient.
 			insert into public.notifications (user_id, kind, title, body, payload)
 			values (rec.recipient, 'shift-reminder', v_title, v_body, jsonb_build_object('url', '/dashboard'));
 
-			-- Web-push via send-push (auth:'secret', push-only) — alleen als Vault geconfigureerd is.
+			-- Web-push via send-push (auth:'secret', push-only) — only if Vault is configured.
 			if v_url is not null and v_key is not null then
 				perform net.http_post(
 					url := v_url,
@@ -154,12 +153,12 @@ begin
 end;
 $$;
 
--- SECURITY DEFINER in public is standaard door PUBLIC uitvoerbaar; dit is een systeemfunctie. Alleen de
--- eigenaar (pg_cron) en service_role (handmatige test/ops) mogen 'm draaien.
+-- SECURITY DEFINER in public is executable by PUBLIC by default; this is a system function. Only the
+-- owner (pg_cron) and service_role (manual test/ops) may run it.
 revoke execute on function public.run_shift_reminders() from public;
 grant execute on function public.run_shift_reminders() to service_role;
 
--- 5. pg_cron — elke 5 minuten. Idempotent: eerst de bestaande job intrekken als die er is.
+-- 5. pg_cron — every 5 minutes. Idempotent: unschedule the existing job first if present.
 do $$
 begin
 	if exists (select 1 from cron.job where jobname = 'shift-reminders') then

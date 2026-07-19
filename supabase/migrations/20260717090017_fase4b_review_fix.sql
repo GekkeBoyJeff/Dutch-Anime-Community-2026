@@ -1,13 +1,10 @@
--- Fase 4b review-fix.
+-- Phase 4b review-fix.
 --
--- (1) HIGH-impact boundary-gat: de eigenaar (stand-staff) kon de yakuza-goedkeuringsflow volledig
--- omzeilen door inventory_items.available direct op false te zetten i.p.v. een onbeschikbaarheids-
--- venster aan te vragen. item_available_on() = available AND geen actief venster, dus available=false
--- maakt een item op ELKE datum onbeschikbaar — óók tijdens een event waarvoor erop gerekend wordt,
--- zonder verzoek, zonder beslissing. RLS ('inv items own update') laat de eigenaar zijn eigen rij
--- kolom-onbeperkt bewerken, dus dit moet met een trigger dicht (een UI-fix is omzeilbaar).
--- Voortaan: wie géén inventory.manage heeft mag available niet true->false zetten zolang het item is
--- toegewezen aan een aankomend/lopend event; die moet via request_item_unavailability() (verzoek → yakuza).
+-- (1) HIGH-impact boundary gap: the owner (stand-staff) could fully bypass the yakuza approval flow by
+-- setting inventory_items.available straight to false instead of requesting an unavailability window.
+-- RLS lets the owner edit their own row column-unrestricted, so this needs a trigger (a UI fix is
+-- bypassable): without inventory.manage, available can't flip true->false while the item is assigned
+-- to an upcoming/ongoing event; that must go through request_item_unavailability() instead.
 create or replace function public.guard_item_available()
 returns trigger language plpgsql security definer set search_path = '' as $$
 begin
@@ -29,10 +26,9 @@ $$;
 create trigger guard_item_available before update on public.inventory_items
 	for each row execute function public.guard_item_available();
 
--- (2) Eigenaar/aanvrager kon een eigen venster niet meer intrekken: verwijderen vereist inventory.manage
--- ('unavail manage'). Een stand-staff die per ongeluk (of onterecht) onbeschikbaarheid meldde, of een
--- aangevraagd venster wil terugtrekken, kan dat nu zelf via deze RPC. Alleen de aanvrager óf de eigenaar
--- van het item mag intrekken (SECURITY DEFINER zodat een view-only houder de rij mag wissen).
+-- (2) Owner/requester could no longer withdraw their own window: deleting required inventory.manage
+-- ('unavail manage'). This RPC lets them do it themselves; only the requester or the item's owner may
+-- withdraw (SECURITY DEFINER so a view-only holder can delete the row).
 create or replace function public.cancel_own_item_unavailability(p_id uuid)
 returns void language plpgsql security definer set search_path = '' as $$
 declare
