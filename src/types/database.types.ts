@@ -2523,6 +2523,13 @@ export type Database = {
           survey_id: string
         }[]
       }
+      team_candidates: {
+        Args: never
+        Returns: {
+          display_name: string
+          subject_id: string
+        }[]
+      }
       unmerge_subject: { Args: { p_id: string }; Returns: undefined }
     }
     Enums: {

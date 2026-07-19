@@ -96,6 +96,7 @@ const EventEditor = () => {
 	const [users, setUsers] = useState<PersonOption[]>([]);
 	const [items, setItems] = useState<ItemOption[]>([]);
 	const [subjects, setSubjects] = useState<SubjectName[]>([]);
+	const [candidates, setCandidates] = useState<SubjectName[]>([]);
 	const [attendance, setAttendance] = useState<Attendance[]>([]);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [loaded, setLoaded] = useState(false);
@@ -112,13 +113,15 @@ const EventEditor = () => {
 			db.from('inventory_items').select('id, name').order('name'),
 			db.from('subject_names').select('id, display_name'),
 			db.from('event_attendance').select('id, subject_id, status, note').eq('event_id', eventId),
-		]).then(([{ data: ev }, { data: profiles }, { data: itemRows }, { data: subjectRows }, { data: att }]) => {
+			db.rpc('team_candidates'),
+		]).then(([{ data: ev }, { data: profiles }, { data: itemRows }, { data: subjectRows }, { data: att }, { data: candidateRows }]) => {
 			if (!active) return;
 			setEvent((ev ?? null) as EventRow | null);
 			setUsers((profiles ?? []) as PersonOption[]);
 			setItems((itemRows ?? []) as ItemOption[]);
 			setSubjects((subjectRows ?? []) as SubjectName[]);
 			setAttendance((att ?? []) as Attendance[]);
+			setCandidates((candidateRows ?? []).map((c) => ({ id: c.subject_id, display_name: c.display_name })));
 			setLoaded(true);
 		});
 		return () => {
@@ -339,10 +342,10 @@ const EventEditor = () => {
 					tabs={[
 						{ label: 'Info', panel: infoPanel },
 						{ label: 'Aanwezigheid', panel: attendancePanel },
-						{ label: 'Agenda', panel: <AgendaTab eventId={eventId} sessionUserId={session.user.id} subjects={subjects} subjectName={subjectName} /> },
+						{ label: 'Agenda', panel: <AgendaTab eventId={eventId} sessionUserId={session.user.id} candidates={candidates} subjectName={subjectName} /> },
 						{
 							label: 'Activiteiten',
-							panel: <ActivitiesTab eventId={eventId} sessionUserId={session.user.id} items={items} subjects={subjects} subjectName={subjectName} />,
+							panel: <ActivitiesTab eventId={eventId} sessionUserId={session.user.id} items={items} candidates={candidates} subjectName={subjectName} />,
 						},
 						{
 							label: 'Kosten',

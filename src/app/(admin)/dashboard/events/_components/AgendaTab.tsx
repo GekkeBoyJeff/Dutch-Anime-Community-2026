@@ -22,7 +22,8 @@ type ShiftForm = { id?: string; subject_id: string; starts_at: string; ends_at: 
 type AgendaTabProps = {
 	eventId: string;
 	sessionUserId: string;
-	subjects: SubjectName[];
+	// Team-only choice list (team_candidates RPC); existing non-team assignments still render via subjectName.
+	candidates: SubjectName[];
 	subjectName: (id: string | null) => string;
 };
 
@@ -30,7 +31,7 @@ const EMPTY_SHIFT: ShiftForm = { subject_id: '', starts_at: '', ends_at: '', sta
 
 // Agenda-tab: shifts (CRUD, inventory.manage) + openstaande ruilverzoeken (toepassen/annuleren via de
 // SECURITY DEFINER-RPC's die de ownership/lock/venster-regels afdwingen).
-const AgendaTab = ({ eventId, sessionUserId, subjects, subjectName }: AgendaTabProps) => {
+const AgendaTab = ({ eventId, sessionUserId, candidates, subjectName }: AgendaTabProps) => {
 	const toast = Toast.useToastManager();
 	const [shifts, setShifts] = useState<Shift[]>([]);
 	const [swaps, setSwaps] = useState<Swap[]>([]);
@@ -206,7 +207,7 @@ const AgendaTab = ({ eventId, sessionUserId, subjects, subjectName }: AgendaTabP
 								native
 								aria-label="Persoon"
 								value={form.subject_id}
-								options={[{ value: '', label: 'Niemand' }, ...subjects.map((s) => ({ value: s.id, label: s.display_name }))]}
+								options={[{ value: '', label: 'Niemand' }, ...candidates.map((s) => ({ value: s.id, label: s.display_name }))]}
 								onValueChange={(v) => setForm({ ...form, subject_id: v as string })}
 							/>
 						</Field>

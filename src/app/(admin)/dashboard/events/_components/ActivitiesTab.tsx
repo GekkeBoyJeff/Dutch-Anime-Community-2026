@@ -26,7 +26,8 @@ type ActivitiesTabProps = {
 	eventId: string;
 	sessionUserId: string;
 	items: ItemOption[];
-	subjects: SubjectName[];
+	// Team-only host choice list (team_candidates RPC); existing non-team hosts still render via subjectName.
+	candidates: SubjectName[];
 	subjectName: (id: string | null) => string;
 };
 
@@ -41,7 +42,7 @@ const EMPTY_ACTIVITY: ActivityForm = { venue: 'stand', title: '', description: '
 
 // Activiteiten-tab: gehoste activiteiten (CRUD) met per activiteit benodigdheden (inventory-item óf
 // vrije tekst) en hosts. Benodigdheden/hosts bewerk je in de detail-drawer van een bestaande activiteit.
-const ActivitiesTab = ({ eventId, sessionUserId, items, subjects, subjectName }: ActivitiesTabProps) => {
+const ActivitiesTab = ({ eventId, sessionUserId, items, candidates, subjectName }: ActivitiesTabProps) => {
 	const toast = Toast.useToastManager();
 	const [activities, setActivities] = useState<Activity[]>([]);
 	const [requirements, setRequirements] = useState<Requirement[]>([]);
@@ -201,7 +202,7 @@ const ActivitiesTab = ({ eventId, sessionUserId, items, subjects, subjectName }:
 
 	const activityReqs = form?.id ? requirements.filter((r) => r.activity_id === form.id) : [];
 	const activityHosts = form?.id ? hosts.filter((h) => h.activity_id === form.id) : [];
-	const availableHosts = subjects.filter((s) => !activityHosts.some((h) => h.subject_id === s.id));
+	const availableHosts = candidates.filter((s) => !activityHosts.some((h) => h.subject_id === s.id));
 
 	return (
 		<div className="inventory-tab">
