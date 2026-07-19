@@ -134,6 +134,7 @@ error. Examples:
   create policy "media editors delete" on storage.objects for delete to authenticated
   using (bucket_id = 'media' and (select public.authorize('media.manage')) and not public.media_is_used(name));
   ```
+  Known limitation: the scan only covers `pages.data`, so a bucket image referenced solely from code would read as unused and could be deleted.
 
 ## Notifications infra
 

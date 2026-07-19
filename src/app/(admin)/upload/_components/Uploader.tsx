@@ -76,6 +76,9 @@ const Uploader = () => {
 				const objects = (data ?? []).filter((object) => object.id);
 				const names = objects.map((object) => object.name);
 				// One RPC resolves usage for every visible file; it scans page content server-side.
+				// Limitation: this only sees `pages.data`, not code (e.g. static assets under `public/media`,
+				// which is a separate, unrelated folder from this bucket) — a file referenced only from code
+				// would read as unused and could be deleted.
 				const { data: usageRows } = names.length
 					? await db.rpc('media_usage', { paths: names })
 					: { data: [] as { media_path: string; page_path: string; page_title: string }[] };
