@@ -62,11 +62,12 @@ page
       └─ basics      — the smallest primitives  (Button, Title, Content, Media, Section, Icon, Pill, Interactive)
 ```
 
-Separately, **`structures`** holds the page shell — `Navigation`, `Footer`, `AnnouncementBar`,
-composed by `SiteChrome` — which wraps the page in the layout rather than sitting inside it. Each
-layer composes only the layers beneath it: a content block never hand-rolls a button or a card, it
-uses the system component — and every capability lives in the lowest layer that can own it (the rules
-are spelled out in [Conventions](?path=/docs/for-developers-2-conventions--docs)).
+Separately, **`structures`** holds the page shells that wrap a page in the layout rather than sitting
+inside it — the public `Navigation`, `Footer` and `AnnouncementBar` (composed by `SiteChrome`) and the
+admin `MegaMenu` and `BottomTabBar`. Each layer composes only the layers beneath it: a content block
+never hand-rolls a button or a card, it uses the system component — and every capability lives in the
+lowest layer that can own it (the rules are spelled out in
+[Conventions](?path=/docs/for-developers-2-conventions--docs)).
 
 ## The repo map
 
@@ -81,8 +82,9 @@ are spelled out in [Conventions](?path=/docs/for-developers-2-conventions--docs)
 
 ## How these docs are organised
 
-- **For developers** — the guide if you're building. It's a short course: seven pages, **read top to
-  bottom**, each one building on the last.
+- **For developers** — the guide if you're building. It's a short course: eight pages, **read top to
+  bottom**, each one building on the last. Pages 1–7 are the public content site; page 8 is the staff
+  platform that runs alongside it.
 
   1. **[Architecture](?path=/docs/for-developers-1-architecture--docs)** — how it fits together.
   2. **[Conventions](?path=/docs/for-developers-2-conventions--docs)** — the rules you write by.
@@ -91,6 +93,8 @@ are spelled out in [Conventions](?path=/docs/for-developers-2-conventions--docs)
   5. **[Validation](?path=/docs/for-developers-5-validation--docs)** — how the contract is enforced.
   6. **[SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs)** — metadata, OG, sitemap.
   7. **[Hooks](?path=/docs/for-developers-7-hooks--docs)** — the small client-side utilities.
+  8. **[Staff platform](?path=/docs/for-developers-8-staff-platform--docs)** — the Supabase dashboard,
+     RLS boundary, and admin shell.
 
 - **[Look & feel](?path=/docs/look-feel-colors--docs)** — the visual system you can see and check
   live: colours, typography and spacing. Start here if you're reviewing the design.

@@ -176,6 +176,17 @@ an external `<a>` (with a safe `rel`) depending on its props, and fires haptic f
 > **Why keep islands small?** The client bundle's weight is mostly the React/Next runtime, not your
 > components. Rendering the static parts on the server keeps the JavaScript you ship to the visitor low.
 
+## The other half: the staff platform
+
+Everything above is the **public site** — `src/app/(website)/`, statically prerendered. Alongside it lives
+a **staff platform** in `src/app/(admin)/` (`/dashboard/*`, `/upload`, `/account`, `/builder`): a
+client-side SPA behind Discord login that reads and writes Supabase (Postgres) at runtime, with Postgres
+RLS as its security boundary. It reuses the same layers, tokens and conventions — `src/lib/auth/*` holds
+its roles/permissions, `src/lib/supabase/*` its clients. `next.config.mjs` switches output on `HOST_TYPE`:
+`server` (default) serves dynamic features and security headers; `static` exports the public pages and
+keeps the dashboard a runtime SPA. It has its own guide — [8. Staff
+platform](?path=/docs/for-developers-8-staff-platform--docs).
+
 ---
 
 **Next:** [2. Conventions](?path=/docs/for-developers-2-conventions--docs) — the rules you write code by:

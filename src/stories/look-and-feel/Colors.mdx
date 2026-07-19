@@ -132,8 +132,27 @@ mixin:
 > paintbrush) to see the same components under a different palette.
 
 Where it lives: the raw brand colours and the runtime aliases are in `src/styles/_initial.scss` (and
-`_derived.scss`); the palette slots, theme variants (`dac`, `sepia`) and colorset mapping that emit
-them are in the THEME section of `src/styles/base.scss`. The brand rationale is in `MERKBRIEF.md`.
+`_derived.scss`); the palette slots, theme variants (`dac`, `sepia`, `admin`) and colorset mapping that
+emit them are in the THEME section of `src/styles/base.scss`. The brand rationale is in `MERKBRIEF.md`.
+
+## The admin theme
+
+The staff platform runs under a third theme, `[data-theme='admin']`, applied to the dashboard shell. It
+carries a neutral blue accent instead of the brand gold, and — because a tool wants a tighter rhythm than
+the marketing site — three **density tokens** the route-local dashboard SCSS reads instead of hardcoding
+spacing, so the whole platform's density moves from one place:
+
+```scss
+[data-theme='admin'] {
+	--admin-gap: #{spacing(m)};
+	--admin-cell-padding-block: #{spacing(xs)};
+	--admin-cell-padding-inline: #{spacing(s)};
+}
+```
+
+The colorset layer is unchanged — admin surfaces still read `$background-color`, `$color` and the surface
+scale, so the same components render correctly under it. See
+[Staff platform](?path=/docs/for-developers-8-staff-platform--docs) for the rest of the dashboard.
 
 ## Status colours
 

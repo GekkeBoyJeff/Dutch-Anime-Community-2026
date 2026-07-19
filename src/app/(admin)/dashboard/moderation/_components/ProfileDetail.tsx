@@ -202,8 +202,7 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 
 			<DetailTabs
 				label="Profiel"
-				// Signalen (index 1) is default: preserves the old behavior where Team's warnings
-				// shortcut landed straight on the Warnings tab, now grouped under Signalen.
+				// Signalen is the default tab so warnings land first — Team's warnings shortcut relies on this.
 				defaultValue={1}
 				tabs={[
 					{
