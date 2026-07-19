@@ -40,6 +40,7 @@ import {
 	TriangleAlert,
 	Upload,
 	User,
+	Users,
 	X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -92,6 +93,7 @@ export const ICONS: Record<string, LucideIcon> = {
 	trash: Trash2,
 	upload: Upload,
 	user: User,
+	users: Users,
 	warning: TriangleAlert,
 };
 

@@ -38,6 +38,7 @@ import '@/styles/components/basics/Title.scss';
 // components
 import '@/styles/components/components/ArticleCard.scss';
 import '@/styles/components/components/Card.scss';
+import '@/styles/components/components/ChatTranscript.scss';
 import '@/styles/components/components/CheckboxGroup.scss';
 import '@/styles/components/components/Combobox.scss';
 import '@/styles/components/components/CookieConsent.scss';

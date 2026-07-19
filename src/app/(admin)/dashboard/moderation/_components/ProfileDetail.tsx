@@ -7,6 +7,7 @@ import BadgesTab from '@/app/(admin)/dashboard/moderation/_components/BadgesTab'
 import BansTab from '@/app/(admin)/dashboard/moderation/_components/BansTab';
 import LinksTab from '@/app/(admin)/dashboard/moderation/_components/LinksTab';
 import NotesTab from '@/app/(admin)/dashboard/moderation/_components/NotesTab';
+import TicketsTab from '@/app/(admin)/dashboard/moderation/_components/TicketsTab';
 import WarningsTab from '@/app/(admin)/dashboard/moderation/_components/WarningsTab';
 import Alert from '@/components/basics/Alert';
 import Breadcrumb from '@/components/basics/Breadcrumb';
@@ -199,16 +200,41 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 
 			<DetailTabs
 				label="Profiel"
+				// Signalen (index 1) is default: preserves the old behavior where Team's warnings
+				// shortcut landed straight on the Warnings tab, now grouped under Signalen.
+				defaultValue={1}
 				tabs={[
-					{ label: 'Warnings', panel: <WarningsTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canManage} canDelete={canDelete} /> },
-					{ label: 'Notities', panel: <NotesTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canManage} /> },
-					{ label: 'Links', panel: <LinksTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canManage} canDelete={canDelete} /> },
-					{ label: 'Bans', panel: <BansTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canManage} /> },
-					{ label: 'Badges', panel: <BadgesTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canBadges} /> },
-					{ label: 'Gedrag', panel: conductPanel },
-					{ label: 'Aliassen', panel: aliasPanel },
-					{ label: 'Aanwezigheid', panel: attendancePanel },
-					{ label: 'Activity', panel: activityPanel },
+					{
+						label: 'Overzicht',
+						panel: (
+							<div className="inventory-section">
+								<Title size={5}>Notities</Title>
+								<NotesTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canManage} />
+								<Title size={5}>Badges</Title>
+								<BadgesTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canBadges} />
+							</div>
+						),
+					},
+					{
+						label: 'Signalen',
+						panel: (
+							<div className="inventory-section">
+								<Title size={5}>Warnings</Title>
+								<WarningsTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canManage} canDelete={canDelete} />
+								<Title size={5}>Gedrag</Title>
+								{conductPanel}
+								<Title size={5}>Aliassen</Title>
+								{aliasPanel}
+								<Title size={5}>Aanwezigheid</Title>
+								{attendancePanel}
+								<Title size={5}>Activity</Title>
+								{activityPanel}
+							</div>
+						),
+					},
+					{ label: 'Verbindingen', panel: <LinksTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canManage} canDelete={canDelete} /> },
+					{ label: 'Acties', panel: <BansTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canManage} /> },
+					{ label: 'Tickets', panel: <TicketsTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canManage} canDelete={canDelete} /> },
 				]}
 			/>
 		</div>

@@ -110,8 +110,14 @@ const Select = ({
 	// renders no DOM node) — spreading it on Root drops it, leaving the custom-mode select with no name.
 	const { 'aria-label': ariaLabel, ...rootRest } = rest as SelectProps;
 
+	// Without a value→label map Base UI's Select.Value shows the raw value(s) in the trigger; feed it
+	// the labels so the selection reads as its name(s), not e.g. a UUID.
+	const items = Object.fromEntries(
+		options.flatMap((item) => (isGroup(item) ? item.options : [item])).map((option) => [option.value, option.label]),
+	);
+
 	return (
-		<BaseSelect.Root multiple={multiple} {...(rootRest as object)}>
+		<BaseSelect.Root multiple={multiple} items={items} {...(rootRest as object)}>
 			<BaseSelect.Trigger ref={ref} className={classNames('select', className)} aria-label={ariaLabel}>
 				<BaseSelect.Value className="value" placeholder={placeholder} />
 				<BaseSelect.Icon className="trigger-icon">

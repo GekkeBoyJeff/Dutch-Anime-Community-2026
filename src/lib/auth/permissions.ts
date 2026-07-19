@@ -28,6 +28,7 @@ export const APP_PERMISSIONS = [
 	'records.delete',
 	'notifications.send',
 	'surveys.manage',
+	'staff.manage',
 ] as const;
 export type Permission = (typeof APP_PERMISSIONS)[number];
 

@@ -1,0 +1,29 @@
+.team {
+	.team-person {
+		display: flex;
+		align-items: center;
+		gap: spacing(s);
+	}
+
+	.team-tag {
+		color: var(--color-secondary);
+	}
+
+	.team-shift {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(xs);
+	}
+
+	.team-shift-event {
+		color: var(--color-secondary);
+		font-size: 0.8125rem;
+	}
+
+	.team-actions {
+		display: flex;
+		gap: spacing(s);
+		justify-content: flex-end;
+		flex-wrap: wrap;
+	}
+}

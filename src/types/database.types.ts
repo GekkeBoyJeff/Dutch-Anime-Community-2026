@@ -1498,6 +1498,50 @@ export type Database = {
         }
         Relationships: []
       }
+      org_income: {
+        Row: {
+          amount_eur: number
+          category: Database["public"]["Enums"]["income_category"]
+          created_at: string
+          created_by: string
+          description: string
+          event_id: string | null
+          id: string
+          received_on: string
+          updated_at: string
+        }
+        Insert: {
+          amount_eur: number
+          category?: Database["public"]["Enums"]["income_category"]
+          created_at?: string
+          created_by?: string
+          description: string
+          event_id?: string | null
+          id?: string
+          received_on: string
+          updated_at?: string
+        }
+        Update: {
+          amount_eur?: number
+          category?: Database["public"]["Enums"]["income_category"]
+          created_at?: string
+          created_by?: string
+          description?: string
+          event_id?: string | null
+          id?: string
+          received_on?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_income_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pages: {
         Row: {
           data: Json
@@ -1997,6 +2041,168 @@ export type Database = {
           },
         ]
       }
+      ticket_messages: {
+        Row: {
+          attachments: Json
+          author_avatar_url: string | null
+          author_discord_id: string
+          author_name: string
+          author_nick: string | null
+          content: string
+          discord_id: string | null
+          edited: boolean
+          embeds: Json
+          id: string
+          is_bot: boolean
+          reply_to_discord_id: string | null
+          sent_at: string | null
+          seq: number
+          ticket_id: string
+        }
+        Insert: {
+          attachments?: Json
+          author_avatar_url?: string | null
+          author_discord_id: string
+          author_name: string
+          author_nick?: string | null
+          content?: string
+          discord_id?: string | null
+          edited?: boolean
+          embeds?: Json
+          id?: string
+          is_bot?: boolean
+          reply_to_discord_id?: string | null
+          sent_at?: string | null
+          seq: number
+          ticket_id: string
+        }
+        Update: {
+          attachments?: Json
+          author_avatar_url?: string | null
+          author_discord_id?: string
+          author_name?: string
+          author_nick?: string | null
+          content?: string
+          discord_id?: string | null
+          edited?: boolean
+          embeds?: Json
+          id?: string
+          is_bot?: boolean
+          reply_to_discord_id?: string | null
+          sent_at?: string | null
+          seq?: number
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ticket_participants: {
+        Row: {
+          discord_id: string
+          id: string
+          is_bot: boolean
+          name: string | null
+          subject_id: string | null
+          ticket_id: string
+        }
+        Insert: {
+          discord_id: string
+          id?: string
+          is_bot?: boolean
+          name?: string | null
+          subject_id?: string | null
+          ticket_id: string
+        }
+        Update: {
+          discord_id?: string
+          id?: string
+          is_bot?: boolean
+          name?: string | null
+          subject_id?: string | null
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_participants_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "mod_subjects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ticket_participants_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subject_names"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ticket_participants_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tickets: {
+        Row: {
+          archived_at: string | null
+          archived_by: string | null
+          channel_id: string | null
+          channel_name: string | null
+          closed_at: string | null
+          id: string
+          message_count: number
+          note: string | null
+          opened_at: string | null
+          server_id: string | null
+          server_name: string | null
+          ticket_number: string
+          uploaded_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
+          channel_id?: string | null
+          channel_name?: string | null
+          closed_at?: string | null
+          id?: string
+          message_count?: number
+          note?: string | null
+          opened_at?: string | null
+          server_id?: string | null
+          server_name?: string | null
+          ticket_number: string
+          uploaded_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          archived_by?: string | null
+          channel_id?: string | null
+          channel_name?: string | null
+          closed_at?: string | null
+          id?: string
+          message_count?: number
+          note?: string | null
+          opened_at?: string | null
+          server_id?: string | null
+          server_name?: string | null
+          ticket_number?: string
+          uploaded_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
       user_permissions: {
         Row: {
           created_at: string
@@ -2081,7 +2287,7 @@ export type Database = {
         Returns: {
           bedrag: number
           bron: string
-          categorie: Database["public"]["Enums"]["expense_category"]
+          categorie: string
           datum: string
           event_id: string
           event_naam: string
@@ -2236,6 +2442,21 @@ export type Database = {
         Args: { assignment_id: string; packed: boolean }
         Returns: undefined
       }
+      staff_overview: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          discord_tag: string
+          display_name: string
+          next_shift_at: string
+          next_shift_event_id: string
+          next_shift_event_name: string
+          open_warnings: number
+          role: Database["public"]["Enums"]["app_role"]
+          subject_id: string
+          user_id: string
+        }[]
+      }
       subject_cluster_rank: { Args: { p_subject: string }; Returns: number }
       submit_survey_response: {
         Args: { p_answers: Json; p_id: string }
@@ -2270,6 +2491,7 @@ export type Database = {
         | "records.delete"
         | "notifications.send"
         | "surveys.manage"
+        | "staff.manage"
       app_role: "user" | "author" | "yakuza" | "admin" | "stand-staff"
       attendance_status:
         | "signed_up"
@@ -2282,6 +2504,7 @@ export type Database = {
       event_kind: "convention" | "event"
       expense_category: "travel" | "materials" | "food" | "stand" | "other"
       expense_status: "submitted" | "approved" | "rejected" | "reimbursed"
+      income_category: "donation" | "sale" | "sponsorship" | "other"
       inventory_history_kind: "taken" | "returned" | "damaged" | "note"
       mod_ban_scope: "discord" | "convention" | "site"
       mod_link_status: "suspected" | "confirmed" | "rejected"
@@ -2447,6 +2670,7 @@ export const Constants = {
         "records.delete",
         "notifications.send",
         "surveys.manage",
+        "staff.manage",
       ],
       app_role: ["user", "author", "yakuza", "admin", "stand-staff"],
       attendance_status: [
@@ -2461,6 +2685,7 @@ export const Constants = {
       event_kind: ["convention", "event"],
       expense_category: ["travel", "materials", "food", "stand", "other"],
       expense_status: ["submitted", "approved", "rejected", "reimbursed"],
+      income_category: ["donation", "sale", "sponsorship", "other"],
       inventory_history_kind: ["taken", "returned", "damaged", "note"],
       mod_ban_scope: ["discord", "convention", "site"],
       mod_link_status: ["suspected", "confirmed", "rejected"],

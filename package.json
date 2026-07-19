@@ -37,6 +37,7 @@
 		"pdf-lib": "^1.17.1",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
+		"react-dropzone": "^19.0.2",
 		"react-hook-form": "^7.80.0",
 		"server-only": "^0.0.1",
 		"serwist": "^9.5.11",
