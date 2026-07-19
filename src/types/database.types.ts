@@ -335,6 +335,36 @@ export type Database = {
           },
         ]
       }
+      donation_notes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          note: string
+          noted_on: string | null
+          source: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note: string
+          noted_on?: string | null
+          source?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note?: string
+          noted_on?: string | null
+          source?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       event_activities: {
         Row: {
           created_at: string
@@ -1607,6 +1637,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          about: string | null
+          age: number | null
           avatar_url: string | null
           discord_id: string | null
           global_name: string | null
@@ -1614,6 +1646,9 @@ export type Database = {
           guild_nick: string | null
           guild_roles: Json | null
           id: string
+          instagram: string | null
+          photo_path: string | null
+          public_name: string | null
           synced_at: string | null
           terms_accepted_at: string | null
           terms_version: string | null
@@ -1621,6 +1656,8 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          about?: string | null
+          age?: number | null
           avatar_url?: string | null
           discord_id?: string | null
           global_name?: string | null
@@ -1628,6 +1665,9 @@ export type Database = {
           guild_nick?: string | null
           guild_roles?: Json | null
           id: string
+          instagram?: string | null
+          photo_path?: string | null
+          public_name?: string | null
           synced_at?: string | null
           terms_accepted_at?: string | null
           terms_version?: string | null
@@ -1635,6 +1675,8 @@ export type Database = {
           username?: string | null
         }
         Update: {
+          about?: string | null
+          age?: number | null
           avatar_url?: string | null
           discord_id?: string | null
           global_name?: string | null
@@ -1642,6 +1684,9 @@ export type Database = {
           guild_nick?: string | null
           guild_roles?: Json | null
           id?: string
+          instagram?: string | null
+          photo_path?: string | null
+          public_name?: string | null
           synced_at?: string | null
           terms_accepted_at?: string | null
           terms_version?: string | null
@@ -2315,6 +2360,15 @@ export type Database = {
         Returns: {
           id: string
           username: string
+        }[]
+      }
+      media_is_used: { Args: { p_name: string }; Returns: boolean }
+      media_usage: {
+        Args: { paths: string[] }
+        Returns: {
+          media_path: string
+          page_path: string
+          page_title: string
         }[]
       }
       merge_subjects: {

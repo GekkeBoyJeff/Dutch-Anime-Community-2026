@@ -3,6 +3,8 @@
 import { Toast } from '@base-ui/react/toast';
 import { useEffect, useState } from 'react';
 
+import DonationNotes from '@/app/(admin)/dashboard/_components/DonationNotes';
+import ProfileFieldsForm from '@/app/(admin)/dashboard/_components/ProfileFieldsForm';
 import BadgesTab from '@/app/(admin)/dashboard/moderation/_components/BadgesTab';
 import BansTab from '@/app/(admin)/dashboard/moderation/_components/BansTab';
 import LinksTab from '@/app/(admin)/dashboard/moderation/_components/LinksTab';
@@ -20,7 +22,7 @@ import { formatDate } from '@/lib/formatDate';
 import { type Alias, type ConductNote, type Subject } from '@/lib/moderation/types';
 import { getBrowserClient } from '@/lib/supabase/client';
 
-type Props = { subjectId: string; sessionUserId: string; canManage: boolean; canDelete: boolean; canBadges: boolean; onBack: () => void };
+type Props = { subjectId: string; sessionUserId: string; canManage: boolean; canDelete: boolean; canBadges: boolean; canEditProfile: boolean; onBack: () => void };
 interface AttendanceRow {
 	id: string;
 	event_id: string;
@@ -33,7 +35,7 @@ interface ActivityRow {
 	created_at: string;
 }
 
-const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadges, onBack }: Props) => {
+const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadges, canEditProfile, onBack }: Props) => {
 	const toast = Toast.useToastManager();
 	const [subject, setSubject] = useState<Subject | null>(null);
 	const [display, setDisplay] = useState('');
@@ -208,6 +210,14 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 						label: 'Overzicht',
 						panel: (
 							<div className="inventory-section">
+								{subject.user_id && (
+									<>
+										<Title size={5}>Profiel</Title>
+										<ProfileFieldsForm userId={subject.user_id} canEdit={canEditProfile} />
+										<Title size={5}>Donaties</Title>
+										<DonationNotes userId={subject.user_id} canManage={canEditProfile} />
+									</>
+								)}
 								<Title size={5}>Notities</Title>
 								<NotesTab subjectId={subjectId} sessionUserId={sessionUserId} canManage={canManage} />
 								<Title size={5}>Badges</Title>

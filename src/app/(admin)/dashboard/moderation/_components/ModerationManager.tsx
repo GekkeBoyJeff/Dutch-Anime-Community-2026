@@ -19,6 +19,7 @@ const ModerationManager = () => {
 	const canManage = permissions.has('moderation.manage');
 	const canDelete = permissions.has('records.delete');
 	const canBadges = permissions.has('badges.manage');
+	const canEditProfile = permissions.has('roles.manage');
 
 	return (
 		<Container className="inventory moderation">
@@ -29,6 +30,7 @@ const ModerationManager = () => {
 					canManage={canManage}
 					canDelete={canDelete}
 					canBadges={canBadges}
+					canEditProfile={canEditProfile}
 					onBack={() => router.push('/dashboard/moderation')}
 				/>
 			) : (

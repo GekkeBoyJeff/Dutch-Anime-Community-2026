@@ -215,10 +215,45 @@
 	font-size: 0.8125rem;
 }
 
+.media-dropzone {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(xs);
+	align-items: center;
+	text-align: center;
+	padding: spacing(xl) spacing(l);
+	border: 0.125rem dashed $border-color;
+	border-radius: $rounded-l;
+	background-color: $surface-faint;
+	cursor: pointer;
+	transition: border-color $speed-fast $ease, background-color $speed-fast $ease;
+
+	&[data-active] {
+		border-color: $accent;
+		background-color: $tint-accent;
+	}
+}
+
 .media-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
 	gap: spacing(m);
+}
+
+.media-cell {
+	margin: 0;
+	display: grid;
+	gap: spacing(xs);
+}
+
+.media-cell-status {
+	display: flex;
+	justify-content: center;
+}
+
+.media-usage-list {
+	margin: spacing(xs) 0 0;
+	padding-inline-start: spacing(l);
 }
 
 .media-thumb {
