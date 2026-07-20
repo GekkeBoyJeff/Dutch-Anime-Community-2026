@@ -1,0 +1,295 @@
+.inventory {
+	display: grid;
+	gap: spacing(5xl);
+	margin-block: spacing(12);
+}
+
+.inventory-section {
+	display: grid;
+	gap: spacing(l);
+}
+
+// Prep-cockpit: the stat-tile row + gap-checklist that opens the event editor (blueprint §1e/§3.10).
+.prep-cockpit {
+	display: grid;
+	gap: spacing(m);
+	margin-block-end: spacing(l);
+}
+
+.prep-tiles {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+	gap: var(--admin-gap-tight);
+}
+
+.prep-tile {
+	display: grid;
+	gap: spacing(xs);
+	padding: spacing(m);
+	text-align: start;
+	background-color: $admin-surface-raised;
+	border: 0;
+	border-radius: $admin-radius-card;
+	box-shadow: $admin-ring, $admin-shadow-1;
+	cursor: pointer;
+	transition:
+		transform $motion-micro,
+		box-shadow $motion-micro;
+
+	&:not(.is-skeleton):hover {
+		transform: translateY(-0.125rem);
+		box-shadow: $admin-ring, $admin-shadow-2;
+	}
+
+	&:not(.is-skeleton):active {
+		transform: scale(0.98);
+	}
+
+	&.is-skeleton {
+		cursor: default;
+	}
+
+	&.is-flag {
+		box-shadow:
+			inset 0 0 0 0.0625rem $status-warning,
+			$admin-shadow-1;
+	}
+}
+
+.prep-tile-icon {
+	color: $admin-ink-3;
+
+	.is-flag & {
+		color: $status-warning;
+	}
+}
+
+.prep-tile-eyebrow {
+	font-size: 0.75rem;
+	font-weight: $weight-medium;
+	color: $admin-ink-3;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.prep-tile-value {
+	display: flex;
+	align-items: baseline;
+	gap: 0.125rem;
+	font-size: 1.5rem;
+	font-weight: $weight-semibold;
+	font-variant-numeric: tabular-nums;
+	color: $admin-ink-1;
+}
+
+.prep-tile-total {
+	font-size: 1.05rem;
+	font-weight: $weight-medium;
+	color: $admin-ink-3;
+}
+
+.prep-tile-hint {
+	font-size: 0.8125rem;
+	color: $color-secondary;
+}
+
+.prep-checklist {
+	display: flex;
+	flex-wrap: wrap;
+	gap: spacing(xs);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	&.is-done {
+		align-items: center;
+		gap: spacing(xs);
+		padding: spacing(s) spacing(m);
+		font-weight: $weight-medium;
+		color: $status-success;
+		background-color: $admin-surface-raised;
+		border-radius: $admin-radius-card;
+		box-shadow: $admin-ring, $admin-shadow-1;
+	}
+
+	.prep-checklist-icon {
+		color: inherit;
+	}
+}
+
+.prep-checklist-item {
+	display: inline-flex;
+	align-items: center;
+	gap: spacing(xs);
+	padding: spacing(xs) spacing(s);
+	font-size: 0.8125rem;
+	font-weight: $weight-medium;
+	color: $admin-ink-2;
+	background-color: $admin-surface;
+	border: 0;
+	border-radius: $rounded-full;
+	box-shadow: inset 0 0 0 0.0625rem $status-warning;
+	cursor: pointer;
+	transition: background-color $motion-micro;
+
+	&:hover {
+		background-color: $admin-accent-soft;
+	}
+
+	.prep-checklist-icon {
+		color: $status-warning;
+		font-size: 0.9rem;
+	}
+
+	.prep-checklist-arrow {
+		color: $admin-ink-3;
+		font-size: 0.8rem;
+	}
+}
+
+.inventory-tab {
+	display: grid;
+	gap: spacing(l);
+}
+
+.inventory-toolbar {
+	display: flex;
+	gap: spacing(m);
+	align-items: center;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.inventory-form {
+	display: grid;
+	gap: var(--admin-gap);
+}
+
+.inventory-row-actions {
+	display: flex;
+	gap: spacing(s);
+	flex-wrap: wrap;
+}
+
+.inventory-avail-cell {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	flex-wrap: wrap;
+}
+
+.events-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: spacing(m);
+	flex-wrap: wrap;
+}
+
+.events-toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: spacing(m);
+	flex-wrap: wrap;
+}
+
+.events {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(l);
+}
+
+.events-zones {
+	display: grid;
+	gap: spacing(2xl);
+}
+
+.events-zone {
+	display: grid;
+	gap: spacing(l);
+}
+
+.events-card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+	gap: var(--admin-gap);
+
+	&.is-compact {
+		grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+	}
+}
+
+.reveal {
+	animation: admin-reveal $motion-entrance both;
+}
+
+@keyframes admin-reveal {
+	from {
+		opacity: 0;
+		transform: translateY(0.35rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.reveal {
+		animation: none;
+		transition: none;
+	}
+}
+
+.con-groups {
+	display: grid;
+	gap: spacing(l);
+}
+
+.con-group {
+	display: grid;
+	gap: var(--admin-gap);
+	padding: var(--admin-gap);
+	border: 0.0625rem solid var(--border-color);
+	border-radius: 0.75rem;
+}
+
+.con-block {
+	display: grid;
+	gap: spacing(s);
+}
+
+.con-list {
+	display: grid;
+	gap: spacing(s);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.con-line {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: spacing(m);
+	flex-wrap: wrap;
+}
+
+.con-line-info {
+	display: grid;
+	gap: 0.15rem;
+}
+
+.con-line-main {
+	font-weight: 600;
+}
+
+.con-line-actions {
+	display: inline-flex;
+	align-items: center;
+	gap: spacing(s);
+	flex-wrap: wrap;
+}

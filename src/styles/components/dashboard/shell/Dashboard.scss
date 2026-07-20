@@ -1,0 +1,647 @@
+.dashboard-main {
+	padding-block: 6rem spacing(12);
+
+	@media (max-width: breakpoint(l)) {
+		padding-block-end: calc(#{spacing(12)} + 4.5rem + env(safe-area-inset-bottom));
+	}
+}
+
+.dashboard {
+	display: grid;
+	gap: spacing(2xl);
+	margin-block: spacing(12);
+	--container-max: 80rem;
+}
+
+.dashboard-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+	gap: spacing(l);
+}
+
+.widget-zone {
+	display: grid;
+	gap: var(--admin-gap);
+}
+
+.widget-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+	gap: var(--admin-gap);
+	align-items: start;
+}
+
+.widget-check {
+	display: flex;
+	align-items: center;
+	gap: spacing(s);
+}
+
+.widget-check-label {
+	font-weight: 500;
+}
+
+.widget-list {
+	display: grid;
+	gap: spacing(s);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+// Admin Beheer-zone: collapsible domain groups (Operatie/Content/Systeem).
+.beheer-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: spacing(m);
+}
+
+.beheer-toggle-all {
+	padding: spacing(xs) spacing(m);
+	font: inherit;
+	font-size: 0.8125rem;
+	font-weight: $weight-medium;
+	color: $admin-ink-2;
+	background: none;
+	border: 0;
+	border-radius: $rounded-full;
+	cursor: pointer;
+	transition: background-color $motion-micro;
+
+	&:hover {
+		background-color: $admin-surface-raised;
+	}
+}
+
+.beheer-group {
+	border-block-end: 0;
+	background-color: $admin-surface-raised;
+	border-radius: $admin-radius-card;
+	box-shadow: $admin-ring, $admin-shadow-1;
+
+	> .trigger {
+		padding-block: spacing(m);
+		padding-inline: spacing(l);
+	}
+
+	> .panel > .body {
+		padding-inline: spacing(l);
+		padding-block-end: spacing(l);
+		color: inherit;
+	}
+
+	// Systeem is de-emphasised: dimmed trigger until hovered/opened (blueprint §1c).
+	&.is-muted > .trigger:not([data-panel-open]) {
+		color: $admin-ink-3;
+
+		&:hover {
+			color: $admin-ink-1;
+		}
+	}
+}
+
+// Calm zero-state for a management surface with no pending data: the widgets self-hide (hideWhenEmpty),
+// leaving the grid empty, and this sibling line then surfaces so the Beheer zone reads as "present, quiet"
+// rather than a blank void. Hidden while the grid still holds skeleton/data children.
+.beheer-empty {
+	display: none;
+	margin: 0;
+	padding-block: spacing(s);
+	color: $admin-ink-3;
+	font-size: 0.875rem;
+}
+
+.widget-grid:empty + .beheer-empty {
+	display: block;
+}
+
+.beheer-group-label {
+	display: inline-flex;
+	align-items: center;
+	gap: spacing(s);
+	font-weight: $weight-semibold;
+}
+
+.beheer-group-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-inline-size: 1.35rem;
+	padding-inline: 0.4rem;
+	font-size: 0.75rem;
+	font-weight: $weight-medium;
+	color: $admin-ink-2;
+	background-color: $admin-surface;
+	border-radius: $rounded-full;
+}
+
+// Content-status widget: the lead line above a single publish action.
+.widget-publish {
+	display: grid;
+	gap: spacing(m);
+	justify-items: start;
+}
+
+// Entry/ticket widget: the convention line above the per-day ticket rows.
+.widget-tickets {
+	display: grid;
+	gap: spacing(s);
+}
+
+.widget-tickets-event {
+	margin: 0;
+	font-weight: $weight-medium;
+}
+
+.widget-tickets-event-meta {
+	color: $color-secondary;
+	font-weight: $weight-regular;
+}
+
+.pack-progress {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: spacing(s);
+
+	&.is-done {
+		.progress {
+			.bar {
+				background-color: $status-success;
+			}
+		}
+
+		.pack-progress-label {
+			color: $status-success;
+		}
+	}
+}
+
+// Inpak-viering: a gold "wax-seal" pill with a one-shot shimmer sweep the moment everything is packed.
+.pack-seal {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	padding: 0.15rem 0.6rem;
+	overflow: hidden;
+	color: #8f640e;
+	background: linear-gradient(120deg, rgba(#f5c24a, 0.22), rgba(#f5c24a, 0.1));
+	border-radius: $rounded-full;
+	box-shadow: inset 0 0 0 0.0625rem rgba(#d1971f, 0.5);
+
+	.icon {
+		inline-size: 0.9rem;
+		block-size: 0.9rem;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(110deg, transparent 20%, rgba($white, 0.6) 50%, transparent 80%);
+		transform: translateX(-120%);
+		animation: pack-seal-shimmer 900ms $ease-out 120ms 1;
+	}
+}
+
+@keyframes pack-seal-shimmer {
+	to {
+		transform: translateX(120%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pack-seal::after {
+		animation: none;
+	}
+}
+
+.pack-progress-label {
+	font-size: 0.8125rem;
+	font-weight: $weight-medium;
+	color: $color-secondary;
+	white-space: nowrap;
+}
+
+.home-hero {
+	--home-gold: #f5c24a;
+	--home-gold-strong: #d1971f;
+	--home-gold-text: #8f640e;
+	--home-gold-tint: #{rgba(#f5c24a, 0.18)};
+	--home-gold-tint-soft: #{rgba(#f5c24a, 0.08)};
+
+	position: relative;
+	display: grid;
+	gap: spacing(xl);
+	padding: clamp(#{spacing(xl)}, 4vw, #{spacing(5xl)});
+	border-radius: $admin-radius-panel;
+	background-color: $admin-surface-raised;
+	box-shadow: $admin-ring, $admin-shadow-2;
+	overflow: hidden;
+	isolation: isolate;
+}
+
+.home-hero-wash {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	background:
+		radial-gradient(120% 120% at 100% -10%, var(--home-gold-tint-soft), transparent 52%),
+		linear-gradient(150deg, var(--home-gold-tint-soft), transparent 40%);
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		color: var(--home-gold);
+		opacity: 0.05;
+		background-image: radial-gradient(currentcolor 0.0625rem, transparent 0.0625rem);
+		background-size: 1.5rem 1.5rem;
+		mask-image: radial-gradient(120% 120% at 100% 0%, #000, transparent 60%);
+	}
+}
+
+.home-hero-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: spacing(m);
+}
+
+.home-hero-eyebrow {
+	margin: 0;
+	font-size: 0.8125rem;
+	font-weight: $weight-semibold;
+	letter-spacing: $tracking-wide;
+	text-transform: uppercase;
+	color: $color-secondary;
+}
+
+.home-hero-tools {
+	display: flex;
+	align-items: center;
+	gap: spacing(m);
+	flex: none;
+}
+
+.home-hero-greet {
+	display: grid;
+	gap: spacing(s);
+}
+
+.home-hero-title {
+	margin: 0;
+	font-size: clamp(1.9rem, 4vw, 2.6rem);
+	font-weight: $weight-bold;
+	letter-spacing: $tracking-tight;
+	line-height: 1.05;
+	color: $color;
+}
+
+.home-hero-summary {
+	margin: 0;
+	min-block-size: 1.7rem;
+	font-size: 1.15rem;
+	line-height: 1.4;
+	color: $color-secondary;
+
+	&:not(.is-loading) {
+		animation: home-fade-in $speed $ease-out both;
+	}
+}
+
+.home-hero-slot {
+	min-block-size: 9rem;
+}
+
+.home-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: spacing(l);
+	max-inline-size: 44rem;
+	padding: spacing(xl);
+	border-inline-start: 0.25rem solid var(--home-gold);
+	border-radius: $admin-radius-card;
+	background-color: $admin-surface;
+	box-shadow: inset 0 0 0 0.0625rem var(--home-gold-tint), $admin-shadow-1;
+	animation: home-fade-in $speed $ease-out both;
+
+	&.is-calm {
+		border-inline-start-color: $admin-hairline-strong;
+		box-shadow: $admin-ring, $admin-shadow-1;
+	}
+
+	&.is-skeleton {
+		border-inline-start-color: var(--border-color);
+		box-shadow: $admin-ring, $admin-shadow-1;
+		animation: none;
+	}
+}
+
+.home-card-body {
+	display: grid;
+	gap: spacing(xs);
+}
+
+.home-card-eyebrow {
+	margin: 0;
+	font-size: 0.75rem;
+	font-weight: $weight-semibold;
+	letter-spacing: $tracking-wide;
+	text-transform: uppercase;
+	color: var(--home-gold-text);
+}
+
+.home-card-title {
+	margin: 0;
+	font-size: 1.35rem;
+	font-weight: $weight-bold;
+	letter-spacing: $tracking-tight;
+	line-height: 1.2;
+	color: $color;
+}
+
+.home-card-meta {
+	margin: 0;
+	font-size: 0.95rem;
+	color: $color-secondary;
+}
+
+.home-card-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: spacing(s);
+	padding-block-start: spacing(l);
+	border-block-start: 0.0625rem solid var(--border-color);
+}
+
+.home-action {
+	display: inline-flex;
+	align-items: center;
+	gap: spacing(s);
+	padding: spacing(s) spacing(m);
+	border-radius: $rounded-m;
+	background-color: var(--home-gold-tint);
+	color: var(--home-gold-text);
+	font-weight: $weight-medium;
+	font-size: 0.9rem;
+	transition: background-color $speed-fast $ease, color $speed-fast $ease, transform $speed-fast $ease;
+
+	@include interactive {
+		background-color: var(--home-gold);
+		color: #241a22;
+		transform: translateY(-0.0625rem);
+	}
+
+	.home-action-icon {
+		display: inline-flex;
+
+		.icon {
+			inline-size: 1.1rem;
+			block-size: 1.1rem;
+		}
+	}
+}
+
+.home-zones {
+	display: grid;
+	gap: spacing(2xl);
+	grid-template-columns: 1fr;
+
+	@media (min-width: 56.25rem) {
+		grid-template-columns: minmax(0, 1.62fr) minmax(0, 1fr);
+		align-items: start;
+	}
+}
+
+.home-ambient-stack {
+	display: grid;
+	gap: var(--admin-gap);
+}
+
+// Staggered card-reveal (blueprint §3.6): the home's zone cards fade-rise in sequence on load. A pure-CSS
+// stagger over the first cards of each grid; reduced-motion opts out entirely (the cards just appear).
+@media (prefers-reduced-motion: no-preference) {
+	.dashboard {
+		.widget-grid > *,
+		.home-ambient-stack > * {
+			animation: home-zone-reveal $motion-entrance both;
+		}
+
+		@for $i from 1 through 6 {
+			.widget-grid > *:nth-child(#{$i}),
+			.home-ambient-stack > *:nth-child(#{$i}) {
+				animation-delay: #{($i - 1) * 0.06}s;
+			}
+		}
+	}
+}
+
+@keyframes home-zone-reveal {
+	from {
+		opacity: 0;
+		transform: translateY(0.5rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.home-announce {
+	display: grid;
+	gap: 0.2rem;
+}
+
+.home-announce-title {
+	font-weight: $weight-semibold;
+
+	.home-announce[data-unread] & {
+		position: relative;
+		padding-inline-start: spacing(m);
+
+		&::before {
+			content: '';
+			position: absolute;
+			inset-inline-start: 0;
+			inset-block-start: 0.45rem;
+			inline-size: 0.45rem;
+			block-size: 0.45rem;
+			border-radius: $rounded-full;
+			background-color: var(--home-gold-strong, #{$accent});
+		}
+	}
+}
+
+.home-announce-body {
+	font-size: 0.875rem;
+	color: $color-secondary;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.home-announce-when {
+	font-size: 0.75rem;
+	color: $color-secondary;
+}
+
+@keyframes home-fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(0.35rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.home-card,
+	.home-hero-summary,
+	.home-action {
+		animation: none;
+		transition: none;
+	}
+}
+
+.access-page {
+	display: grid;
+	gap: spacing(l);
+	margin-block: spacing(12);
+}
+
+.logs-page {
+	display: grid;
+	gap: spacing(l);
+	margin-block: spacing(12);
+}
+
+.logs-tab {
+	display: grid;
+	gap: spacing(l);
+}
+
+.access-default {
+	color: var(--color-secondary);
+}
+
+.access-drawer-body {
+	display: grid;
+	gap: spacing(2xl);
+}
+
+.access-drawer-role {
+	display: grid;
+	gap: 0.35rem;
+}
+
+.access-drawer-label {
+	font-weight: 700;
+	font-size: 0.8125rem;
+}
+
+.media-reveal {
+	animation: route-reveal $motion-entrance both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.media-reveal {
+		animation: none;
+	}
+}
+
+.media-usage-list {
+	margin: spacing(xs) 0 0;
+	padding-inline-start: spacing(l);
+}
+
+.media-detail {
+	display: grid;
+	gap: spacing(l);
+}
+
+.media-detail-preview {
+	max-inline-size: 100%;
+	max-block-size: 40vh;
+	object-fit: contain;
+	border-radius: $rounded-m;
+}
+
+.media-detail dl {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 0.35rem spacing(l);
+	margin: 0;
+}
+
+.media-detail dt {
+	font-weight: 700;
+}
+
+.media-detail dd {
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+
+[data-theme='admin'] {
+	.data-table {
+		.table {
+			border-radius: $admin-radius-card;
+			background-color: $admin-surface;
+			box-shadow: $admin-ring, $admin-shadow-1;
+			overflow: clip;
+
+			.scroll {
+				table {
+					thead {
+						th {
+							position: sticky;
+							inset-block-start: 0;
+							z-index: $z-base;
+							background-color: $admin-surface;
+							border-block-end-color: $admin-hairline-strong;
+							font-size: $admin-label-size;
+							font-weight: $weight-semibold;
+							letter-spacing: $tracking-wide;
+							text-transform: uppercase;
+							color: $admin-ink-3;
+						}
+					}
+
+					tbody {
+						tr {
+							transition: background-color $motion-micro;
+
+							&:hover td {
+								background-color: $surface-faint;
+							}
+						}
+
+						tr + tr td {
+							border-block-start-color: $admin-hairline;
+						}
+
+						td[data-align='end'] {
+							font-variant-numeric: tabular-nums;
+						}
+					}
+				}
+			}
+
+			@media (max-width: breakpoint(m)) {
+				.scroll table tbody tr:hover td {
+					background-color: transparent;
+				}
+			}
+		}
+	}
+}

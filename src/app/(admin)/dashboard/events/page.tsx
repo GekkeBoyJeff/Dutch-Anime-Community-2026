@@ -1,10 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
-import EventsRouter from '@/app/(admin)/dashboard/events/_components/EventsRouter';
-
-import '@/app/(admin)/dashboard/dashboard.scss';
-import '@/app/(admin)/dashboard/inventory.scss';
+import EventsRouter from '@/components/dashboard/events/EventsRouter';
 
 export const metadata: Metadata = { title: 'Conventies & events', robots: { index: false, follow: false } };
 

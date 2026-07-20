@@ -55,4 +55,10 @@ const Radio = ({
 	);
 };
 
+// The raw Base UI radio parts, surfaced so richer single-choice controls (ListboxCards, the
+// SegmentedControl) compose the same primitive instead of importing Base UI a second time.
+Radio.Group = RadioGroup;
+Radio.Option = BaseRadio.Root;
+Radio.Indicator = BaseRadio.Indicator;
+
 export default Radio;

@@ -1,0 +1,130 @@
+.moderation {
+	.breadcrumb {
+		margin-block-end: spacing(l);
+	}
+
+	.profile-head {
+		display: flex;
+		align-items: center;
+		gap: spacing(m);
+		flex-wrap: wrap;
+		margin-block-end: spacing(l);
+	}
+
+	.mod-meta {
+		display: flex;
+		gap: 0.4rem;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	.mod-list {
+		display: grid;
+		gap: spacing(s);
+	}
+
+	// Betrokkenen: the read-only context strip (recente events · shifts · gedeelde tickets).
+	.betrokken {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+		gap: var(--admin-gap);
+		margin-block-end: spacing(l);
+		padding: var(--admin-gap);
+		background-color: $admin-surface-raised;
+		border-radius: $admin-radius-card;
+		box-shadow: $admin-ring, $admin-shadow-1;
+	}
+
+	.betrokken-col {
+		display: grid;
+		gap: spacing(s);
+		align-content: start;
+	}
+
+	.betrokken-col-title {
+		display: flex;
+		align-items: center;
+		gap: spacing(xs);
+		margin: 0;
+		font-size: 0.75rem;
+		font-weight: $weight-bold;
+		text-transform: uppercase;
+		letter-spacing: $tracking-wide;
+		color: $color-secondary;
+	}
+
+	.betrokken-list {
+		display: grid;
+		gap: spacing(xs);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.betrokken-link {
+		display: grid;
+		gap: 0.1rem;
+		padding: spacing(xs) spacing(s);
+		border-radius: $admin-radius-control;
+		transition: background-color $motion-micro;
+
+		&:not(.is-static):hover {
+			background-color: $admin-surface;
+		}
+	}
+
+	.betrokken-link-main {
+		font-weight: $weight-medium;
+		color: $admin-ink-1;
+	}
+
+	.mod-section {
+		display: grid;
+		gap: spacing(s);
+		padding-block-start: spacing(m);
+
+		& + .mod-section {
+			border-block-start: 0.0625rem solid var(--border-color);
+		}
+	}
+
+	.mod-section-title {
+		margin: 0;
+		font-size: 0.75rem;
+		font-weight: $weight-bold;
+		text-transform: uppercase;
+		letter-spacing: $tracking-wide;
+		color: $color-secondary;
+	}
+
+	.mod-detail-skeleton {
+		display: grid;
+		gap: spacing(l);
+	}
+
+	.mod-evidence {
+		display: flex;
+		gap: 0.4rem;
+		flex-wrap: wrap;
+		align-items: center;
+		margin-block-start: spacing(xs);
+	}
+
+	.ticket-preview {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(l);
+	}
+
+	.ticket-viewer {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(m);
+	}
+
+	.badge-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: spacing(l);
+	}
+}

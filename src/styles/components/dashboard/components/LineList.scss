@@ -1,0 +1,53 @@
+.line-list {
+	display: grid;
+	gap: spacing(s);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	.line {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: spacing(m);
+		flex-wrap: wrap;
+
+		.info {
+			display: grid;
+			gap: 0.15rem;
+
+			.main {
+				font-weight: 600;
+			}
+
+			.note {
+				color: $color-secondary;
+				font-size: 0.8125rem;
+			}
+		}
+
+		.meta {
+			display: inline-flex;
+			align-items: center;
+			gap: spacing(s);
+			flex-wrap: wrap;
+		}
+	}
+
+	.empty {
+		color: $color-secondary;
+		font-size: 0.8125rem;
+	}
+}
+
+.con-packed {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	font-size: 0.8125rem;
+}
+
+.con-note {
+	color: $color-secondary;
+	font-size: 0.8125rem;
+}

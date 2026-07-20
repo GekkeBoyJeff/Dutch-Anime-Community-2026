@@ -1,0 +1,99 @@
+.segmented {
+	position: relative;
+	display: inline-grid;
+	grid-template-columns: repeat(var(--seg-count), minmax(0, 1fr));
+	gap: 0.125rem;
+	padding: 0.1875rem;
+	border-radius: $admin-radius-control;
+	background-color: $admin-sunken;
+	box-shadow: $admin-ring;
+
+	.segmented-thumb {
+		position: absolute;
+		inset-block: 0.1875rem;
+		inset-inline-start: 0.1875rem;
+		inline-size: calc((100% - 0.375rem - (var(--seg-count) - 1) * 0.125rem) / var(--seg-count));
+		border-radius: calc(#{$admin-radius-control} - 0.125rem);
+		background-color: $admin-surface;
+		box-shadow: $admin-shadow-1, inset 0 0 0 0.0625rem $admin-hairline;
+		translate: calc(var(--seg-index) * (100% + 0.125rem)) 0;
+		transition: translate 340ms $ease-snappy;
+	}
+
+	.segmented-option {
+		position: relative;
+		z-index: $z-base;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: spacing(xs);
+		min-block-size: 1.9rem;
+		padding-block: spacing(xs);
+		padding-inline: spacing(m);
+		border: none;
+		border-radius: calc(#{$admin-radius-control} - 0.125rem);
+		background: none;
+		color: $admin-ink-2;
+		font-weight: $weight-medium;
+		font-size: 0.875rem;
+		white-space: nowrap;
+		cursor: pointer;
+		transition: color $motion-micro;
+
+		@include interactive {
+			&:not(.is-active, :disabled) {
+				color: $admin-ink-1;
+			}
+		}
+
+		&.is-active {
+			color: $admin-ink-1;
+			font-weight: $weight-semibold;
+		}
+
+		&:disabled {
+			opacity: 0.45;
+			cursor: not-allowed;
+		}
+
+		&:focus-visible {
+			outline: none;
+			box-shadow: $admin-focus;
+		}
+
+		.segmented-option-icon {
+			font-size: 1.05em;
+		}
+
+		.segmented-option-count {
+			min-inline-size: 1.15rem;
+			padding-inline: 0.35rem;
+			border-radius: $rounded-full;
+			background-color: $surface-muted;
+			color: $admin-ink-2;
+			font-size: 0.72rem;
+			font-weight: $weight-semibold;
+			font-variant-numeric: tabular-nums;
+			line-height: 1.35;
+
+			.segmented-option.is-active & {
+				background-color: $admin-accent-soft;
+				color: $admin-accent-ink;
+			}
+		}
+	}
+
+	&.is-small {
+		.segmented-option {
+			min-block-size: 1.6rem;
+			padding-inline: spacing(s);
+			font-size: 0.8125rem;
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.segmented .segmented-thumb {
+		transition: none;
+	}
+}

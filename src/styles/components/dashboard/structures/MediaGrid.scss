@@ -1,0 +1,56 @@
+.media-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+	gap: spacing(m);
+
+	&.is-revealed {
+		animation: route-reveal $motion-entrance both;
+	}
+
+	.cell {
+		position: relative;
+		margin: 0;
+
+		.status {
+			position: absolute;
+			inset-block-start: spacing(xs);
+			inset-inline-end: spacing(xs);
+		}
+
+		.thumb {
+			display: block;
+			inline-size: 100%;
+			aspect-ratio: 1;
+			padding: 0;
+			border: 0;
+			border-radius: $rounded-m;
+			overflow: hidden;
+			background: $surface-muted;
+			cursor: pointer;
+
+			img {
+				inline-size: 100%;
+				block-size: 100%;
+				object-fit: cover;
+			}
+
+			.pdf {
+				display: grid;
+				place-items: center;
+				inline-size: 100%;
+				block-size: 100%;
+				font-weight: 700;
+			}
+
+			&.is-skeleton {
+				cursor: default;
+			}
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.media-grid.is-revealed {
+		animation: none;
+	}
+}

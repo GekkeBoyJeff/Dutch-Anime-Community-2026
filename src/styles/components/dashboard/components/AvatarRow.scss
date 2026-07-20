@@ -1,0 +1,70 @@
+.avatar-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: spacing(s) spacing(m);
+	inline-size: 100%;
+	padding: spacing(m) spacing(l);
+	border: 0.0625rem solid var(--border-color);
+	border-radius: $rounded-l;
+	background-color: $page-soft;
+	box-shadow: $shadow-small;
+	text-align: start;
+	cursor: pointer;
+	transition: border-color $motion-micro, box-shadow $motion-micro, transform $motion-micro;
+
+	@include interactive {
+		border-color: $surface-strong;
+		box-shadow: $shadow-card;
+		transform: translateY(-0.0625rem);
+	}
+
+	&.is-skeleton {
+		cursor: default;
+		box-shadow: none;
+	}
+
+	@include bp(m) {
+		display: grid;
+		grid-template-columns: auto minmax(8rem, 1fr) auto auto auto;
+		gap: spacing(m);
+	}
+
+	.ident {
+		display: grid;
+		gap: 0.1rem;
+		flex: 1 1 8rem;
+		min-inline-size: 0;
+
+		.name {
+			font-weight: 600;
+			overflow-wrap: anywhere;
+		}
+
+		.sub {
+			color: $color-secondary;
+			font-size: 0.8125rem;
+		}
+	}
+
+	.badges,
+	.warnings {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+	}
+
+	.chevron {
+		flex-shrink: 0;
+		margin-inline-start: auto;
+		inline-size: 1.1rem;
+		block-size: 1.1rem;
+		color: $color-secondary;
+
+		@include bp(m) {
+			margin-inline-start: 0;
+		}
+	}
+}

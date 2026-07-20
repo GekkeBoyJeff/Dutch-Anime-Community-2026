@@ -1,0 +1,12 @@
+.convention-involvement-card {
+	display: grid;
+	gap: var(--admin-gap);
+	padding: var(--admin-gap);
+	border: 0.0625rem solid var(--border-color);
+	border-radius: 0.75rem;
+
+	.block {
+		display: grid;
+		gap: spacing(s);
+	}
+}

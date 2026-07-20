@@ -1,4 +1,4 @@
-import type { Permission } from '@/lib/auth/permissions';
+import type { AppRole, Permission } from '@/lib/auth/permissions';
 
 // permission → dashboard section registry. The dashboard renders a section only when the user's
 // effective permissions contain its `permission`, so a user granted a single permission sees a
@@ -54,6 +54,10 @@ export interface NavGroup {
 	label: string;
 	description: string;
 	links: NavGroupLink[];
+	/** When set, the group is a single destination: the bar renders a direct link, not a mega-panel. */
+	directHref?: string;
+	/** Visually de-emphasised group (admin's Systeem): rendered dimmed and last. */
+	muted?: boolean;
 }
 
 // Domain grouping laid over the flat sections — the top bar shows one panel per group. An entry either
@@ -153,10 +157,33 @@ for (const [route, sectionKey] of Object.entries(DASHBOARD_ROUTE_OWNERSHIP)) {
 	OWNED_ROUTES_BY_SECTION.set(sectionKey, [...(OWNED_ROUTES_BY_SECTION.get(sectionKey) ?? []), route]);
 }
 
+// Per-role group order (blueprint §1c): permission-hiding stays the mechanism, order/emphasis is only
+// presentation. A role tilts which domain leads — Operaties for the floor roles, Content for the author —
+// while user/stand-staff fall through to the registry order (they only ever see 'mijn' anyway). Groups not
+// listed keep their registry position after the listed ones.
+const GROUP_ORDER: Partial<Record<AppRole, string[]>> = {
+	yakuza: ['operaties', 'mijn', 'financien', 'content', 'systeem'],
+	author: ['content', 'mijn', 'operaties', 'financien', 'systeem'],
+	admin: ['operaties', 'financien', 'mijn', 'content', 'systeem'],
+};
+
+const orderGroups = (groups: NavGroup[], role: AppRole | undefined): NavGroup[] => {
+	const order = role ? GROUP_ORDER[role] : undefined;
+	if (!order) return groups;
+	const rank = (key: string) => {
+		const i = order.indexOf(key);
+		return i === -1 ? order.length : i;
+	};
+	return [...groups].sort((a, b) => rank(a.key) - rank(b.key));
+};
+
 // Resolve the group metadata against the caller's permissions into render-ready groups: section entries
 // inherit their section's label/href and are dropped when the permission is missing, standalone entries
-// always show, and any group left with zero links is omitted so the bar never opens an empty panel.
-export const buildNavGroups = (permissions: ReadonlySet<Permission>): NavGroup[] => {
+// always show, and any group left with zero links is omitted so the bar never opens an empty panel. When a
+// role is passed, groups are reordered per its blueprint priority; a single-link 'mijn' collapses to a
+// direct "Mijn DAC" link (a mega-panel for one link is noise — blueprint §1c user/author), and the admin's
+// Systeem group is marked muted so the bar renders it dimmed and last.
+export const buildNavGroups = (permissions: ReadonlySet<Permission>, role?: AppRole): NavGroup[] => {
 	const groups: NavGroup[] = [];
 	for (const group of DASHBOARD_GROUPS) {
 		const links: NavGroupLink[] = [];
@@ -176,21 +203,82 @@ export const buildNavGroups = (permissions: ReadonlySet<Permission>): NavGroup[]
 				links.push({ key: entry.key, label: entry.label, description: entry.description, href: entry.href, icon: entry.icon });
 			}
 		}
-		if (links.length > 0) {
-			groups.push({ key: group.key, label: group.label, description: group.description, links });
+		if (links.length === 0) continue;
+		const resolved: NavGroup = { key: group.key, label: group.label, description: group.description, links };
+		if (group.key === 'mijn' && links.length === 1) {
+			resolved.directHref = links[0]!.href;
+			resolved.label = 'Mijn DAC';
+		}
+		if (group.key === 'systeem') resolved.muted = true;
+		groups.push(resolved);
+	}
+	return orderGroups(groups, role);
+};
+
+// A flat command for the ⌘K palette: a labelled destination with an icon. Pages come from the same
+// permission-filtered nav source (buildNavGroups) so the palette never drifts from the bar; actions are
+// a small extra list of "jump straight into a create flow" deep-links.
+export interface PaletteCommand {
+	key: string;
+	label: string;
+	href: string;
+	icon: string;
+}
+
+// Quick actions surfaced under the palette's "Acties" group. Each deep-links into a section; the two
+// `?new=1` targets ask that page to open its create flow on mount (see EventsLanding/FinanceManager/
+// SurveysManager). Plain routes (notifications/upload/moderation) are already their own create surface.
+interface PaletteActionMeta extends PaletteCommand {
+	permission?: Permission;
+}
+const DASHBOARD_ACTIONS: PaletteActionMeta[] = [
+	{ key: 'declare-now', label: 'Declareer nu', href: '/dashboard/expenses?new=1', icon: 'file', permission: 'expenses.view' },
+	{ key: 'new-event', label: 'Nieuwe conventie', href: '/dashboard/events?new=1', icon: 'calendar', permission: 'inventory.manage' },
+	{ key: 'new-income', label: 'Inkomst toevoegen', href: '/dashboard/finance?new=1', icon: 'file', permission: 'expenses.manage' },
+	{ key: 'send-notification', label: 'Melding sturen', href: '/dashboard/notifications', icon: 'mail', permission: 'notifications.send' },
+	{ key: 'upload-media', label: 'Media uploaden', href: '/upload', icon: 'upload', permission: 'media.manage' },
+	{ key: 'upload-transcript', label: 'Transcript uploaden', href: '/dashboard/moderation', icon: 'file', permission: 'moderation.view' },
+	{ key: 'new-survey', label: 'Nieuwe enquête', href: '/dashboard/surveys?new=1', icon: 'list', permission: 'surveys.manage' },
+];
+
+// The palette's "Pagina's" group: the dashboard hub plus every nav link the caller may see — flattened
+// straight from buildNavGroups so section labels/permissions have exactly one source and can't drift.
+export const buildPalettePages = (permissions: ReadonlySet<Permission>): PaletteCommand[] => {
+	const pages: PaletteCommand[] = [{ key: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'home' }];
+	for (const group of buildNavGroups(permissions)) {
+		for (const link of group.links) {
+			pages.push({ key: link.key, label: link.label, href: link.href, icon: link.icon });
 		}
 	}
-	return groups;
+	return pages;
+};
+
+// The palette's "Acties" group, permission-filtered (UX only — RLS/the target page's own guard is the
+// real boundary). Actions with no permission are always shown; none currently.
+export const buildPaletteActions = (permissions: ReadonlySet<Permission>): PaletteCommand[] =>
+	DASHBOARD_ACTIONS.filter((action) => !action.permission || permissions.has(action.permission)).map(({ permission: _permission, ...command }) => command);
+
+// The href for the palette's people search, or null when the caller may search nobody. Moderation owns
+// the fuller profile search; staff-only callers fall back to the team list (both read ?q= as a filter).
+export const palettePersonSearchHref = (permissions: ReadonlySet<Permission>): ((query: string) => string) | null => {
+	const base = permissions.has('moderation.view') ? '/dashboard/moderation' : permissions.has('staff.manage') ? '/dashboard/team' : null;
+	if (!base) return null;
+	return (query: string) => (query ? `${base}?q=${encodeURIComponent(query)}` : base);
 };
 
 // Resolve TAB_BAR_SECTIONS against the caller's permissions into the mobile bottom tab bar's items.
-// Home has no permission gate — every signed-in member reaches the dashboard hub.
+// Home has no permission gate — every signed-in member reaches the dashboard hub. The "Shifts" field-tab
+// (blueprint §1g, gate inventory.view) deep-links to the read-only agenda in Mijn spullen: stand-staff at
+// the stand can't reach the manager events editor, so their own shift-week lives there, under the thumb.
 export const buildTabBarItems = (permissions: ReadonlySet<Permission>): TabBarItem[] => {
 	const items: TabBarItem[] = [{ key: 'home', label: 'Home', href: '/dashboard', icon: 'home', exact: true }];
 	for (const entry of TAB_BAR_SECTIONS) {
 		const section = SECTION_BY_KEY.get(entry.section);
 		if (!section || !permissions.has(section.permission)) continue;
 		items.push({ key: section.key, label: section.navLabel, href: section.href, icon: entry.icon });
+	}
+	if (permissions.has('inventory.view')) {
+		items.push({ key: 'shifts', label: 'Shifts', href: '/dashboard/my-inventory#shifts', icon: 'calendar' });
 	}
 	return items;
 };

@@ -1,0 +1,76 @@
+.finance-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: spacing(m);
+	flex-wrap: wrap;
+}
+
+.finance {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(l);
+
+	.finance-filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: spacing(m);
+		align-items: flex-end;
+		padding: spacing(m);
+		border-radius: $admin-radius-card;
+		background-color: $admin-surface;
+		box-shadow: $admin-ring, $admin-shadow-1;
+
+		.finance-filter {
+			display: grid;
+			gap: 0.35rem;
+
+			&.finance-filter-period {
+				min-inline-size: 15rem;
+			}
+
+			.finance-filter-label {
+				font-weight: $weight-semibold;
+				font-size: $admin-label-size;
+				color: $admin-ink-2;
+			}
+		}
+	}
+
+	.finance-charts {
+		display: grid;
+		gap: spacing(l);
+
+		@include bp(l) {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			align-items: start;
+		}
+	}
+
+	.finance-workspace {
+		display: grid;
+		gap: spacing(l);
+
+		@include bp(l) {
+			grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+			align-items: start;
+		}
+	}
+
+	.finance-workspace-side {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(l);
+	}
+
+	.finance-breakdowns {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(l);
+	}
+
+	.finance-open-link {
+		font-size: 0.8125rem;
+		white-space: nowrap;
+	}
+}

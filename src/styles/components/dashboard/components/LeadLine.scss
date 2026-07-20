@@ -1,0 +1,16 @@
+.lead-line {
+	display: grid;
+	gap: 0.15rem;
+
+	.lead-line-main {
+		font-weight: $weight-bold;
+		font-size: 1.05rem;
+		letter-spacing: $tracking-tight;
+		color: $admin-ink-1;
+	}
+
+	.lead-line-sub {
+		color: $admin-ink-2;
+		font-size: 0.875rem;
+	}
+}

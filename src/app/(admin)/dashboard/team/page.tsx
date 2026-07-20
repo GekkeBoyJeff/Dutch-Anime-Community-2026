@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
 
-import TeamManager from '@/app/(admin)/dashboard/team/_components/TeamManager';
-
-import '@/app/(admin)/dashboard/inventory.scss';
-import '@/app/(admin)/dashboard/team/team.scss';
+import TeamManager from '@/components/dashboard/team/TeamManager';
 
 export const metadata: Metadata = { title: 'Team', robots: { index: false, follow: false } };
 

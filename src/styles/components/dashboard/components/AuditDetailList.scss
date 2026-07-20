@@ -1,0 +1,30 @@
+.audit-detail-list {
+	display: grid;
+	gap: var(--admin-gap);
+	margin: 0;
+
+	&.is-empty {
+		color: var(--color-secondary);
+	}
+
+	.row {
+		display: grid;
+		gap: 0.15rem;
+
+		dt {
+			font-weight: 700;
+			font-size: 0.8125rem;
+			color: var(--color-secondary);
+		}
+
+		dd {
+			margin: 0;
+			overflow-wrap: anywhere;
+		}
+	}
+
+	.before {
+		text-decoration: line-through;
+		color: var(--color-secondary);
+	}
+}

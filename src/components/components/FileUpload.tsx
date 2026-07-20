@@ -5,6 +5,7 @@ import type { ChangeEvent, DragEvent, ReactNode, Ref } from 'react';
 
 import Content from '@/components/basics/Content';
 import Icon from '@/components/basics/Icon';
+import Spinner from '@/components/basics/Spinner';
 import useHaptics from '@/hooks/useHaptics';
 import { classNames } from '@/lib/classNames';
 import type { FileUploadProps as FileUploadSchemaProps } from '@/lib/content/schema/components/fileUpload';
@@ -14,24 +15,33 @@ export type FileUploadProps = FileUploadSchemaProps & {
 	label?: ReactNode;
 	/** Helper text under the prompt (formats, size limits) */
 	hint?: ReactNode;
-	/** Fires with the chosen FileList whenever the selection changes */
-	onFilesChange?: (files: File[]) => void;
 	/** Reject files larger than this many bytes (enforced on both the picker and drag-drop) */
 	maxSize?: number;
+	/** Caps how many files are kept from a multi-select or drop; extras are rejected */
+	maxFiles?: number;
+	/** A submit/processing is in flight — dims the dropzone and blocks new drops */
+	busy?: boolean;
+	/** Show the picked-file list under the dropzone; off when the caller renders its own result list */
+	showFileList?: boolean;
+	/** Fires with the accepted files whenever the selection changes */
+	onFiles?: (files: File[]) => void;
 };
 
 // A drag-and-drop file picker over a real <input type="file">, so files still participate in native
-// forms and the keyboard/screen-reader path is the input itself. A small client island: it tracks
-// the drag-over state and the chosen list, and mirrors files into the hidden input for submission.
+// forms and the keyboard/screen-reader path is the input itself. A small client island: it tracks the
+// drag-over state and the chosen list, and mirrors files into the hidden input for submission.
 const FileUpload = ({
 	name,
 	accept,
 	multiple = false,
 	disabled = false,
 	maxSize,
+	maxFiles,
+	busy = false,
 	label = 'Drop files here or click to browse',
 	hint,
-	onFilesChange,
+	showFileList = true,
+	onFiles,
 	className,
 	ref,
 	...rest
@@ -41,7 +51,9 @@ const FileUpload = ({
 	const localRef = useRef<HTMLInputElement>(null);
 	const inputRef = (ref as React.RefObject<HTMLInputElement>) ?? localRef;
 	const [files, setFiles] = useState<File[]>([]);
+	const [rejected, setRejected] = useState<string[]>([]);
 	const [isDragging, setIsDragging] = useState(false);
+	const isBlocked = disabled || busy;
 
 	// Enforce accept + maxSize on BOTH the picker and drag-drop — native `accept` doesn't cover drops.
 	const accepts = (file: File): boolean => {
@@ -54,9 +66,12 @@ const FileUpload = ({
 	};
 
 	const commit = (list: FileList | null) => {
-		const next = (list ? Array.from(list) : []).filter(accepts);
-		setFiles(next);
-		onFilesChange?.(next);
+		const candidates = list ? Array.from(list) : [];
+		const accepted = candidates.filter(accepts);
+		const capped = maxFiles ? accepted.slice(0, maxFiles) : accepted;
+		setFiles(capped);
+		setRejected(candidates.filter((file) => !capped.includes(file)).map((file) => file.name));
+		onFiles?.(capped);
 	};
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +82,7 @@ const FileUpload = ({
 		event.preventDefault();
 		setIsDragging(false);
 
-		if (disabled) {
+		if (isBlocked) {
 			return;
 		}
 
@@ -82,13 +97,13 @@ const FileUpload = ({
 	const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
 		event.preventDefault();
 
-		if (!disabled) {
+		if (!isBlocked) {
 			setIsDragging(true);
 		}
 	};
 
 	return (
-		<div className={classNames('file-upload', disabled && 'is-disabled', className)}>
+		<div className={classNames('file-upload', isBlocked && 'is-disabled', className)}>
 			<label
 				className={classNames('dropzone', isDragging && 'is-dragging')}
 				htmlFor={inputId}
@@ -96,7 +111,7 @@ const FileUpload = ({
 				onDragOver={handleDragOver}
 				onDragLeave={() => setIsDragging(false)}
 			>
-				<Icon name="upload" className="glyph" />
+				{busy ? <Spinner size="s" label="Bezig" className="glyph-spinner" /> : <Icon name="upload" className="glyph" />}
 				<Content element="span" className="prompt">{label}</Content>
 				{hint && <Content element="span" className="hint">{hint}</Content>}
 				<input
@@ -107,17 +122,23 @@ const FileUpload = ({
 					name={name}
 					accept={accept}
 					multiple={multiple}
-					disabled={disabled}
+					disabled={isBlocked}
 					onChange={handleChange}
 					{...rest}
 				/>
 			</label>
 
-			{files.length > 0 && (
+			{rejected.length > 0 && (
+				<p className="rejected" role="alert">
+					Niet toegestaan: {rejected.join(', ')}
+				</p>
+			)}
+
+			{showFileList && files.length > 0 && (
 				<ul className="files">
 					{files.map((file) => (
 						<li key={`${file.name}-${file.size}`} className="file">
-							<Icon name="file" className='file-upload-addon-icon' />
+							<Icon name="file" />
 							<Content element="span" className="file-name" value={file.name} />
 						</li>
 					))}

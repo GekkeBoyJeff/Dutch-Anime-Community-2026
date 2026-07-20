@@ -1,0 +1,271 @@
+.shift-calendar {
+	--shift-calendar-height: 40rem;
+
+	display: flex;
+	flex-direction: column;
+	block-size: var(--shift-calendar-height);
+	border-radius: $admin-radius-card;
+	background-color: $admin-surface;
+	box-shadow: $admin-ring, $admin-shadow-1;
+	overflow: hidden;
+
+	&.is-loading {
+		padding: spacing(s);
+	}
+
+	.shift-calendar-toolbar {
+		display: flex;
+		align-items: center;
+		gap: spacing(m);
+		padding: spacing(s) spacing(m);
+		border-bottom: 0.0625rem solid $admin-hairline;
+
+		.shift-calendar-nav {
+			display: flex;
+			align-items: center;
+			gap: spacing(xs);
+		}
+
+		.shift-calendar-label {
+			flex: 1;
+			min-inline-size: 0;
+			font-size: 1rem;
+			font-weight: 600;
+			color: $admin-ink-1;
+			text-transform: capitalize;
+			font-variant-numeric: tabular-nums;
+		}
+	}
+
+	.rbc-calendar {
+		flex: 1;
+		min-block-size: 0;
+	}
+
+	.rbc-time-view {
+		border: none;
+		background-color: $admin-surface;
+	}
+
+	.rbc-time-header {
+		border: none;
+
+		.rbc-time-header-gutter,
+		.rbc-header {
+			border: none;
+		}
+
+		.rbc-header {
+			padding-block: spacing(xs);
+			border-bottom: 0.0625rem solid $admin-hairline;
+			font-size: $admin-label-size;
+			font-weight: 600;
+			color: $admin-ink-2;
+			text-transform: capitalize;
+
+			&.rbc-today {
+				color: $admin-accent-ink;
+			}
+
+			.rbc-button-link {
+				cursor: default;
+			}
+		}
+	}
+
+	.rbc-time-content {
+		border-top: 0.0625rem solid $admin-hairline;
+
+		> * + * > * {
+			border-left: 0.0625rem solid $admin-hairline;
+		}
+	}
+
+	.rbc-time-gutter {
+		.rbc-timeslot-group {
+			border: none;
+		}
+
+		.rbc-label {
+			padding-inline: spacing(s);
+			font-size: $admin-label-size;
+			color: $admin-ink-3;
+			font-variant-numeric: tabular-nums;
+		}
+	}
+
+	.rbc-timeslot-group {
+		min-block-size: 3rem;
+		border-bottom: 0.0625rem solid $admin-hairline;
+	}
+
+	.rbc-time-slot {
+		border-top: none;
+
+		&.rbc-now {
+			font-weight: inherit;
+		}
+	}
+
+	.rbc-day-slot {
+		.rbc-time-slot {
+			border-top: 0.0625rem solid $surface-muted;
+
+			&:first-child {
+				border-top: none;
+			}
+		}
+	}
+
+	.rbc-today {
+		background-color: $surface-faint;
+	}
+
+	.rbc-current-time-indicator {
+		block-size: 0.125rem;
+		background-color: $admin-accent;
+
+		&::before {
+			content: '';
+			position: absolute;
+			inset-inline-start: 0;
+			inset-block-start: 50%;
+			inline-size: 0.5rem;
+			block-size: 0.5rem;
+			border-radius: 50%;
+			background-color: $admin-accent;
+			transform: translate(-50%, -50%);
+		}
+	}
+
+	.rbc-slot-selection {
+		padding: spacing(xs);
+		border-radius: $admin-radius-control;
+		background-color: $admin-accent-soft;
+		box-shadow: inset 0 0 0 0.0625rem $admin-accent;
+		color: $admin-accent-ink;
+		font-size: $admin-label-size;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.rbc-events-container {
+		margin-inline-end: 0;
+	}
+
+	.rbc-event {
+		padding: spacing(xs) spacing(s);
+		border: 0.0625rem solid $admin-hairline-strong;
+		border-radius: $admin-radius-control;
+		background-color: $admin-surface;
+		box-shadow: $admin-shadow-1;
+		color: $admin-ink-1;
+		transition: box-shadow $motion-micro, transform $motion-micro;
+
+		&:focus,
+		&:focus-visible {
+			outline: none;
+			box-shadow: $admin-focus;
+		}
+
+		&.rbc-selected {
+			background-color: $admin-surface;
+			box-shadow: $admin-focus, $admin-shadow-2;
+		}
+
+		&.is-mine {
+			border-color: $admin-accent;
+			background-color: $admin-accent-soft;
+			color: $admin-accent-ink;
+
+			.shift-event-station,
+			.shift-event-time {
+				color: $admin-accent-ink;
+			}
+		}
+
+		&.is-locked {
+			background-image: repeating-linear-gradient(135deg, transparent, transparent 0.375rem, $admin-hairline 0.375rem, $admin-hairline 0.4375rem);
+			cursor: not-allowed;
+		}
+	}
+
+	.rbc-day-slot {
+		.rbc-event {
+			border: 0.0625rem solid $admin-hairline-strong;
+		}
+	}
+
+	.rbc-addons-dnd {
+		&.rbc-addons-dnd-is-dragging .rbc-event:not(.rbc-addons-dnd-dragged-event) {
+			opacity: 0.55;
+		}
+
+		.rbc-addons-dnd-dragged-event {
+			box-shadow: $admin-shadow-3;
+			transform: scale(1.01);
+		}
+
+		.rbc-event:hover .rbc-addons-dnd-resize-ns-icon {
+			border-top-color: $admin-accent;
+		}
+
+		.rbc-addons-dnd-resize-ns-icon {
+			border-top-color: $admin-ink-3;
+		}
+	}
+
+	.rbc-addons-dnd-drag-preview .rbc-event {
+		box-shadow: $admin-shadow-3;
+	}
+
+	.shift-event {
+		display: flex;
+		flex-direction: column;
+		gap: 0.0625rem;
+		min-inline-size: 0;
+		line-height: 1.25;
+
+		.shift-event-title {
+			font-weight: 600;
+			font-size: 0.8125rem;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.shift-event-station {
+			font-size: 0.75rem;
+			color: $admin-ink-2;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.shift-event-time {
+			font-size: 0.6875rem;
+			color: $admin-ink-3;
+			font-variant-numeric: tabular-nums;
+		}
+	}
+
+	&.is-readonly {
+		.rbc-event {
+			cursor: pointer;
+		}
+
+		.rbc-time-slot,
+		.rbc-day-bg {
+			cursor: default;
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.shift-calendar {
+		.rbc-event,
+		.rbc-addons-dnd .rbc-addons-dnd-dragged-event {
+			transition: none;
+			transform: none;
+		}
+	}
+}

@@ -1,0 +1,130 @@
+.event-card-admin {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(m);
+	min-block-size: 11rem;
+	padding: spacing(l);
+	border: 0.0625rem solid var(--border-color);
+	border-radius: $rounded-l;
+	background-color: $page-soft;
+	box-shadow: $shadow-card;
+	transition: border-color $speed-fast $ease, box-shadow $speed-fast $ease, transform $speed-fast $ease;
+
+	@include interactive {
+		border-color: $surface-strong;
+		box-shadow: $shadow-medium;
+		transform: translateY(-0.125rem);
+	}
+
+	&.is-past {
+		background-color: $surface-faint;
+	}
+
+	&.is-compact {
+		min-block-size: 9.5rem;
+		gap: spacing(s);
+	}
+
+	&.is-skeleton {
+		box-shadow: none;
+
+		@include interactive {
+			border-color: var(--border-color);
+			box-shadow: none;
+			transform: none;
+		}
+	}
+
+	.head {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: spacing(s);
+
+		.date-badge {
+			display: grid;
+			place-items: center;
+			inline-size: 3rem;
+			block-size: 3rem;
+			border-radius: $rounded-m;
+			background-color: $surface-muted;
+			color: $color;
+			line-height: 1;
+
+			.day {
+				font-weight: $weight-bold;
+				font-size: 1.15rem;
+			}
+
+			.month {
+				font-size: 0.7rem;
+				text-transform: uppercase;
+				letter-spacing: $tracking-wide;
+				color: $color-secondary;
+			}
+
+			.tbd {
+				font-weight: $weight-bold;
+				color: $color-secondary;
+			}
+		}
+
+		.badges {
+			display: inline-flex;
+			align-items: center;
+			gap: spacing(xs);
+			flex-wrap: wrap;
+			justify-content: flex-end;
+		}
+	}
+
+	.body {
+		display: grid;
+		gap: spacing(xs);
+
+		.title {
+			margin: 0;
+			font-weight: $weight-semibold;
+			font-size: 1.05rem;
+			line-height: 1.25;
+		}
+
+		.meta {
+			display: grid;
+			gap: 0.15rem;
+			margin: 0;
+			font-size: 0.8125rem;
+			color: $color-secondary;
+
+			.metaline {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.35rem;
+				min-inline-size: 0;
+
+				.icon {
+					flex: none;
+					inline-size: 0.9rem;
+					block-size: 0.9rem;
+					color: $color-secondary;
+				}
+			}
+		}
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: spacing(s);
+		margin-block-start: auto;
+		padding-block-start: spacing(m);
+		border-block-start: 0.0625rem solid var(--border-color);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.event-card-admin {
+		animation: none;
+		transition: none;
+	}
+}

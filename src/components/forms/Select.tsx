@@ -1,7 +1,7 @@
 'use client';
 
 import { Select as BaseSelect } from '@base-ui/react/select';
-import type { ReactNode, Ref } from 'react';
+import { useCallback, useState, type ReactNode, type Ref } from 'react';
 
 import { classNames } from '@/lib/classNames';
 import type { SelectProps as SelectSchemaProps } from '@/lib/content/schema/forms/select';
@@ -52,6 +52,18 @@ const Select = ({
 	ref,
 	...rest
 }: SelectProps & { ref?: Ref<HTMLButtonElement> }) => {
+	// The popup is portalled to <body>, escaping the admin theme subtree, so tag it with `.is-admin` when
+	// the trigger resolves inside one — that lets the (globally-tokenised) admin skin reach the portal.
+	const [adminScoped, setAdminScoped] = useState(false);
+	const assignTriggerRef = useCallback(
+		(node: HTMLButtonElement | null) => {
+			if (typeof ref === 'function') ref(node);
+			else if (ref) (ref as { current: HTMLButtonElement | null }).current = node;
+			if (node) setAdminScoped(node.closest('[data-theme="admin"]') !== null);
+		},
+		[ref],
+	);
+
 	// Native mode: a real <select>. Optgroups for grouped data; the placeholder is a disabled,
 	// value-less first option so it shows but cannot be re-chosen.
 	if (native) {
@@ -118,7 +130,7 @@ const Select = ({
 
 	return (
 		<BaseSelect.Root multiple={multiple} items={items} {...(rootRest as object)}>
-			<BaseSelect.Trigger ref={ref} className={classNames('select', className)} aria-label={ariaLabel}>
+			<BaseSelect.Trigger ref={assignTriggerRef} className={classNames('select', className)} aria-label={ariaLabel}>
 				<BaseSelect.Value className="value" placeholder={placeholder} />
 				<BaseSelect.Icon className="trigger-icon">
 					<span className="chevron" aria-hidden="true" />
@@ -127,7 +139,7 @@ const Select = ({
 
 			<BaseSelect.Portal>
 				<BaseSelect.Positioner className="select-positioner" side={side} sideOffset={6}>
-					<BaseSelect.Popup className="select-popup">
+					<BaseSelect.Popup className={classNames('select-popup', adminScoped && 'is-admin')}>
 						{options.map((item) =>
 							isGroup(item) ? (
 								<BaseSelect.Group key={item.label} className="option-group">

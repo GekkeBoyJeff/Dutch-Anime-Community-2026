@@ -1,0 +1,59 @@
+.survey-question-editor {
+	display: grid;
+	gap: var(--admin-gap);
+
+	&.is-locked {
+		gap: 0.4rem;
+		margin: 0;
+		padding-left: spacing(xl);
+	}
+
+	.meta {
+		color: var(--color-secondary);
+		font-size: 0.8125rem;
+	}
+
+	.card {
+		display: grid;
+		gap: 0.6rem;
+		padding: var(--admin-gap);
+		border: 0.0625rem solid var(--border-color);
+		border-radius: 0.75rem;
+
+		.top {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: spacing(s);
+
+			.index {
+				font-weight: 600;
+				font-size: 0.875rem;
+			}
+
+			.tools {
+				display: inline-flex;
+				gap: spacing(xs);
+				flex-wrap: wrap;
+			}
+		}
+
+		.options {
+			display: grid;
+			gap: 0.4rem;
+			padding-left: spacing(m);
+			border-left: 0.125rem solid var(--border-color);
+
+			.options-label {
+				font-size: 0.8125rem;
+				color: var(--color-secondary);
+			}
+
+			.option-row {
+				display: flex;
+				gap: spacing(s);
+				align-items: center;
+			}
+		}
+	}
+}

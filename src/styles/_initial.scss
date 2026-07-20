@@ -33,6 +33,38 @@ $status-success: var(--status-success);
 $status-warning: var(--status-warning);
 $status-error: var(--status-error);
 
+$admin-page: var(--admin-page);
+$admin-surface: var(--admin-surface);
+$admin-surface-raised: var(--admin-surface-raised);
+$admin-popover: var(--admin-popover);
+$admin-sunken: var(--admin-sunken);
+$admin-ink-1: var(--admin-ink-1);
+$admin-ink-2: var(--admin-ink-2);
+$admin-ink-3: var(--admin-ink-3);
+$admin-hairline: var(--admin-hairline);
+$admin-hairline-strong: var(--admin-hairline-strong);
+$admin-accent: var(--admin-accent);
+$admin-accent-strong: var(--admin-accent-strong);
+$admin-accent-soft: var(--admin-accent-soft);
+$admin-accent-ink: var(--admin-accent-ink);
+$admin-accent-contrast: var(--admin-accent-contrast);
+$admin-shadow-1: var(--admin-shadow-1);
+$admin-shadow-2: var(--admin-shadow-2);
+$admin-shadow-3: var(--admin-shadow-3);
+$admin-ring: var(--admin-ring);
+$admin-radius-control: var(--admin-radius-control);
+$admin-radius-card: var(--admin-radius-card);
+$admin-radius-panel: var(--admin-radius-panel);
+$admin-focus: var(--admin-focus);
+$admin-gap: var(--admin-gap);
+$admin-gap-tight: var(--admin-gap-tight);
+$admin-gap-loose: var(--admin-gap-loose);
+$admin-row-height: var(--admin-row-height);
+$admin-control-height: var(--admin-control-height);
+$admin-label-size: var(--admin-label-size);
+$admin-chart-grid: var(--admin-chart-grid);
+$admin-chart-axis: var(--admin-chart-axis);
+
 $weight-regular: 400;
 $weight-medium: 500;
 $weight-semibold: 600;
@@ -49,6 +81,12 @@ $speed-slow: 600ms;
 $ease: cubic-bezier(0.4, 0, 0.2, 1);
 $ease-out: cubic-bezier(0, 0, 0.2, 1);
 $ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-entrance: cubic-bezier(0.22, 1, 0.36, 1); // decelerating fade-rise for content/page entrances
+
+// Semantic motion aliases over the raw primitives above — reach for intent, not a duration guess.
+$motion-micro: $speed-fast $ease; // hover / press / focus feedback
+$motion-standard: $speed $ease-out; // drawers, dropdowns, collapsibles
+$motion-entrance: 220ms $ease-entrance; // skeleton→content reveal and page-entrance fade
 
 $shadow-small: 0 0.0625rem 0.125rem rgba($black, 0.08);
 $shadow-medium: 0 0.25rem 1rem rgba($black, 0.12);

@@ -1,0 +1,89 @@
+.stat-tile-row {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+	gap: var(--admin-gap);
+}
+
+.stat-tile {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(xs);
+	min-block-size: 6.75rem;
+	padding: spacing(l);
+	border-radius: $admin-radius-card;
+	background-color: $admin-surface;
+	box-shadow: $admin-ring, $admin-shadow-1;
+
+	.stat-tile-label {
+		color: $admin-ink-3;
+		font-size: $admin-label-size;
+		font-weight: $weight-medium;
+		letter-spacing: $tracking-wide;
+		text-transform: uppercase;
+	}
+
+	.stat-tile-figure {
+		display: flex;
+		align-items: baseline;
+		gap: spacing(s);
+
+		.stat-tile-value {
+			font-variant-numeric: tabular-nums;
+			font-weight: $weight-bold;
+			font-size: 1.75rem;
+			line-height: 1.1;
+			letter-spacing: $tracking-tight;
+			color: $admin-ink-1;
+		}
+
+		.stat-tile-delta {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.2em;
+			padding-block: 0.15rem;
+			padding-inline: spacing(s);
+			border-radius: $rounded-full;
+			font-size: 0.75rem;
+			font-weight: $weight-semibold;
+			font-variant-numeric: tabular-nums;
+
+			.stat-tile-delta-arrow {
+				font-size: 0.7em;
+			}
+
+			&.is-up {
+				background-color: $tint-success;
+				color: $status-success;
+			}
+
+			&.is-down {
+				background-color: $tint-error;
+				color: $status-error;
+			}
+
+			&.is-flat {
+				background-color: $surface-muted;
+				color: $admin-ink-3;
+			}
+		}
+	}
+
+	&.is-positive .stat-tile-figure .stat-tile-value {
+		color: $status-success;
+	}
+
+	&.is-negative .stat-tile-figure .stat-tile-value {
+		color: $status-error;
+	}
+
+	.stat-tile-skeleton {
+		block-size: 1.75rem;
+	}
+
+	.stat-tile-note {
+		margin-block-start: auto;
+		min-block-size: 1.1rem;
+		color: $admin-ink-2;
+		font-size: $admin-label-size;
+	}
+}

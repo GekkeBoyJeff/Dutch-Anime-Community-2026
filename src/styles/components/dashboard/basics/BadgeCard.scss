@@ -1,0 +1,24 @@
+.badge-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: spacing(xs);
+	text-align: center;
+	inline-size: 9rem;
+
+	.image {
+		inline-size: 4rem;
+		block-size: 4rem;
+		object-fit: contain;
+	}
+
+	.title {
+		font-weight: 600;
+	}
+
+	.description,
+	.date {
+		color: $color-secondary;
+		font-size: 0.8125rem;
+	}
+}

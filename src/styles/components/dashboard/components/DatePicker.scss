@@ -1,0 +1,250 @@
+.date-trigger {
+	display: inline-flex;
+	align-items: center;
+	gap: spacing(s);
+	inline-size: 100%;
+	min-block-size: $admin-control-height;
+	padding-block: spacing(s);
+	padding-inline: spacing(m);
+	border: none;
+	border-radius: $admin-radius-control;
+	background-color: $admin-surface;
+	box-shadow: $admin-ring;
+	color: $admin-ink-2;
+	font: inherit;
+	text-align: start;
+	cursor: pointer;
+	transition: box-shadow $motion-micro, color $motion-micro;
+
+	@include interactive {
+		box-shadow: inset 0 0 0 0.0625rem $admin-hairline-strong;
+	}
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+	}
+
+	&[data-popup-open] {
+		box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+	}
+
+	&.has-value {
+		color: $admin-ink-1;
+	}
+
+	.date-trigger-icon {
+		flex: none;
+		color: $admin-ink-3;
+	}
+
+	.date-trigger-label {
+		flex: 1;
+		min-inline-size: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.date-trigger-chevron {
+		flex: none;
+		color: $admin-ink-3;
+		font-size: 0.9em;
+	}
+}
+
+.date-popover {
+	padding: spacing(s);
+}
+
+.date-panel {
+	display: flex;
+	gap: spacing(m);
+
+	@media (max-width: 30rem) {
+		flex-direction: column;
+	}
+
+	.date-presets {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(xs);
+		padding-inline-end: spacing(m);
+		border-inline-end: 0.0625rem solid $admin-hairline;
+
+		@media (max-width: 30rem) {
+			flex-direction: row;
+			flex-wrap: wrap;
+			padding-inline-end: 0;
+			padding-block-end: spacing(s);
+			border-inline-end: none;
+			border-block-end: 0.0625rem solid $admin-hairline;
+		}
+
+		.date-preset {
+			padding-block: spacing(xs);
+			padding-inline: spacing(m);
+			border: none;
+			border-radius: $admin-radius-control;
+			background: none;
+			color: $admin-ink-2;
+			font-weight: $weight-medium;
+			font-size: 0.8125rem;
+			white-space: nowrap;
+			text-align: start;
+			cursor: pointer;
+			transition: background-color $motion-micro, color $motion-micro;
+
+			@include interactive {
+				background-color: $surface-faint;
+				color: $admin-ink-1;
+			}
+
+			&:focus-visible {
+				outline: none;
+				box-shadow: $admin-focus;
+			}
+		}
+	}
+
+	.date-calendar {
+		--rdp-cell: 2.25rem;
+
+		.rdp-month {
+			position: relative;
+		}
+
+		.rdp-month_caption {
+			display: flex;
+			align-items: center;
+			min-block-size: 2.25rem;
+			padding-inline-start: spacing(xs);
+
+			.rdp-caption_label {
+				font-weight: $weight-semibold;
+				font-size: 0.9375rem;
+				color: $admin-ink-1;
+				text-transform: capitalize;
+			}
+		}
+
+		.rdp-nav {
+			position: absolute;
+			inset-block-start: 0;
+			inset-inline-end: 0;
+			display: flex;
+			gap: spacing(xs);
+
+			.rdp-button_previous,
+			.rdp-button_next {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				inline-size: 1.9rem;
+				block-size: 1.9rem;
+				padding: 0;
+				border: none;
+				border-radius: $admin-radius-control;
+				background: none;
+				color: $admin-ink-2;
+				cursor: pointer;
+				transition: background-color $motion-micro, color $motion-micro;
+
+				@include interactive {
+					background-color: $surface-faint;
+					color: $admin-ink-1;
+				}
+
+				&:focus-visible {
+					outline: none;
+					box-shadow: $admin-focus;
+				}
+
+				&:disabled {
+					opacity: 0.4;
+					cursor: not-allowed;
+				}
+
+				.rdp-chevron {
+					inline-size: 1rem;
+					block-size: 1rem;
+					fill: currentColor;
+				}
+			}
+		}
+
+		.rdp-month_grid {
+			border-collapse: collapse;
+			margin-block-start: spacing(xs);
+		}
+
+		.rdp-weekday {
+			padding-block: spacing(xs);
+			inline-size: var(--rdp-cell);
+			color: $admin-ink-3;
+			font-size: 0.75rem;
+			font-weight: $weight-medium;
+			text-transform: capitalize;
+		}
+
+		.rdp-day {
+			padding: 0;
+			text-align: center;
+
+			.rdp-day_button {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				inline-size: var(--rdp-cell);
+				block-size: var(--rdp-cell);
+				border: none;
+				border-radius: $admin-radius-control;
+				background: none;
+				color: $admin-ink-1;
+				font-variant-numeric: tabular-nums;
+				font-size: 0.875rem;
+				cursor: pointer;
+				transition: background-color $motion-micro, color $motion-micro;
+
+				@include interactive {
+					background-color: $surface-faint;
+				}
+
+				&:focus-visible {
+					outline: none;
+					box-shadow: $admin-focus;
+				}
+			}
+
+			&.rdp-today .rdp-day_button {
+				font-weight: $weight-bold;
+				color: $admin-accent-ink;
+			}
+
+			&.rdp-outside .rdp-day_button {
+				color: $admin-ink-3;
+				opacity: 0.65;
+			}
+
+			&.rdp-disabled .rdp-day_button {
+				opacity: 0.35;
+				cursor: not-allowed;
+			}
+
+			&.rdp-range_middle .rdp-day_button {
+				border-radius: 0;
+				background-color: $admin-accent-soft;
+				color: $admin-accent-ink;
+			}
+
+			&.rdp-selected .rdp-day_button,
+			&.rdp-range_start .rdp-day_button,
+			&.rdp-range_end .rdp-day_button {
+				background-color: $admin-accent;
+				color: $admin-accent-contrast;
+				font-weight: $weight-semibold;
+			}
+		}
+	}
+}

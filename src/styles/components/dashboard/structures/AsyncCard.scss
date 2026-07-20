@@ -1,0 +1,65 @@
+.async-card {
+	display: grid;
+	gap: spacing(s);
+	padding: spacing(l);
+	border-radius: $admin-radius-card;
+	background-color: $admin-surface;
+	box-shadow: $admin-ring, $admin-shadow-1;
+	transition: box-shadow $motion-micro;
+
+	@include interactive {
+		box-shadow: inset 0 0 0 0.0625rem $admin-hairline-strong, $admin-shadow-2;
+	}
+
+	.async-card-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: spacing(s);
+	}
+
+	.async-card-link {
+		flex: none;
+	}
+
+	.async-card-body {
+		display: grid;
+		gap: spacing(s);
+	}
+
+	.async-card-skeleton {
+		display: grid;
+		gap: spacing(xs);
+	}
+
+	.async-card-error,
+	.async-card-empty {
+		margin: 0;
+		color: $admin-ink-2;
+		font-size: 0.875rem;
+	}
+
+	.async-card-content {
+		display: grid;
+		gap: spacing(s);
+		animation: async-card-fade-in $motion-entrance both;
+	}
+}
+
+@keyframes async-card-fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(0.35rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.async-card .async-card-content {
+		animation: none;
+	}
+}

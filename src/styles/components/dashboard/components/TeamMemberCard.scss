@@ -1,0 +1,89 @@
+.team-member-card {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(m);
+	min-block-size: 12rem;
+	padding: spacing(l);
+	border: 0.0625rem solid var(--border-color);
+	border-radius: $rounded-l;
+	background-color: $page-soft;
+	box-shadow: $shadow-card;
+	transition: border-color $motion-micro, box-shadow $motion-micro, transform $motion-micro;
+
+	@include interactive {
+		border-color: $surface-strong;
+		box-shadow: $shadow-medium;
+		transform: translateY(-0.125rem);
+	}
+
+	&.is-skeleton {
+		box-shadow: none;
+
+		@include interactive {
+			border-color: var(--border-color);
+			box-shadow: none;
+			transform: none;
+		}
+	}
+
+	.head {
+		display: flex;
+		align-items: center;
+		gap: spacing(m);
+
+		.ident {
+			display: grid;
+			gap: 0.15rem;
+			min-inline-size: 0;
+			flex: 1;
+
+			.name {
+				margin: 0;
+				font-size: 1.05rem;
+				font-weight: $weight-bold;
+				overflow-wrap: anywhere;
+			}
+
+			.tag {
+				color: $color-secondary;
+				font-size: 0.8125rem;
+			}
+		}
+	}
+
+	.meta {
+		display: grid;
+		gap: spacing(xs);
+		margin-block-start: auto;
+		padding-block-start: spacing(m);
+		border-block-start: 0.0625rem solid var(--border-color);
+
+		.metaline {
+			display: flex;
+			align-items: center;
+			gap: spacing(xs);
+			font-size: 0.875rem;
+
+			&.is-warning {
+				color: $status-error;
+			}
+
+			.icon {
+				flex-shrink: 0;
+				inline-size: 1rem;
+				block-size: 1rem;
+				color: $color-secondary;
+			}
+
+			.sub {
+				color: $color-secondary;
+			}
+		}
+	}
+
+	.actions {
+		display: flex;
+		gap: spacing(s);
+		flex-wrap: wrap;
+	}
+}

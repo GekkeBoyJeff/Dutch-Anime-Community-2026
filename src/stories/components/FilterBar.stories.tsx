@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 
 import FilterBar from '@/components/components/FilterBar';
+import SegmentedControl from '@/components/dashboard/components/SegmentedControl';
 import { FilterBarProps } from '@/lib/content/schema/components/filterBar';
 
 const FILTERS = [
@@ -97,6 +98,54 @@ export const Interactive: Story = {
 			);
 		}
 
+		return <Demo />;
+	},
+};
+
+const ROLE_FILTERS = [
+	{ value: '', label: 'Alle rollen', count: 42 },
+	{ value: 'user', label: 'Lid', count: 30 },
+	{ value: 'stand-staff', label: 'Standteam', count: 6 },
+	{ value: 'yakuza', label: 'Yakuza', count: 4 },
+	{ value: 'admin', label: 'Beheerder', count: 2 },
+];
+
+// Under `[data-theme='admin']` the chips take the dashboard pill skin: count badges, a leading filter
+// glyph, a gold-soft active fill and a trailing segmented view-switch.
+export const Admin: Story = {
+	render: () => {
+		const Demo = () => {
+			const [value, setValue] = useState('');
+			const [search, setSearch] = useState('');
+			const [view, setView] = useState('list');
+			return (
+				<div data-theme="admin" data-colorset="light">
+					<FilterBar
+						filters={ROLE_FILTERS}
+						value={value}
+						onValueChange={setValue}
+						label="Filter op rol"
+						filterIcon="filter"
+						searchable
+						searchValue={search}
+						onSearchValueChange={setSearch}
+						searchPlaceholder="Zoek op naam…"
+						searchLabel="Zoek gebruiker"
+					>
+						<SegmentedControl
+							size="small"
+							aria-label="Weergave"
+							value={view}
+							onValueChange={setView}
+							options={[
+								{ value: 'list', label: 'Lijst' },
+								{ value: 'agenda', label: 'Agenda' },
+							]}
+						/>
+					</FilterBar>
+				</div>
+			);
+		};
 		return <Demo />;
 	},
 };

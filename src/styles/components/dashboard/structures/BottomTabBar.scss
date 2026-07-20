@@ -1,0 +1,50 @@
+.bottom-tab-bar {
+	position: fixed;
+	inset-block-end: 0;
+	inset-inline: 0;
+	z-index: $z-sticky;
+	display: flex;
+	align-items: stretch;
+	padding-inline: spacing(xs);
+	padding-block-start: spacing(xs);
+	padding-block-end: calc(#{spacing(xs)} + env(safe-area-inset-bottom));
+	background-color: $page;
+	border-block-start: 0.0625rem solid $border-color;
+	box-shadow: $shadow-card;
+
+	@include bp(l) {
+		display: none;
+	}
+}
+
+.bottom-tab-bar-tab {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.15rem;
+	min-block-size: $tap-target;
+	padding-block: spacing(xs);
+	border: 0;
+	border-radius: $rounded-m;
+	background: transparent;
+	color: $color-secondary;
+	font-size: 0.6875rem;
+	font-weight: $weight-medium;
+	text-decoration: none;
+	transition: color $speed-fast $ease;
+
+	.icon {
+		inline-size: 1.25rem;
+		block-size: 1.25rem;
+	}
+
+	@include interactive {
+		color: $color;
+	}
+
+	&.is-active {
+		color: $accent-text;
+	}
+}

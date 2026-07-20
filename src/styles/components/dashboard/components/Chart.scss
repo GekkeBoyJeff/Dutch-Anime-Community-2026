@@ -1,0 +1,183 @@
+.chart {
+	display: grid;
+	gap: spacing(m);
+	padding: spacing(l);
+	border-radius: $admin-radius-card;
+	background-color: $admin-surface;
+	box-shadow: $admin-ring, $admin-shadow-1;
+
+	.chart-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: spacing(m);
+
+		.chart-action {
+			flex: none;
+			color: $admin-ink-3;
+			font-size: 0.8125rem;
+		}
+	}
+
+	.chart-canvas {
+		position: relative;
+		inline-size: 100%;
+
+		.chart-empty {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: spacing(m);
+			block-size: 100%;
+			padding: spacing(l);
+			text-align: center;
+
+			.chart-empty-line {
+				max-inline-size: 24rem;
+				margin: 0;
+				color: $admin-ink-3;
+				font-size: 0.875rem;
+			}
+		}
+
+		.recharts-cartesian-axis-tick-value {
+			font-variant-numeric: tabular-nums;
+		}
+
+		.recharts-surface {
+			overflow: visible;
+		}
+	}
+
+	&.is-donut {
+		.chart-canvas {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+			align-items: center;
+			gap: spacing(l);
+
+			@media (max-width: 26rem) {
+				grid-template-columns: 1fr;
+			}
+		}
+	}
+
+	.chart-donut {
+		position: relative;
+		block-size: 100%;
+		min-block-size: 10rem;
+
+		.chart-donut-center {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 0.125rem;
+			pointer-events: none;
+
+			.chart-donut-value {
+				color: $admin-ink-1;
+				font-weight: $weight-semibold;
+				font-size: 1.25rem;
+				font-variant-numeric: tabular-nums;
+			}
+
+			.chart-donut-caption {
+				color: $admin-ink-3;
+				font-size: 0.75rem;
+			}
+		}
+	}
+
+	.chart-legend {
+		display: grid;
+		gap: spacing(xs);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		.chart-legend-item {
+			display: flex;
+			align-items: center;
+			gap: spacing(s);
+			font-size: 0.8125rem;
+
+			.chart-legend-swatch {
+				flex: none;
+				inline-size: 0.625rem;
+				block-size: 0.625rem;
+				border-radius: 0.1875rem;
+			}
+
+			.chart-legend-name {
+				flex: 1;
+				min-inline-size: 0;
+				overflow: hidden;
+				color: $admin-ink-2;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+
+			.chart-legend-value {
+				flex: none;
+				color: $admin-ink-1;
+				font-weight: $weight-medium;
+				font-variant-numeric: tabular-nums;
+			}
+		}
+	}
+}
+
+.chart-tooltip {
+	display: grid;
+	gap: spacing(xs);
+	min-inline-size: 8rem;
+	padding: spacing(s) spacing(m);
+	border-radius: $admin-radius-control;
+	background-color: $admin-popover;
+	box-shadow: $admin-ring, $admin-shadow-2;
+
+	.chart-tooltip-label {
+		color: $admin-ink-3;
+		font-size: 0.75rem;
+		font-weight: $weight-medium;
+	}
+
+	.chart-tooltip-rows {
+		display: grid;
+		gap: 0.125rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		.chart-tooltip-row {
+			display: flex;
+			align-items: center;
+			gap: spacing(s);
+			font-size: 0.8125rem;
+
+			.chart-tooltip-swatch {
+				flex: none;
+				inline-size: 0.5rem;
+				block-size: 0.5rem;
+				border-radius: 0.125rem;
+			}
+
+			.chart-tooltip-name {
+				flex: 1;
+				min-inline-size: 0;
+				color: $admin-ink-2;
+			}
+
+			.chart-tooltip-value {
+				flex: none;
+				color: $admin-ink-1;
+				font-weight: $weight-semibold;
+				font-variant-numeric: tabular-nums;
+			}
+		}
+	}
+}

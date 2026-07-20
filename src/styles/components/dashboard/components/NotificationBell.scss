@@ -1,0 +1,44 @@
+.notification-bell {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 2.5rem;
+	block-size: 2.5rem;
+	border-radius: $rounded-full;
+	color: $color-secondary;
+	background-color: $surface-muted;
+	transition: color $speed-fast $ease, background-color $speed-fast $ease;
+
+	@include interactive {
+		color: var(--home-gold-text, #{$accent-text});
+		background-color: var(--home-gold-tint, #{$tint-accent});
+	}
+
+	.notification-bell-icon {
+		inline-size: 1.25rem;
+		block-size: 1.25rem;
+	}
+}
+
+.notification-bell-count {
+	position: absolute;
+	inset-block-start: 0.3rem;
+	inset-inline-end: 0.3rem;
+	display: inline-flex;
+}
+
+.notification-bell-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-inline-size: 1.1rem;
+	block-size: 1.1rem;
+	padding-inline: 0.2rem;
+	border-radius: $rounded-full;
+	background-color: var(--home-gold-strong, #{$accent});
+	color: #fff;
+	font-size: 0.7rem;
+	font-weight: $weight-bold;
+	line-height: 1;
+}

@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 
-import LogsViewer from '@/app/(admin)/dashboard/logs/_components/LogsViewer';
-
-import '@/app/(admin)/dashboard/dashboard.scss';
+import LogsViewer from '@/components/dashboard/logs/LogsViewer';
 
 export const metadata: Metadata = { title: 'Logs', robots: { index: false, follow: false } };
 

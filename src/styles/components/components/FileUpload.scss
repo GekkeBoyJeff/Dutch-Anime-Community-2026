@@ -67,6 +67,12 @@
 		}
 	}
 
+	.rejected {
+		margin: 0;
+		color: $status-error;
+		--font-size: 0.875rem;
+	}
+
 	.files {
 		display: flex;
 		flex-direction: column;
@@ -86,7 +92,7 @@
 		background-color: $surface-muted;
 		--font-size: 0.875rem;
 
-		.file-upload-addon-icon {
+		.icon {
 			color: $color-secondary;
 		}
 

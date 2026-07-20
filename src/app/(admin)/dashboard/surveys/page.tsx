@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 
-import SurveysManager from '@/app/(admin)/dashboard/surveys/_components/SurveysManager';
-
-import '@/app/(admin)/dashboard/surveys.scss';
+import SurveysManager from '@/components/dashboard/surveys/SurveysManager';
 
 export const metadata: Metadata = { title: 'Enquêtes & polls', robots: { index: false, follow: false } };
 

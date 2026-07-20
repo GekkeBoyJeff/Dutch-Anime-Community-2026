@@ -89,3 +89,87 @@
 
 	}
 }
+
+[data-theme="admin"] {
+	.tabs {
+		.list {
+			.indicator {
+				transition:
+					inset-inline-start $speed $ease-snappy,
+					inline-size $speed $ease-snappy;
+			}
+		}
+
+		&[data-orientation="vertical"] {
+			.indicator {
+				transition:
+					inset-block-start $speed $ease-snappy,
+					block-size $speed $ease-snappy;
+			}
+		}
+
+		.panel {
+			animation: tabs-panel-in 240ms $ease-entrance both;
+
+			&[data-activation-direction="right"] {
+				animation-name: tabs-panel-in-right;
+			}
+
+			&[data-activation-direction="left"] {
+				animation-name: tabs-panel-in-left;
+			}
+
+			&[data-activation-direction="down"] {
+				animation-name: tabs-panel-in-right;
+			}
+
+			&[data-activation-direction="up"] {
+				animation-name: tabs-panel-in-left;
+			}
+		}
+	}
+}
+
+@keyframes tabs-panel-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes tabs-panel-in-right {
+	from {
+		opacity: 0;
+		transform: translateX(0.75rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes tabs-panel-in-left {
+	from {
+		opacity: 0;
+		transform: translateX(-0.75rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	[data-theme="admin"] {
+		.tabs {
+			.panel {
+				animation: none;
+			}
+		}
+	}
+}

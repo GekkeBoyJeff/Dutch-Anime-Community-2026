@@ -4,8 +4,6 @@ export { default as ArticleCard } from '@/components/components/ArticleCard';
 export { default as EventCard } from '@/components/components/EventCard';
 export { default as EmptyState } from '@/components/components/EmptyState';
 export { default as Table } from '@/components/components/Table';
-export { default as DataTable } from '@/components/components/DataTable';
-export type { DataTableColumn, SortDirection } from '@/components/components/DataTable';
 export { default as DescriptionList } from '@/components/components/DescriptionList';
 export { default as CookieConsent } from '@/components/components/CookieConsent';
 export { default as Modal } from '@/components/components/Modal';

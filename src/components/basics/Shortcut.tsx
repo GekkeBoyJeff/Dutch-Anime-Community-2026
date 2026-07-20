@@ -25,7 +25,7 @@ const Shortcut = ({
 		<kbd ref={ref} className={classNames('shortcut', className)}>
 			{list.map((key, index) => (
 				<Fragment key={index}>
-					{index > 0 && (
+					{index > 0 && separator !== '' && (
 						<span className="separator" aria-hidden="true">
 							{separator}
 						</span>

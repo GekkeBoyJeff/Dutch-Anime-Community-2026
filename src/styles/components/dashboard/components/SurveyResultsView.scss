@@ -1,0 +1,67 @@
+.survey-results {
+	display: grid;
+	gap: spacing(l);
+
+	.count {
+		font-weight: 600;
+		margin: 0;
+	}
+
+	.note {
+		color: var(--color-secondary);
+		font-size: 0.8125rem;
+		margin: 0;
+	}
+
+	.summary {
+		display: grid;
+		gap: spacing(l);
+
+		.block {
+			display: grid;
+			gap: 0.35rem;
+			padding: var(--admin-gap);
+			border: 0.0625rem solid var(--border-color);
+			border-radius: 0.6rem;
+
+			.label {
+				font-weight: 600;
+			}
+
+			.stat {
+				color: var(--color-secondary);
+			}
+
+			.list {
+				display: grid;
+				gap: spacing(xs);
+				margin: 0;
+				padding-left: 1.1rem;
+
+				li {
+					display: flex;
+					justify-content: space-between;
+					gap: spacing(m);
+				}
+			}
+		}
+	}
+
+	.table-wrap {
+		overflow-x: auto;
+	}
+
+	.table {
+		border-collapse: collapse;
+		width: 100%;
+		font-size: 0.875rem;
+
+		th,
+		td {
+			border: 0.0625rem solid var(--border-color);
+			padding: var(--admin-cell-padding-block) var(--admin-cell-padding-inline);
+			text-align: left;
+			vertical-align: top;
+		}
+	}
+}

@@ -1,0 +1,30 @@
+.badge-gallery {
+	display: flex;
+	flex-wrap: wrap;
+	gap: spacing(s);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.badge-gallery-item {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 2.75rem;
+	block-size: 2.75rem;
+	border-radius: $rounded-full;
+	background-color: $surface-muted;
+	overflow: hidden;
+}
+
+.badge-gallery-image {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: cover;
+}
+
+.badge-gallery-fallback {
+	font-weight: $weight-bold;
+	color: $color-secondary;
+}

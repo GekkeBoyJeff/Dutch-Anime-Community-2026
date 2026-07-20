@@ -18,6 +18,8 @@ export interface FilterBarProps extends FilterBarSchemaProps {
 	onSearchValueChange?: (value: string) => void;
 	/** Fires when the reset button is pressed */
 	onReset?: () => void;
+	/** A leading glyph before the chips (the admin pill-bar's filter icon). */
+	filterIcon?: string;
 	/** Extra controls rendered after the built-in ones */
 	children?: ReactNode;
 }
@@ -25,7 +27,9 @@ export interface FilterBarProps extends FilterBarSchemaProps {
 // A fully controlled filter toolbar: filter chips (a group of toggle Pills), an optional search
 // input, a native sort <select> and a reset button. It owns no state — the parent reflects the
 // values (e.g. to searchParams) and passes them back down. A small client island because the inputs
-// fire change handlers; the surrounding page stays a Server Component.
+// fire change handlers; the surrounding page stays a Server Component. Under `[data-theme='admin']`
+// the chips take the dashboard pill skin (count badges, a leading filter glyph); the public look is
+// untouched.
 const FilterBar = ({
 	filters,
 	value,
@@ -39,6 +43,7 @@ const FilterBar = ({
 	sortLabel = 'Sort',
 	resetLabel = 'Reset',
 	label = 'Filters',
+	filterIcon,
 	onValueChange,
 	onSortChange,
 	onSearchValueChange,
@@ -52,7 +57,9 @@ const FilterBar = ({
 
 	return (
 		<div ref={ref} className={classNames('filter-bar', className)}>
+			{filters.length > 0 && (
 			<div className="chips" role="group" aria-label={label}>
+				{filterIcon && <Icon name={filterIcon} className="chips-lead" />}
 				{filters.map((filter) => {
 					const isActive = filter.value === value;
 
@@ -65,10 +72,12 @@ const FilterBar = ({
 							onClick={() => onValueChange?.(filter.value)}
 						>
 							{filter.label}
+							{filter.count !== undefined && <span className="chip-count">{filter.count}</span>}
 						</Pill>
 					);
 				})}
 			</div>
+			)}
 
 			<div className="tools">
 				{searchable && (

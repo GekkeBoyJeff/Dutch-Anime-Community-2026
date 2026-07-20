@@ -16,13 +16,18 @@ export const TERMS_VERSION = '2026-07-17';
 
 type TermsGateProps = { children: ReactNode };
 
+// Module-scope cache (UX only). RouteReveal re-keys this gate on every dashboard navigation, so without
+// it the accepted-check would re-run from scratch and flash a spinner each hop. Keyed by user id so a
+// different account never reads a stale value; a sign-out leaves it (the signed-out branch ignores it).
+let acceptedCache: { userId: string; accepted: boolean } | null = null;
+
 // Client-side gate: een ingelogde user moet de (huidige versie van de) voorwaarden accepteren voordat de
 // beveiligde schermen (dashboard/account) bruikbaar zijn. Niet-ingelogd → laat downstream-guards het
 // afhandelen. De publieke site rendert deze gate niet. De self-update-policy op profiles staat het
 // wegschrijven van terms_accepted_at/terms_version toe.
 const TermsGate = ({ children }: TermsGateProps) => {
 	const { session, loading } = useSession();
-	const [accepted, setAccepted] = useState<boolean | null>(null);
+	const [accepted, setAccepted] = useState<boolean | null>(() => (session && acceptedCache?.userId === session.user.id ? acceptedCache.accepted : null));
 	const [agreed, setAgreed] = useState(false);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -36,7 +41,10 @@ const TermsGate = ({ children }: TermsGateProps) => {
 			.eq('id', session.user.id)
 			.maybeSingle()
 			.then(({ data }) => {
-				if (active) setAccepted(Boolean(data?.terms_accepted_at) && data?.terms_version === TERMS_VERSION);
+				if (!active) return;
+				const value = Boolean(data?.terms_accepted_at) && data?.terms_version === TERMS_VERSION;
+				acceptedCache = { userId: session.user.id, accepted: value };
+				setAccepted(value);
 			});
 		return () => {
 			active = false;
@@ -55,6 +63,7 @@ const TermsGate = ({ children }: TermsGateProps) => {
 			setError(err.message);
 			return;
 		}
+		acceptedCache = { userId: session.user.id, accepted: true };
 		setAccepted(true);
 	};
 

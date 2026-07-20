@@ -37,7 +37,7 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           # Docroot is relative to the SSH home (/home/<user>); the account has a separate
           # test.<domain> docroot, so this path is explicit to avoid deploying to the wrong one.
-          REMOTE_DIR: domains/dutchanimecommunity.nl/public_html/
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
         run: |
           mkdir -p ~/.ssh
           printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519

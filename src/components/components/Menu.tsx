@@ -1,5 +1,6 @@
 'use client';
 
+import { ContextMenu as BaseContextMenu } from '@base-ui/react/context-menu';
 import { Menu as BaseMenu } from '@base-ui/react/menu';
 import type { MouseEvent, ReactNode, Ref } from 'react';
 
@@ -24,6 +25,12 @@ type MenuProps = MenuSchemaProps & {
 	trigger: ReactNode;
 	/** Fires with the next open state whenever it changes */
 	onOpenChange?: (open: boolean) => void;
+	/** Also open when the trigger is hovered (for lightweight dropdowns like a profile chip). */
+	openOnHover?: boolean;
+	/** Hover-intent open delay in ms (needs `openOnHover`). */
+	delay?: number;
+	/** Hover-intent close delay in ms (needs `openOnHover`). */
+	closeDelay?: number;
 	/** The menu items, groups and separators */
 	children?: ReactNode;
 };
@@ -31,6 +38,8 @@ type MenuProps = MenuSchemaProps & {
 type MenuItemProps = MenuItemSchemaProps & {
 	/** Activation handler */
 	onClick?: (event: MouseEvent<HTMLElement>) => void;
+	/** Marks a destructive action (delete, hard-remove) with the danger idiom. */
+	danger?: boolean;
 	children?: ReactNode;
 };
 
@@ -71,6 +80,7 @@ const MenuItem = ({
 	target,
 	disabled = false,
 	keepOpen = false,
+	danger = false,
 	onClick,
 	className,
 	children,
@@ -96,7 +106,7 @@ const MenuItem = ({
 		return (
 			<BaseMenu.LinkItem
 				ref={ref}
-				className={classNames('item', className)}
+				className={classNames('item', danger && 'is-danger', className)}
 				label={label}
 				closeOnClick={!keepOpen}
 				render={<Interactive url={url} target={target} disabled={disabled} />}
@@ -109,7 +119,7 @@ const MenuItem = ({
 	return (
 		<BaseMenu.Item
 			ref={ref}
-			className={classNames('item', className)}
+			className={classNames('item', danger && 'is-danger', className)}
 			label={label}
 			disabled={disabled}
 			closeOnClick={!keepOpen}
@@ -228,6 +238,9 @@ const Menu = ({
 	align = 'start',
 	sideOffset = 6,
 	label,
+	openOnHover,
+	delay,
+	closeDelay,
 	onOpenChange,
 	className,
 	children,
@@ -240,7 +253,7 @@ const Menu = ({
 			orientation={orientation}
 			onOpenChange={(next) => onOpenChange?.(next)}
 		>
-			<BaseMenu.Trigger render={trigger as React.ReactElement} />
+			<BaseMenu.Trigger openOnHover={openOnHover} delay={delay} closeDelay={closeDelay} render={trigger as React.ReactElement} />
 
 			<BaseMenu.Portal>
 				<BaseMenu.Positioner className="menu-positioner" side={side} align={align} sideOffset={sideOffset}>
@@ -253,7 +266,38 @@ const Menu = ({
 	);
 };
 
+type MenuContextProps = {
+	/** The surface that opens the menu on right-click / long-press (e.g. a table row or a card). */
+	trigger: ReactNode;
+	/** Fires with the next open state whenever it changes */
+	onOpenChange?: (open: boolean) => void;
+	/** Accessible name for the popup */
+	label?: string;
+	/** The menu items, groups and separators */
+	children?: ReactNode;
+	className?: string;
+};
+
+// A right-click / long-press context menu. Shares Base UI's Menu parts with <Menu>, so the same
+// Menu.Item/Group/Separator children render identically — pair it with a row's overflow menu to put
+// the same actions on both surfaces. The popup anchors to the pointer.
+const MenuContext = ({ trigger, onOpenChange, label, className, children }: MenuContextProps) => {
+	return (
+		<BaseContextMenu.Root onOpenChange={(next) => onOpenChange?.(next)}>
+			<BaseContextMenu.Trigger render={trigger as React.ReactElement} />
+			<BaseMenu.Portal>
+				<BaseMenu.Positioner className="menu-positioner">
+					<BaseMenu.Popup className={classNames('menu', className)} aria-label={label}>
+						{children}
+					</BaseMenu.Popup>
+				</BaseMenu.Positioner>
+			</BaseMenu.Portal>
+		</BaseContextMenu.Root>
+	);
+};
+
 Menu.Item = MenuItem;
+Menu.Context = MenuContext;
 Menu.Group = MenuGroup;
 Menu.GroupLabel = MenuGroupLabel;
 Menu.CheckboxItem = MenuCheckboxItem;

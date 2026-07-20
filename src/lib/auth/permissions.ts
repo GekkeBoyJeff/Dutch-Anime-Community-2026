@@ -49,6 +49,18 @@ export const ROLE_LABELS: Record<AppRole, string> = {
 export const highestRole = (roles: readonly AppRole[]): AppRole | null =>
 	roles.reduce<AppRole | null>((best, role) => (best === null || APP_ROLES.indexOf(role) > APP_ROLES.indexOf(best) ? role : best), null);
 
+// The role whose emphasis the dashboard leans on, derived from the EFFECTIVE permission set rather than a
+// role read — so home-widget order and nav-group order are synchronous with the permissions themselves (no
+// reorder-after-fetch, no CLS). Presentation only: the permission gates still decide what is visible, and a
+// multi-role person still sees both halves; this only picks the top tier to tilt order/emphasis toward.
+export const emphasisRole = (permissions: ReadonlySet<Permission>): AppRole => {
+	if (permissions.has('roles.manage')) return 'admin';
+	if (permissions.has('inventory.manage') || permissions.has('staff.manage') || permissions.has('moderation.view')) return 'yakuza';
+	if (permissions.has('pages.edit') || permissions.has('media.manage')) return 'author';
+	if (permissions.has('inventory.view')) return 'stand-staff';
+	return 'user';
+};
+
 // Open-redirect guard: only same-site relative paths are allowed as a post-login destination.
 // Rejects absolute URLs, protocol-relative (`//evil`), and backslash tricks (`/\evil`).
 export const safeNext = (raw: string | null | undefined): string => {
@@ -72,17 +84,32 @@ export const signOut = async (): Promise<void> => {
 	await getBrowserClient().auth.signOut();
 };
 
-// The current session, kept live via onAuthStateChange.
+// Module-scope caches (UX only — RLS stays the boundary). They let a hook that remounts on client
+// navigation initialise from the last known value synchronously — no loading flash, no nav collapse —
+// then silently revalidate. Cleared on sign-out so the forced-logout path still redirects and stale
+// permissions never linger. A hard page reload re-evaluates this module, so cold-load behaviour returns.
+let sessionCache: { session: Session | null } | null = null;
+let permissionsCache: { userId: string; permissions: Set<Permission> } | null = null;
+
+// The current session, kept live via onAuthStateChange. On remount it starts from the module cache, so a
+// warm cache means loading is already false (no spinner). A sign-out event also clears permissionsCache.
 export const useSession = (): { session: Session | null; loading: boolean } => {
-	const [session, setSession] = useState<Session | null>(null);
-	const [loading, setLoading] = useState(true);
+	const [session, setSession] = useState<Session | null>(() => sessionCache?.session ?? null);
+	const [loading, setLoading] = useState(() => sessionCache === null);
 	useEffect(() => {
 		const db = getBrowserClient();
 		db.auth.getSession().then(({ data }) => {
+			sessionCache = { session: data.session };
+			if (!data.session) permissionsCache = null;
 			setSession(data.session);
 			setLoading(false);
 		});
-		const { data: sub } = db.auth.onAuthStateChange((_event, next) => setSession(next));
+		const { data: sub } = db.auth.onAuthStateChange((_event, next) => {
+			sessionCache = { session: next };
+			if (!next) permissionsCache = null;
+			setSession(next);
+			setLoading(false);
+		});
 		return () => sub.subscription.unsubscribe();
 	}, []);
 	return { session, loading };
@@ -96,7 +123,7 @@ const EMPTY_PERMISSIONS: ReadonlySet<Permission> = new Set();
 // set. setState happens only inside the async callback, never synchronously in the effect body.
 export const usePermissions = (): { permissions: ReadonlySet<Permission>; loading: boolean; session: Session | null } => {
 	const { session, loading: sessionLoading } = useSession();
-	const [fetched, setFetched] = useState<{ userId: string; permissions: Set<Permission> } | null>(null);
+	const [fetched, setFetched] = useState<{ userId: string; permissions: Set<Permission> } | null>(() => permissionsCache);
 
 	useEffect(() => {
 		if (!session) return;
@@ -104,7 +131,10 @@ export const usePermissions = (): { permissions: ReadonlySet<Permission>; loadin
 		getBrowserClient()
 			.rpc('my_permissions')
 			.then(({ data }) => {
-				if (active) setFetched({ userId: session.user.id, permissions: new Set((data ?? []) as Permission[]) });
+				if (!active) return;
+				const next = { userId: session.user.id, permissions: new Set((data ?? []) as Permission[]) };
+				permissionsCache = next;
+				setFetched(next);
 			});
 		return () => {
 			active = false;

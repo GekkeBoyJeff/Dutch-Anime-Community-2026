@@ -1,7 +1,74 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import Navigation from '@/components/structures/Navigation';
+import Icon from '@/components/basics/Icon';
+import Navigation, { type MegaMenuGroup } from '@/components/structures/Navigation';
 import { NavigationProps } from '@/lib/content/schema/structures/navigation';
+
+// A static stand-in for the live right-zone highlight the dashboard wires per group (NavHighlights).
+const mockHighlight = (eyebrow: string, lead: string, sub: string, ctaLabel: string) => (
+	<div className="mega-menu-highlight">
+		<span className="mega-menu-highlight-eyebrow">{eyebrow}</span>
+		<div className="mega-menu-highlight-body">
+			<span className="mega-menu-highlight-lead">{lead}</span>
+			<span className="mega-menu-highlight-sub">{sub}</span>
+		</div>
+		<a href="#" className="mega-menu-highlight-cta">
+			<span>{ctaLabel}</span>
+			<span className="mega-menu-highlight-cta-icon" aria-hidden="true">
+				<Icon name="arrow-up-right" />
+			</span>
+		</a>
+	</div>
+);
+
+// Mock groups mirroring buildNavGroups()'s shape from DASHBOARD_GROUPS — no Supabase here.
+const dashboardGroups: MegaMenuGroup[] = [
+	{
+		key: 'mijn',
+		label: 'Mijn',
+		description: 'Je eigen profiel, spullen en declaraties.',
+		links: [
+			{ key: 'profiel', label: 'Profiel', description: 'Je account, warnings en badges.', href: '/account', icon: 'user' },
+			{ key: 'my-inventory', label: 'Mijn spullen', description: 'Je eigen items en wat je moet meenemen.', href: '/dashboard/my-inventory', icon: 'star' },
+			{ key: 'expenses', label: 'Declaraties', description: 'Dien kosten in met bon en beoordeel declaraties.', href: '/dashboard/expenses', icon: 'file' },
+		],
+		highlight: mockHighlight('Volgende shift', '12-08 10:00 – 16:00', 'Abunai! · Kassa', 'Naar mijn conventies'),
+	},
+	{
+		key: 'operaties',
+		label: 'Operaties',
+		description: 'Voorraad, conventies en moderatie.',
+		links: [
+			{ key: 'events', label: 'Conventies & events', description: 'Beheer conventies, aanwezigheid en agenda.', href: '/dashboard/events', icon: 'calendar' },
+			{ key: 'inventory', label: 'Inventaris', description: 'Beheer items en toewijzingen.', href: '/dashboard/inventory', icon: 'list' },
+			{ key: 'team', label: 'Team', description: 'Standteam en yakuza met shifts en warnings.', href: '/dashboard/team', icon: 'users' },
+			{ key: 'moderation', label: 'Moderatie', description: 'Profielen, warnings, links en bans.', href: '/dashboard/moderation', icon: 'warning' },
+		],
+		highlight: mockHighlight('Volgende conventie', 'Abunai! 2026', 'vrijdag 14 augustus 2026 · Veldhoven', 'Open conventie'),
+	},
+	{
+		key: 'content',
+		label: 'Content',
+		description: "Pagina's, media en enquêtes.",
+		links: [
+			{ key: 'builder', label: "Pagina's", description: "Bewerk pagina's met de visuele builder.", href: '/builder', icon: 'edit' },
+			{ key: 'media', label: 'Media', description: 'Upload en beheer afbeeldingen.', href: '/upload', icon: 'upload' },
+			{ key: 'surveys', label: 'Enquêtes', description: 'Maak en beheer enquêtes en polls.', href: '/dashboard/surveys', icon: 'list' },
+		],
+		highlight: mockHighlight('Media', 'hero-abunai-2026.jpg', 'Laatst geüpload bestand.', 'Naar media'),
+	},
+	{
+		key: 'systeem',
+		label: 'Systeem',
+		description: 'Toegang, meldingen en logs.',
+		links: [
+			{ key: 'access', label: 'Toegang', description: 'Ken rollen en permissies toe aan gebruikers.', href: '/dashboard/access', icon: 'settings' },
+			{ key: 'notifications', label: 'Meldingen', description: 'Stuur meldingen naar leden.', href: '/dashboard/notifications', icon: 'mail' },
+			{ key: 'logs', label: 'Logs', description: 'Activiteit en audit-trail van het beheer.', href: '/dashboard/logs', icon: 'clock' },
+		],
+		highlight: mockHighlight('Laatste wijziging', 'Abunai! 2026', 'Events · 19-07 14:22', 'Naar logs'),
+	},
+];
 
 const meta: Meta<typeof Navigation> = {
 	title: 'Structures/Navigation',
@@ -39,5 +106,17 @@ export const WithoutCta: Story = {
 	args: {
 		...Default.args,
 		cta: undefined,
+	},
+};
+
+// Dashboard mode: passing `groups` turns the same pill nav into the staff mega-menu — group triggers open
+// full-width fused panels, and the right cluster holds the user chip and back link instead of the CTA.
+export const Dashboard: Story = {
+	args: {
+		brand: { title: 'Beheer' },
+		home: { label: 'Dashboard', href: '/dashboard' },
+		groups: dashboardGroups,
+		user: { name: 'Kaito Tanaka', roleLabel: 'Beheerder', initials: 'KT' },
+		backLink: { label: 'Terug naar de website', href: '/' },
 	},
 };

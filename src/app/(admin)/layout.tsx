@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react';
 
-import AdminShell from '@/app/(admin)/dashboard/_components/AdminShell';
-
-import '@/app/(admin)/dashboard/dashboard.scss';
+import AdminShell from '@/components/dashboard/shell/AdminShell';
 
 interface AdminLayoutProps {
 	/** The routed management page */

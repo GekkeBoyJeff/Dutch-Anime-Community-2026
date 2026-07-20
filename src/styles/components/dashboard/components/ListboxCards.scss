@@ -1,0 +1,106 @@
+.listbox-cards {
+	display: grid;
+	gap: spacing(s);
+
+	&.is-cols-2 {
+		@include bp(s) {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	.listbox-card {
+		display: flex;
+		align-items: flex-start;
+		gap: spacing(m);
+		padding: spacing(m) spacing(l);
+		border-radius: $admin-radius-card;
+		background-color: $admin-surface;
+		box-shadow: $admin-ring, $admin-shadow-1;
+		text-align: start;
+		cursor: pointer;
+		transition: box-shadow $motion-micro, background-color $motion-micro;
+
+		@include interactive {
+			&:not([data-disabled]) {
+				box-shadow: inset 0 0 0 0.0625rem $admin-hairline-strong, $admin-shadow-2;
+			}
+		}
+
+		&:focus-visible {
+			outline: none;
+			box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+		}
+
+		&[data-checked] {
+			background-color: $admin-accent-soft;
+			box-shadow: inset 0 0 0 0.09375rem $admin-accent, $admin-shadow-1;
+		}
+
+		&[data-disabled] {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+
+		.listbox-card-icon {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			inline-size: 2rem;
+			block-size: 2rem;
+			flex: none;
+			border-radius: $admin-radius-control;
+			background-color: $surface-muted;
+			color: $admin-ink-2;
+
+			.listbox-card[data-checked] & {
+				background-color: #{rgba(#eba91f, 0.28)};
+				color: $admin-accent-ink;
+			}
+		}
+
+		.listbox-card-text {
+			display: grid;
+			gap: 0.15rem;
+			min-inline-size: 0;
+			flex: 1;
+
+			.listbox-card-label {
+				font-weight: $weight-semibold;
+				color: $admin-ink-1;
+			}
+
+			.listbox-card-desc {
+				font-size: 0.8125rem;
+				line-height: 1.4;
+				color: $admin-ink-2;
+			}
+		}
+
+		.listbox-card-check {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			inline-size: 1.25rem;
+			block-size: 1.25rem;
+			flex: none;
+			border-radius: $rounded-full;
+			box-shadow: inset 0 0 0 0.0625rem $admin-hairline-strong;
+			opacity: 0;
+			transition: opacity $motion-micro;
+
+			.listbox-card-check-mark {
+				inline-size: 0.3rem;
+				block-size: 0.55rem;
+				border: solid $admin-accent-contrast;
+				border-width: 0 0.125rem 0.125rem 0;
+				transform: rotate(45deg) translateY(-0.0625rem);
+			}
+
+			.listbox-card[data-checked] & {
+				background-color: $admin-accent;
+				box-shadow: none;
+				opacity: 1;
+			}
+		}
+	}
+}

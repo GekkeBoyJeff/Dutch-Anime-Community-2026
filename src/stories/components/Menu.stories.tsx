@@ -86,6 +86,37 @@ export const WithRadioGroup: Story = {
 	),
 };
 
+// Right-click (or long-press) the surface to open the same styled menu. Used to give table rows and
+// cards the same actions as their "⋯" overflow menu. Destructive items carry the danger idiom.
+export const Context: Story = {
+	render: () => (
+		<Menu.Context
+			label="Rij-acties"
+			trigger={
+				<div
+					style={{
+						display: 'grid',
+						placeItems: 'center',
+						blockSize: '8rem',
+						borderRadius: '0.75rem',
+						boxShadow: 'inset 0 0 0 0.0625rem var(--border-color)',
+						color: 'var(--color-secondary)',
+					}}
+				>
+					Rechtsklik hier
+				</div>
+			}
+		>
+			<Menu.Item icon="copy">Dupliceren</Menu.Item>
+			<Menu.Item icon="edit">Bewerken</Menu.Item>
+			<Menu.Separator />
+			<Menu.Item icon="trash" danger>
+				Verwijderen
+			</Menu.Item>
+		</Menu.Context>
+	),
+};
+
 export const WithLinkItems: Story = {
 	args: { ...Default.args },
 	render: (args) => (

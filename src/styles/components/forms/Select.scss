@@ -147,3 +147,65 @@
 		}
 	}
 }
+
+// Select v2 — the professionalized admin skin (research-visual §3): a work-surface trigger and a
+// layered popover with a soft popover-in, gold-soft highlight and rounded rows. The trigger sits in the
+// admin subtree, but Base UI portals the popup to <body>; it therefore carries its own `.is-admin`
+// marker (set by Select when its trigger resolves inside `[data-theme='admin']`) so the skin — built on
+// the globally-defined --admin-* tokens — reaches the popup wherever the portal lands. Public untouched.
+[data-theme='admin'] {
+	.select {
+		min-block-size: $admin-control-height;
+		border-radius: $admin-radius-control;
+		background-color: $admin-surface;
+		box-shadow: $admin-ring;
+
+		&:focus-visible {
+			outline: none;
+			box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+		}
+
+		&[data-popup-open] {
+			box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+		}
+	}
+}
+
+.select-popup.is-admin {
+	border-radius: $admin-radius-card;
+	background-color: $admin-popover;
+	box-shadow: $admin-ring, $admin-shadow-3;
+	animation: select-pop-in 140ms $ease-snappy;
+
+	.option {
+		margin-inline: spacing(xs);
+		border-radius: $admin-radius-control;
+
+		&[data-highlighted] {
+			background-color: $admin-accent-soft;
+			color: $admin-ink-1;
+		}
+
+		.option-indicator {
+			color: $admin-accent-ink;
+		}
+	}
+}
+
+@keyframes select-pop-in {
+	from {
+		opacity: 0;
+		transform: translateY(-0.25rem) scale(0.98);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.select-popup.is-admin {
+		animation: none;
+	}
+}
