@@ -148,12 +148,11 @@
 	}
 }
 
-// Select v2 — the professionalized admin skin (research-visual §3): a work-surface trigger and a
-// layered popover with a soft popover-in, gold-soft highlight and rounded rows. The trigger sits in the
-// admin subtree, but Base UI portals the popup to <body>; it therefore carries its own `.is-admin`
-// marker (set by Select when its trigger resolves inside `[data-theme='admin']`) so the skin — built on
-// the globally-defined --admin-* tokens — reaches the popup wherever the portal lands. Public untouched.
-[data-theme='admin'] {
+// Select v2 — the professionalized admin skin: a work-surface trigger and a layered popover with a
+// soft popover-in, gold-soft highlight and rounded rows. The trigger sits inside `.is-admin`, but Base
+// UI portals the popup to <body>; it therefore carries its own `.is-admin` marker (set by Select when
+// its trigger resolves inside one) so the skin reaches the popup wherever the portal lands.
+.is-admin {
 	.select {
 		min-block-size: $admin-control-height;
 		border-radius: $admin-radius-control;

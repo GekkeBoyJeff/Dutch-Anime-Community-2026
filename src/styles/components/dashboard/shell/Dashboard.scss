@@ -592,7 +592,7 @@
 	overflow-wrap: anywhere;
 }
 
-[data-theme='admin'] {
+.is-admin {
 	.data-table {
 		.table {
 			border-radius: $admin-radius-card;

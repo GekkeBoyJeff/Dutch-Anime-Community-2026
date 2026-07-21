@@ -563,8 +563,6 @@ const DashboardHeader = ({
 						    panel is full-width and never shifts or flips between groups — it reads as one piece with the bar. */}
 						<NavigationMenu.Positioner
 							className="mega-menu-positioner"
-							data-theme="admin"
-							data-colorset="light"
 							anchor={barRef}
 							positionMethod="fixed"
 							side="bottom"

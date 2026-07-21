@@ -164,11 +164,12 @@ mirrored stylesheet and a Storybook story, exactly like a public-site component:
 
 ## Admin density tokens
 
-Tool surfaces want a tighter rhythm than the marketing site. `[data-theme='admin']` (in the THEME section
-of `src/styles/base.scss`) sets the accent plus three density tokens — `--admin-gap`,
-`--admin-cell-padding-block`, `--admin-cell-padding-inline` — and the route-local dashboard SCSS reads
-those instead of hardcoding spacing, so the whole platform's density moves from one place. The MegaMenu
-panels render under `data-theme="admin" data-colorset="light"` for the same reason.
+Tool surfaces want a tighter rhythm than the marketing site, but not a different palette: the dashboard
+runs under the same `dac` theme as the site. The `--admin-*` tokens (on `:root` in `src/styles/base.scss`)
+therefore carry measure and elevation only — `--admin-gap`, `--admin-row-height`, `--admin-radius-card`,
+the shadow scale — and the route-local dashboard SCSS reads those instead of hardcoding spacing, so the
+whole platform's density moves from one place. The admin frame carries `.is-admin`, the scope hook that
+switches components onto their denser work-surface skin.
 
 ## Two build targets
 

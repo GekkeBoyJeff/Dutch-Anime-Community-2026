@@ -27,7 +27,7 @@ export interface FilterBarProps extends FilterBarSchemaProps {
 // A fully controlled filter toolbar: filter chips (a group of toggle Pills), an optional search
 // input, a native sort <select> and a reset button. It owns no state — the parent reflects the
 // values (e.g. to searchParams) and passes them back down. A small client island because the inputs
-// fire change handlers; the surrounding page stays a Server Component. Under `[data-theme='admin']`
+// fire change handlers; the surrounding page stays a Server Component. Under `.is-admin`
 // the chips take the dashboard pill skin (count badges, a leading filter glyph); the public look is
 // untouched.
 const FilterBar = ({

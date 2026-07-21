@@ -52,14 +52,14 @@ const Select = ({
 	ref,
 	...rest
 }: SelectProps & { ref?: Ref<HTMLButtonElement> }) => {
-	// The popup is portalled to <body>, escaping the admin theme subtree, so tag it with `.is-admin` when
-	// the trigger resolves inside one — that lets the (globally-tokenised) admin skin reach the portal.
+	// The popup is portalled to <body>, escaping the admin subtree, so tag it with `.is-admin` when the
+	// trigger resolves inside one — that lets the work-surface skin reach the portal.
 	const [adminScoped, setAdminScoped] = useState(false);
 	const assignTriggerRef = useCallback(
 		(node: HTMLButtonElement | null) => {
 			if (typeof ref === 'function') ref(node);
 			else if (ref) (ref as { current: HTMLButtonElement | null }).current = node;
-			if (node) setAdminScoped(node.closest('[data-theme="admin"]') !== null);
+			if (node) setAdminScoped(node.closest('.is-admin') !== null);
 		},
 		[ref],
 	);

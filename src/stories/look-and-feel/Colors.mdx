@@ -132,27 +132,27 @@ mixin:
 > paintbrush) to see the same components under a different palette.
 
 Where it lives: the raw brand colours and the runtime aliases are in `src/styles/_initial.scss` (and
-`_derived.scss`); the palette slots, theme variants (`dac`, `sepia`, `admin`) and colorset mapping that
-emit them are in the THEME section of `src/styles/base.scss`. The brand rationale is in `MERKBRIEF.md`.
+`_derived.scss`); the palette slots, theme variants (`dac`, `sepia`) and colorset mapping that emit them
+are in the THEME section of `src/styles/base.scss`. The brand rationale is in `MERKBRIEF.md`.
 
-## The admin theme
+## The admin work surface
 
-The staff platform runs under a third theme, `[data-theme='admin']`, applied to the dashboard shell. It
-carries a neutral blue accent instead of the brand gold, and — because a tool wants a tighter rhythm than
-the marketing site — three **density tokens** the route-local dashboard SCSS reads instead of hardcoding
-spacing, so the whole platform's density moves from one place:
+The staff platform has no palette of its own: it runs under the same `dac` theme as the site and reads
+`$background-color`, `$color` and the surface scale like every other component. What differs is density,
+not colour — a tool wants a tighter rhythm than the marketing site. The dashboard frame carries the class
+`.is-admin`, and the measure and elevation tokens it reads live on `:root` so overlays that portal to
+`<body>` still resolve them:
 
 ```scss
-[data-theme='admin'] {
+:root {
 	--admin-gap: #{spacing(m)};
-	--admin-cell-padding-block: #{spacing(xs)};
-	--admin-cell-padding-inline: #{spacing(s)};
+	--admin-row-height: 2.5rem;
+	--admin-radius-card: 0.875rem;
+	--admin-shadow-2: …;
 }
 ```
 
-The colorset layer is unchanged — admin surfaces still read `$background-color`, `$color` and the surface
-scale, so the same components render correctly under it. See
-[Staff platform](?path=/docs/for-developers-8-staff-platform--docs) for the rest of the dashboard.
+See [Staff platform](?path=/docs/for-developers-8-staff-platform--docs) for the rest of the dashboard.
 
 ## Status colours
 

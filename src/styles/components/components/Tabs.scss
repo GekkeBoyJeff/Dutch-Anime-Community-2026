@@ -90,7 +90,7 @@
 	}
 }
 
-[data-theme="admin"] {
+.is-admin {
 	.tabs {
 		.list {
 			.indicator {
@@ -165,7 +165,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	[data-theme="admin"] {
+	.is-admin {
 		.tabs {
 			.panel {
 				animation: none;

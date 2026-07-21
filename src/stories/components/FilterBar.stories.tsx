@@ -110,7 +110,7 @@ const ROLE_FILTERS = [
 	{ value: 'admin', label: 'Beheerder', count: 2 },
 ];
 
-// Under `[data-theme='admin']` the chips take the dashboard pill skin: count badges, a leading filter
+// Under `.is-admin` the chips take the dashboard pill skin: count badges, a leading filter
 // glyph, a gold-soft active fill and a trailing segmented view-switch.
 export const Admin: Story = {
 	render: () => {
@@ -119,7 +119,7 @@ export const Admin: Story = {
 			const [search, setSearch] = useState('');
 			const [view, setView] = useState('list');
 			return (
-				<div data-theme="admin" data-colorset="light">
+				<div className="is-admin">
 					<FilterBar
 						filters={ROLE_FILTERS}
 						value={value}

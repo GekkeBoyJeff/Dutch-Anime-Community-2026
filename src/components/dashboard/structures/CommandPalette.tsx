@@ -142,8 +142,8 @@ const EmptyLabel = () => {
 
 // The dashboard ⌘K palette: cmdk's Radix-backed Command.Dialog (focus-trap/ESC/scroll-lock come free).
 // Static groups (Recent/Pagina's/Acties) fuzzy-match client-side; Conventies/Personen are live Supabase
-// hits from `searchEntities`. data-theme/data-colorset ride the cmdk-root so admin tokens resolve inside
-// the body-level portal; the box is fixed-size (no CLS on filter).
+// hits from `searchEntities`. The dialog portals to the body and styles itself from the global tokens;
+// the box is fixed-size (no CLS on filter).
 const CommandPalette = ({ open, onOpenChange, pages, actions, personSearchHref, searchEntities }: CommandPaletteProps) => {
 	const router = useRouter();
 	// Seed the MRU from localStorage once (client-only); selecting a command updates both store and state,
@@ -228,8 +228,6 @@ const CommandPalette = ({ open, onOpenChange, pages, actions, personSearchHref, 
 			onOpenChange={handleOpenChange}
 			label="Snelzoeken"
 			loop
-			data-theme="admin"
-			data-colorset="light"
 			className="command-palette"
 			overlayClassName="command-palette-overlay"
 			contentClassName="command-palette-content"
