@@ -5,13 +5,12 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import Button from '@/components/basics/Button';
-import Skeleton from '@/components/basics/Skeleton';
 import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
 import Drawer from '@/components/components/Drawer';
 import EmptyState from '@/components/components/EmptyState';
 import FilterBar from '@/components/components/FilterBar';
-import AvatarRow from '@/components/dashboard/components/AvatarRow';
+import Person from '@/components/components/Person';
 import { recallRowCount } from '@/components/dashboard/components/DataTableSkeleton';
 import Field from '@/components/forms/Field';
 import TextInput from '@/components/forms/TextInput';
@@ -115,25 +114,22 @@ const ProfileList = ({ canManage, onOpen }: Props) => {
 	const loading = rows === null;
 
 	const renderRow = (r: Row) => (
-		<AvatarRow
+		<Person
 			key={r.id}
+			name={r.display}
+			role={r.discord_id ?? '—'}
 			initials={initialsOf(r.display)}
-			title={r.display}
-			subtitle={r.discord_id ?? '—'}
-			onClick={() => onOpen(r.id)}
-			badges={
+			trailing={
 				<>
 					<StatusBadge domain="request" status={r.user_id ? 'active' : 'requested'} label={r.user_id ? 'Account' : 'Schaduw'} />
 					{r.merged_into && <StatusBadge domain="request" status="cancelled" label="Samengevoegd" />}
-				</>
-			}
-			warnings={
-				<>
 					{r.active_red > 0 && <StatusBadge domain="warning" status="red" label={`Rood ${r.active_red}`} />}
 					{r.active_yellow > 0 && <StatusBadge domain="warning" status="yellow" label={`Geel ${r.active_yellow}`} />}
 					{r.active_red === 0 && r.active_yellow === 0 && <span className="con-note">Geen</span>}
 				</>
 			}
+			onClick={() => onOpen(r.id)}
+			chevron
 		/>
 	);
 
@@ -167,15 +163,7 @@ const ProfileList = ({ canManage, onOpen }: Props) => {
 			{loading ? (
 				<div className="mod-list" aria-hidden="true">
 					{Array.from({ length: skeletonCount }, (_, i) => (
-						<div key={i} className="avatar-row is-skeleton">
-							<Skeleton width="2.5rem" height="2.5rem" circle />
-							<span className="ident">
-								<Skeleton width="45%" height="1rem" />
-								<Skeleton width="30%" height="0.8rem" />
-							</span>
-							<Skeleton width="5rem" height="1.25rem" radius="full" />
-							<Skeleton width="4rem" height="1.25rem" radius="full" />
-						</div>
+						<Person key={i} name="" loading />
 					))}
 				</div>
 			) : filtered.length === 0 ? (

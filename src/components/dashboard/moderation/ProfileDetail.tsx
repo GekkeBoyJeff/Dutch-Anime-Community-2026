@@ -10,7 +10,7 @@ import Skeleton from '@/components/basics/Skeleton';
 import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
 import DetailTabs from '@/components/components/DetailTabs';
-import LineList from '@/components/dashboard/components/LineList';
+import Entry from '@/components/components/Entry';
 import BadgesTab from '@/components/dashboard/moderation/BadgesTab';
 import BansTab from '@/components/dashboard/moderation/BansTab';
 import BetrokkenenPanel, { type BetrokkenenPeer, type BetrokkenenShift } from '@/components/dashboard/moderation/BetrokkenenPanel';
@@ -175,37 +175,48 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 
 	const eventName = (id: string): string => eventNames.get(id) ?? id.slice(0, 8);
 
-	const aliasPanel = (
-		<LineList
-			emptyLabel="Geen aliassen."
-			items={aliases.map((a) => ({
-				main: a.alias,
-				note: [a.kind, a.source].filter(Boolean).join(' · '),
-				meta: <span className="con-note">{formatDate(a.last_seen, { dateStyle: 'medium' }) ?? a.last_seen}</span>,
-			}))}
-		/>
-	);
+	const aliasPanel =
+		aliases.length === 0 ? (
+			<p className="con-note">Geen aliassen.</p>
+		) : (
+			<Entry.List>
+				{aliases.map((a) => (
+					<Entry
+						key={a.id}
+						main={a.alias}
+						sub={[a.kind, a.source].filter(Boolean).join(' · ')}
+						trailing={<span className="con-note">{formatDate(a.last_seen, { dateStyle: 'medium' }) ?? a.last_seen}</span>}
+					/>
+				))}
+			</Entry.List>
+		);
 
-	const attendancePanel = (
-		<LineList
-			emptyLabel="Geen aanwezigheid geregistreerd."
-			items={attendance.map((a) => ({
-				main: eventName(a.event_id),
-				meta: <StatusBadge domain="attendance" status={a.status} />,
-			}))}
-		/>
-	);
+	const attendancePanel =
+		attendance.length === 0 ? (
+			<p className="con-note">Geen aanwezigheid geregistreerd.</p>
+		) : (
+			<Entry.List>
+				{attendance.map((a) => (
+					<Entry key={a.id} main={eventName(a.event_id)} trailing={<StatusBadge domain="attendance" status={a.status} />} />
+				))}
+			</Entry.List>
+		);
 
-	const conductPanel = (
-		<LineList
-			emptyLabel="Geen gedragsnotities."
-			items={conduct.map((c) => ({
-				main: `${c.kind}${c.event_id ? ` · ${eventName(c.event_id)}` : ''}`,
-				note: c.body || undefined,
-				meta: <span className="con-note">{formatDate(c.created_at, { dateStyle: 'medium' }) ?? c.created_at}</span>,
-			}))}
-		/>
-	);
+	const conductPanel =
+		conduct.length === 0 ? (
+			<p className="con-note">Geen gedragsnotities.</p>
+		) : (
+			<Entry.List>
+				{conduct.map((c) => (
+					<Entry
+						key={c.id}
+						main={`${c.kind}${c.event_id ? ` · ${eventName(c.event_id)}` : ''}`}
+						sub={c.body || undefined}
+						trailing={<span className="con-note">{formatDate(c.created_at, { dateStyle: 'medium' }) ?? c.created_at}</span>}
+					/>
+				))}
+			</Entry.List>
+		);
 
 	const activityPanel = (
 		<ul className="con-list">

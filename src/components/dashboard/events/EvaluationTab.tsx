@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import Button from '@/components/basics/Button';
 import StatusBadge from '@/components/basics/StatusBadge';
-import LineList from '@/components/dashboard/components/LineList';
+import Entry from '@/components/components/Entry';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 interface LinkedSurvey {
@@ -47,7 +47,11 @@ const EvaluationTab = ({ eventId }: { eventId: string }) => {
 			) : surveys.length === 0 ? (
 				<p className="con-note">Nog geen gekoppelde enquête.</p>
 			) : (
-				<LineList items={surveys.map((s) => ({ main: s.title, meta: <StatusBadge domain="survey" status={statusOf(s, now)} /> }))} />
+				<Entry.List>
+					{surveys.map((s) => (
+						<Entry key={s.id} main={s.title} trailing={<StatusBadge domain="survey" status={statusOf(s, now)} />} />
+					))}
+				</Entry.List>
 			)}
 			<Button variant="secondary" url="/dashboard/surveys">
 				Naar Enquêtes

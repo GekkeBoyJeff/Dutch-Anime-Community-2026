@@ -8,6 +8,14 @@ export const toInput = (iso: string | null): string => {
 
 export const fromInput = (s: string): string | null => (s ? new Date(s).toISOString() : null);
 
+// Short rail marker for a Moment: "22 aug" for another day, "vandaag" for today.
+export const fmtDayMarker = (iso: string): string => {
+	const date = new Date(iso);
+	const today = new Date();
+	const sameDay = date.toDateString() === today.toDateString();
+	return sameDay ? 'vandaag' : date.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' });
+};
+
 // Compacte tijdweergave voor een shift/activiteit.
 export const fmtRange = (startIso: string | null, endIso: string | null): string => {
 	const f = (iso: string | null) => (iso ? new Date(iso).toLocaleString('nl-NL', { dateStyle: 'short', timeStyle: 'short' }) : '—');

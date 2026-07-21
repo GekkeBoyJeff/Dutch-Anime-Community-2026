@@ -1,7 +1,7 @@
 'use client';
 
-import DetailRow from '@/components/dashboard/components/DetailRow';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Entry from '@/components/components/Entry';
+import Panel from '@/components/components/Panel';
 import { formatEur } from '@/lib/expenses/types';
 import { formatDate } from '@/lib/formatDate';
 
@@ -25,28 +25,26 @@ const PendingReviewsWidget = ({ session: _session }: WidgetProps) => {
 	const total = data?.length ?? 0;
 
 	return (
-		<AsyncCard
+		<Panel
 			title={total > 0 ? `Te beoordelen (${total})` : 'Te beoordelen'}
 			href="/dashboard/expenses"
 			linkLabel="Naar declaratie-beheer"
-			loading={loading}
 			error={error}
-			isEmpty={total === 0}
+			isEmpty={!loading && total === 0}
 			hideWhenEmpty
 		>
-			{data && total > 0 && (
-				<ul className="widget-list">
-					{data.slice(0, 4).map((expense) => (
-						<DetailRow
-							key={expense.id}
-							main={expense.description}
-							sub={formatDate(expense.incurred_on, { dateStyle: 'medium' }) ?? expense.incurred_on}
-							trailing={<span className="detail-row-amount">{formatEur(expense.amount_eur)}</span>}
-						/>
-					))}
-				</ul>
-			)}
-		</AsyncCard>
+			<Entry.List>
+				{loading && [0, 1, 2].map((row) => <Entry key={row} main="" loading />)}
+				{data?.slice(0, 4).map((expense) => (
+					<Entry
+						key={expense.id}
+						main={expense.description}
+						sub={formatDate(expense.incurred_on, { dateStyle: 'medium' }) ?? expense.incurred_on}
+						trailing={formatEur(expense.amount_eur)}
+					/>
+				))}
+			</Entry.List>
+		</Panel>
 	);
 };
 

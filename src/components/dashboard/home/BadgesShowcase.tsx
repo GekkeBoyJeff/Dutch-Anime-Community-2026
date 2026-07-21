@@ -1,7 +1,7 @@
 'use client';
 
+import Panel from '@/components/components/Panel';
 import BadgeGallery from '@/components/dashboard/components/BadgeGallery';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 import type { WidgetProps } from './types';
@@ -15,9 +15,9 @@ interface MyBadge {
 }
 
 // A small personal flourish: the badges I have earned (my_badges RPC, same as /account). Thumbnails from
-// the public `badges` bucket. Purely celebratory — hidden when I have none rather than nagging.
+// the public `badges` bucket. Purely celebratory — hidden until they arrive rather than nagging.
 const BadgesShowcase = ({ session: _session }: WidgetProps) => {
-	const { loading, error, data } = useWidgetData(async (db) => {
+	const { error, data } = useWidgetData(async (db) => {
 		const { data: rows, error: queryError } = await db.rpc('my_badges');
 		if (queryError) throw queryError;
 		const badges = (rows ?? []) as MyBadge[];
@@ -27,9 +27,9 @@ const BadgesShowcase = ({ session: _session }: WidgetProps) => {
 	const badgeUrl = (path: string): string => getBrowserClient().storage.from('badges').getPublicUrl(path).data.publicUrl;
 
 	return (
-		<AsyncCard title="Mijn badges" href="/account" linkLabel="Naar mijn profiel" loading={loading} error={error} isEmpty={!data} hideWhenEmpty>
+		<Panel title="Mijn badges" href="/account" linkLabel="Naar mijn profiel" error={error} isEmpty={!data} hideWhenEmpty>
 			{data && <BadgeGallery badges={data.map((badge) => ({ title: badge.title, imageUrl: badge.image_path ? badgeUrl(badge.image_path) : undefined }))} />}
-		</AsyncCard>
+		</Panel>
 	);
 };
 

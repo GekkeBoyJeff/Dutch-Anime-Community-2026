@@ -1,8 +1,9 @@
 'use client';
 
 import Button from '@/components/basics/Button';
-import LeadLine from '@/components/dashboard/components/LeadLine';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Moment from '@/components/components/Moment';
+import Panel from '@/components/components/Panel';
+import { fmtDayMarker } from '@/components/dashboard/events/datetime';
 import { formatDate } from '@/lib/formatDate';
 
 import type { WidgetProps } from './types';
@@ -26,19 +27,21 @@ const PublishStatusWidget = ({ session: _session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard title="Content-status" href="/builder" linkLabel="Naar de pagina-editor" loading={loading} error={error} isEmpty={!data} hideWhenEmpty>
-			{data && (
-				<div className="widget-publish">
-					<LeadLine
-						main={data.recent > 0 ? `${data.recent} ${data.recent === 1 ? 'pagina' : "pagina's"} recent gewijzigd` : 'Geen recente wijzigingen'}
-						sub={`${data.total} ${data.total === 1 ? 'pagina' : "pagina's"} · laatst bewerkt ${formatDate(data.latest, { dateStyle: 'medium' }) ?? data.latest}`}
+		<Panel title="Content-status" href="/builder" linkLabel="Naar de pagina-editor" error={error} isEmpty={!loading && !data} hideWhenEmpty>
+			<div className="widget-publish">
+				<Moment.List>
+					<Moment
+						marker={data ? fmtDayMarker(data.latest) : ''}
+						title={data ? (data.recent > 0 ? `${data.recent} ${data.recent === 1 ? 'pagina' : "pagina's"} recent gewijzigd` : 'Geen recente wijzigingen') : ''}
+						meta={data ? `${data.total} ${data.total === 1 ? 'pagina' : "pagina's"} · laatst bewerkt ${formatDate(data.latest, { dateStyle: 'medium' }) ?? data.latest}` : undefined}
+						loading={loading}
 					/>
-					<Button variant="primary" icon="upload" url="/builder">
-						Publiceren
-					</Button>
-				</div>
-			)}
-		</AsyncCard>
+				</Moment.List>
+				<Button variant="primary" icon="upload" url="/builder">
+					Publiceren
+				</Button>
+			</div>
+		</Panel>
 	);
 };
 

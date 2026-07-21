@@ -3,8 +3,8 @@
 import { Toast } from '@base-ui/react/toast';
 
 import Button from '@/components/basics/Button';
-import DetailRow from '@/components/dashboard/components/DetailRow';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Entry from '@/components/components/Entry';
+import Panel from '@/components/components/Panel';
 import { formatDate } from '@/lib/formatDate';
 import { getBrowserClient } from '@/lib/supabase/client';
 
@@ -54,32 +54,33 @@ const EntryTicketWidget = ({ session }: WidgetProps) => {
 	};
 
 	return (
-		<AsyncCard title="Toegang & tickets" href="/dashboard/my-inventory" linkLabel="Naar mijn conventies" loading={loading} error={error} isEmpty={!data} hideWhenEmpty>
-			{data && (
-				<div className="widget-tickets">
+		<Panel title="Toegang & tickets" href="/dashboard/my-inventory" linkLabel="Naar mijn conventies" error={error} isEmpty={!loading && !data} hideWhenEmpty>
+			<div className="widget-tickets">
+				{data && (
 					<p className="widget-tickets-event">
 						{data.eventName}
 						{data.eventMeta && <span className="widget-tickets-event-meta"> · {data.eventMeta}</span>}
 					</p>
-					<ul className="widget-list">
-						{data.tickets.map((ticket) => (
-							<DetailRow
-								key={ticket.id}
-								main={ticket.day ? formatDate(ticket.day, { dateStyle: 'full' }) ?? ticket.day : 'Volledig evenement'}
-								sub={ticket.ticket_pdf_path ? `${ticket.quantity}× ticket` : (ticket.note ?? WRISTBAND_NOTE)}
-								trailing={
-									ticket.ticket_pdf_path ? (
-										<Button variant="secondary" icon="download" onClick={() => openTicket(ticket.ticket_pdf_path as string)}>
-											Open
-										</Button>
-									) : undefined
-								}
-							/>
-						))}
-					</ul>
-				</div>
-			)}
-		</AsyncCard>
+				)}
+				<Entry.List>
+					{loading && [0, 1].map((row) => <Entry key={row} main="" loading />)}
+					{data?.tickets.map((ticket) => (
+						<Entry
+							key={ticket.id}
+							main={ticket.day ? formatDate(ticket.day, { dateStyle: 'full' }) ?? ticket.day : 'Volledig evenement'}
+							sub={ticket.ticket_pdf_path ? `${ticket.quantity}× ticket` : (ticket.note ?? WRISTBAND_NOTE)}
+							trailing={
+								ticket.ticket_pdf_path ? (
+									<Button variant="secondary" icon="download" onClick={() => openTicket(ticket.ticket_pdf_path as string)}>
+										Open
+									</Button>
+								) : undefined
+							}
+						/>
+					))}
+				</Entry.List>
+			</div>
+		</Panel>
 	);
 };
 

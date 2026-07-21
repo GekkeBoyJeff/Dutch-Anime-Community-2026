@@ -1,8 +1,8 @@
 'use client';
 
 import Button from '@/components/basics/Button';
-import DetailRow from '@/components/dashboard/components/DetailRow';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Entry from '@/components/components/Entry';
+import Panel from '@/components/components/Panel';
 
 import type { WidgetProps } from './types';
 import { useWidgetData } from './useWidgetData';
@@ -18,24 +18,23 @@ const OpenSurveysFillWidget = ({ session: _session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard title="Enquêtes voor jou" loading={loading} error={error} isEmpty={!data || data.length === 0} hideWhenEmpty>
-			{data && data.length > 0 && (
-				<ul className="widget-list">
-					{data.map((survey) => (
-						<DetailRow
-							key={survey.id}
-							main={survey.title}
-							sub={`${survey.questions} ${survey.questions === 1 ? 'vraag' : 'vragen'}`}
-							trailing={
-								<Button variant="primary" url={`/enquete?id=${survey.id}`}>
-									Vul in
-								</Button>
-							}
-						/>
-					))}
-				</ul>
-			)}
-		</AsyncCard>
+		<Panel title="Enquêtes voor jou" error={error} isEmpty={!loading && (!data || data.length === 0)} hideWhenEmpty>
+			<Entry.List>
+				{loading && [0, 1].map((row) => <Entry key={row} main="" loading />)}
+				{data?.map((survey) => (
+					<Entry
+						key={survey.id}
+						main={survey.title}
+						sub={`${survey.questions} ${survey.questions === 1 ? 'vraag' : 'vragen'}`}
+						trailing={
+							<Button variant="primary" url={`/enquete?id=${survey.id}`}>
+								Vul in
+							</Button>
+						}
+					/>
+				))}
+			</Entry.List>
+		</Panel>
 	);
 };
 

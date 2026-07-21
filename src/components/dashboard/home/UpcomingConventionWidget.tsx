@@ -1,7 +1,8 @@
 'use client';
 
-import LeadLine from '@/components/dashboard/components/LeadLine';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Moment from '@/components/components/Moment';
+import Panel from '@/components/components/Panel';
+import { fmtDayMarker } from '@/components/dashboard/events/datetime';
 import { formatDate } from '@/lib/formatDate';
 
 import type { WidgetProps } from './types';
@@ -23,22 +24,28 @@ const UpcomingConventionWidget = ({ session: _session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard
+		<Panel
 			title="Volgende conventie"
 			href={data ? `/dashboard/events?id=${data.id}` : undefined}
 			linkLabel="Open conventie"
-			loading={loading}
 			error={error}
-			isEmpty={!data}
+			isEmpty={!loading && !data}
 			hideWhenEmpty
 		>
-			{data && (
-				<LeadLine
-					main={data.name}
-					sub={`${data.starts_on ? formatDate(data.starts_on, { dateStyle: 'full' }) ?? data.starts_on : 'Datum onbekend'}${data.location ? ` · ${data.location}` : ''}`}
+			<Moment.List>
+				<Moment
+					marker={data?.starts_on ? fmtDayMarker(data.starts_on) : ''}
+					title={data?.name ?? ''}
+					meta={
+						data
+							? `${data.starts_on ? formatDate(data.starts_on, { dateStyle: 'full' }) ?? data.starts_on : 'Datum onbekend'}${data.location ? ` · ${data.location}` : ''}`
+							: undefined
+					}
+					state="upcoming"
+					loading={loading}
 				/>
-			)}
-		</AsyncCard>
+			</Moment.List>
+		</Panel>
 	);
 };
 

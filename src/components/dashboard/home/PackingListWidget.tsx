@@ -3,10 +3,9 @@
 import { Toast } from '@base-ui/react/toast';
 import { useState } from 'react';
 
-import Icon from '@/components/basics/Icon';
-import Progress from '@/components/basics/Progress';
+import Meter from '@/components/components/Meter';
+import Panel from '@/components/components/Panel';
 import Switch from '@/components/components/Switch';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 import type { WidgetProps } from './types';
@@ -66,56 +65,31 @@ const PackingListWidget = ({ session }: WidgetProps) => {
 	};
 
 	return (
-		<AsyncCard
-			title="Inpaklijst"
-			href="/dashboard/my-inventory"
-			linkLabel="Naar mijn conventies"
-			loading={loading}
-			error={error}
-			isEmpty={!data}
-			hideWhenEmpty
-		>
+		<Panel title="Inpaklijst" href="/dashboard/my-inventory" linkLabel="Naar mijn conventies" error={error} isEmpty={!loading && !data} hideWhenEmpty>
+			<Meter
+				label={data?.eventName ?? 'Inpakvoortgang'}
+				value={data ? data.items.filter((item) => overrides[item.id] ?? item.packed).length : 0}
+				max={data?.items.length ?? 0}
+				completeLabel="Alles ingepakt"
+				loading={loading}
+			/>
 			{data && (
-				<>
-					<p className="lead-line-sub">{data.eventName}</p>
-					{(() => {
-						const packedCount = data.items.filter((item) => overrides[item.id] ?? item.packed).length;
-						const total = data.items.length;
-						const done = total > 0 && packedCount === total;
+				<ul className="widget-list">
+					{data.items.map((item) => {
+						const packed = overrides[item.id] ?? item.packed;
 						return (
-							<div className={`pack-progress${done ? ' is-done' : ''}`}>
-								<Progress value={packedCount} max={total} label="Inpakvoortgang" />
-								{done ? (
-									// Inpak-viering (blueprint §3.5): the last check earns a gold wax-seal shimmer.
-									<span className="pack-progress-label pack-seal">
-										<Icon name="check" />
-										Alles ingepakt
-									</span>
-								) : (
-									<span className="pack-progress-label">
-										{packedCount}/{total} ingepakt
-									</span>
-								)}
-							</div>
+							<li key={item.id} className="widget-check">
+								<Switch checked={packed} aria-label={`${item.itemName} ingepakt`} onCheckedChange={() => togglePacked(item.id, packed)} />
+								<span className="widget-check-label">
+									{item.itemName}
+									{item.quantity > 1 ? ` × ${item.quantity}` : ''}
+								</span>
+							</li>
 						);
-					})()}
-					<ul className="widget-list">
-						{data.items.map((item) => {
-							const packed = overrides[item.id] ?? item.packed;
-							return (
-								<li key={item.id} className="widget-check">
-									<Switch checked={packed} aria-label={`${item.itemName} ingepakt`} onCheckedChange={() => togglePacked(item.id, packed)} />
-									<span className="widget-check-label">
-										{item.itemName}
-										{item.quantity > 1 ? ` × ${item.quantity}` : ''}
-									</span>
-								</li>
-							);
-						})}
-					</ul>
-				</>
+					})}
+				</ul>
 			)}
-		</AsyncCard>
+		</Panel>
 	);
 };
 

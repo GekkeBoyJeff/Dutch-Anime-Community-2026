@@ -1,8 +1,7 @@
 'use client';
 
-import Interactive from '@/components/basics/Interactive';
-import DetailRow from '@/components/dashboard/components/DetailRow';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Entry from '@/components/components/Entry';
+import Panel from '@/components/components/Panel';
 import { formatDate } from '@/lib/formatDate';
 
 import type { WidgetProps } from './types';
@@ -40,28 +39,29 @@ const TeamStatusWidget = ({ session: _session }: WidgetProps) => {
 	const total = data?.reduce((sum, event) => sum + event.open, 0) ?? 0;
 
 	return (
-		<AsyncCard
+		<Panel
 			title={total > 0 ? `Onbezette shifts (${total})` : 'Team-status'}
 			href="/dashboard/team"
 			linkLabel="Naar team"
-			loading={loading}
 			error={error}
-			isEmpty={total === 0}
+			isEmpty={!loading && total === 0}
 			hideWhenEmpty
 		>
-			{data && total > 0 && (
-				<ul className="widget-list">
-					{data.slice(0, 4).map((event) => (
-						<DetailRow
+			<Entry.List>
+				{loading && [0, 1, 2].map((row) => <Entry key={row} main="" loading />)}
+				{data && total > 0 &&
+					data.slice(0, 4).map((event) => (
+						<Entry
 							key={event.id}
-							main={<Interactive url={`/dashboard/events?id=${event.id}`}>{event.name}</Interactive>}
+							main={event.name}
 							sub={event.starts_on ? formatDate(event.starts_on, { dateStyle: 'medium' }) ?? event.starts_on : 'Datum onbekend'}
-							trailing={<span className="detail-row-amount">{event.open} open</span>}
+							href={`/dashboard/events?id=${event.id}`}
+							tone={event.open > 4 ? 'negative' : 'warning'}
+							trailing={`${event.open} open`}
 						/>
 					))}
-				</ul>
-			)}
-		</AsyncCard>
+			</Entry.List>
+		</Panel>
 	);
 };
 

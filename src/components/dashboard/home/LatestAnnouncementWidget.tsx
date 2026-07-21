@@ -1,7 +1,9 @@
 'use client';
 
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
-import { formatDate } from '@/lib/formatDate';
+import Badge from '@/components/basics/Badge';
+import Moment from '@/components/components/Moment';
+import Panel from '@/components/components/Panel';
+import { fmtDayMarker } from '@/components/dashboard/events/datetime';
 
 import type { WidgetProps } from './types';
 import { useWidgetData } from './useWidgetData';
@@ -20,23 +22,25 @@ const LatestAnnouncementWidget = ({ session: _session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard
+		<Panel
 			title="Laatste melding"
 			href="/account"
 			linkLabel="Naar meldingen"
-			loading={loading}
 			error={error}
-			isEmpty={!data}
+			isEmpty={!loading && !data}
 			emptyLabel="Nog geen meldingen — je bent helemaal bij."
 		>
-			{data && (
-				<div className="home-announce" data-unread={data.read_at === null || undefined}>
-					<span className="home-announce-title">{data.title}</span>
-					{data.body && <span className="home-announce-body">{data.body}</span>}
-					<span className="home-announce-when">{formatDate(data.created_at, { dateStyle: 'medium' }) ?? data.created_at}</span>
-				</div>
-			)}
-		</AsyncCard>
+			<Moment.List>
+				<Moment
+					marker={data ? fmtDayMarker(data.created_at) : ''}
+					title={data?.title ?? ''}
+					meta={data?.body ?? undefined}
+					state="now"
+					trailing={data?.read_at === null ? <Badge variant="info">Nieuw</Badge> : undefined}
+					loading={loading}
+				/>
+			</Moment.List>
+		</Panel>
 	);
 };
 

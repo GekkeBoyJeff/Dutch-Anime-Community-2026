@@ -14,12 +14,13 @@ import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
 import ConfirmDialog from '@/components/components/ConfirmDialog';
 import Drawer from '@/components/components/Drawer';
-import BarBreakdown from '@/components/dashboard/components/BarBreakdown';
+import Meter from '@/components/components/Meter';
+import Metric from '@/components/components/Metric';
+import Panel from '@/components/components/Panel';
 import Chart from '@/components/dashboard/components/Chart';
 import DataTable, { type DataTableColumn } from '@/components/dashboard/components/DataTable';
 import DataTableSkeleton, { rememberRowCount } from '@/components/dashboard/components/DataTableSkeleton';
 import DatePicker, { type DateRangeValue } from '@/components/dashboard/components/DatePicker';
-import StatTile from '@/components/dashboard/components/StatTile';
 import Field from '@/components/forms/Field';
 import Select from '@/components/forms/Select';
 import TextArea from '@/components/forms/TextArea';
@@ -99,6 +100,8 @@ const SKELETON_COLUMNS = [
 	{ header: 'Status', align: 'center' as const },
 	{ header: '', align: 'end' as const },
 ];
+
+const BREAKDOWN_SKELETON_ROWS = [0, 1, 2, 3, 4];
 
 // Org-brede Financiën (expenses.manage): één rollup over al het geld dat DAC uitgeeft én binnenkrijgt. Haalt
 // de vlakke finance_rollup-dataset op (RLS/RPC is de grens; de guard is UX) en filtert + aggregeert
@@ -188,6 +191,7 @@ const FinanceManager = () => {
 	// Balken: besteed per categorie en per conventie (losse declaraties samengevat onder één label).
 	const byCategory = useMemo(() => committedBy(filtered, (r) => categoryLabel(r.categorie)), [filtered]);
 	const byConference = useMemo(() => committedBy(filtered, (r) => (r.event_id ? r.event_naam ?? r.event_id : 'Losse declaraties')), [filtered]);
+	const conferenceMax = useMemo(() => byConference.reduce((max, r) => Math.max(max, r.value), 0), [byConference]);
 	const monthly = useMemo(() => spendByMonth(filtered), [filtered]);
 	const categoryBars = useMemo(() => byCategory.map((r) => ({ label: r.label, besteed: r.value })), [byCategory]);
 
@@ -292,14 +296,13 @@ const FinanceManager = () => {
 				<Alert variant="error">Kon de financiën niet laden: {error}</Alert>
 			) : (
 				<div className="finance">
-					<div className="stat-tile-row">
-						<StatTile label="Inkomsten" value={<CountUp value={totals.inkomsten} prefix="€ " decimals={2} />} loading={loading} />
-						<StatTile label="Uitgaven (besteed)" value={<CountUp value={totals.uitgaven} prefix="€ " decimals={2} />} note={`waarvan ${formatEur(totals.pending)} in behandeling`} loading={loading} />
-						<StatTile
+					<div className="metric-row">
+						<Metric label="Inkomsten" value={<CountUp value={totals.inkomsten} prefix="€ " decimals={2} />} loading={loading} />
+						<Metric label="Uitgaven (besteed)" value={<CountUp value={totals.uitgaven} prefix="€ " decimals={2} />} loading={loading} />
+						<Metric
 							label="Saldo"
 							value={<CountUp value={totals.saldo} prefix="€ " decimals={2} />}
-							note="inkomsten − besteed"
-							tone={totals.saldo < 0 ? 'negative' : totals.saldo > 0 ? 'positive' : 'default'}
+							tone={totals.saldo < 0 ? 'negative' : totals.saldo > 0 ? 'positive' : 'neutral'}
 							loading={loading}
 						/>
 					</div>
@@ -371,12 +374,20 @@ const FinanceManager = () => {
 
 						<aside className="finance-workspace-side">
 							{loading ? (
-								<div className="finance-breakdowns">
-									<BarBreakdown title="Besteed per conventie" rows={[]} emptyLabel="" formatValue={formatEur} loading />
+								<div className="finance-breakdowns" aria-hidden>
+									<Panel title="Besteed per conventie">
+										{BREAKDOWN_SKELETON_ROWS.map((row) => (
+											<Meter key={row} label="" value={0} max={1} loading />
+										))}
+									</Panel>
 								</div>
 							) : (
 								<div className="reveal finance-breakdowns">
-									<BarBreakdown title="Besteed per conventie" rows={byConference} emptyLabel="Nog niets besteed in deze selectie." formatValue={formatEur} />
+									<Panel title="Besteed per conventie" isEmpty={byConference.length === 0} emptyLabel="Nog niets besteed in deze selectie.">
+										{byConference.map((row) => (
+											<Meter key={row.label} label={row.label} value={row.value} max={conferenceMax} valueLabel={formatEur(row.value)} />
+										))}
+									</Panel>
 								</div>
 							)}
 						</aside>

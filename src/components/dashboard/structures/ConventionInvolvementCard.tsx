@@ -1,8 +1,8 @@
 import Button from '@/components/basics/Button';
 import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
+import Entry from '@/components/components/Entry';
 import Switch from '@/components/components/Switch';
-import LineList from '@/components/dashboard/components/LineList';
 
 export interface ConventionAssignment {
 	id: string;
@@ -47,44 +47,56 @@ const ConventionInvolvementCard = ({ eventName, assignments, tickets, shifts, on
 		{assignments.length > 0 && (
 			<div className="block">
 				<Title element="h5" size={6} value="Meenemen" />
-				<LineList
-					items={assignments.map((a) => ({
-						main: `${a.name} × ${a.quantity}`,
-						note: a.notes || undefined,
-						meta: (
-							<>
-								<StatusBadge domain="request" status={a.expectedToBring ? 'requested' : 'cancelled'} label={a.expectedToBring ? 'Meenemen' : 'Optioneel'} />
-								<label className="con-packed">
-									<Switch checked={a.packed} aria-label={`${a.name} ingepakt`} onCheckedChange={(on) => onTogglePacked(a.id, on)} />
-									Ingepakt
-								</label>
-							</>
-						),
-					}))}
-				/>
+				<Entry.List>
+					{assignments.map((a) => (
+						<Entry
+							key={a.id}
+							main={`${a.name} × ${a.quantity}`}
+							sub={a.notes || undefined}
+							trailing={
+								<>
+									<StatusBadge domain="request" status={a.expectedToBring ? 'requested' : 'cancelled'} label={a.expectedToBring ? 'Meenemen' : 'Optioneel'} />
+									<label className="con-packed">
+										<Switch checked={a.packed} aria-label={`${a.name} ingepakt`} onCheckedChange={(on) => onTogglePacked(a.id, on)} />
+										Ingepakt
+									</label>
+								</>
+							}
+						/>
+					))}
+				</Entry.List>
 			</div>
 		)}
 		{tickets.length > 0 && (
 			<div className="block">
 				<Title element="h5" size={6} value="Tickets" />
-				<LineList
-					items={tickets.map((t) => ({
-						main: `${t.day ?? 'Ticket'}${t.quantity > 1 ? ` × ${t.quantity}` : ''}`,
-						meta: t.pdfPath ? (
-							<Button variant="secondary" icon="download" onClick={() => onDownloadTicket(t.pdfPath as string)}>
-								Download PDF
-							</Button>
-						) : (
-							<span className="con-note">{t.note}</span>
-						),
-					}))}
-				/>
+				<Entry.List>
+					{tickets.map((t) => (
+						<Entry
+							key={t.id}
+							main={`${t.day ?? 'Ticket'}${t.quantity > 1 ? ` × ${t.quantity}` : ''}`}
+							trailing={
+								t.pdfPath ? (
+									<Button variant="secondary" icon="download" onClick={() => onDownloadTicket(t.pdfPath as string)}>
+										Download PDF
+									</Button>
+								) : (
+									<span className="con-note">{t.note}</span>
+								)
+							}
+						/>
+					))}
+				</Entry.List>
 			</div>
 		)}
 		{shifts.length > 0 && (
 			<div className="block">
 				<Title element="h5" size={6} value="Mijn shifts" />
-				<LineList items={shifts.map((s) => ({ main: s.time, meta: s.station ? <span className="con-note">{s.station}</span> : undefined }))} />
+				<Entry.List>
+					{shifts.map((s) => (
+						<Entry key={s.id} main={s.time} trailing={s.station ? <span className="con-note">{s.station}</span> : undefined} />
+					))}
+				</Entry.List>
 			</div>
 		)}
 	</article>

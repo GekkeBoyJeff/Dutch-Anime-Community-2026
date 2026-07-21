@@ -1,8 +1,8 @@
 'use client';
 
 import Badge from '@/components/basics/Badge';
-import DetailRow from '@/components/dashboard/components/DetailRow';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Entry from '@/components/components/Entry';
+import Panel from '@/components/components/Panel';
 
 import type { WidgetProps } from './types';
 import { useWidgetData } from './useWidgetData';
@@ -26,15 +26,14 @@ const OpenSurveysWidget = ({ session: _session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard title="Open enquêtes" href="/dashboard/surveys" linkLabel="Naar enquêtes" loading={loading} error={error} isEmpty={!data} hideWhenEmpty>
-			{data && (
-				<ul className="widget-list">
-					{data.map((survey) => (
-						<DetailRow key={survey.id} main={survey.title} trailing={<Badge variant="info">{survey.responses} inzending{survey.responses === 1 ? '' : 'en'}</Badge>} />
-					))}
-				</ul>
-			)}
-		</AsyncCard>
+		<Panel title="Open enquêtes" href="/dashboard/surveys" linkLabel="Naar enquêtes" error={error} isEmpty={!loading && !data} hideWhenEmpty>
+			<Entry.List>
+				{loading && [0, 1, 2].map((row) => <Entry key={row} main="" loading />)}
+				{data?.map((survey) => (
+					<Entry key={survey.id} main={survey.title} trailing={<Badge variant="info">{survey.responses} inzending{survey.responses === 1 ? '' : 'en'}</Badge>} />
+				))}
+			</Entry.List>
+		</Panel>
 	);
 };
 

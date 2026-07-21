@@ -5,9 +5,9 @@ import { useEffect, useMemo, useState } from 'react';
 
 import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
+import Metric from '@/components/components/Metric';
 import DataTable, { type DataTableColumn } from '@/components/dashboard/components/DataTable';
 import DataTableSkeleton from '@/components/dashboard/components/DataTableSkeleton';
-import StatTile from '@/components/dashboard/components/StatTile';
 import { categoryLabel, type Expense, formatEur, isCommittedSpend, quarterOf } from '@/lib/expenses/types';
 import { getBrowserClient } from '@/lib/supabase/client';
 
@@ -145,9 +145,9 @@ const ExpensesOverview = () => {
 
 	return (
 		<div className="inventory-tab expenses-overview">
-			<div className="stat-tile-row">
-				<StatTile label="Totaal besteed (goedgekeurd + uitbetaald)" value={formatEur(grand.committed)} loading={loading} />
-				<StatTile label="Totaal in behandeling (ingediend)" value={formatEur(grand.pending)} loading={loading} />
+			<div className="metric-row">
+				<Metric label="Totaal besteed (goedgekeurd + uitbetaald)" value={formatEur(grand.committed)} loading={loading} />
+				<Metric label="Totaal in behandeling (ingediend)" value={formatEur(grand.pending)} loading={loading} />
 			</div>
 
 			<Title element="h3" size={5}>Per conventie</Title>

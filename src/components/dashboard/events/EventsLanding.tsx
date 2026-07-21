@@ -11,10 +11,10 @@ import ConfirmDialog from '@/components/components/ConfirmDialog';
 import Drawer from '@/components/components/Drawer';
 import EmptyState from '@/components/components/EmptyState';
 import FilterBar from '@/components/components/FilterBar';
+import Metric from '@/components/components/Metric';
 import { rememberRowCount, recallRowCount } from '@/components/dashboard/components/DataTableSkeleton';
 import EventAdminCard from '@/components/dashboard/components/EventAdminCard';
 import SegmentedControl from '@/components/dashboard/components/SegmentedControl';
-import StatTile from '@/components/dashboard/components/StatTile';
 import Checkbox from '@/components/forms/Checkbox';
 import Field from '@/components/forms/Field';
 import TextArea from '@/components/forms/TextArea';
@@ -227,14 +227,14 @@ const EventsLanding = () => {
 			</div>
 
 			<div className="events">
-			<div className="stat-tile-row">
-				<StatTile label="Aankomend" value={upcomingEvents.length} loading={loading} />
-				<StatTile
+			<div className="metric-row">
+				<Metric label="Aankomend" value={upcomingEvents.length} loading={loading} />
+				<Metric
 					label="Eerstvolgende datum"
 					value={nextEvent?.starts_on ? formatDate(nextEvent.starts_on, { dateStyle: 'medium' }) ?? nextEvent.starts_on : '—'}
 					loading={loading}
 				/>
-				<StatTile label="Events dit jaar" value={thisYearCount} loading={loading} />
+				<Metric label="Events dit jaar" value={thisYearCount} loading={loading} />
 			</div>
 
 			<div className="events-toolbar">

@@ -1,8 +1,8 @@
 'use client';
 
 import StatusBadge from '@/components/basics/StatusBadge';
-import DetailRow from '@/components/dashboard/components/DetailRow';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Entry from '@/components/components/Entry';
+import Panel from '@/components/components/Panel';
 import { type Expense, formatEur } from '@/lib/expenses/types';
 import { formatDate } from '@/lib/formatDate';
 
@@ -25,28 +25,26 @@ const MyExpensesWidget = ({ session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard
+		<Panel
 			title="Mijn declaraties"
 			href="/dashboard/expenses"
 			linkLabel="Naar declaraties"
-			loading={loading}
 			error={error}
-			isEmpty={!data || data.length === 0}
+			isEmpty={!loading && (!data || data.length === 0)}
 			emptyLabel="Nog geen declaraties ingediend."
 		>
-			{data && data.length > 0 && (
-				<ul className="widget-list">
-					{data.map((expense) => (
-						<DetailRow
-							key={expense.id}
-							main={expense.description}
-							sub={`${formatDate(expense.incurred_on, { dateStyle: 'medium' }) ?? expense.incurred_on} · ${formatEur(expense.amount_eur)}`}
-							trailing={<StatusBadge domain="expense" status={expense.status} />}
-						/>
-					))}
-				</ul>
-			)}
-		</AsyncCard>
+			<Entry.List>
+				{loading && [0, 1, 2].map((row) => <Entry key={row} main="" loading />)}
+				{data?.map((expense) => (
+					<Entry
+						key={expense.id}
+						main={expense.description}
+						sub={`${formatDate(expense.incurred_on, { dateStyle: 'medium' }) ?? expense.incurred_on} · ${formatEur(expense.amount_eur)}`}
+						trailing={<StatusBadge domain="expense" status={expense.status} />}
+					/>
+				))}
+			</Entry.List>
+		</Panel>
 	);
 };
 

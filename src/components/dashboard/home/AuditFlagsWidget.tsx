@@ -1,8 +1,8 @@
 'use client';
 
 import Badge from '@/components/basics/Badge';
-import DetailRow from '@/components/dashboard/components/DetailRow';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Entry from '@/components/components/Entry';
+import Panel from '@/components/components/Panel';
 
 import type { WidgetProps } from './types';
 import { useWidgetData } from './useWidgetData';
@@ -54,20 +54,19 @@ const AuditFlagsWidget = ({ session: _session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard title="Recente wijzigingen" href="/dashboard/logs" linkLabel="Naar logs" loading={loading} error={error} isEmpty={!data} hideWhenEmpty>
-			{data && (
-				<ul className="widget-list">
-					{data.map((row) => (
-						<DetailRow
-							key={row.id}
-							main={labelOf(row)}
-							sub={`${humanizeTable(row.table_name)} · ${fmt(row.created_at)}`}
-							trailing={<Badge variant={OP_META[row.op]?.variant ?? 'neutral'}>{OP_META[row.op]?.label ?? row.op}</Badge>}
-						/>
-					))}
-				</ul>
-			)}
-		</AsyncCard>
+		<Panel title="Recente wijzigingen" href="/dashboard/logs" linkLabel="Naar logs" error={error} isEmpty={!loading && !data} hideWhenEmpty>
+			<Entry.List>
+				{loading && [0, 1, 2].map((row) => <Entry key={row} main="" loading />)}
+				{data?.map((row) => (
+					<Entry
+						key={row.id}
+						main={labelOf(row)}
+						sub={`${humanizeTable(row.table_name)} · ${fmt(row.created_at)}`}
+						trailing={<Badge variant={OP_META[row.op]?.variant ?? 'neutral'}>{OP_META[row.op]?.label ?? row.op}</Badge>}
+					/>
+				))}
+			</Entry.List>
+		</Panel>
 	);
 };
 

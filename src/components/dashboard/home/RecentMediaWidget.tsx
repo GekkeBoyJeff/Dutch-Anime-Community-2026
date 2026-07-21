@@ -1,7 +1,7 @@
 'use client';
 
 import ImageList from '@/components/components/ImageList';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Panel from '@/components/components/Panel';
 
 import type { WidgetProps } from './types';
 import { useWidgetData } from './useWidgetData';
@@ -10,7 +10,7 @@ import { useWidgetData } from './useWidgetData';
 // idiom: list the public `media` bucket, newest first, and resolve public URLs for the thumbnails.
 // Renders through the tier ImageList component.
 const RecentMediaWidget = ({ session: _session }: WidgetProps) => {
-	const { loading, error, data } = useWidgetData(async (db) => {
+	const { error, data } = useWidgetData(async (db) => {
 		const { data: objects, error: listError } = await db.storage.from('media').list('', { limit: 8, sortBy: { column: 'created_at', order: 'desc' } });
 		if (listError) throw listError;
 
@@ -22,9 +22,9 @@ const RecentMediaWidget = ({ session: _session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard title="Recente media" href="/upload" linkLabel="Naar media" loading={loading} error={error} isEmpty={!data} hideWhenEmpty>
+		<Panel title="Recente media" href="/upload" linkLabel="Naar media" error={error} isEmpty={!data} hideWhenEmpty>
 			{data && <ImageList items={data.map((image) => ({ type: 'image', src: image.url, alt: image.name }))} columns={3} layout="grid" />}
-		</AsyncCard>
+		</Panel>
 	);
 };
 

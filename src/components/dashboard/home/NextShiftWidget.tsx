@@ -1,8 +1,8 @@
 'use client';
 
-import LeadLine from '@/components/dashboard/components/LeadLine';
-import { fmtRange } from '@/components/dashboard/events/datetime';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Moment from '@/components/components/Moment';
+import Panel from '@/components/components/Panel';
+import { fmtDayMarker, fmtRange } from '@/components/dashboard/events/datetime';
 
 import type { WidgetProps } from './types';
 import { useWidgetData } from './useWidgetData';
@@ -32,22 +32,24 @@ const NextShiftWidget = ({ session: _session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard
+		<Panel
 			title="Volgende shift"
 			href="/dashboard/my-inventory"
 			linkLabel="Naar mijn conventies"
-			loading={loading}
 			error={error}
-			isEmpty={!data}
+			isEmpty={!loading && !data}
 			emptyLabel="Nog geen shifts toegewezen."
 		>
-			{data && (
-				<LeadLine
-					main={fmtRange(data.shift.starts_at, data.shift.ends_at)}
-					sub={`${data.eventName}${data.shift.station ? ` · ${data.shift.station}` : ''}`}
+			<Moment.List>
+				<Moment
+					marker={data ? fmtDayMarker(data.shift.starts_at) : ''}
+					title={data ? fmtRange(data.shift.starts_at, data.shift.ends_at) : ''}
+					meta={data ? `${data.eventName}${data.shift.station ? ` · ${data.shift.station}` : ''}` : undefined}
+					state="upcoming"
+					loading={loading}
 				/>
-			)}
-		</AsyncCard>
+			</Moment.List>
+		</Panel>
 	);
 };
 

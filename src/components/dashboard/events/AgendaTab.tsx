@@ -6,13 +6,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Button from '@/components/basics/Button';
 import Title from '@/components/basics/Title';
 import Drawer from '@/components/components/Drawer';
-import LineList from '@/components/dashboard/components/LineList';
+import Moment from '@/components/components/Moment';
 import { fromInput, toInput } from '@/components/dashboard/events/datetime';
 import ShiftCalendar, { type ShiftBlock, type ShiftRange } from '@/components/dashboard/structures/ShiftCalendar';
 import Field from '@/components/forms/Field';
 import Select from '@/components/forms/Select';
 import TextArea from '@/components/forms/TextArea';
 import TextInput from '@/components/forms/TextInput';
+import { formatDate } from '@/lib/formatDate';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 type SubjectName = { id: string; display_name: string };
@@ -83,6 +84,14 @@ const AgendaTab = ({ eventId, sessionUserId, candidates, subjectName, eventStart
 			})),
 		[shifts, subjectName],
 	);
+
+	// A swap is about a shift at a moment, so the list runs in shift order and carries that time on the rail.
+	const pendingSwaps = useMemo(() => {
+		const byId = new Map(shifts.map((s) => [s.id, s]));
+		return swaps
+			.map((swap) => ({ swap, shift: byId.get(swap.shift_id) }))
+			.sort((a, b) => (a.shift?.starts_at ?? '').localeCompare(b.shift?.starts_at ?? ''));
+	}, [swaps, shifts]);
 
 	const defaultDate = useMemo(() => (eventStartsOn ? new Date(`${eventStartsOn}T09:00:00`) : undefined), [eventStartsOn]);
 
@@ -198,25 +207,26 @@ const AgendaTab = ({ eventId, sessionUserId, candidates, subjectName, eventStart
 			{swaps.length > 0 && (
 				<div className="con-group">
 					<Title element="h3" size={6} value="Openstaande ruilverzoeken" />
-					<LineList
-						items={swaps.map((sw) => ({
-							main: (
-								<>
-									{subjectName(sw.from_subject)} → {subjectName(sw.to_subject)}
-								</>
-							),
-							meta: (
-								<>
-									<Button variant="primary" onClick={() => applySwap(sw.id)}>
-										Toepassen
-									</Button>
-									<Button variant="ghost" onClick={() => cancelSwap(sw.id)}>
-										Annuleren
-									</Button>
-								</>
-							),
-						}))}
-					/>
+					<Moment.List>
+						{pendingSwaps.map(({ swap, shift }) => (
+							<Moment
+								key={swap.id}
+								marker={(shift && formatDate(shift.starts_at, { weekday: 'short', hour: '2-digit', minute: '2-digit' })) ?? '—'}
+								title={`${subjectName(swap.from_subject)} → ${subjectName(swap.to_subject)}`}
+								meta={shift?.station ?? undefined}
+								trailing={
+									<>
+										<Button variant="primary" onClick={() => applySwap(swap.id)}>
+											Toepassen
+										</Button>
+										<Button variant="ghost" onClick={() => cancelSwap(swap.id)}>
+											Annuleren
+										</Button>
+									</>
+								}
+							/>
+						))}
+					</Moment.List>
 				</div>
 			)}
 

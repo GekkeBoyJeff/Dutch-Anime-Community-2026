@@ -1,17 +1,15 @@
 'use client';
 
-import Timeline from '@/components/components/Timeline';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
-import { formatDate } from '@/lib/formatDate';
+import Moment from '@/components/components/Moment';
+import Panel from '@/components/components/Panel';
+import { fmtDayMarker } from '@/components/dashboard/events/datetime';
 
 import type { WidgetProps } from './types';
 import { useWidgetData } from './useWidgetData';
 
 // Ambient "Rondom DAC" mini-timeline: the next few conventions on the calendar. Reads the same events
 // table the convention widgets use (RLS gates it on inventory.view — the registry matches), newest-first
-// upcoming. Read-only context everyone with view enjoys but no one must act on. Renders through the
-// tier Timeline component, one side of the rail (`align="left"`), each event a headingLevel-4 milestone
-// nested under this card's own h3.
+// upcoming. Read-only context everyone with view enjoys but no one must act on.
 const EventsTimelineWidget = ({ session: _session }: WidgetProps) => {
 	const { loading, error, data } = useWidgetData(async (db) => {
 		const { data: rows, error: queryError } = await db
@@ -26,27 +24,26 @@ const EventsTimelineWidget = ({ session: _session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard
+		<Panel
 			title="Aankomende events"
 			href="/dashboard/events"
 			linkLabel="Naar conventies"
-			loading={loading}
 			error={error}
-			isEmpty={!data}
+			isEmpty={!loading && !data}
 			emptyLabel="Nog niets op de kalender — tijd om iets te plannen."
 		>
-			{data && (
-				<Timeline
-					align="left"
-					headingLevel={4}
-					items={data.map((event) => ({
-						year: event.starts_on ? (formatDate(event.starts_on, { day: 'numeric', month: 'long' }) ?? event.starts_on) : 'Datum onbekend',
-						title: event.name,
-						text: event.location ?? undefined,
-					}))}
-				/>
-			)}
-		</AsyncCard>
+			<Moment.List>
+				{loading && [0, 1, 2].map((row) => <Moment key={row} marker="" title="" loading />)}
+				{data?.map((event) => (
+					<Moment
+						key={event.id}
+						marker={event.starts_on ? fmtDayMarker(event.starts_on) : 'Onbekend'}
+						title={event.name}
+						meta={event.location ?? undefined}
+					/>
+				))}
+			</Moment.List>
+		</Panel>
 	);
 };
 

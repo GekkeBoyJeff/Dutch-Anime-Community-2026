@@ -1,8 +1,8 @@
 'use client';
 
 import Badge from '@/components/basics/Badge';
-import DetailRow from '@/components/dashboard/components/DetailRow';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
+import Entry from '@/components/components/Entry';
+import Panel from '@/components/components/Panel';
 import { formatDate } from '@/lib/formatDate';
 
 import type { WidgetProps } from './types';
@@ -23,20 +23,19 @@ const AccessChangesWidget = ({ session: _session }: WidgetProps) => {
 	});
 
 	return (
-		<AsyncCard title="Recente toegangswijzigingen" href="/dashboard/access" linkLabel="Naar toegangsbeheer" loading={loading} error={error} isEmpty={!data} hideWhenEmpty>
-			{data && (
-				<ul className="widget-list">
-					{data.map((grant) => (
-						<DetailRow
-							key={grant.id}
-							main={grant.name}
-							sub={formatDate(grant.createdAt, { dateStyle: 'medium' }) ?? grant.createdAt}
-							trailing={<Badge variant="neutral">{grant.permission}</Badge>}
-						/>
-					))}
-				</ul>
-			)}
-		</AsyncCard>
+		<Panel title="Recente toegangswijzigingen" href="/dashboard/access" linkLabel="Naar toegangsbeheer" error={error} isEmpty={!loading && !data} hideWhenEmpty>
+			<Entry.List>
+				{loading && [0, 1, 2].map((row) => <Entry key={row} main="" loading />)}
+				{data?.map((grant) => (
+					<Entry
+						key={grant.id}
+						main={grant.name}
+						sub={formatDate(grant.createdAt, { dateStyle: 'medium' }) ?? grant.createdAt}
+						trailing={<Badge variant="neutral">{grant.permission}</Badge>}
+					/>
+				))}
+			</Entry.List>
+		</Panel>
 	);
 };
 
