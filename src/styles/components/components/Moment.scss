@@ -1,1 +1,120 @@
 @use "initial" as *;
+
+.moment-list {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.moment {
+	// Distance from the top of the rail down to the centre of its dot.
+	--moment-dot-inset: calc(#{$admin-gap-tight} + 0.6rem);
+
+	display: grid;
+	grid-template-columns: 3rem 1.25rem 1fr auto;
+	grid-template-areas: "marker rail body trailing";
+	align-items: start;
+	column-gap: $admin-gap-tight;
+	padding-block: $admin-gap-tight;
+
+	&.is-past {
+		color: $color-tertiary;
+	}
+}
+
+// The rail is one continuous line: each item draws a segment that bleeds over its own row padding so
+// neighbouring segments meet, and the first and last clip theirs so the line starts and ends at the
+// outermost dots instead of floating past them.
+.moment-rail {
+	position: relative;
+	grid-area: rail;
+	justify-self: center;
+	inline-size: 0.0625rem;
+	block-size: calc(100% + #{$admin-gap-tight} + #{$admin-gap-tight});
+	margin-block: calc(0rem - #{$admin-gap-tight});
+	background-color: $border-color;
+
+	.moment:first-child & {
+		background: linear-gradient(to bottom, transparent 0 var(--moment-dot-inset), $border-color var(--moment-dot-inset));
+	}
+
+	.moment:last-child & {
+		background: linear-gradient(to bottom, $border-color 0 var(--moment-dot-inset), transparent var(--moment-dot-inset));
+	}
+
+	.moment:only-child & {
+		background: none;
+	}
+}
+
+.moment-dot {
+	position: absolute;
+	inset-block-start: calc(var(--moment-dot-inset) - 0.25rem);
+	inset-inline-start: 50%;
+	inline-size: 0.5rem;
+	block-size: 0.5rem;
+	border-radius: $rounded-full;
+	background-color: $surface-strong;
+	translate: -50% 0;
+
+	.moment.is-now & {
+		background-color: $accent;
+		box-shadow: 0 0 0 0.1875rem $tint-accent;
+	}
+
+	.moment.is-positive & { background-color: $status-success; }
+	.moment.is-warning & { background-color: $status-warning; }
+	.moment.is-negative & { background-color: $status-error; }
+}
+
+.moment-marker {
+	grid-area: marker;
+	padding-block-start: 0.1rem;
+	color: $color-secondary;
+	font-size: $admin-type-micro;
+	font-variant-numeric: tabular-nums;
+	text-align: end;
+}
+
+.moment-link {
+	display: contents;
+	color: inherit;
+	text-decoration: none;
+
+	&:focus-visible .moment-body {
+		outline: none;
+		border-radius: $admin-radius-control;
+		box-shadow: $admin-focus;
+	}
+}
+
+.moment-body {
+	display: flex;
+	grid-area: body;
+	flex-direction: column;
+	min-inline-size: 0;
+}
+
+.moment-title {
+	color: $color;
+	font-size: 0.875rem;
+	font-weight: $weight-medium;
+
+	// Takes the dimmed colour of a past row instead of the full-strength ink.
+	.moment.is-past & {
+		color: inherit;
+	}
+}
+
+.moment-meta {
+	color: $color-tertiary;
+	font-size: $admin-type-micro;
+}
+
+.moment-trailing {
+	grid-area: trailing;
+	color: $color-secondary;
+	font-size: $admin-label-size;
+}

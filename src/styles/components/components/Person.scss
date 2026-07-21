@@ -1,1 +1,85 @@
 @use "initial" as *;
+
+.person {
+	display: flex;
+	align-items: center;
+	gap: $admin-gap-tight;
+	inline-size: 100%;
+	padding: $admin-gap-tight;
+	border: 0;
+	border-radius: $admin-radius-control;
+	background: transparent;
+	color: inherit;
+	text-align: start;
+	text-decoration: none;
+
+	&.is-interactive {
+		cursor: pointer;
+
+		&:hover {
+			background-color: $background-hover;
+		}
+
+		&:focus-visible {
+			outline: none;
+			box-shadow: $admin-focus;
+		}
+	}
+
+	@media (max-width: #{breakpoint(l)}) {
+		min-block-size: $tap-target;
+	}
+}
+
+.person-avatar {
+	position: relative;
+	flex-shrink: 0;
+}
+
+.person-status {
+	position: absolute;
+	inset-block-end: 0;
+	inset-inline-end: 0;
+	inline-size: 0.625rem;
+	block-size: 0.625rem;
+	border: 0.125rem solid $background-color;
+	border-radius: $rounded-full;
+	background-color: $surface-strong;
+
+	.person-avatar.is-online & { background-color: $status-success; }
+	.person-avatar.is-busy & { background-color: $status-error; }
+	.person-avatar.is-away & { background-color: $status-warning; }
+}
+
+.person-info {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-inline-size: 0;
+}
+
+.person-name {
+	overflow: hidden;
+	color: $color;
+	font-size: 0.875rem;
+	font-weight: $weight-medium;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.person-role {
+	color: $color-tertiary;
+	font-size: $admin-type-micro;
+}
+
+.person-trailing {
+	display: inline-flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: spacing(xs);
+}
+
+.person-chevron {
+	flex-shrink: 0;
+	color: $color-tertiary;
+}

@@ -1,1 +1,98 @@
 @use "initial" as *;
+
+.entry-list {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.entry {
+	display: flex;
+	align-items: center;
+	gap: $admin-gap-tight;
+	min-block-size: $admin-row-height;
+	padding-block: spacing(xs);
+
+	& + & {
+		border-block-start: 0.0625rem solid $border-color;
+	}
+
+	@media (max-width: #{breakpoint(l)}) {
+		min-block-size: $tap-target;
+	}
+}
+
+.entry-link {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	gap: $admin-gap-tight;
+	min-inline-size: 0;
+	border-radius: $admin-radius-control;
+	color: inherit;
+	text-decoration: none;
+
+	&:hover {
+		background-color: $background-hover;
+	}
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: $admin-focus;
+	}
+}
+
+.entry-marker {
+	display: grid;
+	flex-shrink: 0;
+	place-items: center;
+	inline-size: 1.75rem;
+	block-size: 1.75rem;
+	border-radius: $admin-radius-control;
+	background-color: $surface-muted;
+	color: $color-secondary;
+
+	.entry.is-positive & {
+		background-color: color-mix(in srgb, #{$status-success} 16%, transparent);
+		color: $status-success;
+	}
+
+	.entry.is-warning & {
+		background-color: color-mix(in srgb, #{$status-warning} 16%, transparent);
+		color: $status-warning;
+	}
+
+	.entry.is-negative & {
+		background-color: color-mix(in srgb, #{$status-error} 16%, transparent);
+		color: $status-error;
+	}
+}
+
+.entry-info {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-inline-size: 0;
+}
+
+.entry-main {
+	overflow: hidden;
+	color: $color;
+	font-size: 0.875rem;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.entry-sub {
+	color: $color-tertiary;
+	font-size: $admin-type-micro;
+}
+
+.entry-trailing {
+	flex-shrink: 0;
+	color: $color-secondary;
+	font-size: $admin-label-size;
+	font-variant-numeric: tabular-nums;
+}

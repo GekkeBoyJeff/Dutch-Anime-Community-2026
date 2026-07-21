@@ -35,6 +35,11 @@ export { default as Pagination, PaginationEllipsis } from '@/components/componen
 export type { PaginationProps, PaginationEllipsisProps, PaginationTranslations } from '@/components/components/Pagination';
 export { default as PermissionGroups } from '@/components/components/PermissionGroups';
 export { default as Panel } from '@/components/components/Panel';
+export { default as Entry } from '@/components/components/Entry';
+export { default as Moment } from '@/components/components/Moment';
+export { default as Metric } from '@/components/components/Metric';
+export { default as Meter } from '@/components/components/Meter';
+export { default as Person } from '@/components/components/Person';
 export type { Tone } from '@/components/components/tone';
 export { default as FilterBar } from '@/components/components/FilterBar';
 export { default as Combobox } from '@/components/components/Combobox';
