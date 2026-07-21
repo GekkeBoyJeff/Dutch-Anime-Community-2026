@@ -48,6 +48,13 @@ const dashboardGroups: MegaMenuGroup[] = [
 		highlight: mockMoment('Volgende conventie', '14 aug', 'Abunai! 2026', 'vrijdag 14 augustus 2026 · Veldhoven', 'Open conventie'),
 	},
 	{
+		key: 'financien',
+		label: 'Financiën',
+		description: 'Org-breed overzicht van kosten en declaraties.',
+		links: [{ key: 'finance', label: 'Financiën', description: 'Org-breed overzicht van kosten en declaraties.', href: '/dashboard/finance', icon: 'file' }],
+		highlight: mockMetric('Te beoordelen', 'Wachten op je beoordeling', '3', 'Naar declaratie-beheer'),
+	},
+	{
 		key: 'content',
 		label: 'Content',
 		description: "Pagina's, media en enquêtes.",
@@ -56,7 +63,7 @@ const dashboardGroups: MegaMenuGroup[] = [
 			{ key: 'media', label: 'Media', description: 'Upload en beheer afbeeldingen.', href: '/upload', icon: 'upload' },
 			{ key: 'surveys', label: 'Enquêtes', description: 'Maak en beheer enquêtes en polls.', href: '/dashboard/surveys', icon: 'list' },
 		],
-		highlight: mockMetric('Media', 'Laatst geüpload bestand', 'hero-abunai-2026.jpg', 'Naar media'),
+		highlight: mockMoment('Media', '19 jul', 'hero-abunai-2026.jpg', 'Laatst geüpload', 'Naar media'),
 	},
 	{
 		key: 'systeem',
@@ -111,7 +118,7 @@ export const WithoutCta: Story = {
 };
 
 // Dashboard mode: passing `groups` turns the same pill nav into the staff mega-menu — group triggers open
-// full-width fused panels, and the right cluster holds the user chip and back link instead of the CTA.
+// a panel floating below them, and the right cluster holds the user chip and back link instead of the CTA.
 export const Dashboard: Story = {
 	args: {
 		brand: { title: 'Beheer' },

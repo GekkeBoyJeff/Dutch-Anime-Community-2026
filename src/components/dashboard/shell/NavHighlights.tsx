@@ -107,12 +107,14 @@ const ContentHighlight = () => {
 		const { data: objects, error } = await db.storage.from('media').list('', { limit: 8, sortBy: { column: 'created_at', order: 'desc' } });
 		if (error) throw error;
 		const newest = (objects ?? []).find((object) => object.id && (object.metadata?.mimetype as string | undefined)?.startsWith('image/'));
-		return newest ? { name: newest.name } : null;
+		return newest ? { name: newest.name, createdAt: newest.created_at as string | undefined } : null;
 	});
 
 	return (
 		<Panel title="Media" href="/upload" linkLabel="Naar media" isEmpty={!loading && !data} emptyLabel="Nog geen media geüpload.">
-			<Metric label="Laatst geüpload bestand" value={data?.name ?? ''} loading={loading} />
+			<Moment.List>
+				<Moment marker={data?.createdAt ? fmtDayMarker(data.createdAt) : ''} title={data?.name ?? ''} meta="Laatst geüpload" loading={loading} />
+			</Moment.List>
 		</Panel>
 	);
 };

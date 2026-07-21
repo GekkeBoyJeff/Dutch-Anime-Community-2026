@@ -559,8 +559,10 @@ const DashboardHeader = ({
 
 					<NavigationMenu.Portal>
 						{/* Anchored to the open trigger, a notch below the bar: the bar keeps its pill and the panel
-						    floats free, so opening a group shifts nothing. The trigger row is the group switcher. */}
-						<NavigationMenu.Positioner className="mega-menu-positioner" positionMethod="fixed" side="bottom" align="start" sideOffset={12}>
+						    floats free, so opening a group shifts nothing. The trigger row is the group switcher.
+						    The offset clears the bar, not the trigger — the trigger sits ~11px inside the bar's
+						    padding, so the gap the reader sees is roughly sideOffset minus that. */}
+						<NavigationMenu.Positioner className="mega-menu-positioner" positionMethod="fixed" side="bottom" align="start" sideOffset={24}>
 							<NavigationMenu.Popup className="mega-menu-popup">
 								<NavigationMenu.Viewport className="mega-menu-viewport" />
 							</NavigationMenu.Popup>
