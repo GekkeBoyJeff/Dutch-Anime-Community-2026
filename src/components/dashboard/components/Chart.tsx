@@ -23,12 +23,19 @@ import Title from '@/components/basics/Title';
 import useReducedMotion from '@/hooks/useReducedMotion';
 import { classNames } from '@/lib/classNames';
 
-// Categorical palette anchored on the DAC gold, with warm/cool neutrals as supports. Mirrors the
-// --admin-chart-* custom properties (base.scss); recharts paints SVG via concrete strings, so the hex
-// lives here too. A future Midnight colorset would swap both in lockstep.
-export const CHART_PALETTE = ['#eba91f', '#57534e', '#7a9e7e', '#c58a3d', '#a3564a', '#8b857e'];
-const GRID = 'rgba(28, 25, 22, 0.08)';
-const AXIS = '#8b857e';
+// Categorical palette as custom properties. recharts paints SVG attributes, so a var() reference
+// resolves against the element's own properties — the ramp stays defined in one place, and series 1
+// follows the accent instead of duplicating its hex.
+export const CHART_PALETTE = [
+	'var(--admin-chart-1)',
+	'var(--admin-chart-2)',
+	'var(--admin-chart-3)',
+	'var(--admin-chart-4)',
+	'var(--admin-chart-5)',
+	'var(--admin-chart-6)',
+];
+const GRID = 'var(--admin-chart-grid)';
+const AXIS = 'var(--admin-chart-axis)';
 const DEFAULT_HEIGHT = 260;
 
 export interface ChartSeries {
@@ -200,7 +207,7 @@ const ChartBar = ({ data, series, xKey = 'label', formatValue = identity, title,
 					<CartesianGrid stroke={GRID} vertical={false} />
 					<XAxis dataKey={xKey} tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: GRID }} />
 					<YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} width={56} tickFormatter={formatValue} />
-					<Tooltip content={<ChartTooltip valueFormatter={formatValue} />} cursor={{ fill: 'rgba(28, 25, 22, 0.04)' }} />
+					<Tooltip content={<ChartTooltip valueFormatter={formatValue} />} cursor={{ fill: 'var(--surface-faint)' }} />
 					{series.map((s, index) => (
 						<Bar key={s.key} dataKey={s.key} name={s.name} fill={color(index, s)} radius={[4, 4, 0, 0]} maxBarSize={48} isAnimationActive={!reduced} />
 					))}
