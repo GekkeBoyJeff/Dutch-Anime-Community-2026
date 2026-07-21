@@ -145,7 +145,7 @@
 
 				&.is-active {
 					background-color: $tint-accent;
-					box-shadow: inset 0 0 0 0.0625rem #{rgba(#eba91f, 0.5)};
+					box-shadow: inset 0 0 0 0.0625rem color-mix(in srgb, #{$accent} 50%, transparent);
 					color: $accent-text;
 					font-weight: $weight-semibold;
 				}
@@ -163,7 +163,7 @@
 					text-align: center;
 
 					.chip.is-active & {
-						background-color: #{rgba(#eba91f, 0.3)};
+						background-color: color-mix(in srgb, #{$accent} 30%, transparent);
 						color: $accent-text;
 					}
 				}
