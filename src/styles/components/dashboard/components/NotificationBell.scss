@@ -37,7 +37,7 @@
 	padding-inline: 0.2rem;
 	border-radius: $rounded-full;
 	background-color: var(--home-gold-strong, #{$accent});
-	color: #fff;
+	color: $accent-contrast;
 	font-size: 0.7rem;
 	font-weight: $weight-bold;
 	line-height: 1;

@@ -53,7 +53,7 @@
 			color: $color-secondary;
 
 			.listbox-card[data-checked] & {
-				background-color: #{rgba(#eba91f, 0.28)};
+				background-color: color-mix(in srgb, #{$accent} 28%, transparent);
 				color: $accent-text;
 			}
 		}
