@@ -202,12 +202,12 @@
 	font-weight: $weight-bold;
 	line-height: 1;
 	color: $white;
-	background-color: $admin-accent-strong;
+	background-color: $accent-active;
 	border-radius: $rounded-full;
 
 	.is-active &,
 	[data-popup-open] & {
-		color: $admin-accent-strong;
+		color: $accent-active;
 		background-color: $white;
 	}
 }
@@ -216,7 +216,7 @@
 	inline-size: 0.5rem;
 	block-size: 0.5rem;
 	border-radius: $rounded-full;
-	background-color: $admin-accent-strong;
+	background-color: $accent-active;
 
 	.is-active &,
 	[data-popup-open] & {

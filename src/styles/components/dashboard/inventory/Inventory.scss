@@ -27,7 +27,7 @@
 	gap: spacing(xs);
 	padding: spacing(m);
 	text-align: start;
-	background-color: $admin-surface-raised;
+	background-color: $surface-faint;
 	border: 0;
 	border-radius: $admin-radius-card;
 	box-shadow: $admin-ring, $admin-shadow-1;
@@ -57,7 +57,7 @@
 }
 
 .prep-tile-icon {
-	color: $admin-ink-3;
+	color: $color-tertiary;
 
 	.is-flag & {
 		color: $status-warning;
@@ -67,7 +67,7 @@
 .prep-tile-eyebrow {
 	font-size: 0.75rem;
 	font-weight: $weight-medium;
-	color: $admin-ink-3;
+	color: $color-tertiary;
 	text-transform: uppercase;
 	letter-spacing: 0.03em;
 }
@@ -79,13 +79,13 @@
 	font-size: 1.5rem;
 	font-weight: $weight-semibold;
 	font-variant-numeric: tabular-nums;
-	color: $admin-ink-1;
+	color: $color;
 }
 
 .prep-tile-total {
 	font-size: 1.05rem;
 	font-weight: $weight-medium;
-	color: $admin-ink-3;
+	color: $color-tertiary;
 }
 
 .prep-tile-hint {
@@ -107,7 +107,7 @@
 		padding: spacing(s) spacing(m);
 		font-weight: $weight-medium;
 		color: $status-success;
-		background-color: $admin-surface-raised;
+		background-color: $surface-faint;
 		border-radius: $admin-radius-card;
 		box-shadow: $admin-ring, $admin-shadow-1;
 	}
@@ -124,8 +124,8 @@
 	padding: spacing(xs) spacing(s);
 	font-size: 0.8125rem;
 	font-weight: $weight-medium;
-	color: $admin-ink-2;
-	background-color: $admin-surface;
+	color: $color-secondary;
+	background-color: $background-color;
 	border: 0;
 	border-radius: $rounded-full;
 	box-shadow: inset 0 0 0 0.0625rem $status-warning;
@@ -133,7 +133,7 @@
 	transition: background-color $motion-micro;
 
 	&:hover {
-		background-color: $admin-accent-soft;
+		background-color: $tint-accent;
 	}
 
 	.prep-checklist-icon {
@@ -142,7 +142,7 @@
 	}
 
 	.prep-checklist-arrow {
-		color: $admin-ink-3;
+		color: $color-tertiary;
 		font-size: 0.8rem;
 	}
 }

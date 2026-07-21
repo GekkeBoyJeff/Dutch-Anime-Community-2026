@@ -26,15 +26,15 @@
 			padding-inline: spacing(m);
 			border: none;
 			border-radius: $admin-radius-control;
-			background-color: $admin-sunken;
-			color: $admin-ink-2;
+			background-color: $surface-muted-strong;
+			color: $color-secondary;
 			font: inherit;
 			font-weight: $weight-medium;
 			cursor: pointer;
 			transition: color $motion-micro, background-color $motion-micro;
 
 			@include interactive {
-				color: $admin-ink-1;
+				color: $color;
 			}
 
 			&:focus-visible {
@@ -48,7 +48,7 @@
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;
 		border-radius: $admin-radius-card;
-		background-color: $admin-surface;
+		background-color: $background-color;
 		box-shadow: $admin-ring, $admin-shadow-1;
 
 		table {
@@ -59,7 +59,7 @@
 			caption {
 				padding-block: spacing(m);
 				padding-inline: spacing(l);
-				color: $admin-ink-3;
+				color: $color-tertiary;
 				text-align: start;
 			}
 
@@ -70,9 +70,9 @@
 					z-index: 1;
 					padding-block: spacing(s);
 					padding-inline: spacing(l);
-					background-color: $admin-sunken;
-					border-block-end: 0.0625rem solid $admin-hairline-strong;
-					color: $admin-ink-3;
+					background-color: $surface-muted;
+					border-block-end: 0.0625rem solid $border-strong;
+					color: $color-tertiary;
 					font-weight: $weight-semibold;
 					font-size: $admin-label-size;
 					letter-spacing: 0.02em;
@@ -114,7 +114,7 @@
 						transition: color $motion-micro;
 
 						@include interactive {
-							color: $admin-ink-1;
+							color: $color;
 						}
 
 						&:focus-visible {
@@ -132,11 +132,11 @@
 						}
 
 						&.is-sorted {
-							color: $admin-ink-1;
+							color: $color;
 
 							.data-table-v2-sorticon {
 								opacity: 1;
-								color: $admin-accent-ink;
+								color: $accent-text;
 							}
 						}
 
@@ -162,22 +162,22 @@
 					}
 
 					&[data-selected] {
-						background-color: $admin-accent-soft;
+						background-color: $tint-accent;
 
 						td {
-							color: $admin-accent-ink;
+							color: $accent-text;
 						}
 					}
 				}
 
 				tr + tr td {
-					border-block-start: 0.0625rem solid $admin-hairline;
+					border-block-start: 0.0625rem solid $border-color;
 				}
 
 				td {
 					padding-block: spacing(m);
 					padding-inline: spacing(l);
-					color: $admin-ink-1;
+					color: $color;
 					vertical-align: middle;
 
 					&[data-align='center'] {
@@ -216,7 +216,7 @@
 					}
 
 					tr + tr {
-						border-block-start: 0.0625rem solid $admin-hairline;
+						border-block-start: 0.0625rem solid $border-color;
 					}
 
 					td {
@@ -236,7 +236,7 @@
 					td[data-label]::before {
 						content: attr(data-label);
 						flex: none;
-						color: $admin-ink-3;
+						color: $color-tertiary;
 						font-weight: $weight-medium;
 						text-align: start;
 						text-transform: none;

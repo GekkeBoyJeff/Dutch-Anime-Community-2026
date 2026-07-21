@@ -5,7 +5,7 @@
 	flex-direction: column;
 	block-size: var(--shift-calendar-height);
 	border-radius: $admin-radius-card;
-	background-color: $admin-surface;
+	background-color: $background-color;
 	box-shadow: $admin-ring, $admin-shadow-1;
 	overflow: hidden;
 
@@ -18,7 +18,7 @@
 		align-items: center;
 		gap: spacing(m);
 		padding: spacing(s) spacing(m);
-		border-bottom: 0.0625rem solid $admin-hairline;
+		border-bottom: 0.0625rem solid $border-color;
 
 		.shift-calendar-nav {
 			display: flex;
@@ -31,7 +31,7 @@
 			min-inline-size: 0;
 			font-size: 1rem;
 			font-weight: 600;
-			color: $admin-ink-1;
+			color: $color;
 			text-transform: capitalize;
 			font-variant-numeric: tabular-nums;
 		}
@@ -44,7 +44,7 @@
 
 	.rbc-time-view {
 		border: none;
-		background-color: $admin-surface;
+		background-color: $background-color;
 	}
 
 	.rbc-time-header {
@@ -57,14 +57,14 @@
 
 		.rbc-header {
 			padding-block: spacing(xs);
-			border-bottom: 0.0625rem solid $admin-hairline;
+			border-bottom: 0.0625rem solid $border-color;
 			font-size: $admin-label-size;
 			font-weight: 600;
-			color: $admin-ink-2;
+			color: $color-secondary;
 			text-transform: capitalize;
 
 			&.rbc-today {
-				color: $admin-accent-ink;
+				color: $accent-text;
 			}
 
 			.rbc-button-link {
@@ -74,10 +74,10 @@
 	}
 
 	.rbc-time-content {
-		border-top: 0.0625rem solid $admin-hairline;
+		border-top: 0.0625rem solid $border-color;
 
 		> * + * > * {
-			border-left: 0.0625rem solid $admin-hairline;
+			border-left: 0.0625rem solid $border-color;
 		}
 	}
 
@@ -89,14 +89,14 @@
 		.rbc-label {
 			padding-inline: spacing(s);
 			font-size: $admin-label-size;
-			color: $admin-ink-3;
+			color: $color-tertiary;
 			font-variant-numeric: tabular-nums;
 		}
 	}
 
 	.rbc-timeslot-group {
 		min-block-size: 3rem;
-		border-bottom: 0.0625rem solid $admin-hairline;
+		border-bottom: 0.0625rem solid $border-color;
 	}
 
 	.rbc-time-slot {
@@ -123,7 +123,7 @@
 
 	.rbc-current-time-indicator {
 		block-size: 0.125rem;
-		background-color: $admin-accent;
+		background-color: $accent;
 
 		&::before {
 			content: '';
@@ -133,7 +133,7 @@
 			inline-size: 0.5rem;
 			block-size: 0.5rem;
 			border-radius: 50%;
-			background-color: $admin-accent;
+			background-color: $accent;
 			transform: translate(-50%, -50%);
 		}
 	}
@@ -141,9 +141,9 @@
 	.rbc-slot-selection {
 		padding: spacing(xs);
 		border-radius: $admin-radius-control;
-		background-color: $admin-accent-soft;
-		box-shadow: inset 0 0 0 0.0625rem $admin-accent;
-		color: $admin-accent-ink;
+		background-color: $tint-accent;
+		box-shadow: inset 0 0 0 0.0625rem $accent;
+		color: $accent-text;
 		font-size: $admin-label-size;
 		font-variant-numeric: tabular-nums;
 	}
@@ -154,11 +154,11 @@
 
 	.rbc-event {
 		padding: spacing(xs) spacing(s);
-		border: 0.0625rem solid $admin-hairline-strong;
+		border: 0.0625rem solid $border-strong;
 		border-radius: $admin-radius-control;
-		background-color: $admin-surface;
+		background-color: $background-color;
 		box-shadow: $admin-shadow-1;
-		color: $admin-ink-1;
+		color: $color;
 		transition: box-shadow $motion-micro, transform $motion-micro;
 
 		&:focus,
@@ -168,30 +168,30 @@
 		}
 
 		&.rbc-selected {
-			background-color: $admin-surface;
+			background-color: $background-color;
 			box-shadow: $admin-focus, $admin-shadow-2;
 		}
 
 		&.is-mine {
-			border-color: $admin-accent;
-			background-color: $admin-accent-soft;
-			color: $admin-accent-ink;
+			border-color: $accent;
+			background-color: $tint-accent;
+			color: $accent-text;
 
 			.shift-event-station,
 			.shift-event-time {
-				color: $admin-accent-ink;
+				color: $accent-text;
 			}
 		}
 
 		&.is-locked {
-			background-image: repeating-linear-gradient(135deg, transparent, transparent 0.375rem, $admin-hairline 0.375rem, $admin-hairline 0.4375rem);
+			background-image: repeating-linear-gradient(135deg, transparent, transparent 0.375rem, $border-color 0.375rem, $border-color 0.4375rem);
 			cursor: not-allowed;
 		}
 	}
 
 	.rbc-day-slot {
 		.rbc-event {
-			border: 0.0625rem solid $admin-hairline-strong;
+			border: 0.0625rem solid $border-strong;
 		}
 	}
 
@@ -206,11 +206,11 @@
 		}
 
 		.rbc-event:hover .rbc-addons-dnd-resize-ns-icon {
-			border-top-color: $admin-accent;
+			border-top-color: $accent;
 		}
 
 		.rbc-addons-dnd-resize-ns-icon {
-			border-top-color: $admin-ink-3;
+			border-top-color: $color-tertiary;
 		}
 	}
 
@@ -235,7 +235,7 @@
 
 		.shift-event-station {
 			font-size: 0.75rem;
-			color: $admin-ink-2;
+			color: $color-secondary;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -243,7 +243,7 @@
 
 		.shift-event-time {
 			font-size: 0.6875rem;
-			color: $admin-ink-3;
+			color: $color-tertiary;
 			font-variant-numeric: tabular-nums;
 		}
 	}

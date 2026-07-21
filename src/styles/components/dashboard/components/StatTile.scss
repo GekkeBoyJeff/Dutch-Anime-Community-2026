@@ -11,11 +11,11 @@
 	min-block-size: 6.75rem;
 	padding: spacing(l);
 	border-radius: $admin-radius-card;
-	background-color: $admin-surface;
+	background-color: $background-color;
 	box-shadow: $admin-ring, $admin-shadow-1;
 
 	.stat-tile-label {
-		color: $admin-ink-3;
+		color: $color-tertiary;
 		font-size: $admin-label-size;
 		font-weight: $weight-medium;
 		letter-spacing: $tracking-wide;
@@ -33,7 +33,7 @@
 			font-size: 1.75rem;
 			line-height: 1.1;
 			letter-spacing: $tracking-tight;
-			color: $admin-ink-1;
+			color: $color;
 		}
 
 		.stat-tile-delta {
@@ -63,7 +63,7 @@
 
 			&.is-flat {
 				background-color: $surface-muted;
-				color: $admin-ink-3;
+				color: $color-tertiary;
 			}
 		}
 	}
@@ -83,7 +83,7 @@
 	.stat-tile-note {
 		margin-block-start: auto;
 		min-block-size: 1.1rem;
-		color: $admin-ink-2;
+		color: $color-secondary;
 		font-size: $admin-label-size;
 	}
 }

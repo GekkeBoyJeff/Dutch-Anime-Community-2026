@@ -156,23 +156,23 @@
 	.select {
 		min-block-size: $admin-control-height;
 		border-radius: $admin-radius-control;
-		background-color: $admin-surface;
+		background-color: $background-color;
 		box-shadow: $admin-ring;
 
 		&:focus-visible {
 			outline: none;
-			box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+			box-shadow: inset 0 0 0 0.0625rem $accent, $admin-focus;
 		}
 
 		&[data-popup-open] {
-			box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+			box-shadow: inset 0 0 0 0.0625rem $accent, $admin-focus;
 		}
 	}
 }
 
 .select-popup.is-admin {
 	border-radius: $admin-radius-card;
-	background-color: $admin-popover;
+	background-color: $background-color;
 	box-shadow: $admin-ring, $admin-shadow-3;
 	animation: select-pop-in 140ms $ease-snappy;
 
@@ -181,12 +181,12 @@
 		border-radius: $admin-radius-control;
 
 		&[data-highlighted] {
-			background-color: $admin-accent-soft;
-			color: $admin-ink-1;
+			background-color: $tint-accent;
+			color: $color;
 		}
 
 		.option-indicator {
-			color: $admin-accent-ink;
+			color: $accent-text;
 		}
 	}
 }

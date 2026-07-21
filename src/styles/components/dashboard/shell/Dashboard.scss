@@ -62,7 +62,7 @@
 	font: inherit;
 	font-size: 0.8125rem;
 	font-weight: $weight-medium;
-	color: $admin-ink-2;
+	color: $color-secondary;
 	background: none;
 	border: 0;
 	border-radius: $rounded-full;
@@ -70,13 +70,13 @@
 	transition: background-color $motion-micro;
 
 	&:hover {
-		background-color: $admin-surface-raised;
+		background-color: $surface-faint;
 	}
 }
 
 .beheer-group {
 	border-block-end: 0;
-	background-color: $admin-surface-raised;
+	background-color: $surface-faint;
 	border-radius: $admin-radius-card;
 	box-shadow: $admin-ring, $admin-shadow-1;
 
@@ -93,10 +93,10 @@
 
 	// Systeem is de-emphasised: dimmed trigger until hovered/opened (blueprint §1c).
 	&.is-muted > .trigger:not([data-panel-open]) {
-		color: $admin-ink-3;
+		color: $color-tertiary;
 
 		&:hover {
-			color: $admin-ink-1;
+			color: $color;
 		}
 	}
 }
@@ -108,7 +108,7 @@
 	display: none;
 	margin: 0;
 	padding-block: spacing(s);
-	color: $admin-ink-3;
+	color: $color-tertiary;
 	font-size: 0.875rem;
 }
 
@@ -131,8 +131,8 @@
 	padding-inline: 0.4rem;
 	font-size: 0.75rem;
 	font-weight: $weight-medium;
-	color: $admin-ink-2;
-	background-color: $admin-surface;
+	color: $color-secondary;
+	background-color: $background-color;
 	border-radius: $rounded-full;
 }
 
@@ -237,7 +237,7 @@
 	gap: spacing(xl);
 	padding: clamp(#{spacing(xl)}, 4vw, #{spacing(5xl)});
 	border-radius: $admin-radius-panel;
-	background-color: $admin-surface-raised;
+	background-color: $surface-faint;
 	box-shadow: $admin-ring, $admin-shadow-2;
 	overflow: hidden;
 	isolation: isolate;
@@ -326,12 +326,12 @@
 	padding: spacing(xl);
 	border-inline-start: 0.25rem solid var(--home-gold);
 	border-radius: $admin-radius-card;
-	background-color: $admin-surface;
+	background-color: $background-color;
 	box-shadow: inset 0 0 0 0.0625rem var(--home-gold-tint), $admin-shadow-1;
 	animation: home-fade-in $speed $ease-out both;
 
 	&.is-calm {
-		border-inline-start-color: $admin-hairline-strong;
+		border-inline-start-color: $border-strong;
 		box-shadow: $admin-ring, $admin-shadow-1;
 	}
 
@@ -596,7 +596,7 @@
 	.data-table {
 		.table {
 			border-radius: $admin-radius-card;
-			background-color: $admin-surface;
+			background-color: $background-color;
 			box-shadow: $admin-ring, $admin-shadow-1;
 			overflow: clip;
 
@@ -607,13 +607,13 @@
 							position: sticky;
 							inset-block-start: 0;
 							z-index: $z-base;
-							background-color: $admin-surface;
-							border-block-end-color: $admin-hairline-strong;
+							background-color: $background-color;
+							border-block-end-color: $border-strong;
 							font-size: $admin-label-size;
 							font-weight: $weight-semibold;
 							letter-spacing: $tracking-wide;
 							text-transform: uppercase;
-							color: $admin-ink-3;
+							color: $color-tertiary;
 						}
 					}
 
@@ -627,7 +627,7 @@
 						}
 
 						tr + tr td {
-							border-block-start-color: $admin-hairline;
+							border-block-start-color: $border-color;
 						}
 
 						td[data-align='end'] {

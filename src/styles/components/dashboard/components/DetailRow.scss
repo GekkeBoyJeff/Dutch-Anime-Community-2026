@@ -11,14 +11,14 @@
 
 		.detail-row-main {
 			font-weight: $weight-semibold;
-			color: $admin-ink-1;
+			color: $color;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
 		}
 
 		.detail-row-sub {
-			color: $admin-ink-2;
+			color: $color-secondary;
 			font-size: 0.8125rem;
 		}
 	}
@@ -31,7 +31,7 @@
 		flex: none;
 		font-weight: $weight-semibold;
 		font-variant-numeric: tabular-nums;
-		color: $admin-ink-1;
+		color: $color;
 		white-space: nowrap;
 	}
 }

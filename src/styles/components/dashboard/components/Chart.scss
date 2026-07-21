@@ -3,7 +3,7 @@
 	gap: spacing(m);
 	padding: spacing(l);
 	border-radius: $admin-radius-card;
-	background-color: $admin-surface;
+	background-color: $background-color;
 	box-shadow: $admin-ring, $admin-shadow-1;
 
 	.chart-head {
@@ -14,7 +14,7 @@
 
 		.chart-action {
 			flex: none;
-			color: $admin-ink-3;
+			color: $color-tertiary;
 			font-size: 0.8125rem;
 		}
 	}
@@ -36,7 +36,7 @@
 			.chart-empty-line {
 				max-inline-size: 24rem;
 				margin: 0;
-				color: $admin-ink-3;
+				color: $color-tertiary;
 				font-size: 0.875rem;
 			}
 		}
@@ -79,14 +79,14 @@
 			pointer-events: none;
 
 			.chart-donut-value {
-				color: $admin-ink-1;
+				color: $color;
 				font-weight: $weight-semibold;
 				font-size: 1.25rem;
 				font-variant-numeric: tabular-nums;
 			}
 
 			.chart-donut-caption {
-				color: $admin-ink-3;
+				color: $color-tertiary;
 				font-size: 0.75rem;
 			}
 		}
@@ -116,14 +116,14 @@
 				flex: 1;
 				min-inline-size: 0;
 				overflow: hidden;
-				color: $admin-ink-2;
+				color: $color-secondary;
 				white-space: nowrap;
 				text-overflow: ellipsis;
 			}
 
 			.chart-legend-value {
 				flex: none;
-				color: $admin-ink-1;
+				color: $color;
 				font-weight: $weight-medium;
 				font-variant-numeric: tabular-nums;
 			}
@@ -137,11 +137,11 @@
 	min-inline-size: 8rem;
 	padding: spacing(s) spacing(m);
 	border-radius: $admin-radius-control;
-	background-color: $admin-popover;
+	background-color: $background-color;
 	box-shadow: $admin-ring, $admin-shadow-2;
 
 	.chart-tooltip-label {
-		color: $admin-ink-3;
+		color: $color-tertiary;
 		font-size: 0.75rem;
 		font-weight: $weight-medium;
 	}
@@ -169,12 +169,12 @@
 			.chart-tooltip-name {
 				flex: 1;
 				min-inline-size: 0;
-				color: $admin-ink-2;
+				color: $color-secondary;
 			}
 
 			.chart-tooltip-value {
 				flex: none;
-				color: $admin-ink-1;
+				color: $color;
 				font-weight: $weight-semibold;
 				font-variant-numeric: tabular-nums;
 			}

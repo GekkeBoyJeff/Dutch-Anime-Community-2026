@@ -14,7 +14,7 @@
 		gap: spacing(m);
 		padding: spacing(m) spacing(l);
 		border-radius: $admin-radius-card;
-		background-color: $admin-surface;
+		background-color: $background-color;
 		box-shadow: $admin-ring, $admin-shadow-1;
 		text-align: start;
 		cursor: pointer;
@@ -22,18 +22,18 @@
 
 		@include interactive {
 			&:not([data-disabled]) {
-				box-shadow: inset 0 0 0 0.0625rem $admin-hairline-strong, $admin-shadow-2;
+				box-shadow: inset 0 0 0 0.0625rem $border-strong, $admin-shadow-2;
 			}
 		}
 
 		&:focus-visible {
 			outline: none;
-			box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+			box-shadow: inset 0 0 0 0.0625rem $accent, $admin-focus;
 		}
 
 		&[data-checked] {
-			background-color: $admin-accent-soft;
-			box-shadow: inset 0 0 0 0.09375rem $admin-accent, $admin-shadow-1;
+			background-color: $tint-accent;
+			box-shadow: inset 0 0 0 0.09375rem $accent, $admin-shadow-1;
 		}
 
 		&[data-disabled] {
@@ -50,11 +50,11 @@
 			flex: none;
 			border-radius: $admin-radius-control;
 			background-color: $surface-muted;
-			color: $admin-ink-2;
+			color: $color-secondary;
 
 			.listbox-card[data-checked] & {
 				background-color: #{rgba(#eba91f, 0.28)};
-				color: $admin-accent-ink;
+				color: $accent-text;
 			}
 		}
 
@@ -66,13 +66,13 @@
 
 			.listbox-card-label {
 				font-weight: $weight-semibold;
-				color: $admin-ink-1;
+				color: $color;
 			}
 
 			.listbox-card-desc {
 				font-size: 0.8125rem;
 				line-height: 1.4;
-				color: $admin-ink-2;
+				color: $color-secondary;
 			}
 		}
 
@@ -84,20 +84,20 @@
 			block-size: 1.25rem;
 			flex: none;
 			border-radius: $rounded-full;
-			box-shadow: inset 0 0 0 0.0625rem $admin-hairline-strong;
+			box-shadow: inset 0 0 0 0.0625rem $border-strong;
 			opacity: 0;
 			transition: opacity $motion-micro;
 
 			.listbox-card-check-mark {
 				inline-size: 0.3rem;
 				block-size: 0.55rem;
-				border: solid $admin-accent-contrast;
+				border: solid $accent-contrast;
 				border-width: 0 0.125rem 0.125rem 0;
 				transform: rotate(45deg) translateY(-0.0625rem);
 			}
 
 			.listbox-card[data-checked] & {
-				background-color: $admin-accent;
+				background-color: $accent;
 				box-shadow: none;
 				opacity: 1;
 			}

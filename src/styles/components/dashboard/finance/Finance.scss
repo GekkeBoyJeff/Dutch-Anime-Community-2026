@@ -18,7 +18,7 @@
 		align-items: flex-end;
 		padding: spacing(m);
 		border-radius: $admin-radius-card;
-		background-color: $admin-surface;
+		background-color: $background-color;
 		box-shadow: $admin-ring, $admin-shadow-1;
 
 		.finance-filter {
@@ -32,7 +32,7 @@
 			.finance-filter-label {
 				font-weight: $weight-semibold;
 				font-size: $admin-label-size;
-				color: $admin-ink-2;
+				color: $color-secondary;
 			}
 		}
 	}

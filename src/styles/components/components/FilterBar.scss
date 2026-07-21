@@ -111,7 +111,7 @@
 
 			.chips-lead {
 				margin-inline-end: spacing(xs);
-				color: $admin-ink-3;
+				color: $color-tertiary;
 				font-size: 1.05em;
 			}
 
@@ -123,18 +123,18 @@
 				padding-block: spacing(xs);
 				padding-inline: spacing(m);
 				border-radius: $rounded-full;
-				background-color: $admin-surface;
+				background-color: $background-color;
 				box-shadow: $admin-ring;
-				color: $admin-ink-2;
+				color: $color-secondary;
 				font-weight: $weight-medium;
 				font-size: 0.875rem;
 				transition: color $motion-micro, background-color $motion-micro, box-shadow $motion-micro;
 
 				@include interactive {
 					&:not(.is-active) {
-						background-color: $admin-surface;
-						color: $admin-ink-1;
-						box-shadow: inset 0 0 0 0.0625rem $admin-hairline-strong;
+						background-color: $background-color;
+						color: $color;
+						box-shadow: inset 0 0 0 0.0625rem $border-strong;
 					}
 				}
 
@@ -144,9 +144,9 @@
 				}
 
 				&.is-active {
-					background-color: $admin-accent-soft;
+					background-color: $tint-accent;
 					box-shadow: inset 0 0 0 0.0625rem #{rgba(#eba91f, 0.5)};
-					color: $admin-accent-ink;
+					color: $accent-text;
 					font-weight: $weight-semibold;
 				}
 
@@ -155,7 +155,7 @@
 					padding-inline: 0.35rem;
 					border-radius: $rounded-full;
 					background-color: $surface-muted;
-					color: $admin-ink-2;
+					color: $color-secondary;
 					font-size: 0.72rem;
 					font-weight: $weight-semibold;
 					font-variant-numeric: tabular-nums;
@@ -164,7 +164,7 @@
 
 					.chip.is-active & {
 						background-color: #{rgba(#eba91f, 0.3)};
-						color: $admin-accent-ink;
+						color: $accent-text;
 					}
 				}
 			}
@@ -174,20 +174,20 @@
 			.search {
 				min-block-size: 2.25rem;
 				border-radius: $admin-radius-control;
-				background-color: $admin-surface;
+				background-color: $background-color;
 				box-shadow: $admin-ring;
-				color: $admin-ink-3;
+				color: $color-tertiary;
 				transition: box-shadow $motion-micro;
 
 				&:focus-within {
-					box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+					box-shadow: inset 0 0 0 0.0625rem $accent, $admin-focus;
 				}
 
 				.search-input {
-					color: $admin-ink-1;
+					color: $color;
 
 					&::placeholder {
-						color: $admin-ink-3;
+						color: $color-tertiary;
 					}
 				}
 			}

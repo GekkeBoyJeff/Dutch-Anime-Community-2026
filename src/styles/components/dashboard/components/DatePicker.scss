@@ -8,34 +8,34 @@
 	padding-inline: spacing(m);
 	border: none;
 	border-radius: $admin-radius-control;
-	background-color: $admin-surface;
+	background-color: $background-color;
 	box-shadow: $admin-ring;
-	color: $admin-ink-2;
+	color: $color-secondary;
 	font: inherit;
 	text-align: start;
 	cursor: pointer;
 	transition: box-shadow $motion-micro, color $motion-micro;
 
 	@include interactive {
-		box-shadow: inset 0 0 0 0.0625rem $admin-hairline-strong;
+		box-shadow: inset 0 0 0 0.0625rem $border-strong;
 	}
 
 	&:focus-visible {
 		outline: none;
-		box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+		box-shadow: inset 0 0 0 0.0625rem $accent, $admin-focus;
 	}
 
 	&[data-popup-open] {
-		box-shadow: inset 0 0 0 0.0625rem $admin-accent, $admin-focus;
+		box-shadow: inset 0 0 0 0.0625rem $accent, $admin-focus;
 	}
 
 	&.has-value {
-		color: $admin-ink-1;
+		color: $color;
 	}
 
 	.date-trigger-icon {
 		flex: none;
-		color: $admin-ink-3;
+		color: $color-tertiary;
 	}
 
 	.date-trigger-label {
@@ -49,7 +49,7 @@
 
 	.date-trigger-chevron {
 		flex: none;
-		color: $admin-ink-3;
+		color: $color-tertiary;
 		font-size: 0.9em;
 	}
 }
@@ -71,7 +71,7 @@
 		flex-direction: column;
 		gap: spacing(xs);
 		padding-inline-end: spacing(m);
-		border-inline-end: 0.0625rem solid $admin-hairline;
+		border-inline-end: 0.0625rem solid $border-color;
 
 		@media (max-width: 30rem) {
 			flex-direction: row;
@@ -79,7 +79,7 @@
 			padding-inline-end: 0;
 			padding-block-end: spacing(s);
 			border-inline-end: none;
-			border-block-end: 0.0625rem solid $admin-hairline;
+			border-block-end: 0.0625rem solid $border-color;
 		}
 
 		.date-preset {
@@ -88,7 +88,7 @@
 			border: none;
 			border-radius: $admin-radius-control;
 			background: none;
-			color: $admin-ink-2;
+			color: $color-secondary;
 			font-weight: $weight-medium;
 			font-size: 0.8125rem;
 			white-space: nowrap;
@@ -98,7 +98,7 @@
 
 			@include interactive {
 				background-color: $surface-faint;
-				color: $admin-ink-1;
+				color: $color;
 			}
 
 			&:focus-visible {
@@ -124,7 +124,7 @@
 			.rdp-caption_label {
 				font-weight: $weight-semibold;
 				font-size: 0.9375rem;
-				color: $admin-ink-1;
+				color: $color;
 				text-transform: capitalize;
 			}
 		}
@@ -147,13 +147,13 @@
 				border: none;
 				border-radius: $admin-radius-control;
 				background: none;
-				color: $admin-ink-2;
+				color: $color-secondary;
 				cursor: pointer;
 				transition: background-color $motion-micro, color $motion-micro;
 
 				@include interactive {
 					background-color: $surface-faint;
-					color: $admin-ink-1;
+					color: $color;
 				}
 
 				&:focus-visible {
@@ -182,7 +182,7 @@
 		.rdp-weekday {
 			padding-block: spacing(xs);
 			inline-size: var(--rdp-cell);
-			color: $admin-ink-3;
+			color: $color-tertiary;
 			font-size: 0.75rem;
 			font-weight: $weight-medium;
 			text-transform: capitalize;
@@ -201,7 +201,7 @@
 				border: none;
 				border-radius: $admin-radius-control;
 				background: none;
-				color: $admin-ink-1;
+				color: $color;
 				font-variant-numeric: tabular-nums;
 				font-size: 0.875rem;
 				cursor: pointer;
@@ -219,11 +219,11 @@
 
 			&.rdp-today .rdp-day_button {
 				font-weight: $weight-bold;
-				color: $admin-accent-ink;
+				color: $accent-text;
 			}
 
 			&.rdp-outside .rdp-day_button {
-				color: $admin-ink-3;
+				color: $color-tertiary;
 				opacity: 0.65;
 			}
 
@@ -234,15 +234,15 @@
 
 			&.rdp-range_middle .rdp-day_button {
 				border-radius: 0;
-				background-color: $admin-accent-soft;
-				color: $admin-accent-ink;
+				background-color: $tint-accent;
+				color: $accent-text;
 			}
 
 			&.rdp-selected .rdp-day_button,
 			&.rdp-range_start .rdp-day_button,
 			&.rdp-range_end .rdp-day_button {
-				background-color: $admin-accent;
-				color: $admin-accent-contrast;
+				background-color: $accent;
+				color: $accent-contrast;
 				font-weight: $weight-semibold;
 			}
 		}

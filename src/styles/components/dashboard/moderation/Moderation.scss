@@ -30,7 +30,7 @@
 		gap: var(--admin-gap);
 		margin-block-end: spacing(l);
 		padding: var(--admin-gap);
-		background-color: $admin-surface-raised;
+		background-color: $surface-faint;
 		border-radius: $admin-radius-card;
 		box-shadow: $admin-ring, $admin-shadow-1;
 	}
@@ -69,13 +69,13 @@
 		transition: background-color $motion-micro;
 
 		&:not(.is-static):hover {
-			background-color: $admin-surface;
+			background-color: $background-color;
 		}
 	}
 
 	.betrokken-link-main {
 		font-weight: $weight-medium;
-		color: $admin-ink-1;
+		color: $color;
 	}
 
 	.mod-section {
