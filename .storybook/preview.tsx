@@ -119,21 +119,21 @@ const withPreviewContext: Decorator = (Story, context) => {
 	return <Story />;
 };
 
-// Dashboard-tier stories are the admin work-surface, not the public site — render them under
-// data-theme="admin" on the admin page canvas so the Studio tokens (surface ladder, gold accent,
-// stacked shadows) resolve and the story is a faithful proof of the shipped skin.
-const withDashboardTheme: Decorator = (Story, context) => {
+// Dashboard-tier stories are the admin work-surface: the same DAC palette as the site, on the page
+// background instead of a white canvas. No theme override — the toolbar's data-theme on <html> and
+// data-colorset on <body> already resolve the semantic tokens correctly.
+const withDashboardSurface: Decorator = (Story, context) => {
 	if (!context.title?.startsWith('Dashboard/')) return <Story />;
 
 	return (
-		<div data-theme="admin" style={{ background: 'var(--admin-page)', color: 'var(--admin-ink-1)', padding: '2rem', borderRadius: '1rem' }}>
+		<div style={{ background: 'var(--page)', color: 'var(--color)', padding: '2rem', borderRadius: '1rem' }}>
 			<Story />
 		</div>
 	);
 };
 
 export const decorators = [
-	withDashboardTheme,
+	withDashboardSurface,
 	withPreviewContext,
 	withJsonSchema,
 	// Brand-theme toolbar (a separate axis from light/dark): sets data-theme on <html>. 'dac' and
@@ -141,7 +141,7 @@ export const decorators = [
 	// The default is 'dac' because the site itself renders under data-theme="dac" (src/app/layout.tsx);
 	// reviewing stories under any other palette would not represent what ships.
 	withThemeByDataAttribute({
-		themes: { default: 'default', dac: 'dac', sepia: 'sepia', admin: 'admin' },
+		themes: { default: 'default', dac: 'dac', sepia: 'sepia' },
 		defaultTheme: 'dac',
 		attributeName: 'data-theme',
 	}),
