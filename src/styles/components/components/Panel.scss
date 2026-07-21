@@ -1,0 +1,40 @@
+@use "initial" as *;
+
+.panel {
+	display: flex;
+	flex-direction: column;
+	gap: $admin-gap-tight;
+	padding: $admin-gap;
+	border-radius: $admin-radius-card;
+	background-color: $background-color;
+	box-shadow: $admin-ring, $admin-shadow-1;
+}
+
+.panel-head {
+	display: flex;
+	align-items: center;
+	gap: $admin-gap-tight;
+
+	> :first-child {
+		flex: 1;
+		min-inline-size: 0;
+		font-size: $admin-type-card-title;
+	}
+}
+
+.panel-body {
+	display: flex;
+	flex-direction: column;
+	gap: $admin-gap-tight;
+}
+
+.panel-empty,
+.panel-error {
+	margin: 0;
+	color: $color-secondary;
+	font-size: $admin-label-size;
+}
+
+.panel-error {
+	color: $status-error;
+}

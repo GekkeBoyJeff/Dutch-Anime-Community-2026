@@ -34,6 +34,8 @@ export { default as ToggleGroup } from '@/components/components/ToggleGroup';
 export { default as Pagination, PaginationEllipsis } from '@/components/components/Pagination';
 export type { PaginationProps, PaginationEllipsisProps, PaginationTranslations } from '@/components/components/Pagination';
 export { default as PermissionGroups } from '@/components/components/PermissionGroups';
+export { default as Panel } from '@/components/components/Panel';
+export type { Tone } from '@/components/components/tone';
 export { default as FilterBar } from '@/components/components/FilterBar';
 export { default as Combobox } from '@/components/components/Combobox';
 export { default as Swiper } from '@/components/components/Swiper';
