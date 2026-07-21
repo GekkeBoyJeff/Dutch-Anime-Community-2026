@@ -1,6 +1,6 @@
 // The admin top bar mirrors the public nav's fixed placement so the shell's existing top padding on
 // .dashboard-main clears it, but reads as a dense tool: one card bar, grouped triggers, click-to-open
-// panels. Tokens only; the portaled popup carries data-theme/data-colorset so admin tokens resolve there.
+// panels. Tokens only; the popup portals to <body>, which already carries the theme the dashboard runs under.
 .mega-menu {
 	position: fixed;
 	inset-block-start: spacing(m);
@@ -23,25 +23,9 @@
 		margin-block-start: spacing(m);
 		margin-inline: spacing(m);
 		box-shadow: $shadow-card;
-		transition:
-			border-end-start-radius $speed-fast $ease-out,
-			border-end-end-radius $speed-fast $ease-out,
-			box-shadow $speed-fast $ease-out;
 
 		@include bp(l) {
 			padding-inline: spacing(l);
-		}
-	}
-
-	// Fusion: while a desktop panel is open the bar squares its bottom corners and drops its own shadow so
-	// its bottom border becomes the seam between bar and panel — the two read as one capsule-into-card.
-	&.is-panel-open .mega-menu-bar {
-		border-radius: $rounded-l;
-		
-		@include bp(l) {
-			border-end-start-radius: 0;
-			border-end-end-radius: 0;
-			box-shadow: none;
 		}
 	}
 
@@ -244,14 +228,10 @@
 	}
 }
 
-// Full-width fused panel. The positioner is anchored to the whole bar, so width/position come from CSS,
-// not Floating-UI math: the popup is exactly the bar's width (`--anchor-width`) and its top corners square
-// off to meet the bar's squared bottom — one continuous silhouette. The positioner never intercepts
-// pointer events (an invisible closed panel must not block the content below it); only the popup does.
-$mega-panel-min-block: 21rem;
-$mega-rail-inline: 19rem;
-$mega-highlight-inline: 20rem;
-
+// A card that floats below the open trigger, not a slab welded to the bar: Floating-UI owns position and
+// the panel is only as wide as its content needs, so the bar keeps its pill and nothing shifts on open.
+// The positioner never intercepts pointer events (an invisible closed panel must not block the content
+// below it); only the popup does.
 .mega-menu-positioner {
 	z-index: $z-popover;
 	pointer-events: none;
@@ -259,15 +239,11 @@ $mega-highlight-inline: 20rem;
 
 .mega-menu-popup {
 	pointer-events: auto;
-	inline-size: var(--anchor-width);
-	background-color: $page;
-	border: 0.0625rem solid $border-color;
-	border-block-start: 0;
-	border-start-start-radius: 0;
-	border-start-end-radius: 0;
-	border-end-start-radius: $rounded-l;
-	border-end-end-radius: $rounded-l;
-	box-shadow: $shadow-card;
+	max-inline-size: min(40rem, calc(100vw - #{spacing(4xl)}));
+	padding: $admin-gap;
+	border-radius: $admin-radius-panel;
+	background-color: $background-color;
+	box-shadow: $admin-ring, $admin-shadow-3;
 	overflow: hidden;
 	transition:
 		transform $speed-fast $ease-out,
@@ -285,83 +261,8 @@ $mega-highlight-inline: 20rem;
 	}
 }
 
-// The panel is one grid: a persistent group-switcher rail (left) + the swappable viewport (middle+right).
-// The rail lives here, outside the viewport, so switching groups never cross-fades it; its five cards pin
-// the panel's height floor, so hopping between a 1-link and a 4-link group never resizes the card.
-.mega-menu-shell {
-	display: grid;
-	grid-template-columns: $mega-rail-inline 1fr;
-	min-block-size: $mega-panel-min-block;
-}
-
-.mega-menu-rail {
-	display: flex;
-	flex-direction: column;
-	gap: spacing(xs);
-	padding: spacing(l);
-	border-inline-end: 0.0625rem solid $border-color;
-
-	.mega-menu-rail-card {
-		display: flex;
-		align-items: center;
-		gap: spacing(s);
-		padding: spacing(m);
-		border: 0;
-		border-radius: $rounded-m;
-		background: transparent;
-		text-align: start;
-		cursor: pointer;
-		transition: background-color $speed-fast $ease;
-
-		@include interactive {
-			background-color: $surface-muted;
-		}
-
-		&.is-active {
-			background-color: $tint-accent;
-
-			.mega-menu-rail-label {
-				color: $accent-text;
-			}
-
-			.mega-menu-rail-chevron {
-				color: $accent-text;
-				transform: translateX(0.125rem);
-			}
-		}
-	}
-
-	.mega-menu-rail-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.15rem;
-		min-inline-size: 0;
-	}
-
-	.mega-menu-rail-label {
-		font-weight: $weight-semibold;
-		font-size: 1rem;
-		color: $color;
-	}
-
-	.mega-menu-rail-description {
-		font-size: 0.8125rem;
-		line-height: 1.35;
-		color: $color-secondary;
-	}
-
-	.mega-menu-rail-chevron {
-		inline-size: 1rem;
-		block-size: 1rem;
-		margin-inline-start: auto;
-		flex: none;
-		color: $color-secondary;
-		transition: transform $speed-fast $ease, color $speed-fast $ease;
-	}
-}
-
-// The clipping viewport. Its active content sits in normal flow and is stretched to the panel's height
-// floor (grid), so both zone dividers run full-height; only the outgoing content during a swap is absolute.
+// The clipping viewport. Its active content sits in normal flow; only the outgoing content during a swap
+// is absolute.
 .mega-menu-viewport {
 	position: relative;
 	display: grid;
@@ -377,14 +278,11 @@ $mega-highlight-inline: 20rem;
 	}
 }
 
+// Links first, the group's live fact under them: at this width a side-by-side highlight would squeeze both.
 .mega-menu-panel {
 	display: grid;
-	grid-template-columns: 1fr;
+	gap: $admin-gap;
 	block-size: 100%;
-
-	&.has-highlight {
-		grid-template-columns: minmax(24rem, 1fr) $mega-highlight-inline;
-	}
 
 	.mega-menu-link-list {
 		display: grid;
@@ -393,13 +291,8 @@ $mega-highlight-inline: 20rem;
 		gap: spacing(xs);
 		align-content: start;
 		margin: 0;
-		padding: spacing(l);
+		padding: 0;
 		list-style: none;
-	}
-
-	.mega-menu-highlight-slot {
-		border-inline-start: 0.0625rem solid $border-color;
-		padding: spacing(l) spacing(xl);
 	}
 }
 
@@ -812,7 +705,6 @@ $mega-highlight-inline: 20rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.mega-menu-bar,
 	.mega-menu-popup,
 	.mega-menu-content,
 	.mega-menu-scrim,
@@ -822,8 +714,6 @@ $mega-highlight-inline: 20rem;
 	.mega-menu-home-link,
 	.mega-menu-trigger,
 	.mega-menu-trigger .mega-menu-chevron,
-	.mega-menu-rail-chevron,
-	.highlight-card .cta .circle,
 	.mega-menu-profile,
 	.mega-menu-profile-chevron {
 		transition: none;

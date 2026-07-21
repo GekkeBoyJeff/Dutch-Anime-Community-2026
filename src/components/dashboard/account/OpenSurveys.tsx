@@ -3,14 +3,12 @@
 import Button from '@/components/basics/Button';
 import Entry from '@/components/components/Entry';
 import Panel from '@/components/components/Panel';
-
-import type { WidgetProps } from './types';
-import { useWidgetData } from './useWidgetData';
+import { useWidgetData } from '@/components/dashboard/home/useWidgetData';
 
 // The open surveys THIS member may fill and hasn't yet — the one reason a plain user has to come back.
 // Reuses my_open_surveys() (audience + not-yet-submitted filter live in the SECURITY DEFINER RPC), and
-// each row deep-links into the /enquete fill flow. gate='always' in the registry, so every member sees it.
-const OpenSurveysFillWidget = ({ session: _session }: WidgetProps) => {
+// each row deep-links into the /enquete fill flow.
+const OpenSurveys = () => {
 	const { loading, error, data } = useWidgetData(async (db) => {
 		const { data: rows, error: queryError } = await db.rpc('my_open_surveys');
 		if (queryError) throw queryError;
@@ -38,4 +36,4 @@ const OpenSurveysFillWidget = ({ session: _session }: WidgetProps) => {
 	);
 };
 
-export default OpenSurveysFillWidget;
+export default OpenSurveys;

@@ -124,7 +124,7 @@ const PanelLink = ({ link, active }: { link: MegaMenuLink; active: boolean }) =>
 // The swappable half of one group's panel: the link rows (middle) and the group's highlight (right). The
 // left group-switcher rail lives once in the popup, outside the viewport, so it never cross-fades on swap.
 const MegaPanelBody = ({ group, pathname }: { group: MegaMenuGroup; pathname: string }) => (
-	<div className={classNames('mega-menu-panel', Boolean(group.highlight) && 'has-highlight')}>
+	<div className="mega-menu-panel">
 		<ul className="mega-menu-link-list">
 			{group.links.map((link) => (
 				<li key={link.key}>
@@ -370,7 +370,6 @@ const DashboardHeader = ({
 	const [internalOpen, setInternalOpen] = useState(false);
 	const [seenPath, setSeenPath] = useState(pathname);
 	const rootRef = useRef<HTMLElement | null>(null);
-	const barRef = useRef<HTMLDivElement | null>(null);
 	const { listRef, tracker } = useTracker([pathname, value]);
 
 	// Controlled/uncontrolled: an external open+onOpenChange (e.g. BottomTabBar's "Meer" tab) drives the
@@ -491,9 +490,9 @@ const DashboardHeader = ({
 				if (typeof ref === 'function') ref(element);
 				else if (ref) ref.current = element;
 			}}
-			className={classNames('mega-menu', open && 'is-open', value !== null && 'is-panel-open', className)}
+			className={classNames('mega-menu', open && 'is-open', className)}
 		>
-			<div className="mega-menu-bar" ref={barRef}>
+			<div className="mega-menu-bar">
 				{brand && (
 					<Interactive url={home?.href ?? '/dashboard'} className="mega-menu-brand" aria-label={brand.title}>
 						{brand.src && <Media variant="plain" type="image" src={brand.src} alt="" width={40} height={40} className="mega-menu-logo" />}
@@ -559,43 +558,11 @@ const DashboardHeader = ({
 					</NavigationMenu.List>
 
 					<NavigationMenu.Portal>
-						{/* Anchored to the whole bar (not the active trigger): position/width are owned by CSS, so the
-						    panel is full-width and never shifts or flips between groups — it reads as one piece with the bar. */}
-						<NavigationMenu.Positioner
-							className="mega-menu-positioner"
-							anchor={barRef}
-							positionMethod="fixed"
-							side="bottom"
-							align="start"
-							sideOffset={0}
-							collisionAvoidance={{ side: 'none', align: 'none' }}
-						>
+						{/* Anchored to the open trigger, a notch below the bar: the bar keeps its pill and the panel
+						    floats free, so opening a group shifts nothing. The trigger row is the group switcher. */}
+						<NavigationMenu.Positioner className="mega-menu-positioner" positionMethod="fixed" side="bottom" align="start" sideOffset={12}>
 							<NavigationMenu.Popup className="mega-menu-popup">
-								<div className="mega-menu-shell">
-									<div className="mega-menu-rail">
-										{groups.filter((group) => !group.directHref).map((group) => (
-											// A switcher card per group: hover/tap swaps the open panel instantly (no reopen flash).
-											// A pointer affordance only (tabIndex -1) — the trigger row owns the keyboard group-switching,
-											// so tabbing into the panel reaches the links directly instead of hopping between groups.
-											<button
-												key={group.key}
-												type="button"
-												tabIndex={-1}
-												className={classNames('mega-menu-rail-card', group.key === value && 'is-active')}
-												aria-current={group.key === value ? 'true' : undefined}
-												onMouseEnter={() => setValue(group.key)}
-												onClick={() => setValue(group.key)}
-											>
-												<span className="mega-menu-rail-text">
-													<span className="mega-menu-rail-label">{group.label}</span>
-													<span className="mega-menu-rail-description">{group.description}</span>
-												</span>
-												<Icon name="chevron-right" className="mega-menu-rail-chevron" />
-											</button>
-										))}
-									</div>
-									<NavigationMenu.Viewport className="mega-menu-viewport" />
-								</div>
+								<NavigationMenu.Viewport className="mega-menu-viewport" />
 							</NavigationMenu.Popup>
 						</NavigationMenu.Positioner>
 					</NavigationMenu.Portal>

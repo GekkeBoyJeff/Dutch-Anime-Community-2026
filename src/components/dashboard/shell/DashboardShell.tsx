@@ -2,10 +2,8 @@
 
 import Container from '@/components/basics/Container';
 import Title from '@/components/basics/Title';
-import Card from '@/components/components/Card';
 import { emphasisRole, orderedWidgets } from '@/components/dashboard/home/registry';
 import { useDashboardGuard } from '@/hooks/useDashboardGuard';
-import { DASHBOARD_SECTIONS } from '@/lib/auth/dashboard-sections';
 
 import HomeHero from '../home/HomeHero';
 
@@ -14,8 +12,8 @@ import DashboardHomeSkeleton from './DashboardHomeSkeleton';
 
 // The staff hub, action-first: a greeting hero with the next-up card on top, then a personal "Voor jou"
 // column beside ambient "Rondom DAC" context, and full-width "Beheer" for managers — all gated by the
-// user's permissions. A user with no gated widgets still gets the hero plus plain section links, so the
-// page is never a dead end.
+// user's permissions. Everyone who reaches this screen holds at least one dashboard section (the guard
+// enforces that), so there is no empty-handed fallback to render.
 const DashboardShell = () => {
 	const { ready, fallback, session, permissions } = useDashboardGuard(undefined, { className: 'dashboard', label: 'Dashboard laden', skeleton: <DashboardHomeSkeleton /> });
 	if (!ready || !session) return fallback;
@@ -28,8 +26,6 @@ const DashboardShell = () => {
 	// Admin's Beheer-zone folds into collapsible domain groups (blueprint §1b); every other role keeps the
 	// flat grid — they hold few org widgets and want them at hand, not behind a disclosure.
 	const groupOrg = role === 'admin';
-	const hasGatedWidget = widgets.some((widget) => widget.requiredPermission !== 'always');
-	const sections = DASHBOARD_SECTIONS.filter((section) => permissions.has(section.permission));
 
 	return (
 		<Container className="dashboard">
@@ -75,16 +71,6 @@ const DashboardShell = () => {
 						<p className="beheer-empty">Niets wacht nu op je.</p>
 					</section>
 				))}
-
-			{!hasGatedWidget && (
-				<div className="dashboard-grid">
-					{sections.map((section) => (
-						<Card key={section.key} href={section.href} linkLabel={section.title} header={<Title size={4}>{section.title}</Title>}>
-							{section.description}
-						</Card>
-					))}
-				</div>
-			)}
 		</Container>
 	);
 };

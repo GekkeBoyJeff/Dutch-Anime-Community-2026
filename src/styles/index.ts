@@ -61,7 +61,6 @@ import '@/styles/components/components/FileUpload.scss';
 import '@/styles/components/components/FilterBar.scss';
 import '@/styles/components/components/Form.scss';
 import '@/styles/components/components/Gallery.scss';
-import '@/styles/components/dashboard/components/HighlightCard.scss';
 import '@/styles/components/components/ImageList.scss';
 import '@/styles/components/components/InputGroup.scss';
 import '@/styles/components/dashboard/components/ListboxCards.scss';

@@ -6,6 +6,7 @@ import { useEffect, type ReactNode } from 'react';
 
 import Container from '@/components/basics/Container';
 import Spinner from '@/components/basics/Spinner';
+import { DASHBOARD_SECTIONS } from '@/lib/auth/dashboard-sections';
 import { usePermissions, type Permission } from '@/lib/auth/permissions';
 
 interface DashboardGuardOptions {
@@ -30,15 +31,17 @@ interface DashboardGuard {
 }
 
 // The guard/redirect/loading block every dashboard screen repeated, extracted once. Pass the permission
-// a screen requires; omit it for the hub — every signed-in member reaches it (blueprint §1: the plain user
-// gets a real home — greeting + open-enquête + badges — never a dead end, so a zero-permission member is
-// NOT bounced to /account). Signed-out → /login?next=<here>; authorised-but-missing the permission → /dashboard.
+// a screen requires; omit it for the hub, which admits anyone holding at least one dashboard section.
+// Signed-out → /login?next=<here>; signed in but unauthorised → /dashboard (or /account for the hub).
+// This is routing, not enforcement: RLS is the security boundary, so a member without permissions can
+// read nothing anyway — the redirect only keeps them off a screen that would render empty.
 // Keep each screen's data fetch in its OWN effect, gated on `ready` — do not fold the fetch in here.
 export const useDashboardGuard = (permission?: Permission, options?: DashboardGuardOptions): DashboardGuard => {
 	const router = useRouter();
 	const pathname = usePathname();
 	const { permissions, loading, session } = usePermissions();
-	const allowed = permission ? permissions.has(permission) : Boolean(session);
+	const holdsAnySection = DASHBOARD_SECTIONS.some((section) => permissions.has(section.permission));
+	const allowed = permission ? permissions.has(permission) : Boolean(session) && holdsAnySection;
 
 	useEffect(() => {
 		if (loading) return;
@@ -46,7 +49,7 @@ export const useDashboardGuard = (permission?: Permission, options?: DashboardGu
 			router.replace(`/login?next=${pathname}`);
 			return;
 		}
-		if (permission && !allowed) router.replace('/dashboard');
+		if (!allowed) router.replace(permission ? '/dashboard' : '/account');
 	}, [loading, session, allowed, permission, pathname, router]);
 
 	const ready = !loading && Boolean(session) && allowed;

@@ -1,24 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import Icon from '@/components/basics/Icon';
+import Metric from '@/components/components/Metric';
+import Moment from '@/components/components/Moment';
+import Panel from '@/components/components/Panel';
 import Navigation, { type MegaMenuGroup } from '@/components/structures/Navigation';
 import { NavigationProps } from '@/lib/content/schema/structures/navigation';
 
-// A static stand-in for the live right-zone highlight the dashboard wires per group (NavHighlights).
-const mockHighlight = (eyebrow: string, lead: string, sub: string, ctaLabel: string) => (
-	<div className="mega-menu-highlight">
-		<span className="mega-menu-highlight-eyebrow">{eyebrow}</span>
-		<div className="mega-menu-highlight-body">
-			<span className="mega-menu-highlight-lead">{lead}</span>
-			<span className="mega-menu-highlight-sub">{sub}</span>
-		</div>
-		<a href="#" className="mega-menu-highlight-cta">
-			<span>{ctaLabel}</span>
-			<span className="mega-menu-highlight-cta-icon" aria-hidden="true">
-				<Icon name="arrow-up-right" />
-			</span>
-		</a>
-	</div>
+// Static stand-ins for the live highlights the dashboard wires per group (NavHighlights), in the same
+// two shapes: a moment on a rail, or a single figure.
+const mockMoment = (panelTitle: string, marker: string, title: string, meta: string, linkLabel: string) => (
+	<Panel title={panelTitle} href="#" linkLabel={linkLabel}>
+		<Moment.List>
+			<Moment marker={marker} title={title} meta={meta} />
+		</Moment.List>
+	</Panel>
+);
+
+const mockMetric = (panelTitle: string, label: string, value: string, linkLabel: string) => (
+	<Panel title={panelTitle} href="#" linkLabel={linkLabel}>
+		<Metric label={label} value={value} />
+	</Panel>
 );
 
 // Mock groups mirroring buildNavGroups()'s shape from DASHBOARD_GROUPS — no Supabase here.
@@ -32,7 +33,7 @@ const dashboardGroups: MegaMenuGroup[] = [
 			{ key: 'my-inventory', label: 'Mijn spullen', description: 'Je eigen items en wat je moet meenemen.', href: '/dashboard/my-inventory', icon: 'star' },
 			{ key: 'expenses', label: 'Declaraties', description: 'Dien kosten in met bon en beoordeel declaraties.', href: '/dashboard/expenses', icon: 'file' },
 		],
-		highlight: mockHighlight('Volgende shift', '12-08 10:00 – 16:00', 'Abunai! · Kassa', 'Naar mijn conventies'),
+		highlight: mockMoment('Volgende shift', '12 aug', '12-08 10:00 – 16:00', 'Abunai! · Kassa', 'Naar mijn conventies'),
 	},
 	{
 		key: 'operaties',
@@ -44,7 +45,7 @@ const dashboardGroups: MegaMenuGroup[] = [
 			{ key: 'team', label: 'Team', description: 'Standteam en yakuza met shifts en warnings.', href: '/dashboard/team', icon: 'users' },
 			{ key: 'moderation', label: 'Moderatie', description: 'Profielen, warnings, links en bans.', href: '/dashboard/moderation', icon: 'warning' },
 		],
-		highlight: mockHighlight('Volgende conventie', 'Abunai! 2026', 'vrijdag 14 augustus 2026 · Veldhoven', 'Open conventie'),
+		highlight: mockMoment('Volgende conventie', '14 aug', 'Abunai! 2026', 'vrijdag 14 augustus 2026 · Veldhoven', 'Open conventie'),
 	},
 	{
 		key: 'content',
@@ -55,7 +56,7 @@ const dashboardGroups: MegaMenuGroup[] = [
 			{ key: 'media', label: 'Media', description: 'Upload en beheer afbeeldingen.', href: '/upload', icon: 'upload' },
 			{ key: 'surveys', label: 'Enquêtes', description: 'Maak en beheer enquêtes en polls.', href: '/dashboard/surveys', icon: 'list' },
 		],
-		highlight: mockHighlight('Media', 'hero-abunai-2026.jpg', 'Laatst geüpload bestand.', 'Naar media'),
+		highlight: mockMetric('Media', 'Laatst geüpload bestand', 'hero-abunai-2026.jpg', 'Naar media'),
 	},
 	{
 		key: 'systeem',
@@ -66,7 +67,7 @@ const dashboardGroups: MegaMenuGroup[] = [
 			{ key: 'notifications', label: 'Meldingen', description: 'Stuur meldingen naar leden.', href: '/dashboard/notifications', icon: 'mail' },
 			{ key: 'logs', label: 'Logs', description: 'Activiteit en audit-trail van het beheer.', href: '/dashboard/logs', icon: 'clock' },
 		],
-		highlight: mockHighlight('Laatste wijziging', 'Abunai! 2026', 'Events · 19-07 14:22', 'Naar logs'),
+		highlight: mockMoment('Laatste wijziging', '14:22', 'Abunai! 2026', 'Events · 19 jul', 'Naar logs'),
 	},
 ];
 

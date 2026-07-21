@@ -2,13 +2,15 @@
 
 import type { ReactNode } from 'react';
 
-import HighlightCard from '@/components/dashboard/components/HighlightCard';
+import Metric from '@/components/components/Metric';
+import Moment from '@/components/components/Moment';
+import Panel from '@/components/components/Panel';
 import { formatDate } from '@/lib/formatDate';
 
-import { fmtRange } from '../events/datetime';
+import { fmtDayMarker, fmtRange } from '../events/datetime';
 import { useWidgetData } from '../home/useWidgetData';
 
-// The mega-menu's right-zone highlight per group: one live, meaningful fact drawn from the same reads the
+// The mega-menu's highlight per group: one live, meaningful fact drawn from the same reads the
 // home widgets already run — no new migrations. Each renders only when its panel first opens (Base UI keeps
 // inactive content unmounted), so the queries are lazy. Errors degrade to the group's quiet empty state.
 
@@ -36,16 +38,16 @@ const MijnHighlight = () => {
 	});
 
 	return (
-		<HighlightCard
-			eyebrow="Volgende shift"
-			href="/dashboard/my-inventory"
-			ctaLabel="Naar mijn conventies"
-			loading={loading}
-			isEmpty={!data}
-			emptyLabel="Nog geen shifts toegewezen."
-			lead={data && fmtRange(data.shift.starts_at, data.shift.ends_at)}
-			sub={data && `${data.eventName}${data.shift.station ? ` · ${data.shift.station}` : ''}`}
-		/>
+		<Panel title="Volgende shift" href="/dashboard/my-inventory" linkLabel="Naar mijn conventies" isEmpty={!loading && !data} emptyLabel="Nog geen shifts toegewezen.">
+			<Moment.List>
+				<Moment
+					marker={data ? fmtDayMarker(data.shift.starts_at) : ''}
+					title={data ? fmtRange(data.shift.starts_at, data.shift.ends_at) : ''}
+					meta={data ? `${data.eventName}${data.shift.station ? ` · ${data.shift.station}` : ''}` : undefined}
+					loading={loading}
+				/>
+			</Moment.List>
+		</Panel>
 	);
 };
 
@@ -64,16 +66,22 @@ const OperatiesHighlight = () => {
 	});
 
 	return (
-		<HighlightCard
-			eyebrow="Volgende conventie"
+		<Panel
+			title="Volgende conventie"
 			href={data ? `/dashboard/events?id=${data.id}` : '/dashboard/events'}
-			ctaLabel="Open conventie"
-			loading={loading}
-			isEmpty={!data}
+			linkLabel="Open conventie"
+			isEmpty={!loading && !data}
 			emptyLabel="Geen geplande conventies."
-			lead={data?.name}
-			sub={data && `${data.starts_on ? formatDate(data.starts_on, { dateStyle: 'full' }) ?? data.starts_on : 'Datum onbekend'}${data.location ? ` · ${data.location}` : ''}`}
-		/>
+		>
+			<Moment.List>
+				<Moment
+					marker={data?.starts_on ? fmtDayMarker(data.starts_on) : ''}
+					title={data?.name ?? ''}
+					meta={data ? `${data.starts_on ? (formatDate(data.starts_on, { dateStyle: 'full' }) ?? data.starts_on) : 'Datum onbekend'}${data.location ? ` · ${data.location}` : ''}` : undefined}
+					loading={loading}
+				/>
+			</Moment.List>
+		</Panel>
 	);
 };
 
@@ -87,16 +95,9 @@ const FinancienHighlight = () => {
 
 	const count = data ?? 0;
 	return (
-		<HighlightCard
-			eyebrow="Te beoordelen"
-			href="/dashboard/expenses"
-			ctaLabel="Naar declaratie-beheer"
-			loading={loading}
-			isEmpty={count === 0}
-			emptyLabel="Geen openstaande declaraties."
-			lead={`${count} ${count === 1 ? 'declaratie' : 'declaraties'}`}
-			sub="wachten op je beoordeling."
-		/>
+		<Panel title="Te beoordelen" href="/dashboard/expenses" linkLabel="Naar declaratie-beheer" isEmpty={!loading && count === 0} emptyLabel="Geen openstaande declaraties.">
+			<Metric label="Wachten op je beoordeling" value={count} loading={loading} tone={count > 0 ? 'negative' : 'neutral'} />
+		</Panel>
 	);
 };
 
@@ -110,7 +111,9 @@ const ContentHighlight = () => {
 	});
 
 	return (
-		<HighlightCard eyebrow="Media" href="/upload" ctaLabel="Naar media" loading={loading} isEmpty={!data} emptyLabel="Nog geen media geüpload." lead={data?.name} sub="Laatst geüpload bestand." />
+		<Panel title="Media" href="/upload" linkLabel="Naar media" isEmpty={!loading && !data} emptyLabel="Nog geen media geüpload.">
+			<Metric label="Laatst geüpload bestand" value={data?.name ?? ''} loading={loading} />
+		</Panel>
 	);
 };
 
@@ -134,16 +137,16 @@ const SysteemHighlight = () => {
 	});
 
 	return (
-		<HighlightCard
-			eyebrow="Laatste wijziging"
-			href="/dashboard/logs"
-			ctaLabel="Naar logs"
-			loading={loading}
-			isEmpty={!data}
-			emptyLabel="Nog geen activiteit."
-			lead={data && labelOf(data)}
-			sub={data && `${humanizeTable(data.table_name)} · ${new Date(data.created_at).toLocaleString('nl-NL', { dateStyle: 'short', timeStyle: 'short' })}`}
-		/>
+		<Panel title="Laatste wijziging" href="/dashboard/logs" linkLabel="Naar logs" isEmpty={!loading && !data} emptyLabel="Nog geen activiteit.">
+			<Moment.List>
+				<Moment
+					marker={data ? new Date(data.created_at).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) : ''}
+					title={data ? labelOf(data) : ''}
+					meta={data ? `${humanizeTable(data.table_name)} · ${new Date(data.created_at).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}` : undefined}
+					loading={loading}
+				/>
+			</Moment.List>
+		</Panel>
 	);
 };
 

@@ -4,13 +4,10 @@ import { emphasisRole, type AppRole, type Permission } from '@/lib/auth/permissi
 
 import AccessChangesWidget from './AccessChangesWidget';
 import AuditFlagsWidget from './AuditFlagsWidget';
-import BadgesShowcase from './BadgesShowcase';
 import EntryTicketWidget from './EntryTicketWidget';
 import EventsTimelineWidget from './EventsTimelineWidget';
-import LatestAnnouncementWidget from './LatestAnnouncementWidget';
 import MyExpensesWidget from './MyExpensesWidget';
 import NextShiftWidget from './NextShiftWidget';
-import OpenSurveysFillWidget from './OpenSurveysFillWidget';
 import OpenSurveysWidget from './OpenSurveysWidget';
 import PackingListWidget from './PackingListWidget';
 import PendingReviewsWidget from './PendingReviewsWidget';
@@ -38,8 +35,8 @@ export type OrgDomain = 'operatie' | 'content' | 'systeem';
 
 export interface WidgetDef {
 	key: string;
-	/** The permission that unlocks it, or 'always' for one every signed-in member sees */
-	requiredPermission: Permission | 'always';
+	/** The permission that unlocks it */
+	requiredPermission: Permission;
 	zone: WidgetZone;
 	/** Per-role emphasis; absent roles (and any unlisted) fall back to 'normal'. */
 	weight?: Partial<Record<AppRole, WidgetWeight>>;
@@ -54,10 +51,7 @@ export const WIDGETS: WidgetDef[] = [
 	{ key: 'packing-list', requiredPermission: 'inventory.view', zone: 'personal', weight: { 'stand-staff': 'lead' }, component: PackingListWidget },
 	{ key: 'entry-ticket-info', requiredPermission: 'inventory.view', zone: 'personal', weight: { 'stand-staff': 'lead' }, component: EntryTicketWidget },
 	{ key: 'my-expenses', requiredPermission: 'expenses.view', zone: 'personal', component: MyExpensesWidget },
-	{ key: 'open-surveys-fill', requiredPermission: 'always', zone: 'personal', weight: { user: 'lead', 'stand-staff': 'quiet', yakuza: 'quiet', admin: 'quiet' }, component: OpenSurveysFillWidget },
-	{ key: 'badges-showcase', requiredPermission: 'always', zone: 'personal', weight: { user: 'lead', 'stand-staff': 'quiet', yakuza: 'quiet', admin: 'quiet' }, component: BadgesShowcase },
 	{ key: 'events-timeline', requiredPermission: 'inventory.view', zone: 'ambient', component: EventsTimelineWidget },
-	{ key: 'latest-announcement', requiredPermission: 'always', zone: 'ambient', weight: { user: 'lead' }, component: LatestAnnouncementWidget },
 	{ key: 'upcoming-convention', requiredPermission: 'inventory.manage', zone: 'org', domain: 'operatie', weight: { yakuza: 'lead' }, component: UpcomingConventionWidget },
 	{ key: 'pending-reviews', requiredPermission: 'expenses.manage', zone: 'org', domain: 'operatie', weight: { yakuza: 'lead' }, component: PendingReviewsWidget },
 	{ key: 'team-status', requiredPermission: 'staff.manage', zone: 'org', domain: 'operatie', weight: { yakuza: 'lead' }, component: TeamStatusWidget },
@@ -68,9 +62,9 @@ export const WIDGETS: WidgetDef[] = [
 	{ key: 'audit-flags', requiredPermission: 'logs.view', zone: 'org', domain: 'systeem', component: AuditFlagsWidget },
 ];
 
-// The widgets a user may see, in registry order. 'always' widgets show for everyone signed in.
+// The widgets a user may see, in registry order.
 export const visibleWidgets = (permissions: ReadonlySet<Permission>): WidgetDef[] =>
-	WIDGETS.filter((widget) => widget.requiredPermission === 'always' || permissions.has(widget.requiredPermission));
+	WIDGETS.filter((widget) => permissions.has(widget.requiredPermission));
 
 export { emphasisRole };
 

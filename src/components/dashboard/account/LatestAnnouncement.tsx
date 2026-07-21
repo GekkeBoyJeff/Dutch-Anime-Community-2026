@@ -4,13 +4,11 @@ import Badge from '@/components/basics/Badge';
 import Moment from '@/components/components/Moment';
 import Panel from '@/components/components/Panel';
 import { fmtDayMarker } from '@/components/dashboard/events/datetime';
+import { useWidgetData } from '@/components/dashboard/home/useWidgetData';
 
-import type { WidgetProps } from './types';
-import { useWidgetData } from './useWidgetData';
-
-// Ambient "Rondom DAC": the newest notification addressed to me (notifications RLS is own-rows), so the
-// latest announcement/melding surfaces on the home without opening /account. Read-only.
-const LatestAnnouncementWidget = ({ session: _session }: WidgetProps) => {
+// Ambient "Rondom DAC": the newest notification addressed to me (notifications RLS is own-rows), lifted
+// out of the full list so the freshest announcement/melding reads at a glance. Read-only.
+const LatestAnnouncement = () => {
 	const { loading, error, data } = useWidgetData(async (db) => {
 		const { data: rows, error: queryError } = await db
 			.from('notifications')
@@ -24,8 +22,6 @@ const LatestAnnouncementWidget = ({ session: _session }: WidgetProps) => {
 	return (
 		<Panel
 			title="Laatste melding"
-			href="/account"
-			linkLabel="Naar meldingen"
 			error={error}
 			isEmpty={!loading && !data}
 			emptyLabel="Nog geen meldingen — je bent helemaal bij."
@@ -44,4 +40,4 @@ const LatestAnnouncementWidget = ({ session: _session }: WidgetProps) => {
 	);
 };
 
-export default LatestAnnouncementWidget;
+export default LatestAnnouncement;
