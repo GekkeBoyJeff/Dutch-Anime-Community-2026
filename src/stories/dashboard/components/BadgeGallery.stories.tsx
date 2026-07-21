@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
+import Panel from '@/components/components/Panel';
 import BadgeGallery from '@/components/dashboard/components/BadgeGallery';
-import AsyncCard from '@/components/dashboard/structures/AsyncCard';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof BadgeGallery> = {
@@ -31,12 +31,16 @@ export const Default: Story = {
 	},
 };
 
-export const Loading: Story = {
-	name: 'Loading',
+export const InPanel: Story = {
+	name: 'In a panel',
 	parameters: {
-		docs: { description: { story: 'BadgeGallery has no loading state of its own — the owning AsyncCard shows its skeleton while the badges load.' } },
+		docs: { description: { story: 'How the dashboard home mounts it: the owning Panel carries the title, the deep link and the empty state, so the gallery itself stays purely presentational.' } },
 	},
-	render: () => <AsyncCard title="Mijn badges" loading />,
+	render: () => (
+		<Panel title="Mijn badges" href="/account" linkLabel="Naar mijn profiel">
+			<BadgeGallery badges={[{ title: 'Oprichter', imageUrl: demoImage.src }, { title: 'Vrijwilliger', imageUrl: demoImage.src }, { title: 'Eventcrew' }]} />
+		</Panel>
+	),
 };
 
 export const Empty: Story = {
