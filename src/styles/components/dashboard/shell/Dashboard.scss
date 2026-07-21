@@ -645,3 +645,16 @@
 		}
 	}
 }
+
+// The admin surface runs a tighter heading scale than the marketing site: one page title and one
+// section heading per screen, sized so a card title and a figure never read as the same level.
+.dashboard {
+	h1 {
+		font-size: 1.75rem;
+		letter-spacing: $tracking-tight;
+	}
+
+	h2 {
+		font-size: 1.125rem;
+	}
+}

@@ -326,6 +326,7 @@ h6,
 	--background-light: #{$white};
 	--color-light: #{$grey-darkest};
 	--color-secondary-light: #{$grey-dark};
+	--color-tertiary-light: #{$grey};
 	--border-light: #{rgba($grey-darkest, 0.12)};
 	--background-hover-light: #{rgba($grey-darkest, 0.05)};
 	--background-active-light: #{rgba($grey-darkest, 0.1)};
@@ -339,6 +340,7 @@ h6,
 	--background-dark: #{$grey-darkest};
 	--color-dark: #{$grey-lightest};
 	--color-secondary-dark: #{$grey-light};
+	--color-tertiary-dark: #{$grey};
 	--border-dark: #{rgba($white, 0.14)};
 	--background-hover-dark: #{rgba($white, 0.08)};
 	--background-active-dark: #{rgba($white, 0.16)};
@@ -381,42 +383,15 @@ h6,
 
 	--section-gutter: #{spacing(l)};
 
-	// Admin "Studio work-surface" design tokens. Namespaced (--admin-*), so defining them globally is
-	// visually inert for the public site — nothing outside the dashboard reads them — but it means
-	// admin overlays that PORTAL to <body> (Select popup, DatePicker calendar, Drawer contents) still
-	// resolve them outside the .page-frame[data-theme='admin'] subtree. The theme-scoped remap of the
-	// SEMANTIC tokens (accent, neutrals, page) stays under [data-theme='admin'] below.
-	--admin-page: #f4f3f1;
-	--admin-surface: #ffffff;
-	--admin-surface-raised: #ffffff;
-	--admin-popover: #ffffff;
-	--admin-sunken: #efedea;
-
-	--admin-ink-1: #1e1b18;
-	--admin-ink-2: #57534e;
-	--admin-ink-3: #8b857e;
-
-	--admin-hairline: #{rgba(#1c1916, 0.09)};
-	--admin-hairline-strong: #{rgba(#1c1916, 0.14)};
-
-	--admin-accent: #eba91f;
-	--admin-accent-strong: #c1870a;
-	--admin-accent-soft: #fdf3dc;
-	--admin-accent-ink: #7a5406;
-	--admin-accent-contrast: #2a2008;
-
-	--admin-shadow-1: 0 0.0625rem 0.125rem #{rgba(#18140f, 0.05)};
-	--admin-shadow-2: 0 0.25rem 0.75rem #{rgba(#18140f, 0.08)}, 0 0.0625rem 0.1875rem #{rgba(#18140f, 0.05)};
-	--admin-shadow-3: 0 0.75rem 2rem #{rgba(#18140f, 0.12)}, 0 0.25rem 0.625rem #{rgba(#18140f, 0.06)};
-	--admin-ring: inset 0 0 0 0.0625rem var(--admin-hairline);
-
+	// Admin work-surface tokens. Colour is deliberately absent: the dashboard runs under the same
+	// [data-theme='dac'] as the site, so every colour it needs already exists as a semantic token.
+	// What is left is measure — a radius or a row height has no palette — plus elevation and the
+	// chart ramp, which have no semantic counterpart. Global on :root so overlays that portal to
+	// <body> (Select popup, DatePicker calendar, Drawer) still resolve them.
 	--admin-radius-control: 0.5rem;
 	--admin-radius-card: 0.875rem;
 	--admin-radius-panel: 1.25rem;
 
-	--admin-focus: 0 0 0 0.1875rem #{rgba(#eba91f, 0.4)};
-
-	// Tool-like density: denser card/gap and cell rhythm than the site-wide spacing scale.
 	--admin-gap: #{spacing(m)};
 	--admin-gap-tight: #{spacing(s)};
 	--admin-gap-loose: #{spacing(xl)};
@@ -424,16 +399,26 @@ h6,
 	--admin-cell-padding-inline: #{spacing(s)};
 	--admin-row-height: 2.5rem;
 	--admin-control-height: 2.25rem;
-	--admin-label-size: 0.8125rem;
 
-	--admin-chart-1: #eba91f;
+	--admin-label-size: 0.8125rem;
+	--admin-type-value: 1.75rem;
+	--admin-type-card-title: 0.9375rem;
+	--admin-type-micro: 0.75rem;
+
+	--admin-shadow-1: 0 0.0625rem 0.125rem #{rgba($black, 0.05)};
+	--admin-shadow-2: 0 0.25rem 0.75rem #{rgba($black, 0.08)}, 0 0.0625rem 0.1875rem #{rgba($black, 0.05)};
+	--admin-shadow-3: 0 0.75rem 2rem #{rgba($black, 0.12)}, 0 0.25rem 0.625rem #{rgba($black, 0.06)};
+	--admin-ring: inset 0 0 0 0.0625rem var(--border-color);
+	--admin-focus: 0 0 0 0.1875rem var(--tint-accent);
+
+	--admin-chart-1: var(--accent);
 	--admin-chart-2: #57534e;
 	--admin-chart-3: #7a9e7e;
 	--admin-chart-4: #c58a3d;
 	--admin-chart-5: #a3564a;
 	--admin-chart-6: #8b857e;
-	--admin-chart-grid: #{rgba(#1c1916, 0.08)};
-	--admin-chart-axis: #8b857e;
+	--admin-chart-grid: var(--border-color);
+	--admin-chart-axis: var(--color-tertiary);
 }
 
 @include bp(l) {
@@ -474,6 +459,7 @@ h6,
 	--background-light: #ffffff;
 	--color-light: #241a22;
 	--color-secondary-light: #6f5f6a;
+	--color-tertiary-light: #948590;
 	--border-light: #e7dcc0;
 	--background-hover-light: #{rgba(#3b2938, 0.05)};
 	--background-active-light: #{rgba(#3b2938, 0.09)};
@@ -487,6 +473,7 @@ h6,
 	--background-dark: #3b2938;
 	--color-dark: #f2ebd7;
 	--color-secondary-dark: #c9b4bf;
+	--color-tertiary-dark: #9a8792;
 	--border-dark: #{rgba(#f2ebd7, 0.14)};
 	--background-hover-dark: #{rgba(#f2ebd7, 0.08)};
 	--background-active-dark: #{rgba(#f2ebd7, 0.16)};
@@ -501,32 +488,6 @@ h6,
 	--scrim-strong: #{rgba(#241a22, 0.78)};
 }
 
-[data-theme='admin'] {
-	--accent: #eba91f;
-	--accent-hover: #d9990f;
-	--accent-active: #c1870a;
-	--accent-contrast: #2a2008;
-	--tint-accent: #{rgba(#eba91f, 0.16)};
-	--accent-text-light: #9a6b08;
-	--accent-text-dark: #f5c24a;
-
-	--background-light: #ffffff;
-	--color-light: #1e1b18;
-	--color-secondary-light: #57534e;
-	--border-light: #{rgba(#1c1916, 0.1)};
-	--background-hover-light: #{rgba(#1c1916, 0.045)};
-	--background-active-light: #{rgba(#1c1916, 0.08)};
-	--surface-faint-light: #{rgba(#1c1916, 0.03)};
-	--surface-muted-light: #{rgba(#1c1916, 0.06)};
-	--surface-muted-strong-light: #{rgba(#1c1916, 0.1)};
-	--surface-track-light: #{rgba(#1c1916, 0.12)};
-	--surface-strong-light: #{rgba(#1c1916, 0.3)};
-	--border-strong-light: #{rgba(#1c1916, 0.22)};
-
-	--page: #f4f3f1;
-	--page-soft: #ffffff;
-}
-
 @each $scheme in 'light', 'dark' {
 	$baseline: '';
 	@if $scheme == 'light' {
@@ -539,6 +500,7 @@ h6,
 		--accent-text: var(--accent-text-#{$scheme});
 		--shadow-focus: 0 0 0 0.1875rem var(--accent-text-#{$scheme});
 		--color-secondary: var(--color-secondary-#{$scheme});
+		--color-tertiary: var(--color-tertiary-#{$scheme});
 		--border-color: var(--border-#{$scheme});
 		--background-hover: var(--background-hover-#{$scheme});
 		--background-active: var(--background-active-#{$scheme});
