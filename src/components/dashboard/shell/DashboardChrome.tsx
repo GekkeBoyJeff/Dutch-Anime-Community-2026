@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
-import RouteReveal from '@/components/dashboard/basics/RouteReveal';
 import DashboardNav from '@/components/dashboard/shell/DashboardNav';
+import RouteReveal from '@/components/dashboard/structures/RouteReveal';
 
 interface DashboardChromeProps {
 	/** The routed dashboard page */

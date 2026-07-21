@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 
 import Button from '@/components/basics/Button';
 import Modal from '@/components/components/Modal';
+import EventLogisticsPanel, { type EventAssignmentRow, type EventTicketRow } from '@/components/dashboard/components/EventLogisticsPanel';
 import PersonPicker, { type PersonOption, type PersonValue } from '@/components/dashboard/forms/PersonPicker';
-import EventLogisticsPanel, { type EventAssignmentRow, type EventTicketRow } from '@/components/dashboard/structures/EventLogisticsPanel';
 import Checkbox from '@/components/forms/Checkbox';
 import Field from '@/components/forms/Field';
 import Select from '@/components/forms/Select';

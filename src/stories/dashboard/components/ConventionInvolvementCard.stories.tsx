@@ -5,7 +5,7 @@ import ConventionInvolvementCard, {
 	type ConventionAssignment,
 	type ConventionShift,
 	type ConventionTicket,
-} from '@/components/dashboard/structures/ConventionInvolvementCard';
+} from '@/components/dashboard/components/ConventionInvolvementCard';
 
 const noop = () => {};
 
@@ -26,7 +26,7 @@ const shifts: ConventionShift[] = [
 ];
 
 const meta: Meta<typeof ConventionInvolvementCard> = {
-	title: 'Dashboard/Structures/ConventionInvolvementCard',
+	title: 'Dashboard/Components/ConventionInvolvementCard',
 	component: ConventionInvolvementCard,
 	parameters: {
 		docs: {

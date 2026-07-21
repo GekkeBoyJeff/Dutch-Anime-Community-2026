@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 
-import ShiftCalendar, { type ShiftBlock } from '@/components/dashboard/structures/ShiftCalendar';
+import ShiftCalendar, { type ShiftBlock } from '@/components/dashboard/components/ShiftCalendar';
 
 // A fixed Saturday so every story renders the same grid regardless of the real date.
 const BASE = new Date(2026, 6, 18);
@@ -30,7 +30,7 @@ const FILLED: ShiftBlock[] = [
 ];
 
 const meta: Meta<typeof ShiftCalendar> = {
-	title: 'Dashboard/Structures/ShiftCalendar',
+	title: 'Dashboard/Components/ShiftCalendar',
 	component: ShiftCalendar,
 	parameters: {
 		layout: 'fullscreen',

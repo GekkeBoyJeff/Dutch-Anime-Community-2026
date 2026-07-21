@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import ProfileHeader from '@/components/dashboard/structures/ProfileHeader';
+import ProfileHeader from '@/components/dashboard/components/ProfileHeader';
 
 const meta: Meta<typeof ProfileHeader> = {
-	title: 'Dashboard/Structures/ProfileHeader',
+	title: 'Dashboard/Components/ProfileHeader',
 	component: ProfileHeader,
 	parameters: {
 		docs: {

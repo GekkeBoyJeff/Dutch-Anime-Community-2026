@@ -12,7 +12,7 @@ import ConfirmDialog from '@/components/components/ConfirmDialog';
 import FileUpload from '@/components/components/FileUpload';
 import Modal from '@/components/components/Modal';
 import { recallRowCount } from '@/components/dashboard/components/DataTableSkeleton';
-import MediaGrid, { type MediaGridItem } from '@/components/dashboard/structures/MediaGrid';
+import MediaGrid, { type MediaGridItem } from '@/components/dashboard/components/MediaGrid';
 import { useDashboardGuard } from '@/hooks/useDashboardGuard';
 import { compressPdf } from '@/lib/pdf/compressPdf';
 import { getBrowserClient } from '@/lib/supabase/client';

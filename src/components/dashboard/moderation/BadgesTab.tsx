@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Button from '@/components/basics/Button';
 import ConfirmDialog from '@/components/components/ConfirmDialog';
 import Drawer from '@/components/components/Drawer';
-import BadgeCard from '@/components/dashboard/basics/BadgeCard';
+import BadgeCard from '@/components/dashboard/components/BadgeCard';
 import Field from '@/components/forms/Field';
 import TextArea from '@/components/forms/TextArea';
 import TextInput from '@/components/forms/TextInput';

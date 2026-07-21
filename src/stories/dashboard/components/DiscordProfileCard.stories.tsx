@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import DiscordProfileCard from '@/components/dashboard/structures/DiscordProfileCard';
+import DiscordProfileCard from '@/components/dashboard/components/DiscordProfileCard';
 
 const meta: Meta<typeof DiscordProfileCard> = {
-	title: 'Dashboard/Structures/DiscordProfileCard',
+	title: 'Dashboard/Components/DiscordProfileCard',
 	component: DiscordProfileCard,
 	parameters: {
 		docs: {

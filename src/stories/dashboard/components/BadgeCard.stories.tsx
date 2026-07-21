@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import BadgeCard from '@/components/dashboard/basics/BadgeCard';
+import BadgeCard from '@/components/dashboard/components/BadgeCard';
 
 const noop = () => {};
 
@@ -11,7 +11,7 @@ const dot =
 	);
 
 const meta: Meta<typeof BadgeCard> = {
-	title: 'Dashboard/Basics/BadgeCard',
+	title: 'Dashboard/Components/BadgeCard',
 	component: BadgeCard,
 	parameters: {
 		docs: {

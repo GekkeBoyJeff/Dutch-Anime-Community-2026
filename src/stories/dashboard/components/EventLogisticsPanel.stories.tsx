@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import EventLogisticsPanel, { type EventAssignmentRow, type EventTicketRow } from '@/components/dashboard/structures/EventLogisticsPanel';
+import EventLogisticsPanel, { type EventAssignmentRow, type EventTicketRow } from '@/components/dashboard/components/EventLogisticsPanel';
 
 const noop = () => {};
 
@@ -16,7 +16,7 @@ const tickets: EventTicketRow[] = [
 ];
 
 const meta: Meta<typeof EventLogisticsPanel> = {
-	title: 'Dashboard/Structures/EventLogisticsPanel',
+	title: 'Dashboard/Components/EventLogisticsPanel',
 	component: EventLogisticsPanel,
 	parameters: {
 		docs: {

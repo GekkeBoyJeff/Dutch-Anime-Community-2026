@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import RouteReveal from '@/components/dashboard/basics/RouteReveal';
+import RouteReveal from '@/components/dashboard/structures/RouteReveal';
 
 const meta: Meta<typeof RouteReveal> = {
-	title: 'Dashboard/Basics/RouteReveal',
+	title: 'Dashboard/Structures/RouteReveal',
 	component: RouteReveal,
 	parameters: {
 		docs: {

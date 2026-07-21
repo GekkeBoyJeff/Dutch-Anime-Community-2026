@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import MediaGrid, { type MediaGridItem } from '@/components/dashboard/structures/MediaGrid';
+import MediaGrid, { type MediaGridItem } from '@/components/dashboard/components/MediaGrid';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof MediaGrid> = {
-	title: 'Dashboard/Structures/MediaGrid',
+	title: 'Dashboard/Components/MediaGrid',
 	component: MediaGrid,
 	parameters: {
 		docs: {

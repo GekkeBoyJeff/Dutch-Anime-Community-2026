@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
+import InventoryItemsTable, { type InventoryItem } from '@/components/dashboard/components/InventoryItemsTable';
 import type { PersonOption } from '@/components/dashboard/forms/PersonPicker';
-import InventoryItemsTable, { type InventoryItem } from '@/components/dashboard/structures/InventoryItemsTable';
 
 const users: PersonOption[] = [
 	{ id: 'u1', username: 'Jeffrey' },
@@ -17,7 +17,7 @@ const items: InventoryItem[] = [
 const noop = () => {};
 
 const meta: Meta<typeof InventoryItemsTable> = {
-	title: 'Dashboard/Structures/InventoryItemsTable',
+	title: 'Dashboard/Components/InventoryItemsTable',
 	component: InventoryItemsTable,
 	parameters: {
 		docs: {
