@@ -1,8 +1,10 @@
 'use client';
 
 import Button from '@/components/basics/Button';
+import Icon from '@/components/basics/Icon';
 import Skeleton from '@/components/basics/Skeleton';
 import Title from '@/components/basics/Title';
+import Entry from '@/components/components/Entry';
 import { formatDate } from '@/lib/formatDate';
 
 export interface NotificationItem {
@@ -46,22 +48,24 @@ const NotificationList = ({ items, onMarkRead, onMarkAll }: NotificationListProp
 					</Button>
 				)}
 			</div>
-			<ul className="con-list">
+			<Entry.List>
 				{items.map((n) => (
-					<li key={n.id} className={n.read_at ? 'con-line' : 'con-line is-unread'}>
-						<div className="con-line-info">
-							<span className="con-line-main">{n.title}</span>
-							{n.body && <span className="con-note">{n.body}</span>}
-							<span className="con-note">{formatDate(n.created_at, { dateStyle: 'medium', timeStyle: 'short' }) ?? n.created_at}</span>
-						</div>
-						{!n.read_at && (
-							<Button variant="ghost" onClick={() => onMarkRead(n.id)}>
-								Gelezen
-							</Button>
-						)}
-					</li>
+					<Entry
+						key={n.id}
+						main={n.title}
+						sub={[n.body, formatDate(n.created_at, { dateStyle: 'medium', timeStyle: 'short' }) ?? n.created_at].filter(Boolean).join(' · ')}
+						tone={n.read_at ? 'neutral' : 'warning'}
+						marker={n.read_at ? undefined : <Icon name="bell" />}
+						trailing={
+							n.read_at ? undefined : (
+								<Button variant="ghost" onClick={() => onMarkRead(n.id)}>
+									Gelezen
+								</Button>
+							)
+						}
+					/>
 				))}
-			</ul>
+			</Entry.List>
 		</section>
 	);
 };

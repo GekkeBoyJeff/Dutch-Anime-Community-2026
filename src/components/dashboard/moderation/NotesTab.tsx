@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 import Button from '@/components/basics/Button';
 import Drawer from '@/components/components/Drawer';
+import Entry from '@/components/components/Entry';
 import Field from '@/components/forms/Field';
 import TextArea from '@/components/forms/TextArea';
 import { formatDate } from '@/lib/formatDate';
@@ -82,22 +83,23 @@ const NotesTab = ({ subjectId, sessionUserId, canManage }: Props) => {
 					</Button>
 				</div>
 			)}
-			<ul className="con-list">
+			<Entry.List>
 				{notes.length === 0 && <li className="con-note">Nog geen notities.</li>}
 				{notes.map((n) => (
-					<li key={n.id} className="con-line">
-						<div className="con-line-info">
-							<span className="con-line-main">{n.body}</span>
-							<span className="con-note">{formatDate(n.created_at, { dateStyle: 'medium', timeStyle: 'short' }) ?? n.created_at}</span>
-						</div>
-						{canManage && (
-							<Button variant="ghost" onClick={() => archive(n.id)}>
-								Archiveren
-							</Button>
-						)}
-					</li>
+					<Entry
+						key={n.id}
+						main={n.body}
+						sub={formatDate(n.created_at, { dateStyle: 'medium', timeStyle: 'short' }) ?? n.created_at}
+						trailing={
+							canManage ? (
+								<Button variant="ghost" onClick={() => archive(n.id)}>
+									Archiveren
+								</Button>
+							) : undefined
+						}
+					/>
 				))}
-			</ul>
+			</Entry.List>
 
 			<Drawer
 				open={form !== null}

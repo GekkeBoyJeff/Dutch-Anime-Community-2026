@@ -5,7 +5,9 @@ import { type SupabaseClient } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
 import Button from '@/components/basics/Button';
+import Icon from '@/components/basics/Icon';
 import Drawer from '@/components/components/Drawer';
+import Entry from '@/components/components/Entry';
 import Field from '@/components/forms/Field';
 import Select from '@/components/forms/Select';
 import TextArea from '@/components/forms/TextArea';
@@ -15,6 +17,11 @@ import { prepareReceipt } from '@/lib/receipts/prepareReceipt';
 import { getBrowserClient } from '@/lib/supabase/client';
 
 type EvidKind = 'image' | 'link' | 'text';
+
+// Marker glyph per evidence kind, so the sort is visible instead of read. The icon set has no
+// picture glyph, so an uploaded image/PDF shares the file glyph and a free note gets the pencil.
+const EVIDENCE_ICON: Record<string, string> = { image: 'file', link: 'link', text: 'edit' };
+
 type Props = {
 	table: 'mod_evidence' | 'mod_link_evidence';
 	fkColumn: 'warning_id' | 'link_id';
@@ -160,35 +167,35 @@ const EvidenceDrawer = ({ table, fkColumn, fkValue, title, canManage, canDelete,
 		>
 			{fkValue && (
 				<div className="inventory-form">
-					<ul className="con-list">
+					<Entry.List>
 						{items.length === 0 && <li className="con-note">Nog geen bewijs.</li>}
 						{items.map((it) => (
-							<li key={it.id} className="con-line">
-								<div className="con-line-info">
-									<span className="con-line-main">
-										{it.kind === 'image' ? 'Afbeelding/PDF' : it.kind === 'link' ? it.url ?? 'Link' : it.body ?? 'Notitie'}
+							<Entry
+								key={it.id}
+								marker={<Icon name={EVIDENCE_ICON[it.kind] ?? 'file'} />}
+								main={it.kind === 'image' ? 'Afbeelding/PDF' : it.kind === 'link' ? it.url ?? 'Link' : it.body ?? 'Notitie'}
+								trailing={
+									<span className="inventory-row-actions">
+										{it.storage_path && (
+											<Button variant="secondary" icon="download" onClick={() => download(it.storage_path as string)}>
+												Open
+											</Button>
+										)}
+										{it.url && (
+											<Button variant="secondary" url={it.url}>
+												Link
+											</Button>
+										)}
+										{canDelete && (
+											<Button variant="ghost" icon="trash" onClick={() => remove(it)}>
+												Verwijder
+											</Button>
+										)}
 									</span>
-								</div>
-								<div className="con-line-actions">
-									{it.storage_path && (
-										<Button variant="secondary" icon="download" onClick={() => download(it.storage_path as string)}>
-											Open
-										</Button>
-									)}
-									{it.url && (
-										<Button variant="secondary" url={it.url}>
-											Link
-										</Button>
-									)}
-									{canDelete && (
-										<Button variant="ghost" icon="trash" onClick={() => remove(it)}>
-											Verwijder
-										</Button>
-									)}
-								</div>
-							</li>
+								}
+							/>
 						))}
-					</ul>
+					</Entry.List>
 					{canManage && (
 						<>
 							<Field name="kind">

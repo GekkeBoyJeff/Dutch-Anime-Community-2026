@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Button from '@/components/basics/Button';
 import Skeleton from '@/components/basics/Skeleton';
 import ConfirmDialog from '@/components/components/ConfirmDialog';
+import Entry from '@/components/components/Entry';
 import Field from '@/components/forms/Field';
 import TextArea from '@/components/forms/TextArea';
 import TextInput from '@/components/forms/TextInput';
@@ -91,22 +92,23 @@ const DonationNotesPanel = ({ notes, canManage, busy, onAdd, onDelete }: Donatio
 					)}
 				</div>
 			)}
-			<ul className="con-list">
+			<Entry.List>
 				{notes.length === 0 && <li className="con-note">Geen donatienotities.</li>}
 				{notes.map((n) => (
-					<li key={n.id} className="con-line">
-						<div className="con-line-info">
-							<span className="con-line-main">{n.note}</span>
-							<span className="con-note">{[n.source, n.noted_on ? formatDate(n.noted_on, { dateStyle: 'medium' }) : null].filter(Boolean).join(' · ')}</span>
-						</div>
-						{canManage && (
-							<Button variant="ghost" onClick={() => setToDelete(n)}>
-								Verwijderen
-							</Button>
-						)}
-					</li>
+					<Entry
+						key={n.id}
+						main={n.note}
+						sub={[n.source, n.noted_on ? formatDate(n.noted_on, { dateStyle: 'medium' }) : null].filter(Boolean).join(' · ')}
+						trailing={
+							canManage ? (
+								<Button variant="ghost" onClick={() => setToDelete(n)}>
+									Verwijderen
+								</Button>
+							) : undefined
+						}
+					/>
 				))}
-			</ul>
+			</Entry.List>
 			<ConfirmDialog
 				open={toDelete !== null}
 				onOpenChange={(o) => !o && setToDelete(null)}
