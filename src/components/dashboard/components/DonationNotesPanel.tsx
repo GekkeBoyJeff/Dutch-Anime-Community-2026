@@ -93,7 +93,7 @@ const DonationNotesPanel = ({ notes, canManage, busy, onAdd, onDelete }: Donatio
 				</div>
 			)}
 			<Entry.List>
-				{notes.length === 0 && <li className="con-note">Geen donatienotities.</li>}
+				{notes.length === 0 && <li className="field-note">Geen donatienotities.</li>}
 				{notes.map((n) => (
 					<Entry
 						key={n.id}

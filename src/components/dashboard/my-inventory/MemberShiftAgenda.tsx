@@ -227,7 +227,7 @@ const MemberShiftAgenda = ({ session }: { session: Session }) => {
 							<div className="con-block">
 								<Title element="h5" size={6} value="Ruil je shift" />
 								{candidates.length === 0 ? (
-									<p className="con-note">Er zijn geen andere teamleden op deze conventie om aan te bieden.</p>
+									<p className="field-note">Er zijn geen andere teamleden op deze conventie om aan te bieden.</p>
 								) : (
 									<>
 										<Field name="offer-to">

@@ -31,7 +31,7 @@ interface UnavailabilityWindowListProps {
  * Presentational; read-only when no callbacks are supplied.
  */
 const UnavailabilityWindowList = ({ windows, emptyLabel = 'Geen onbeschikbaarheidsvensters.', onDecide, onRemove }: UnavailabilityWindowListProps) => {
-	if (windows.length === 0) return <p className="con-note">{emptyLabel}</p>;
+	if (windows.length === 0) return <p className="field-note">{emptyLabel}</p>;
 
 	return (
 		<Entry.List>

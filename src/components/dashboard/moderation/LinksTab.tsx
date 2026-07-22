@@ -117,7 +117,7 @@ const LinksTab = ({ subjectId, sessionUserId, canManage, canDelete }: Props) => 
 				</div>
 			)}
 			<div>
-				{links.length === 0 && <p className="con-note">Nog geen gekoppelde profielen.</p>}
+				{links.length === 0 && <p className="field-note">Nog geen gekoppelde profielen.</p>}
 				{links.map((l) => {
 					const other = otherOf(l);
 					return (

@@ -225,7 +225,7 @@ const Uploader = () => {
 								<ul className="media-usage-list">
 									{selected.usage.map((page) => (
 										<li key={page.path}>
-											<Content element="span">{page.title}</Content> <span className="con-note">({page.path})</span>
+											<Content element="span">{page.title}</Content> <span className="field-note">({page.path})</span>
 										</li>
 									))}
 								</ul>

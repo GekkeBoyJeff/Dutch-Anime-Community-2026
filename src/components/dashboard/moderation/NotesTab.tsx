@@ -84,7 +84,7 @@ const NotesTab = ({ subjectId, sessionUserId, canManage }: Props) => {
 				</div>
 			)}
 			<Entry.List>
-				{notes.length === 0 && <li className="con-note">Nog geen notities.</li>}
+				{notes.length === 0 && <li className="field-note">Nog geen notities.</li>}
 				{notes.map((n) => (
 					<Entry
 						key={n.id}

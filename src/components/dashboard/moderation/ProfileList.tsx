@@ -125,7 +125,7 @@ const ProfileList = ({ canManage, onOpen }: Props) => {
 					{r.merged_into && <StatusBadge domain="request" status="cancelled" label="Samengevoegd" />}
 					{r.active_red > 0 && <StatusBadge domain="warning" status="red" label={`Rood ${r.active_red}`} />}
 					{r.active_yellow > 0 && <StatusBadge domain="warning" status="yellow" label={`Geel ${r.active_yellow}`} />}
-					{r.active_red === 0 && r.active_yellow === 0 && <span className="con-note">Geen</span>}
+					{r.active_red === 0 && r.active_yellow === 0 && <span className="field-note">Geen</span>}
 				</>
 			}
 			onClick={() => onOpen(r.id)}

@@ -100,7 +100,7 @@ const NotificationComposerForm = ({ members, busy, onSend }: NotificationCompose
 							/>
 						</Field>
 					)}
-					<Content element="p" className="con-note">
+					<Content element="p" className="field-note">
 						{all ? 'Alle leden' : `${selected.length} ontvanger(s)`}. Alleen leden met een account ontvangen de melding.
 					</Content>
 				</div>

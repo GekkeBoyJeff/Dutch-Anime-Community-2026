@@ -626,3 +626,11 @@
 .inventory-form .stacked-value-main {
 	white-space: normal;
 }
+
+// Quiet supporting text beside a primary value: an explanation, a timestamp, an empty-state line.
+// The name says what it is; the class it replaced was named for the screen it was born on and never
+// carried a rule at all, so every use of it rendered at full body weight.
+.field-note {
+	color: $color-tertiary;
+	font-size: $admin-type-micro;
+}

@@ -168,7 +168,7 @@ const EvidenceDrawer = ({ table, fkColumn, fkValue, title, canManage, canDelete,
 			{fkValue && (
 				<div className="inventory-form">
 					<Entry.List>
-						{items.length === 0 && <li className="con-note">Nog geen bewijs.</li>}
+						{items.length === 0 && <li className="field-note">Nog geen bewijs.</li>}
 						{items.map((it) => (
 							<Entry
 								key={it.id}

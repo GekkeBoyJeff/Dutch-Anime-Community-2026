@@ -41,11 +41,11 @@ const EvaluationTab = ({ eventId }: { eventId: string }) => {
 
 	return (
 		<div className="inventory-tab">
-			<p className="con-note">Enquêtes gekoppeld aan deze conventie. Aanmaken en beheren doe je in de Enquêtes-sectie.</p>
+			<p className="field-note">Enquêtes gekoppeld aan deze conventie. Aanmaken en beheren doe je in de Enquêtes-sectie.</p>
 			{surveys === null ? (
-				<p className="con-note">Laden…</p>
+				<p className="field-note">Laden…</p>
 			) : surveys.length === 0 ? (
-				<p className="con-note">Nog geen gekoppelde enquête.</p>
+				<p className="field-note">Nog geen gekoppelde enquête.</p>
 			) : (
 				<Entry.List>
 					{surveys.map((s) => (

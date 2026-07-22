@@ -179,7 +179,7 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 
 	const aliasPanel =
 		aliases.length === 0 ? (
-			<p className="con-note">Geen aliassen.</p>
+			<p className="field-note">Geen aliassen.</p>
 		) : (
 			<Entry.List>
 				{aliases.map((a) => (
@@ -187,7 +187,7 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 						key={a.id}
 						main={a.alias}
 						sub={[a.kind, a.source].filter(Boolean).join(' · ')}
-						trailing={<span className="con-note">{formatDate(a.last_seen, { dateStyle: 'medium' }) ?? a.last_seen}</span>}
+						trailing={<span className="field-note">{formatDate(a.last_seen, { dateStyle: 'medium' }) ?? a.last_seen}</span>}
 					/>
 				))}
 			</Entry.List>
@@ -195,7 +195,7 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 
 	const attendancePanel =
 		attendance.length === 0 ? (
-			<p className="con-note">Geen aanwezigheid geregistreerd.</p>
+			<p className="field-note">Geen aanwezigheid geregistreerd.</p>
 		) : (
 			<Entry.List>
 				{attendance.map((a) => (
@@ -206,7 +206,7 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 
 	const conductPanel =
 		conduct.length === 0 ? (
-			<p className="con-note">Geen gedragsnotities.</p>
+			<p className="field-note">Geen gedragsnotities.</p>
 		) : (
 			<Entry.List>
 				{conduct.map((c) => (
@@ -214,7 +214,7 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 						key={c.id}
 						main={`${c.kind}${c.event_id ? ` · ${eventName(c.event_id)}` : ''}`}
 						sub={c.body || undefined}
-						trailing={<span className="con-note">{formatDate(c.created_at, { dateStyle: 'medium' }) ?? c.created_at}</span>}
+						trailing={<span className="field-note">{formatDate(c.created_at, { dateStyle: 'medium' }) ?? c.created_at}</span>}
 					/>
 				))}
 			</Entry.List>
@@ -222,7 +222,7 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 
 	const activityPanel =
 		activity.length === 0 ? (
-			<p className="con-note">Nog geen activiteit.</p>
+			<p className="field-note">Nog geen activiteit.</p>
 		) : (
 			<Moment.List>
 				{activity.map((a) => (
@@ -246,7 +246,7 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 				<span className="mod-meta">
 					<StatusBadge domain="request" status={subject.user_id ? 'active' : 'requested'} label={subject.user_id ? 'Account' : 'Schaduw'} />
 					{subject.merged_into && <StatusBadge domain="request" status="cancelled" label="Samengevoegd" />}
-					{subject.discord_id && <span className="con-note">{subject.discord_id}</span>}
+					{subject.discord_id && <span className="field-note">{subject.discord_id}</span>}
 				</span>
 			</div>
 			<div className="inventory-row-actions">

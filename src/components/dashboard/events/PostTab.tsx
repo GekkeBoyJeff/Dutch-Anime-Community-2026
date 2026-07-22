@@ -129,12 +129,12 @@ const PostTab = ({ eventId, sessionUserId, eventName, startsOn, attendance, user
 		}
 	};
 
-	if (!loaded) return <p className="con-note">Laden…</p>;
+	if (!loaded) return <p className="field-note">Laden…</p>;
 
 	if (!draft) {
 		return (
 			<div className="inventory-tab">
-				<p className="con-note">
+				<p className="field-note">
 					Nog geen conceptbericht. Genereer een eerste versie op basis van de aanwezige helpers en de mensen die materiaal meebrachten; daarna kun je het vrij bijschaven.
 				</p>
 				<Button variant="primary" icon="heart" onClick={generate}>
@@ -155,7 +155,7 @@ const PostTab = ({ eventId, sessionUserId, eventName, startsOn, attendance, user
 					<Field.Label>Bericht</Field.Label>
 					<TextArea rows={12} value={body} onChange={(e) => setBody(e.currentTarget.value)} />
 				</Field>
-				<p className="con-note">
+				<p className="field-note">
 					{draft.generated_at ? `Gegenereerd op ${fmtMeta(draft.generated_at)}. ` : ''}
 					Laatst bewerkt op {fmtMeta(draft.updated_at)}.
 				</p>

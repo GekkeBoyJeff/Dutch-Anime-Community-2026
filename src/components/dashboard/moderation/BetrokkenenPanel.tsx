@@ -39,7 +39,7 @@ const Column = ({ icon, title, empty, children }: { icon: string; title: string;
 			<Icon name={icon} />
 			{title}
 		</h4>
-		{empty ? <p className="con-note">Niets gevonden.</p> : <ul className="betrokken-list">{children}</ul>}
+		{empty ? <p className="field-note">Niets gevonden.</p> : <ul className="betrokken-list">{children}</ul>}
 	</div>
 );
 
@@ -54,7 +54,7 @@ const BetrokkenenPanel = ({ events, shifts, peers }: Props) => {
 					<li key={event.eventId}>
 						<Interactive url={`/dashboard/events?id=${event.eventId}`} className="betrokken-link">
 							<span className="betrokken-link-main">{event.eventName}</span>
-							<span className="con-note">{event.status}</span>
+							<span className="field-note">{event.status}</span>
 						</Interactive>
 					</li>
 				))}
@@ -65,7 +65,7 @@ const BetrokkenenPanel = ({ events, shifts, peers }: Props) => {
 					<li key={shift.id}>
 						<Interactive url={`/dashboard/events?id=${shift.eventId}`} className="betrokken-link">
 							<span className="betrokken-link-main">{shift.eventName}</span>
-							<span className="con-note">
+							<span className="field-note">
 								{formatDate(shift.startsAt, { dateStyle: 'medium' }) ?? shift.startsAt}
 								{shift.station ? ` · ${shift.station}` : ''}
 							</span>
@@ -80,7 +80,7 @@ const BetrokkenenPanel = ({ events, shifts, peers }: Props) => {
 					const inner = (
 						<>
 							<span className="betrokken-link-main">{peer.name}</span>
-							<span className="con-note">{label}</span>
+							<span className="field-note">{label}</span>
 						</>
 					);
 					return (

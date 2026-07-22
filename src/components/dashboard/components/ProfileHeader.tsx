@@ -17,7 +17,7 @@ const ProfileHeader = ({ name, avatarUrl, role, discordId }: ProfileHeaderProps)
 		<div>
 			<Title size={2}>{name}</Title>
 			<span className="mod-meta">
-				{discordId && <span className="con-note">Discord-ID {discordId}</span>}
+				{discordId && <span className="field-note">Discord-ID {discordId}</span>}
 				{/* The one branded chip on a profile page: this is whose page it is. Not a StatusBadge —
 				    a role is an identity, and borrowing another domain's status would colour it like a
 				    live request. */}

@@ -124,7 +124,7 @@ const BadgesTab = ({ subjectId, sessionUserId, canManage }: Props) => {
 				</div>
 			)}
 			<div className="badge-grid">
-				{badges.length === 0 && <span className="con-note">Nog geen badges.</span>}
+				{badges.length === 0 && <span className="field-note">Nog geen badges.</span>}
 				{badges.map((b) => (
 					<BadgeCard
 						key={b.id}

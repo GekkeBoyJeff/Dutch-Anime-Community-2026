@@ -191,7 +191,7 @@ const TicketUpload = ({ open, sessionUserId, onClose, onSaved }: Props) => {
 				<div className="ticket-preview">
 					<div className="inventory-section">
 						<Title size={5}>Ticket {parsed.ticketNumber}</Title>
-						<p className="con-note">
+						<p className="field-note">
 							{parsed.serverName ?? '—'} · #{parsed.channelName ?? '—'} · {parsed.messageCount} berichten
 						</p>
 					</div>

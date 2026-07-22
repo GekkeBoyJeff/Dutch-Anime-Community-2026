@@ -81,7 +81,7 @@ const ConventionInvolvementCard = ({ eventName, assignments, tickets, shifts, on
 										Download PDF
 									</Button>
 								) : (
-									<span className="con-note">{t.note}</span>
+									<span className="field-note">{t.note}</span>
 								)
 							}
 						/>
@@ -94,7 +94,7 @@ const ConventionInvolvementCard = ({ eventName, assignments, tickets, shifts, on
 				<Title element="h5" size={6} value="Mijn shifts" />
 				<Entry.List>
 					{shifts.map((s) => (
-						<Entry key={s.id} main={s.time} trailing={s.station ? <span className="con-note">{s.station}</span> : undefined} />
+						<Entry key={s.id} main={s.time} trailing={s.station ? <span className="field-note">{s.station}</span> : undefined} />
 					))}
 				</Entry.List>
 			</div>

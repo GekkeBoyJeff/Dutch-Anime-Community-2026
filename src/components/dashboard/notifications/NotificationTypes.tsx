@@ -52,7 +52,7 @@ const NotificationTypes = () => {
 	return (
 		<div className="inventory-tab">
 			<NotificationTypesTable rows={rows} loading={rows === null} onToggle={toggleEnabled} />
-			<Content element="p" className="con-note">
+			<Content element="p" className="field-note">
 				Een uitgeschakeld type wordt niet meer verstuurd — shift-herinneringen respecteren deze vlag al in de scheduler.
 			</Content>
 		</div>

@@ -39,7 +39,7 @@ const DiscordProfileCard = ({ profile }: DiscordProfileCardProps) => {
 			) : (
 				<div className="reveal">
 					<DescriptionList items={items} />
-					<span className="con-note">Discord-gegevens worden bij elke login automatisch bijgewerkt.</span>
+					<span className="field-note">Discord-gegevens worden bij elke login automatisch bijgewerkt.</span>
 				</div>
 			)}
 		</section>

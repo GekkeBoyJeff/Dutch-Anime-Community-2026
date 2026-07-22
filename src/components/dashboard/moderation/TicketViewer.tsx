@@ -63,7 +63,7 @@ const TicketViewer = ({ ticketId, onClose }: Props) => {
 			) : (
 				<div className="ticket-viewer">
 					{head && (
-						<p className="con-note">
+						<p className="field-note">
 							{head.message_count} berichten{period ? ` · ${period}` : ''}
 						</p>
 					)}

@@ -318,7 +318,7 @@ const ActivitiesTab = ({ eventId, sessionUserId, items, candidates, subjectName 
 								</div>
 							</>
 						) : (
-							<p className="con-note">Sla de activiteit eerst op om benodigdheden en hosts toe te voegen.</p>
+							<p className="field-note">Sla de activiteit eerst op om benodigdheden en hosts toe te voegen.</p>
 						)}
 					</div>
 				)}
