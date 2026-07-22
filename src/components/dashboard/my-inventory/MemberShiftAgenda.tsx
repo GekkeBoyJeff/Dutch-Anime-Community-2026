@@ -9,8 +9,10 @@ import Button from '@/components/basics/Button';
 import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
 import Drawer from '@/components/components/Drawer';
+import Entry from '@/components/components/Entry';
+import Moment from '@/components/components/Moment';
 import ShiftCalendar, { type ShiftBlock } from '@/components/dashboard/components/ShiftCalendar';
-import { fmtRange } from '@/components/dashboard/events/datetime';
+import { fmtDayMarker, fmtRange } from '@/components/dashboard/events/datetime';
 import Field from '@/components/forms/Field';
 import Select from '@/components/forms/Select';
 import { getBrowserClient } from '@/lib/supabase/client';
@@ -182,40 +184,42 @@ const MemberShiftAgenda = ({ session }: { session: Session }) => {
 					<div className="inventory-form">
 						<div className="con-block">
 							<Title element="h4" size={5} value={eventNames.get(selected.event_id) ?? 'Conventie'} />
-							<p className="con-line-main">{fmtRange(selected.starts_at, selected.ends_at)}</p>
-							<p className="con-note">
-								{nameOf(selected.subject_id)}
-								{selected.station ? ` · ${selected.station}` : ''}
-							</p>
+							<Moment.List>
+								<Moment
+									marker={fmtDayMarker(selected.starts_at)}
+									title={fmtRange(selected.starts_at, selected.ends_at)}
+									meta={`${nameOf(selected.subject_id)}${selected.station ? ` · ${selected.station}` : ''}`}
+									state={new Date(selected.starts_at) < new Date() ? 'past' : 'upcoming'}
+								/>
+							</Moment.List>
 						</div>
 
 						{selectedSwaps.length > 0 && (
 							<div className="con-block">
 								<Title element="h5" size={6} value="Ruilverzoeken" />
-								<ul className="con-list">
+								<Entry.List>
 									{selectedSwaps.map((sw) => (
-										<li key={sw.id} className="con-line">
-											<div className="con-line-info">
-												<span className="con-line-main">
-													{nameOf(sw.from_subject)} → {nameOf(sw.to_subject)}
-												</span>
-											</div>
-											<div className="con-line-actions">
-												<StatusBadge domain="request" status="requested" label="In behandeling" dot />
-												{sw.to_subject === subjectId && (
-													<Button variant="primary" onClick={() => acceptSwap(sw.id)}>
-														Accepteren
-													</Button>
-												)}
-												{sw.from_subject === subjectId && (
-													<Button variant="ghost" onClick={() => cancelSwap(sw.id)}>
-														Intrekken
-													</Button>
-												)}
-											</div>
-										</li>
+										<Entry
+											key={sw.id}
+											main={`${nameOf(sw.from_subject)} → ${nameOf(sw.to_subject)}`}
+											trailing={
+												<>
+													<StatusBadge domain="request" status="requested" label="In behandeling" dot />
+													{sw.to_subject === subjectId && (
+														<Button variant="primary" onClick={() => acceptSwap(sw.id)}>
+															Accepteren
+														</Button>
+													)}
+													{sw.from_subject === subjectId && (
+														<Button variant="ghost" onClick={() => cancelSwap(sw.id)}>
+															Intrekken
+														</Button>
+													)}
+												</>
+											}
+										/>
 									))}
-								</ul>
+								</Entry.List>
 							</div>
 						)}
 
