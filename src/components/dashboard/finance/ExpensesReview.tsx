@@ -4,6 +4,7 @@ import { Toast } from '@base-ui/react/toast';
 import type { Session } from '@supabase/supabase-js';
 import { useEffect, useMemo, useState } from 'react';
 
+import Badge from '@/components/basics/Badge';
 import Button from '@/components/basics/Button';
 import StatusBadge from '@/components/basics/StatusBadge';
 import Drawer from '@/components/components/Drawer';
@@ -220,10 +221,10 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 				key: 'payout',
 				header: 'Uitbetaling',
 				cell: (e) => (
-					<div className="con-line-info">
-						<span className="con-line-main">{e.iban ?? '—'}</span>
-						{e.account_holder && <span className="con-note">{e.account_holder}</span>}
-					</div>
+					<span className="cell-stack">
+						<span className="cell-stack-main">{e.iban ?? '—'}</span>
+						{e.account_holder && <span className="cell-stack-sub">{e.account_holder}</span>}
+					</span>
 				),
 			},
 			{ key: 'status', header: 'Status', align: 'center', cell: (e) => <StatusBadge domain="expense" status={e.status} /> },
@@ -237,7 +238,7 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 							Bon
 						</Button>
 						{e.user_id === session.user.id ? (
-							<StatusBadge domain="request" status="cancelled" label="Eigen declaratie" />
+							<Badge variant="neutral">Eigen declaratie</Badge>
 						) : (
 							<Button variant="primary" onClick={() => openReview(e)}>
 								Beoordeel

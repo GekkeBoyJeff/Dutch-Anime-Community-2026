@@ -234,10 +234,10 @@ const MyExpenses = ({ session }: { session: Session }) => {
 				sortable: true,
 				sortValue: (e) => e.description,
 				cell: (e) => (
-					<div className="con-line-info">
-						<span className="con-line-main">{e.description}</span>
-						{e.status === 'rejected' && e.review_note && <span className="con-note">Afgewezen: {e.review_note}</span>}
-					</div>
+					<span className="cell-stack">
+						<span className="cell-stack-main">{e.description}</span>
+						{e.status === 'rejected' && e.review_note && <span className="cell-stack-sub">Afgewezen: {e.review_note}</span>}
+					</span>
 				),
 			},
 			{ key: 'event', header: 'Conventie', cell: (e) => eventName(e.event_id) },

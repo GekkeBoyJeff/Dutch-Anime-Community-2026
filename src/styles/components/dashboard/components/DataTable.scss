@@ -251,3 +251,24 @@
 		justify-self: end;
 	}
 }
+
+// A two-line table cell: a primary value with a quiet qualifier beneath it. It lives here because the
+// table owns how its cells stack — a list component would put an <li> inside a <td>.
+.cell-stack {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+	min-inline-size: 0;
+}
+
+.cell-stack-main {
+	overflow: hidden;
+	color: $color;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.cell-stack-sub {
+	color: $color-tertiary;
+	font-size: $admin-type-micro;
+}
