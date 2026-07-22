@@ -598,3 +598,31 @@
 		font-size: 1.125rem;
 	}
 }
+
+// A value with a quiet qualifier beneath it. Appears in table cells, in drawer summaries, anywhere a
+// primary reading needs context without competing for attention. Named for what it is — the class it
+// replaced was named for the screen it happened to be written on, and ended up everywhere.
+.stacked-value {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+	min-inline-size: 0;
+}
+
+.stacked-value-main {
+	overflow: hidden;
+	color: $color;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.stacked-value-sub {
+	color: $color-tertiary;
+	font-size: $admin-type-micro;
+}
+
+// Truncation earns its keep in a table cell, where the column width is fixed. In a form or drawer the
+// summary is the thing being read, so it wraps instead.
+.inventory-form .stacked-value-main {
+	white-space: normal;
+}

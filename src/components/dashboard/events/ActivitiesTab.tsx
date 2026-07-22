@@ -6,6 +6,8 @@ import { useEffect, useMemo, useState } from 'react';
 import Button from '@/components/basics/Button';
 import Title from '@/components/basics/Title';
 import Drawer from '@/components/components/Drawer';
+import Entry from '@/components/components/Entry';
+import Person from '@/components/components/Person';
 import DataTable, { type DataTableColumn } from '@/components/dashboard/components/DataTable';
 import { fmtRange, fromInput, toInput } from '@/components/dashboard/events/datetime';
 import Field from '@/components/forms/Field';
@@ -257,18 +259,19 @@ const ActivitiesTab = ({ eventId, sessionUserId, items, candidates, subjectName 
 							<>
 								<div className="con-block">
 									<Title element="h4" size={6} value="Benodigdheden" />
-									<ul className="con-list">
+									<Entry.List>
 										{activityReqs.map((r) => (
-											<li key={r.id} className="con-line">
-												<span className="con-line-main">
-													{(r.item_id ? itemName(r.item_id) : r.label) ?? '—'} × {r.quantity}
-												</span>
-												<Button variant="ghost" icon="trash" onClick={() => removeRequirement(r.id)}>
-													Verwijder
-												</Button>
-											</li>
+											<Entry
+												key={r.id}
+												main={`${(r.item_id ? itemName(r.item_id) : r.label) ?? '—'} × ${r.quantity}`}
+												trailing={
+													<Button variant="ghost" icon="trash" onClick={() => removeRequirement(r.id)}>
+														Verwijder
+													</Button>
+												}
+											/>
 										))}
-									</ul>
+									</Entry.List>
 									<div className="inventory-toolbar">
 										<Select
 											native
@@ -287,16 +290,19 @@ const ActivitiesTab = ({ eventId, sessionUserId, items, candidates, subjectName 
 
 								<div className="con-block">
 									<Title element="h4" size={6} value="Hosts" />
-									<ul className="con-list">
+									<div>
 										{activityHosts.map((h) => (
-											<li key={h.id} className="con-line">
-												<span className="con-line-main">{subjectName(h.subject_id)}</span>
-												<Button variant="ghost" icon="trash" onClick={() => removeHost(h.id)}>
-													Verwijder
-												</Button>
-											</li>
+											<Person
+												key={h.id}
+												name={subjectName(h.subject_id)}
+												trailing={
+													<Button variant="ghost" icon="trash" onClick={() => removeHost(h.id)}>
+														Verwijder
+													</Button>
+												}
+											/>
 										))}
-									</ul>
+									</div>
 									<div className="inventory-toolbar">
 										<Select
 											native

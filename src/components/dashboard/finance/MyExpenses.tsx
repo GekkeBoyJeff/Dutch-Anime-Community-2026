@@ -234,9 +234,9 @@ const MyExpenses = ({ session }: { session: Session }) => {
 				sortable: true,
 				sortValue: (e) => e.description,
 				cell: (e) => (
-					<span className="cell-stack">
-						<span className="cell-stack-main">{e.description}</span>
-						{e.status === 'rejected' && e.review_note && <span className="cell-stack-sub">Afgewezen: {e.review_note}</span>}
+					<span className="stacked-value">
+						<span className="stacked-value-main">{e.description}</span>
+						{e.status === 'rejected' && e.review_note && <span className="stacked-value-sub">Afgewezen: {e.review_note}</span>}
 					</span>
 				),
 			},

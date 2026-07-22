@@ -49,8 +49,8 @@ const NotificationHistoryTable = ({ rows, loading, typeLabels, names, formatAudi
 				if (!r.body) return '—';
 				if (r.body.length <= BODY_PREVIEW_LEN) return r.body;
 				return (
-					<span className="cell-stack">
-						<span className="cell-stack-main">{r.body.slice(0, BODY_PREVIEW_LEN)}…</span>
+					<span className="stacked-value">
+						<span className="stacked-value-main">{r.body.slice(0, BODY_PREVIEW_LEN)}…</span>
 						<Button variant="secondary" onClick={() => setDetail(r)}>
 							Bekijk
 						</Button>

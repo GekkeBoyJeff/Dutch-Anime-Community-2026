@@ -10,6 +10,7 @@ import Skeleton from '@/components/basics/Skeleton';
 import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
 import Drawer from '@/components/components/Drawer';
+import Entry from '@/components/components/Entry';
 import Switch from '@/components/components/Switch';
 import ConventionInvolvementCard from '@/components/dashboard/components/ConventionInvolvementCard';
 import DataTable, { type DataTableColumn } from '@/components/dashboard/components/DataTable';
@@ -422,32 +423,31 @@ const MyInventory = () => {
 						{windows.filter((w) => w.item_id === unavailFor.id).length > 0 && (
 							<div className="con-block">
 								<Title element="h5" size={6} value="Gemelde vensters" />
-								<ul className="con-list">
+								<Entry.List>
 									{windows
 										.filter((w) => w.item_id === unavailFor.id)
 										.map((w) => (
-											<li key={w.id} className="con-line">
-												<div className="con-line-info">
-													<span className="con-line-main">
-														{w.starts_on} – {w.ends_on ?? 'onbepaald'}
-													</span>
-													{w.reason && <span className="con-note">{w.reason}</span>}
-												</div>
-												<div className="con-line-actions">
-													<StatusBadge
-														domain="request"
-														status={w.status === 'active' ? 'active' : w.status === 'requested' ? 'requested' : 'cancelled'}
-														label={w.status === 'active' ? 'Actief' : w.status === 'requested' ? 'Aangevraagd' : 'Afgewezen'}
-													/>
-													{w.status !== 'rejected' && (
-														<Button variant="ghost" onClick={() => cancelWindow(w.id)}>
-															Intrekken
-														</Button>
-													)}
-												</div>
-											</li>
+											<Entry
+												key={w.id}
+												main={`${w.starts_on} – ${w.ends_on ?? 'onbepaald'}`}
+												sub={w.reason ?? undefined}
+												trailing={
+													<>
+														<StatusBadge
+															domain="request"
+															status={w.status === 'active' ? 'active' : w.status === 'requested' ? 'requested' : 'cancelled'}
+															label={w.status === 'active' ? 'Actief' : w.status === 'requested' ? 'Aangevraagd' : 'Afgewezen'}
+														/>
+														{w.status !== 'rejected' && (
+															<Button variant="ghost" onClick={() => cancelWindow(w.id)}>
+																Intrekken
+															</Button>
+														)}
+													</>
+												}
+											/>
 										))}
-								</ul>
+								</Entry.List>
 							</div>
 						)}
 						<Field name="ustart">

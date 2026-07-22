@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Alert from '@/components/basics/Alert';
 import Button from '@/components/basics/Button';
 import StatusBadge from '@/components/basics/StatusBadge';
+import DescriptionList from '@/components/components/DescriptionList';
 import DataTable, { type DataTableColumn } from '@/components/dashboard/components/DataTable';
 import Field from '@/components/forms/Field';
 import TextInput from '@/components/forms/TextInput';
@@ -117,24 +118,21 @@ const CostsTab = ({ eventId, initialBudget, onBudgetSaved }: Props) => {
 
 			{canReadExpenses ? (
 				<>
-					<ul className="con-list expenses-budget">
-						<li className="con-line">
-							<span className="con-line-main">Besteed (goedgekeurd + uitbetaald)</span>
-							<span>{formatEur(totals.committed)}</span>
-						</li>
-						<li className="con-line">
-							<span className="con-line-main">In behandeling (ingediend)</span>
-							<span>{formatEur(totals.pending)}</span>
-						</li>
-						{remaining !== null && (
-							<li className="con-line">
-								<span className="con-line-main">Resterend</span>
-								<span>
-									<StatusBadge domain="expense" status={overBudget ? 'rejected' : 'approved'} label={formatEur(remaining)} />
-								</span>
-							</li>
-						)}
-					</ul>
+					<DescriptionList
+						className="expenses-budget"
+						items={[
+							{ term: 'Besteed (goedgekeurd + uitbetaald)', description: formatEur(totals.committed) },
+							{ term: 'In behandeling (ingediend)', description: formatEur(totals.pending) },
+							...(remaining !== null
+								? [
+										{
+											term: 'Resterend',
+											description: <StatusBadge domain="expense" status={overBudget ? 'rejected' : 'approved'} label={formatEur(remaining)} />,
+										},
+									]
+								: []),
+						]}
+					/>
 					<DataTable columns={columns} data={expenses} empty={{ title: 'Geen kosten', description: 'Nog geen declaraties gekoppeld aan deze conventie.' }} />
 				</>
 			) : (

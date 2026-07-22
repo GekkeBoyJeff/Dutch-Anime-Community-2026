@@ -221,9 +221,9 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 				key: 'payout',
 				header: 'Uitbetaling',
 				cell: (e) => (
-					<span className="cell-stack">
-						<span className="cell-stack-main">{e.iban ?? '—'}</span>
-						{e.account_holder && <span className="cell-stack-sub">{e.account_holder}</span>}
+					<span className="stacked-value">
+						<span className="stacked-value-main">{e.iban ?? '—'}</span>
+						{e.account_holder && <span className="stacked-value-sub">{e.account_holder}</span>}
 					</span>
 				),
 			},
@@ -289,14 +289,14 @@ const ExpensesReview = ({ session }: { session: Session }) => {
 			>
 				{reviewFor && (
 					<div className="inventory-form">
-						<div className="con-line-info">
-							<span className="con-line-main">
+						<span className="stacked-value">
+							<span className="stacked-value-main">
 								{personName(reviewFor.user_id)} · {formatEur(reviewFor.amount_eur)}
 							</span>
-							<span className="con-note">
+							<span className="stacked-value-sub">
 								{reviewFor.incurred_on} · {eventName(reviewFor.event_id)}
 							</span>
-						</div>
+						</span>
 						<Button variant="secondary" icon="download" onClick={() => downloadReceipt(reviewFor.receipt_path)}>
 							Bon bekijken
 						</Button>
