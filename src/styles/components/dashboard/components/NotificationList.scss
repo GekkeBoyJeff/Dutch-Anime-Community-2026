@@ -1,0 +1,16 @@
+@use "initial" as *;
+
+.account-notifications {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(s);
+	inline-size: 100%;
+	text-align: start;
+}
+
+.account-notifications-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: spacing(s);
+}

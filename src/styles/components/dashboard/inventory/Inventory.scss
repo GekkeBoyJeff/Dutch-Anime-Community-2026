@@ -261,35 +261,3 @@
 	display: grid;
 	gap: spacing(s);
 }
-
-.con-list {
-	display: grid;
-	gap: spacing(s);
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-.con-line {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: spacing(m);
-	flex-wrap: wrap;
-}
-
-.con-line-info {
-	display: grid;
-	gap: 0.15rem;
-}
-
-.con-line-main {
-	font-weight: 600;
-}
-
-.con-line-actions {
-	display: inline-flex;
-	align-items: center;
-	gap: spacing(s);
-	flex-wrap: wrap;
-}

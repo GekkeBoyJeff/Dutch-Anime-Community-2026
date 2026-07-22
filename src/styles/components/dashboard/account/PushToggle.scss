@@ -1,0 +1,13 @@
+@use "initial" as *;
+
+.account-push {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: spacing(xs);
+}
+
+.account-push-status {
+	color: $color-secondary;
+	font-size: $admin-label-size;
+}
