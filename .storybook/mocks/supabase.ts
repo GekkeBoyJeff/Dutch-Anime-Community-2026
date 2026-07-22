@@ -63,7 +63,7 @@ class Query implements PromiseLike<{ data: unknown; error: null; count: number |
 	private limitTo: number | null = null;
 	private orderKey: string | null = null;
 	private orderAsc = true;
-	private single: 'one' | 'maybe' | null = null;
+	private singleRow = false;
 	private headOnly = false;
 	private wantCount = false;
 
@@ -169,8 +169,14 @@ class Query implements PromiseLike<{ data: unknown; error: null; count: number |
 	}
 
 	maybeSingle() {
-		this.single = 'maybe';
+		this.singleRow = true;
 		return this;
+	}
+
+	// `single()` throws in PostgREST when there is no row; the dashboard only calls it where a row is
+	// expected, so it behaves like maybeSingle here rather than inventing an error path no screen handles.
+	single() {
+		return this.maybeSingle();
 	}
 
 	returns() {
@@ -190,7 +196,7 @@ class Query implements PromiseLike<{ data: unknown; error: null; count: number |
 		const count = out.length;
 		if (this.limitTo !== null) out = out.slice(0, this.limitTo);
 		if (this.headOnly) return { data: null, error: null, count };
-		if (this.single) return { data: out[0] ?? null, error: null, count };
+		if (this.singleRow) return { data: out[0] ?? null, error: null, count };
 		return { data: out, error: null, count: this.wantCount ? count : null };
 	}
 
@@ -202,18 +208,15 @@ class Query implements PromiseLike<{ data: unknown; error: null; count: number |
 	}
 }
 
-// `single()` throws in PostgREST when there is no row; the dashboard only calls it where a row is
-// expected, so it behaves like maybeSingle here rather than inventing an error path no screen handles.
-Object.assign(Query.prototype, {
-	single(this: Query) {
-		return (this as unknown as { maybeSingle: () => Query }).maybeSingle();
-	},
-});
+// Every bucket object resolves to one real image in /public/media, with the object path kept as the
+// fragment so a story still shows which row it came from. It has to be a file that exists: a made-up
+// placeholder path 404s, and a media grid of broken images verifies nothing.
+const STAND_IN_IMAGE = '/media/_opt/dac-stand-640.webp';
 
 const storageBucket = (bucket: string) => ({
 	list: async () => ({ data: STORAGE_FIXTURES[bucket] ?? [], error: null }),
-	getPublicUrl: (path: string) => ({ data: { publicUrl: `/media/placeholder.svg#${path}` } }),
-	createSignedUrl: async (path: string) => ({ data: { signedUrl: `/media/placeholder.svg#${path}` }, error: null }),
+	getPublicUrl: (path: string) => ({ data: { publicUrl: `${STAND_IN_IMAGE}#${path}` } }),
+	createSignedUrl: async (path: string) => ({ data: { signedUrl: `${STAND_IN_IMAGE}#${path}` }, error: null }),
 	upload: async () => ({ data: { path: 'storybook/upload' }, error: null }),
 	download: async () => ({ data: new Blob([]), error: null }),
 	remove: async () => ({ data: [], error: null }),
@@ -233,6 +236,11 @@ export const getBrowserClient = () => ({
 		data: name === 'my_permissions' ? PERMISSIONS_BY_ROLE[activeRole] : (RPC_FIXTURES[name] ?? null),
 		error: null,
 	}),
+	// The notification composer delivers through the send-push Edge Function; without a stand-in, pressing
+	// "Versturen" throws instead of reporting a result.
+	functions: {
+		invoke: async () => ({ data: { inserted: 3, pushed: 2 }, error: null }),
+	},
 	storage: { from: storageBucket },
 	channel: () => ({ on: () => ({ subscribe: () => ({ unsubscribe: () => {} }) }), subscribe: () => ({ unsubscribe: () => {} }) }),
 	removeChannel: () => {},
