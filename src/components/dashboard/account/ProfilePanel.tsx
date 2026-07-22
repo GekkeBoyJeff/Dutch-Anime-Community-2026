@@ -8,6 +8,8 @@ import Container from '@/components/basics/Container';
 import Spinner from '@/components/basics/Spinner';
 import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
+import Entry from '@/components/components/Entry';
+import Moment from '@/components/components/Moment';
 import Badges from '@/components/dashboard/account/Badges';
 import LatestAnnouncement from '@/components/dashboard/account/LatestAnnouncement';
 import NotificationsList from '@/components/dashboard/account/NotificationsList';
@@ -15,6 +17,7 @@ import OpenSurveys from '@/components/dashboard/account/OpenSurveys';
 import PushToggle from '@/components/dashboard/account/PushToggle';
 import DiscordProfileCard from '@/components/dashboard/components/DiscordProfileCard';
 import ProfileHeader from '@/components/dashboard/components/ProfileHeader';
+import { fmtDayMarker } from '@/components/dashboard/events/datetime';
 import DonationNotesContainer from '@/components/dashboard/shell/DonationNotesContainer';
 import ProfileFieldsContainer from '@/components/dashboard/shell/ProfileFieldsContainer';
 import { DASHBOARD_SECTIONS } from '@/lib/auth/dashboard-sections';
@@ -112,36 +115,38 @@ const ProfilePanel = () => {
 			{warnings.length > 0 && (
 				<section className="inventory-section">
 					<Title element="h2" size={4}>Mijn signalen</Title>
-					<ul className="con-list">
+					<Entry.List>
 						{warnings.map((w, i) => (
-							<li key={i} className="con-line">
-								<div className="con-line-info">
-									<span className="con-line-main">{w.reason}</span>
-									<span className="con-note">{formatDate(w.issued_at, { dateStyle: 'medium' }) ?? w.issued_at}</span>
-								</div>
-								<StatusBadge domain="warning" status={w.color} />
-							</li>
+							<Entry
+								key={i}
+								main={w.reason}
+								sub={formatDate(w.issued_at, { dateStyle: 'medium' }) ?? w.issued_at}
+								tone="warning"
+								trailing={<StatusBadge domain="warning" status={w.color} />}
+							/>
 						))}
-					</ul>
+					</Entry.List>
 				</section>
 			)}
 
 			{surveyHistory.length > 0 && (
 				<section className="inventory-section">
 					<Title element="h2" size={4}>Ingevulde enquêtes</Title>
-					<ul className="con-list">
+					<Moment.List>
 						{surveyHistory.map((s) => (
-							<li key={s.survey_id} className="con-line">
-								<div className="con-line-info">
-									<span className="con-line-main">{s.title}</span>
-									<span className="con-note">{formatDate(s.submitted_at, { dateStyle: 'medium' }) ?? s.submitted_at}</span>
-								</div>
-								<Button variant="ghost" url={`/enquete?id=${s.survey_id}`}>
-									Bekijk
-								</Button>
-							</li>
+							<Moment
+								key={s.survey_id}
+								marker={fmtDayMarker(s.submitted_at)}
+								title={s.title}
+								state="past"
+								trailing={
+									<Button variant="ghost" url={`/enquete?id=${s.survey_id}`}>
+										Bekijk
+									</Button>
+								}
+							/>
 						))}
-					</ul>
+					</Moment.List>
 				</section>
 			)}
 
