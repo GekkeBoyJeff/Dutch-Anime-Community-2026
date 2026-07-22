@@ -55,7 +55,15 @@ const config = {
 		},
 		resolve: {
 			...viteConfig.resolve,
-			alias: { ...viteConfig.resolve?.alias, '@': srcDir },
+			alias: {
+				...viteConfig.resolve?.alias,
+				// Order matters: the more specific supabase alias must precede the '@' catch-all, or
+				// Vite resolves the real client first and every dashboard story renders a spinner.
+				// Nearly all of them fetch their own data, and usePermissions/useDashboardGuard derive
+				// from this same module — so swapping it is what makes those screens renderable at all.
+				'@/lib/supabase/client': fileURLToPath(new URL('./mocks/supabase.ts', import.meta.url)),
+				'@': srcDir,
+			},
 		},
 		css: {
 			...viteConfig.css,

@@ -5,7 +5,12 @@ import { DarkModeDocsContainer } from '@storybook-community/storybook-dark-mode/
 import type { ArgTypesEnhancer } from 'storybook/internal/csf';
 import { useEffect } from 'storybook/preview-api';
 
+import Notification from '@/components/components/Notification';
+import NotificationProvider from '@/components/components/NotificationProvider';
+
 import { withJsonSchema, withJsonSchemaArgTypes } from './addons/json-schema/preview';
+import { ROLE_LABEL, STORY_ROLES, type StoryRole } from './mocks/roles';
+import { setStoryRole } from './mocks/supabase';
 import { light, dark } from './theme';
 import '@/styles';
 
@@ -94,10 +99,23 @@ export const globalTypes = {
 			dynamicTitle: true,
 		},
 	},
+	// The dashboard renders a different set of widgets and sections per role. Without this, seeing all
+	// four would mean holding four Discord accounts — so the one thing the product is built around
+	// (what each kind of person sees) was the one thing nobody could review.
+	role: {
+		description: 'Rol waarmee het dashboard gerenderd wordt',
+		toolbar: {
+			icon: 'user',
+			title: 'Rol',
+			items: STORY_ROLES.map((value) => ({ value, title: ROLE_LABEL[value] })),
+			dynamicTitle: true,
+		},
+	},
 };
 
 export const initialGlobals = {
 	direction: 'ltr',
+	role: 'yakuza',
 };
 
 // Mirror the single light/dark toggle onto the preview <body> (exactly as the app does with
@@ -125,14 +143,28 @@ const withPreviewContext: Decorator = (Story, context) => {
 const withDashboardSurface: Decorator = (Story, context) => {
 	if (!context.title?.startsWith('Dashboard/')) return <Story />;
 
+	// Mirrors what AdminShell mounts around every management route: the toast provider and its outlet.
+	// Screens that report success or failure call useToastManager, which throws without it.
 	return (
 		<div style={{ background: 'var(--page)', color: 'var(--color)', padding: '2rem', borderRadius: '1rem' }}>
-			<Story />
+			<NotificationProvider>
+				<Story />
+				<Notification position="bottom-right" />
+			</NotificationProvider>
 		</div>
 	);
 };
 
+// Applies the toolbar's role to the Supabase stand-in before the story renders, and keys the tree on
+// it so the components remount and refetch instead of showing the previous role's data.
+const withRole: Decorator = (Story, context) => {
+	const role = (context.globals.role ?? 'yakuza') as StoryRole;
+	setStoryRole(role);
+	return <Story key={role} />;
+};
+
 export const decorators = [
+	withRole,
 	withDashboardSurface,
 	withPreviewContext,
 	withJsonSchema,
