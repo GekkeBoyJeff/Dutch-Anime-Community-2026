@@ -3,11 +3,13 @@
 import { Toast } from '@base-ui/react/toast';
 import { useMemo, useState } from 'react';
 
+import Badge from '@/components/basics/Badge';
 import Button from '@/components/basics/Button';
 import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
 import Drawer from '@/components/components/Drawer';
 import FileUpload from '@/components/components/FileUpload';
+import Person from '@/components/components/Person';
 import ChatTranscript from '@/components/dashboard/components/ChatTranscript';
 import { parsedToChatMessages } from '@/components/dashboard/moderation/ticketMapping';
 import Field from '@/components/forms/Field';
@@ -196,34 +198,35 @@ const TicketUpload = ({ open, sessionUserId, onClose, onSaved }: Props) => {
 
 					<div className="inventory-section">
 						<Title size={5}>Deelnemers</Title>
-						<ul className="con-list">
+						<div>
 							{parsed.participants.map((p) => {
 								const matched = matches[p.discordId] != null;
 								return (
-									<li key={p.discordId} className="con-line">
-										<div className="con-line-info">
-											<span className="con-line-main">{p.name}</span>
-											<span className="con-note">{p.discordId}</span>
-										</div>
-										<span className="mod-meta">
-											{p.isBot && <StatusBadge domain="request" status="cancelled" label="Bot" />}
-											{matched ? (
-												<StatusBadge domain="request" status="active" label="Gekoppeld" />
-											) : (
-												<>
-													<StatusBadge domain="request" status="requested" label="Geen profiel" />
-													{!p.isBot && (
-														<Button variant="ghost" onClick={() => createShadow(p.discordId, p.name)}>
-															Maak schaduwprofiel
-														</Button>
-													)}
-												</>
-											)}
-										</span>
-									</li>
+									<Person
+										key={p.discordId}
+										name={p.name}
+										role={p.discordId}
+										trailing={
+											<>
+												{p.isBot && <Badge variant="neutral">Bot</Badge>}
+												{matched ? (
+													<StatusBadge domain="request" status="active" label="Gekoppeld" />
+												) : (
+													<>
+														<StatusBadge domain="request" status="requested" label="Geen profiel" />
+														{!p.isBot && (
+															<Button variant="ghost" onClick={() => createShadow(p.discordId, p.name)}>
+																Maak schaduwprofiel
+															</Button>
+														)}
+													</>
+												)}
+											</>
+										}
+									/>
 								);
 							})}
-						</ul>
+						</div>
 					</div>
 
 					<div className="inventory-section">

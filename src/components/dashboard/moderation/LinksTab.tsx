@@ -7,6 +7,7 @@ import Button from '@/components/basics/Button';
 import StatusBadge from '@/components/basics/StatusBadge';
 import ConfirmDialog from '@/components/components/ConfirmDialog';
 import Drawer from '@/components/components/Drawer';
+import Person from '@/components/components/Person';
 import EvidenceDrawer from '@/components/dashboard/moderation/EvidenceDrawer';
 import Field from '@/components/forms/Field';
 import Select from '@/components/forms/Select';
@@ -115,40 +116,41 @@ const LinksTab = ({ subjectId, sessionUserId, canManage, canDelete }: Props) => 
 					</Button>
 				</div>
 			)}
-			<ul className="con-list">
-				{links.length === 0 && <li className="con-note">Nog geen gekoppelde profielen.</li>}
+			<div>
+				{links.length === 0 && <p className="con-note">Nog geen gekoppelde profielen.</p>}
 				{links.map((l) => {
 					const other = otherOf(l);
 					return (
-						<li key={l.id} className="con-line">
-							<div className="con-line-info">
-								<span className="con-line-main">{nameOf(other)}</span>
-								{l.reason && <span className="con-note">{l.reason}</span>}
-							</div>
-							<div className="con-line-actions">
-								<StatusBadge domain="request" status={STATUS_VARIANT[l.status]} label={LINK_STATUS_LABELS[l.status]} />
-								{canManage && (
-									<Select
-										native
-										aria-label="Status"
-										value={l.status}
-										options={LINK_STATUS_OPTIONS}
-										onValueChange={(v) => setStatus(l.id, ((v as string) ?? 'suspected') as LinkStatus)}
-									/>
-								)}
-								<Button variant="secondary" onClick={() => setEvidenceFor(l.id)}>
-									Bewijs
-								</Button>
-								{canManage && l.status === 'confirmed' && (
-									<Button variant="ghost" onClick={() => setToMerge({ other, label: nameOf(other) })}>
-										Samenvoegen
+						<Person
+							key={l.id}
+							name={nameOf(other)}
+							role={l.reason ?? undefined}
+							trailing={
+								<>
+									<StatusBadge domain="request" status={STATUS_VARIANT[l.status]} label={LINK_STATUS_LABELS[l.status]} />
+									{canManage && (
+										<Select
+											native
+											aria-label="Status"
+											value={l.status}
+											options={LINK_STATUS_OPTIONS}
+											onValueChange={(v) => setStatus(l.id, ((v as string) ?? 'suspected') as LinkStatus)}
+										/>
+									)}
+									<Button variant="secondary" onClick={() => setEvidenceFor(l.id)}>
+										Bewijs
 									</Button>
-								)}
-							</div>
-						</li>
+									{canManage && l.status === 'confirmed' && (
+										<Button variant="ghost" onClick={() => setToMerge({ other, label: nameOf(other) })}>
+											Samenvoegen
+										</Button>
+									)}
+								</>
+							}
+						/>
 					);
 				})}
-			</ul>
+			</div>
 
 			<Drawer
 				open={form !== null}
