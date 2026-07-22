@@ -30,7 +30,7 @@ const OpenSurveysWidget = ({ session: _session }: WidgetProps) => {
 			<Entry.List>
 				{loading && [0, 1, 2].map((row) => <Entry key={row} main="" loading />)}
 				{data?.map((survey) => (
-					<Entry key={survey.id} main={survey.title} trailing={<Badge variant="info">{survey.responses} inzending{survey.responses === 1 ? '' : 'en'}</Badge>} />
+					<Entry key={survey.id} main={survey.title} trailing={<Badge variant="neutral">{survey.responses} inzending{survey.responses === 1 ? '' : 'en'}</Badge>} />
 				))}
 			</Entry.List>
 		</Panel>

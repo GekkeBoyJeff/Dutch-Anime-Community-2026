@@ -41,7 +41,9 @@ const TeamMemberCard = ({ member, onOpenModeration, onOpenShift }: TeamMemberCar
 				<h3 className="name">{member.displayName}</h3>
 				<span className="tag">{member.discordTag ? `@${member.discordTag}` : '—'}</span>
 			</div>
-			<Badge variant={member.role === 'yakuza' ? 'info' : 'neutral'}>{ROLE_LABELS[member.role]}</Badge>
+			{/* A role is an identity, not a state — status colours stay reserved for things that can go
+			    wrong or right. The name carries who someone is; the chip only labels it. */}
+			<Badge variant="neutral">{ROLE_LABELS[member.role]}</Badge>
 		</header>
 		<div className="meta">
 			<span className="metaline">

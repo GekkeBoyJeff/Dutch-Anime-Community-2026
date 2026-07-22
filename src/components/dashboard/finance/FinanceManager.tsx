@@ -252,7 +252,7 @@ const FinanceManager = () => {
 			{ key: 'description', header: 'Omschrijving', cell: (r) => r.omschrijving },
 			{ key: 'date', header: 'Datum', align: 'center', sortable: true, sortValue: (r) => r.datum, cell: (r) => formatDate(r.datum, { dateStyle: 'medium' }) ?? r.datum },
 			{ key: 'amount', header: 'Bedrag', align: 'end', sortable: true, sortValue: (r) => Number(r.bedrag), cell: (r) => formatEur(r.bedrag) },
-			{ key: 'status', header: 'Status', align: 'center', cell: (r) => (r.richting === 'inkomsten' ? <Badge variant="info">Ontvangen</Badge> : <StatusBadge domain="expense" status={r.status} />) },
+			{ key: 'status', header: 'Status', align: 'center', cell: (r) => (r.richting === 'inkomsten' ? <Badge variant="success">Ontvangen</Badge> : <StatusBadge domain="expense" status={r.status} />) },
 			{
 				key: 'open',
 				header: '',

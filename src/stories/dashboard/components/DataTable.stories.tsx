@@ -43,7 +43,7 @@ type Story = StoryObj<typeof DataTable<Member>>;
 
 const columns: DataTableColumn<Member>[] = [
 	{ key: 'name', header: 'Naam', sortable: true, sortValue: (r) => r.name, cell: (r) => r.name },
-	{ key: 'role', header: 'Rol', sortable: true, sortValue: (r) => r.role, cell: (r) => <Badge variant="info">{r.role}</Badge> },
+	{ key: 'role', header: 'Rol', sortable: true, sortValue: (r) => r.role, cell: (r) => <Badge variant="neutral">{r.role}</Badge> },
 	{ key: 'shifts', header: 'Shifts', align: 'end', sortable: true, sortValue: (r) => r.shifts, cell: (r) => r.shifts },
 	{ key: 'joined', header: 'Lid sinds', align: 'center', sortable: true, sortValue: (r) => r.joined, cell: (r) => r.joined },
 ];

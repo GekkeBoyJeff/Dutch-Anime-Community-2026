@@ -1,5 +1,5 @@
 import Avatar from '@/components/basics/Avatar';
-import StatusBadge from '@/components/basics/StatusBadge';
+import Badge from '@/components/basics/Badge';
 import Title from '@/components/basics/Title';
 
 export interface ProfileHeaderProps {
@@ -18,7 +18,10 @@ const ProfileHeader = ({ name, avatarUrl, role, discordId }: ProfileHeaderProps)
 			<Title size={2}>{name}</Title>
 			<span className="mod-meta">
 				{discordId && <span className="con-note">Discord-ID {discordId}</span>}
-				{role && <StatusBadge domain="request" status="active" label={role} />}
+				{/* The one branded chip on a profile page: this is whose page it is. Not a StatusBadge —
+				    a role is an identity, and borrowing another domain's status would colour it like a
+				    live request. */}
+				{role && <Badge variant="primary">{role}</Badge>}
 			</span>
 		</div>
 	</div>
