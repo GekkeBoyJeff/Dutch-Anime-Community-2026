@@ -11,6 +11,8 @@ import StatusBadge from '@/components/basics/StatusBadge';
 import Title from '@/components/basics/Title';
 import DetailTabs from '@/components/components/DetailTabs';
 import Entry from '@/components/components/Entry';
+import Moment from '@/components/components/Moment';
+import { fmtDayMarker } from '@/components/dashboard/events/datetime';
 import BadgesTab from '@/components/dashboard/moderation/BadgesTab';
 import BansTab from '@/components/dashboard/moderation/BansTab';
 import BetrokkenenPanel, { type BetrokkenenPeer, type BetrokkenenShift } from '@/components/dashboard/moderation/BetrokkenenPanel';
@@ -218,20 +220,23 @@ const ProfileDetail = ({ subjectId, sessionUserId, canManage, canDelete, canBadg
 			</Entry.List>
 		);
 
-	const activityPanel = (
-		<ul className="con-list">
-			{activity.length === 0 && <li className="con-note">Nog geen activiteit.</li>}
-			{activity.map((a) => (
-				<li key={a.id} className="con-line">
-					<div className="con-line-info">
-						<span className="con-line-main">{a.summary ?? a.kind}</span>
-						<span className="con-note">{a.kind}</span>
-					</div>
-					<span className="con-note">{formatDate(a.created_at, { dateStyle: 'medium', timeStyle: 'short' }) ?? a.created_at}</span>
-				</li>
-			))}
-		</ul>
-	);
+	const activityPanel =
+		activity.length === 0 ? (
+			<p className="con-note">Nog geen activiteit.</p>
+		) : (
+			<Moment.List>
+				{activity.map((a) => (
+					<Moment
+						key={a.id}
+						marker={fmtDayMarker(a.created_at)}
+						title={a.summary ?? a.kind}
+						meta={a.kind}
+						state="past"
+						trailing={formatDate(a.created_at, { timeStyle: 'short' }) ?? undefined}
+					/>
+				))}
+			</Moment.List>
+		);
 
 	return (
 		<div>
