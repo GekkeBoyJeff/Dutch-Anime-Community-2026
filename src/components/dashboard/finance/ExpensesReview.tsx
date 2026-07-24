@@ -40,7 +40,7 @@ const SKELETON_COLUMNS = [
 	{ header: '', align: 'end' as const },
 ];
 
-// Het declaratie-beheer (expenses.manage): filteren (conventie/kwartaal/persoon/status), beoordelen via de
+// Het declaratie-beheer (expenses.review): filteren (conventie/kwartaal/persoon/status), beoordelen via de
 // review_expense-RPC (je eigen declaratie kun je niet beoordelen) en een PDF-export van de selectie.
 const ExpensesReview = ({ session }: { session: Session }) => {
 	const toast = Toast.useToastManager();

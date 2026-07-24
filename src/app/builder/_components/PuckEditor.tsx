@@ -215,7 +215,7 @@ const PuckEditor = () => {
 		});
 	};
 
-	// Fire the deploy Edge Function (site.publish permission verified server-side).
+	// Fire the deploy Edge Function (site.approve permission verified server-side).
 	const publishLive = async () => {
 		const {
 			data: { session: current },

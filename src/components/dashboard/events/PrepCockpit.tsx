@@ -30,7 +30,7 @@ interface PrepCockpitProps {
 	attendanceCount: number;
 	/** The convention budget, from the editor's event row (null = none set). */
 	budget: number | null;
-	/** Whether the viewer may read the linked declaraties (expenses.manage); gates the € figure. */
+	/** Whether the viewer may read the linked declaraties (finance.view); gates the € figure. */
 	canReadExpenses: boolean;
 	/** Jump the editor to a tab index when a tile is clicked. */
 	onJump: (tabIndex: number) => void;

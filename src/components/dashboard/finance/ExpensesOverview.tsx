@@ -38,7 +38,7 @@ const CON_SKELETON_COLUMNS = [
 	{ header: 'Resterend', align: 'end' as const },
 ];
 
-// Uitgaven-overzicht (expenses.manage): wat DAC heeft uitgegeven — totaal, per jaar, per kwartaal, per
+// Uitgaven-overzicht (expenses.review): wat DAC heeft uitgegeven — totaal, per jaar, per kwartaal, per
 // conventie (incl. budget/resterend) en per categorie. "Besteed" = goedgekeurd + uitbetaald; ingediend telt
 // als "in behandeling". Read-only aggregatie, client-side.
 const ExpensesOverview = () => {

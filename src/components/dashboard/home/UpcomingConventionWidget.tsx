@@ -9,7 +9,7 @@ import type { WidgetProps } from './types';
 import { useWidgetData } from './useWidgetData';
 
 // The next convention on the calendar, for staff who manage inventory/conventions. Deep links straight
-// into that event's editor. Gated on inventory.manage (registry); RLS re-checks on the events read.
+// into that event's editor. Gated on events.manage (registry); RLS re-checks on the events read.
 const UpcomingConventionWidget = ({ session: _session }: WidgetProps) => {
 	const { loading, error, data } = useWidgetData(async (db) => {
 		const { data: rows, error: queryError } = await db

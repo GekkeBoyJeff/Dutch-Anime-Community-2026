@@ -13,7 +13,7 @@ import { getBrowserClient } from '@/lib/supabase/client';
 type Props = { session: Session; open: boolean; onOpenChange: (open: boolean) => void; onSaved?: () => void };
 
 // "Mijn uitbetaalgegevens": IBAN + tenaamstelling in de streng-gescoopte payout_details-tabel (alleen jij +
-// expenses.manage kunnen 'm lezen). Eenmalig invullen; wordt voorgevuld op elk declaratieformulier.
+// expenses.review kunnen 'm lezen). Eenmalig invullen; wordt voorgevuld op elk declaratieformulier.
 const PayoutDetailsDrawer = ({ session, open, onOpenChange, onSaved }: Props) => {
 	const toast = Toast.useToastManager();
 	const [iban, setIban] = useState('');

@@ -31,12 +31,18 @@ interface AccessMatrixTableProps {
 
 /**
  * The access-control users table: username, an inline role select, an exceptions badge and a "Beheer"
- * action. A per-user grant counts as an exception only when the role doesn't already cover it. Rows in
+ * action. Exceptions count the symmetric difference with the role preset — grants the role doesn't
+ * cover, plus preset grants this user was stripped of. Rows in
  * `lockedIds` (admins + the caller's own row) show the role as a static chip instead of a selector,
  * matching the RLS admin-slot. Presentational — the caller owns the data and writes.
  */
 const AccessMatrixTable = ({ rows, loading, selfId, roleGrants, lockedIds, empty, onSetRole, onOpenUser }: AccessMatrixTableProps) => {
-	const exceptionsOf = (row: AccessRow) => [...row.grants].filter((p) => !roleGrants.get(row.role)?.has(p)).length;
+	const exceptionsOf = (row: AccessRow) => {
+		const preset = roleGrants.get(row.role);
+		const additions = [...row.grants].filter((p) => !preset?.has(p)).length;
+		const removals = preset ? [...preset].filter((p) => !row.grants.has(p)).length : 0;
+		return additions + removals;
+	};
 
 	const columns: DataTableColumn<AccessRow>[] = [
 		{ key: 'user', header: 'Gebruiker', sortable: true, sortValue: (row) => nameOf(row), cell: (row) => nameOf(row) },
