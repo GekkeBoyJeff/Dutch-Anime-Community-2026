@@ -377,7 +377,7 @@ declare
 	rec public.expenses;
 begin
 	if not (select public.authorize('expenses.review')) then
-		raise exception 'expenses.manage vereist';
+		raise exception 'expenses.review vereist';
 	end if;
 	select * into rec from public.expenses where id = p_id for update;
 	if rec.id is null then
@@ -404,12 +404,15 @@ end;
 $$;
 grant execute on function public.review_expense(uuid, public.expense_status, text) to authenticated;
 
--- Source: 20260717090011_fase3_complete_event.sql. inventory.manage → events.manage.
+-- FIX 7 (from 20260717090012): complete_event idempotent — skip if the event is already completed.
 create or replace function public.complete_event(target_event uuid, present_subjects uuid[])
 returns void language plpgsql security definer set search_path = '' as $$
 begin
 	if not (select public.authorize('events.manage')) then
-		raise exception 'inventory.manage vereist';
+		raise exception 'events.manage vereist';
+	end if;
+	if exists (select 1 from public.activity_log where kind = 'event.completed' and event_id = target_event) then
+		return;
 	end if;
 
 	update public.event_attendance set status = 'present'
@@ -512,7 +515,7 @@ declare
 	v_hide   boolean;
 begin
 	if not (select public.authorize('surveys.results')) then
-		raise exception 'surveys.manage vereist';
+		raise exception 'surveys.results vereist';
 	end if;
 	select * into v_survey from public.surveys where id = p_id;
 	if not found then raise exception 'enquête niet gevonden'; end if;
