@@ -8,7 +8,7 @@ import ExpensesReview from '@/components/dashboard/finance/ExpensesReview';
 import MyExpenses from '@/components/dashboard/finance/MyExpenses';
 import { useDashboardGuard } from '@/hooks/useDashboardGuard';
 
-// Eén route: iedereen met expenses.view ziet "Mijn declaraties"; wie ook expenses.manage heeft krijgt de
+// Eén route: iedereen met expenses.view ziet "Mijn declaraties"; wie ook expenses.review heeft krijgt de
 // extra "Beheer"-tab. De permissie gate zit al op de sectie (dashboard-sections) én — echt — in RLS.
 const ExpensesManager = () => {
 	const { ready, fallback, session, permissions } = useDashboardGuard('expenses.view', { className: 'inventory', label: 'Declaraties laden' });

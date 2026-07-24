@@ -53,7 +53,7 @@ const usageBadge = (item: MediaItem): { variant: 'info' | 'warning' | 'neutral';
 };
 
 // Media manager: browser-compress images to webp, upload to the public `media` bucket, browse the
-// bucket, and inspect/copy/delete each file. Gated on media.manage; RLS enforces the same server-side.
+// bucket, and inspect/copy/delete each file. Gated on media.upload; RLS enforces the same server-side.
 // A file used on ≥1 page cannot be deleted — the guard is also enforced by the storage delete policy.
 const Uploader = () => {
 	const { ready, fallback } = useDashboardGuard('media.upload', { className: 'dashboard', label: 'Media laden' });

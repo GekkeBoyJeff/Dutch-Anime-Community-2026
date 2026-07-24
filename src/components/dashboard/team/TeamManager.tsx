@@ -28,7 +28,7 @@ interface StaffRow {
 	open_warnings: number;
 }
 
-// Team (staff.manage): het conventieteam — standteam ∪ yakuza — in één RPC-round-trip (staff_overview),
+// Team (staff.view): het conventieteam — standteam ∪ yakuza — in één RPC-round-trip (staff_overview),
 // met naam, rol, Discord-tag, eerstvolgende shift en open warnings. Rijacties linken door naar moderatie
 // en naar de event-editor; rol-/permissiebeheer blijft in Toegang. De échte grens zit in de RPC-RLS.
 const TeamManager = () => {

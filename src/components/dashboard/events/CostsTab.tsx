@@ -17,9 +17,9 @@ import { getBrowserClient } from '@/lib/supabase/client';
 
 type Props = { eventId: string; initialBudget: number | null; onBudgetSaved: (budget: number | null) => void };
 
-// "Kosten"-tab op de conventie (EventEditor, inventory.manage): budget instellen + de gekoppelde declaraties
+// "Kosten"-tab op de conventie (EventEditor, events.view): budget instellen + de gekoppelde declaraties
 // met besteed (goedgekeurd + uitbetaald) / in behandeling (ingediend) / resterend. De declaraties zelf lezen
-// vereist expenses.manage (RLS); een manager zonder dat recht ziet enkel het budgetveld.
+// vereist finance.view (RLS); een manager zonder dat recht ziet enkel het budgetveld.
 const CostsTab = ({ eventId, initialBudget, onBudgetSaved }: Props) => {
 	const toast = Toast.useToastManager();
 	const { permissions } = usePermissions();

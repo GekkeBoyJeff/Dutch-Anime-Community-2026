@@ -103,7 +103,7 @@ const SKELETON_COLUMNS = [
 
 const BREAKDOWN_SKELETON_ROWS = [0, 1, 2, 3, 4];
 
-// Org-brede Financiën (expenses.manage): één rollup over al het geld dat DAC uitgeeft én binnenkrijgt. Haalt
+// Org-brede Financiën (finance.view): één rollup over al het geld dat DAC uitgeeft én binnenkrijgt. Haalt
 // de vlakke finance_rollup-dataset op (RLS/RPC is de grens; de guard is UX) en filtert + aggregeert
 // client-side. Inkomsten worden hier beheerd (toevoegen/bewerken; verwijderen alleen met records.delete).
 const FinanceManager = () => {
