@@ -11,7 +11,7 @@ const meta: Meta<typeof PermissionGroups> = {
 		docs: {
 			description: {
 				component:
-					"Groepeert het permissie-vocabulaire per domein met een Switch per permissie. Wat de rol al dekt staat als 'via rol' (aan + niet-bewerkbaar); de rest is een per-persoon-toggle (additief bovenop de rol). Drijft het Toegang-detailpaneel.",
+					'Groepeert het permissie-vocabulaire per domein met een Switch per permissie — de volledige, per-persoon effectieve set (user_permissions). Drijft het Toegang-detailpaneel.',
 			},
 		},
 	},
@@ -21,18 +21,16 @@ export default meta;
 
 type Story = StoryObj<typeof PermissionGroups>;
 
-// Interactief: 'via rol'-permissies staan vast aan; de per-persoon-toggles updaten live.
+// Interactief: elke toggle zet/haalt een permissie in de per-persoon set.
 export const Default: Story = {
 	render: () => {
 		const Demo = () => {
-			const roleGrants: ReadonlySet<Permission> = new Set(['pages.edit', 'pages.delete']);
-			const [userGrants, setUserGrants] = useState<Set<Permission>>(new Set(['media.upload']));
+			const [grants, setGrants] = useState<Set<Permission>>(new Set(['pages.edit', 'media.upload']));
 			return (
 				<PermissionGroups
-					roleGrants={roleGrants}
-					userGrants={userGrants}
+					grants={grants}
 					onToggle={(permission, on) =>
-						setUserGrants((prev) => {
+						setGrants((prev) => {
 							const next = new Set(prev);
 							if (on) next.add(permission);
 							else next.delete(permission);
@@ -46,14 +44,7 @@ export const Default: Story = {
 	},
 };
 
-// Alles alleen-lezen (bv. je eigen rij): toggles zijn zichtbaar maar geblokkeerd.
+// Alles alleen-lezen (bv. je eigen rij of een admin-doelwit): toggles zijn zichtbaar maar geblokkeerd.
 export const ReadOnly: Story = {
-	render: () => (
-		<PermissionGroups
-			roleGrants={new Set(['inventory.view', 'inventory.manage'])}
-			userGrants={new Set(['moderation.view'])}
-			onToggle={() => {}}
-			disabled
-		/>
-	),
+	render: () => <PermissionGroups grants={new Set(['inventory.view', 'inventory.manage'])} onToggle={() => {}} disabled />,
 };

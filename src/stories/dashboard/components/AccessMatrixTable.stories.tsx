@@ -31,6 +31,7 @@ const meta: Meta<typeof AccessMatrixTable> = {
 	args: {
 		selfId: 'self-id',
 		roleGrants,
+		lockedIds: new Set(['self-id']),
 		empty: { title: 'Geen gebruikers gevonden', description: 'Er zijn nog geen gebruikers.' },
 		onSetRole: noop,
 		onOpenUser: noop,

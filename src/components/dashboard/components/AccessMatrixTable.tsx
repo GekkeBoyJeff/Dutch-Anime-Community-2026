@@ -1,3 +1,4 @@
+import Badge from '@/components/basics/Badge';
 import Button from '@/components/basics/Button';
 import StatusBadge from '@/components/basics/StatusBadge';
 import DataTable, { type DataTableColumn } from '@/components/dashboard/components/DataTable';
@@ -21,6 +22,8 @@ interface AccessMatrixTableProps {
 	loading: boolean;
 	selfId: string;
 	roleGrants: Map<string, Set<Permission>>;
+	/** Rijen (admin-ids + de eigen id) waarvan de rol niet via de app wijzigbaar is (admin-slot) */
+	lockedIds: ReadonlySet<string>;
 	empty: { title: string; description: string };
 	onSetRole: (userId: string, role: string) => void;
 	onOpenUser: (userId: string) => void;
@@ -28,10 +31,11 @@ interface AccessMatrixTableProps {
 
 /**
  * The access-control users table: username, an inline role select, an exceptions badge and a "Beheer"
- * action. A per-user grant counts as an exception only when the role doesn't already cover it. Editing
- * one's own row is disabled (matching the RLS rule). Presentational — the caller owns the data and writes.
+ * action. A per-user grant counts as an exception only when the role doesn't already cover it. Rows in
+ * `lockedIds` (admins + the caller's own row) show the role as a static chip instead of a selector,
+ * matching the RLS admin-slot. Presentational — the caller owns the data and writes.
  */
-const AccessMatrixTable = ({ rows, loading, selfId, roleGrants, empty, onSetRole, onOpenUser }: AccessMatrixTableProps) => {
+const AccessMatrixTable = ({ rows, loading, selfId, roleGrants, lockedIds, empty, onSetRole, onOpenUser }: AccessMatrixTableProps) => {
 	const exceptionsOf = (row: AccessRow) => [...row.grants].filter((p) => !roleGrants.get(row.role)?.has(p)).length;
 
 	const columns: DataTableColumn<AccessRow>[] = [
@@ -41,17 +45,19 @@ const AccessMatrixTable = ({ rows, loading, selfId, roleGrants, empty, onSetRole
 			header: 'Rol',
 			sortable: true,
 			sortValue: (row) => row.role,
-			cell: (row) => (
-				<Select
-					native
-					className="access-role-select"
-					aria-label={`Rol voor ${nameOf(row)}`}
-					disabled={row.id === selfId}
-					value={row.role}
-					options={roleOptions}
-					onValueChange={(value) => onSetRole(row.id, value as string)}
-				/>
-			),
+			cell: (row) =>
+				row.id === selfId || lockedIds.has(row.id) ? (
+					<Badge variant="neutral">{row.role}</Badge>
+				) : (
+					<Select
+						native
+						className="access-role-select"
+						aria-label={`Rol voor ${nameOf(row)}`}
+						value={row.role}
+						options={roleOptions}
+						onValueChange={(value) => onSetRole(row.id, value as string)}
+					/>
+				),
 		},
 		{
 			key: 'exceptions',

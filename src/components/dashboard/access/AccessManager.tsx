@@ -30,7 +30,12 @@ const ROLE_META: Record<string, { label: string; description: string; icon: stri
 };
 
 const roleLabel = (role: string) => ROLE_META[role]?.label ?? role;
-const roleCardOptions: ListboxCardOption[] = APP_ROLES.map((role) => ({ value: role, ...ROLE_META[role], label: roleLabel(role) }));
+// Promotie naar admin kan niet meer via de app (admin-slot, RLS-afgedwongen) — geen kaart voor die keuze.
+const roleCardOptions: ListboxCardOption[] = APP_ROLES.filter((role) => role !== 'admin').map((role) => ({
+	value: role,
+	...ROLE_META[role],
+	label: roleLabel(role),
+}));
 const nameOf = (row: AccessRow) => row.username ?? row.id.slice(0, 8);
 
 // Assign roles + per-user permission grants. All writes go through PostgREST under the caller's JWT;
@@ -88,13 +93,13 @@ const AccessManager = () => {
 	}, [ready, session, refreshKey]);
 
 	const setRole = async (userId: string, role: string) => {
-		const { error: err } = await getBrowserClient().from('user_roles').upsert({ user_id: userId, role: role as Enums<'app_role'> }, { onConflict: 'user_id' });
+		const { error: err } = await getBrowserClient().rpc('set_user_role', { p_user: userId, p_role: role as Enums<'app_role'> });
 		if (err) {
 			toast.add({ title: 'Er ging iets mis', description: err.message, type: 'error' });
 			return;
 		}
 		setRefreshKey((k) => k + 1);
-		toast.add({ title: 'Rol bijgewerkt', type: 'success' });
+		toast.add({ title: 'Rol bijgewerkt', description: 'De permissies zijn vervangen door de preset van de rol.', type: 'success' });
 	};
 
 	const toggleGrant = async (userId: string, permission: Permission, on: boolean) => {
@@ -134,6 +139,10 @@ const AccessManager = () => {
 	const loading = rows === null;
 	const selfId = session.user.id;
 	const drawerUser = openUserId ? (rows ?? []).find((row) => row.id === openUserId) ?? null : null;
+	// Admin-slot: promotie/demotie en permissiewijzigingen op een admin (en op jezelf) zijn dicht in de RLS —
+	// de drawer wordt hier alleen-lezen om dat te weerspiegelen, niet om het zelf af te dwingen.
+	const locked = drawerUser?.role === 'admin' || drawerUser?.id === selfId;
+	const lockedIds = new Set<string>([selfId, ...(rows ?? []).filter((row) => row.role === 'admin').map((row) => row.id)]);
 
 	return (
 		<Container className="access-page">
@@ -158,6 +167,7 @@ const AccessManager = () => {
 				loading={loading}
 				selfId={selfId}
 				roleGrants={roleGrants}
+				lockedIds={lockedIds}
 				empty={{
 					title: 'Geen gebruikers gevonden',
 					description: search || roleFilter ? 'Pas je zoekopdracht of filter aan.' : 'Er zijn nog geen gebruikers.',
@@ -179,21 +189,21 @@ const AccessManager = () => {
 			>
 				{drawerUser && (
 					<div className="access-drawer-body">
+						{drawerUser.role === 'admin' && <Alert variant="info">Admins beheer je in de database.</Alert>}
 						<div className="access-drawer-role">
 							<span className="access-drawer-label">Rol</span>
 							<ListboxCards
 								aria-label={`Rol voor ${nameOf(drawerUser)}`}
-								disabled={drawerUser.id === selfId}
+								disabled={locked}
 								value={drawerUser.role}
 								options={roleCardOptions}
 								onValueChange={(value) => setRole(drawerUser.id, value)}
 							/>
 						</div>
 						<PermissionGroups
-							roleGrants={roleGrants.get(drawerUser.role) ?? new Set()}
-							userGrants={drawerUser.grants}
+							grants={drawerUser.grants}
 							onToggle={(permission, on) => toggleGrant(drawerUser.id, permission, on)}
-							disabled={drawerUser.id === selfId}
+							disabled={locked}
 						/>
 					</div>
 				)}
