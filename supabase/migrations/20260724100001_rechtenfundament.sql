@@ -172,27 +172,9 @@ insert into _pol_map values
   ('event%',             null,     'inventory.view',     'events.view',          2),
   ('%',                  null,     'expenses.manage',    'expenses.review',      3);
 
-do $$
-declare p record; m record; new_qual text; new_check text; stmt text;
-begin
-  for p in select * from _pols where not (schemaname = 'public' and tablename in ('user_roles', 'user_permissions', 'role_permissions')) loop
-    new_qual := p.qual; new_check := p.with_check;
-    for m in
-      select * from _pol_map
-      where p.tablename like tbl_pattern and (cmd is null or cmd = p.cmd)
-      order by prio
-    loop
-      new_qual  := replace(new_qual,  '''' || m.old || '''', '''' || m.new || '''');
-      new_check := replace(new_check, '''' || m.old || '''', '''' || m.new || '''');
-    end loop;
-    new_qual  := replace(new_qual,  'app_permission_old', 'app_permission');
-    new_check := replace(new_check, 'app_permission_old', 'app_permission');
-    stmt := format('create policy %I on %I.%I for %s to %s', p.policyname, p.schemaname, p.tablename, lower(p.cmd), p.role_list);
-    if new_qual  is not null then stmt := stmt || format(' using (%s)', new_qual); end if;
-    if new_check is not null then stmt := stmt || format(' with check (%s)', new_check); end if;
-    execute stmt;
-  end loop;
-end $$;
+-- The policy rebuild itself runs AFTER sections C2/C3: policies may reference helper
+-- functions dropped in section A (e.g. "media editors delete" calls media_is_used()),
+-- so every function must exist again before the policies are recreated.
 
 -- ============================================================================
 -- C2. Herbouw van de gedropte SQL-functies
@@ -543,6 +525,30 @@ begin
 			)), '[]'::jsonb) from public.survey_responses r where r.survey_id = p_id));
 end;
 $$;
+
+-- Rebuild the captured policies now that authorize() and every helper function exist
+-- again (moved here from section C — see the note at the _pol_map definition).
+do $$
+declare p record; m record; new_qual text; new_check text; stmt text;
+begin
+  for p in select * from _pols where not (schemaname = 'public' and tablename in ('user_roles', 'user_permissions', 'role_permissions')) loop
+    new_qual := p.qual; new_check := p.with_check;
+    for m in
+      select * from _pol_map
+      where p.tablename like tbl_pattern and (cmd is null or cmd = p.cmd)
+      order by prio
+    loop
+      new_qual  := replace(new_qual,  '''' || m.old || '''', '''' || m.new || '''');
+      new_check := replace(new_check, '''' || m.old || '''', '''' || m.new || '''');
+    end loop;
+    new_qual  := replace(new_qual,  'app_permission_old', 'app_permission');
+    new_check := replace(new_check, 'app_permission_old', 'app_permission');
+    stmt := format('create policy %I on %I.%I for %s to %s', p.policyname, p.schemaname, p.tablename, lower(p.cmd), p.role_list);
+    if new_qual  is not null then stmt := stmt || format(' using (%s)', new_qual); end if;
+    if new_check is not null then stmt := stmt || format(' with check (%s)', new_check); end if;
+    execute stmt;
+  end loop;
+end $$;
 
 -- ============================================================================
 -- D. Admin-slot: admins zijn via de app onaantastbaar (spec §5)

@@ -1576,16 +1576,25 @@ export type Database = {
         Row: {
           data: Json
           path: string
+          published_at: string | null
+          published_by: string | null
+          published_data: Json | null
           updated_at: string
         }
         Insert: {
           data: Json
           path: string
+          published_at?: string | null
+          published_by?: string | null
+          published_data?: Json | null
           updated_at?: string
         }
         Update: {
           data?: Json
           path?: string
+          published_at?: string | null
+          published_by?: string | null
+          published_data?: Json | null
           updated_at?: string
         }
         Relationships: []
@@ -1842,16 +1851,25 @@ export type Database = {
         Row: {
           data: Json
           id: number
+          published_at: string | null
+          published_by: string | null
+          published_data: Json | null
           updated_at: string
         }
         Insert: {
           data: Json
           id?: number
+          published_at?: string | null
+          published_by?: string | null
+          published_data?: Json | null
           updated_at?: string
         }
         Update: {
           data?: Json
           id?: number
+          published_at?: string | null
+          published_by?: string | null
+          published_data?: Json | null
           updated_at?: string
         }
         Relationships: []
@@ -2306,6 +2324,8 @@ export type Database = {
     }
     Functions: {
       apply_shift_swap: { Args: { request_id: string }; Returns: undefined }
+      approve_page: { Args: { p_path: string }; Returns: undefined }
+      approve_structure: { Args: never; Returns: undefined }
       authorize: {
         Args: {
           requested_permission: Database["public"]["Enums"]["app_permission"]
@@ -2496,6 +2516,13 @@ export type Database = {
         Args: { assignment_id: string; packed: boolean }
         Returns: undefined
       }
+      set_user_role: {
+        Args: {
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user: string
+        }
+        Returns: undefined
+      }
       staff_overview: {
         Args: never
         Returns: {
@@ -2531,28 +2558,39 @@ export type Database = {
         }[]
       }
       unmerge_subject: { Args: { p_id: string }; Returns: undefined }
+      user_is_admin: { Args: { p_user: string }; Returns: boolean }
     }
     Enums: {
       activity_venue: "stand" | "booth" | "stage" | "other"
       app_permission:
+        | "pages.create"
         | "pages.edit"
         | "pages.delete"
         | "structures.edit"
-        | "media.manage"
-        | "site.publish"
+        | "media.upload"
+        | "media.delete"
+        | "site.publish_staging"
+        | "site.approve"
         | "moderation.view"
         | "moderation.manage"
         | "roles.manage"
+        | "events.view"
+        | "events.manage"
         | "inventory.view"
         | "inventory.manage"
         | "expenses.view"
-        | "expenses.manage"
+        | "expenses.review"
+        | "finance.view"
+        | "finance.manage"
+        | "staff.view"
+        | "staff.manage"
+        | "surveys.manage"
+        | "surveys.results"
+        | "notifications.send"
+        | "notifications.manage"
         | "logs.view"
         | "badges.manage"
         | "records.delete"
-        | "notifications.send"
-        | "surveys.manage"
-        | "staff.manage"
       app_role: "user" | "author" | "yakuza" | "admin" | "stand-staff"
       attendance_status:
         | "signed_up"
@@ -2714,24 +2752,34 @@ export const Constants = {
     Enums: {
       activity_venue: ["stand", "booth", "stage", "other"],
       app_permission: [
+        "pages.create",
         "pages.edit",
         "pages.delete",
         "structures.edit",
-        "media.manage",
-        "site.publish",
+        "media.upload",
+        "media.delete",
+        "site.publish_staging",
+        "site.approve",
         "moderation.view",
         "moderation.manage",
         "roles.manage",
+        "events.view",
+        "events.manage",
         "inventory.view",
         "inventory.manage",
         "expenses.view",
-        "expenses.manage",
+        "expenses.review",
+        "finance.view",
+        "finance.manage",
+        "staff.view",
+        "staff.manage",
+        "surveys.manage",
+        "surveys.results",
+        "notifications.send",
+        "notifications.manage",
         "logs.view",
         "badges.manage",
         "records.delete",
-        "notifications.send",
-        "surveys.manage",
-        "staff.manage",
       ],
       app_role: ["user", "author", "yakuza", "admin", "stand-staff"],
       attendance_status: [
