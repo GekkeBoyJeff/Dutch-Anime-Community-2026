@@ -13,11 +13,17 @@ const staticStructures = parseContent(SiteStructures, rawStructures, {
 	locate: (path) => ({ source: 'site structures', field: path.join('.') }),
 });
 
+// Which column carries the content for the current build: the live build reads `published_data`
+// (CONTENT_CHANNEL=published), staging and local builds read the draft `data` column.
+const contentColumn = () => (env.CONTENT_CHANNEL === 'published' ? 'published_data' : 'data');
+
 // Async so the public API survives a future CMS swap unchanged (same contract as getPageByPath).
 // Supabase-backed when SUPABASE_SERVICE_ROLE_KEY is set; the static structures otherwise.
 export const getSiteStructures = async (): Promise<SiteStructures> => {
 	if (!env.SUPABASE_SERVICE_ROLE_KEY) return staticStructures;
-	const { data } = await getAdminClient().from('structures').select('data').eq('id', 1).maybeSingle();
-	const parsed = data ? SiteStructures.safeParse(data.data) : undefined;
+	const column = contentColumn();
+	const { data } = await getAdminClient().from('structures').select(column).eq('id', 1).maybeSingle();
+	// The row type is a union keyed by the selected column; `column` isn't a literal to either side of it.
+	const parsed = data ? SiteStructures.safeParse((data as Record<'data' | 'published_data', unknown>)[column]) : undefined;
 	return parsed?.success ? parsed.data : staticStructures;
 };

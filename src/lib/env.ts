@@ -23,6 +23,9 @@ export const env = createEnv({
 			.string()
 			.optional()
 			.transform((value) => value === 'true'),
+		// Which content column the build reads: 'published' for the live DirectAdmin build,
+		// unset/'draft' for staging (GitHub Pages) and local builds.
+		CONTENT_CHANNEL: z.enum(['draft', 'published']).optional(),
 	},
 	shared: {
 		// Set by Next/tooling; lives in `shared` because it exists on both the server and the client.
@@ -60,6 +63,7 @@ export const env = createEnv({
 		REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
 		SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
 		ENABLE_PWA: process.env.ENABLE_PWA,
+		CONTENT_CHANNEL: process.env.CONTENT_CHANNEL,
 		NODE_ENV: process.env.NODE_ENV,
 		HOST_TYPE: process.env.HOST_TYPE,
 		NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,

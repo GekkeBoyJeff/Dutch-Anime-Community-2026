@@ -1,7 +1,7 @@
 import { withSupabase } from 'npm:@supabase/server';
 
 // One-click "Publiceren naar live": the builder calls this with the author's JWT; it verifies the
-// caller (auth: 'user'), confirms they hold the site.publish permission (via the my_permissions RPC,
+// caller (auth: 'user'), confirms they hold the site.approve permission (via the my_permissions RPC,
 // evaluated under their own RLS context), then fires a GitHub repository_dispatch that starts the
 // deploy-directadmin workflow. The GitHub PAT stays a function secret and never reaches the browser.
 const GITHUB_REPO = Deno.env.get('GITHUB_REPO');
@@ -17,7 +17,7 @@ const handler = {
 		if (error) {
 			return Response.json({ error: error.message }, { status: 500 });
 		}
-		if (!Array.isArray(permissions) || !permissions.includes('site.publish')) {
+		if (!Array.isArray(permissions) || !permissions.includes('site.approve')) {
 			return Response.json({ error: 'Je hebt geen rechten om te publiceren.' }, { status: 403 });
 		}
 
