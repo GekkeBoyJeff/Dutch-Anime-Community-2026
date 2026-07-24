@@ -11,24 +11,34 @@ import { getBrowserClient } from '@/lib/supabase/client';
 // drives both the `Permission` type and the AccessManager UI, so adding a permission is one edit here
 // (+ the DB enum migration). Keep the order/values in sync with the enum.
 export const APP_PERMISSIONS = [
+	'pages.create',
 	'pages.edit',
 	'pages.delete',
 	'structures.edit',
-	'media.manage',
-	'site.publish',
+	'media.upload',
+	'media.delete',
+	'site.publish_staging',
+	'site.approve',
 	'moderation.view',
 	'moderation.manage',
 	'roles.manage',
+	'events.view',
+	'events.manage',
 	'inventory.view',
 	'inventory.manage',
 	'expenses.view',
-	'expenses.manage',
+	'expenses.review',
+	'finance.view',
+	'finance.manage',
+	'staff.view',
+	'staff.manage',
+	'surveys.manage',
+	'surveys.results',
+	'notifications.send',
+	'notifications.manage',
 	'logs.view',
 	'badges.manage',
 	'records.delete',
-	'notifications.send',
-	'surveys.manage',
-	'staff.manage',
 ] as const;
 export type Permission = (typeof APP_PERMISSIONS)[number];
 
@@ -55,8 +65,8 @@ export const highestRole = (roles: readonly AppRole[]): AppRole | null =>
 // multi-role person still sees both halves; this only picks the top tier to tilt order/emphasis toward.
 export const emphasisRole = (permissions: ReadonlySet<Permission>): AppRole => {
 	if (permissions.has('roles.manage')) return 'admin';
-	if (permissions.has('inventory.manage') || permissions.has('staff.manage') || permissions.has('moderation.view')) return 'yakuza';
-	if (permissions.has('pages.edit') || permissions.has('media.manage')) return 'author';
+	if (permissions.has('events.manage') || permissions.has('staff.manage') || permissions.has('moderation.view')) return 'yakuza';
+	if (permissions.has('pages.edit') || permissions.has('media.upload')) return 'author';
 	if (permissions.has('inventory.view')) return 'stand-staff';
 	return 'user';
 };

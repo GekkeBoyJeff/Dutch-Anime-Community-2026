@@ -47,15 +47,15 @@ export interface WidgetDef {
 
 // Registry order is the tie-breaker within a weight band, so it doubles as the default reading order.
 export const WIDGETS: WidgetDef[] = [
-	{ key: 'next-shift', requiredPermission: 'inventory.view', zone: 'personal', weight: { 'stand-staff': 'lead', yakuza: 'lead' }, component: NextShiftWidget },
-	{ key: 'packing-list', requiredPermission: 'inventory.view', zone: 'personal', weight: { 'stand-staff': 'lead' }, component: PackingListWidget },
-	{ key: 'entry-ticket-info', requiredPermission: 'inventory.view', zone: 'personal', weight: { 'stand-staff': 'lead' }, component: EntryTicketWidget },
+	{ key: 'next-shift', requiredPermission: 'events.view', zone: 'personal', weight: { 'stand-staff': 'lead', yakuza: 'lead' }, component: NextShiftWidget },
+	{ key: 'packing-list', requiredPermission: 'events.view', zone: 'personal', weight: { 'stand-staff': 'lead' }, component: PackingListWidget },
+	{ key: 'entry-ticket-info', requiredPermission: 'events.view', zone: 'personal', weight: { 'stand-staff': 'lead' }, component: EntryTicketWidget },
 	{ key: 'my-expenses', requiredPermission: 'expenses.view', zone: 'personal', component: MyExpensesWidget },
-	{ key: 'events-timeline', requiredPermission: 'inventory.view', zone: 'ambient', component: EventsTimelineWidget },
-	{ key: 'upcoming-convention', requiredPermission: 'inventory.manage', zone: 'org', domain: 'operatie', weight: { yakuza: 'lead' }, component: UpcomingConventionWidget },
-	{ key: 'pending-reviews', requiredPermission: 'expenses.manage', zone: 'org', domain: 'operatie', weight: { yakuza: 'lead' }, component: PendingReviewsWidget },
-	{ key: 'team-status', requiredPermission: 'staff.manage', zone: 'org', domain: 'operatie', weight: { yakuza: 'lead' }, component: TeamStatusWidget },
-	{ key: 'recent-media', requiredPermission: 'media.manage', zone: 'org', domain: 'content', weight: { author: 'lead', admin: 'quiet' }, component: RecentMediaWidget },
+	{ key: 'events-timeline', requiredPermission: 'events.view', zone: 'ambient', component: EventsTimelineWidget },
+	{ key: 'upcoming-convention', requiredPermission: 'events.manage', zone: 'org', domain: 'operatie', weight: { yakuza: 'lead' }, component: UpcomingConventionWidget },
+	{ key: 'pending-reviews', requiredPermission: 'expenses.review', zone: 'org', domain: 'operatie', weight: { yakuza: 'lead' }, component: PendingReviewsWidget },
+	{ key: 'team-status', requiredPermission: 'staff.view', zone: 'org', domain: 'operatie', weight: { yakuza: 'lead' }, component: TeamStatusWidget },
+	{ key: 'recent-media', requiredPermission: 'media.upload', zone: 'org', domain: 'content', weight: { author: 'lead', admin: 'quiet' }, component: RecentMediaWidget },
 	{ key: 'open-surveys-manage', requiredPermission: 'surveys.manage', zone: 'org', domain: 'content', weight: { author: 'lead' }, component: OpenSurveysWidget },
 	{ key: 'publish-status', requiredPermission: 'pages.edit', zone: 'org', domain: 'content', weight: { author: 'lead', admin: 'quiet' }, component: PublishStatusWidget },
 	{ key: 'access-changes', requiredPermission: 'roles.manage', zone: 'org', domain: 'systeem', component: AccessChangesWidget },

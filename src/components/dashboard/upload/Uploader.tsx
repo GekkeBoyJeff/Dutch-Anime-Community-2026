@@ -56,7 +56,7 @@ const usageBadge = (item: MediaItem): { variant: 'info' | 'warning' | 'neutral';
 // bucket, and inspect/copy/delete each file. Gated on media.manage; RLS enforces the same server-side.
 // A file used on ≥1 page cannot be deleted — the guard is also enforced by the storage delete policy.
 const Uploader = () => {
-	const { ready, fallback } = useDashboardGuard('media.manage', { className: 'dashboard', label: 'Media laden' });
+	const { ready, fallback } = useDashboardGuard('media.upload', { className: 'dashboard', label: 'Media laden' });
 	const [items, setItems] = useState<MediaItem[] | null>(null);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const [skeletonCount] = useState(() => recallRowCount('media', 8));

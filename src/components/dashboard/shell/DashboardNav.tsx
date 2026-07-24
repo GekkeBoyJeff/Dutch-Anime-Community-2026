@@ -28,8 +28,8 @@ interface NavIndicator {
 // query is gated on the same permission that guards its data; RLS stays the real boundary.
 const useNavIndicators = (permissions: ReadonlySet<Permission>): Record<string, NavIndicator> => {
 	const [indicators, setIndicators] = useState<Record<string, NavIndicator>>({});
-	const canOps = permissions.has('inventory.manage');
-	const canFin = permissions.has('expenses.manage');
+	const canOps = permissions.has('events.manage');
+	const canFin = permissions.has('finance.view');
 
 	useEffect(() => {
 		let active = true;
@@ -170,7 +170,7 @@ const DashboardNavReady = () => {
 
 	// Live palette search over real records: conventions (open the editor) and members (open their moderation
 	// profile), each gated on the same permission that guards its destination. RLS stays the real boundary.
-	const canSearchEvents = permissions.has('inventory.manage');
+	const canSearchEvents = permissions.has('events.view');
 	const canSearchPeople = permissions.has('moderation.view');
 	const searchEntities = useCallback(
 		async (query: string): Promise<PaletteResult[]> => {

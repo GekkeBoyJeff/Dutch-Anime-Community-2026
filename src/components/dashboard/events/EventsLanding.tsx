@@ -53,7 +53,7 @@ const isPast = (event: EventRow, today: string): boolean => {
 // Landing page for the "Conventies & events" section: a stat row, upcoming conventions as prominent
 // cards over a compacter past grid, and the entry point into the 7-tab editor (/dashboard/events?id=…).
 const EventsLanding = () => {
-	const { ready, fallback, session, permissions } = useDashboardGuard('inventory.manage', { className: 'inventory', label: 'Conventies laden' });
+	const { ready, fallback, session, permissions } = useDashboardGuard('events.view', { className: 'inventory', label: 'Conventies laden' });
 
 	const router = useRouter();
 	const searchParams = useSearchParams();

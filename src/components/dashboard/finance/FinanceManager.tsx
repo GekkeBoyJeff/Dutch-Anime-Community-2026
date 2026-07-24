@@ -107,7 +107,7 @@ const BREAKDOWN_SKELETON_ROWS = [0, 1, 2, 3, 4];
 // de vlakke finance_rollup-dataset op (RLS/RPC is de grens; de guard is UX) en filtert + aggregeert
 // client-side. Inkomsten worden hier beheerd (toevoegen/bewerken; verwijderen alleen met records.delete).
 const FinanceManager = () => {
-	const { ready, fallback } = useDashboardGuard('expenses.manage', { className: 'inventory', label: 'Financiën laden' });
+	const { ready, fallback } = useDashboardGuard('finance.view', { className: 'inventory', label: 'Financiën laden' });
 	const toast = Toast.useToastManager();
 	const router = useRouter();
 	const searchParams = useSearchParams();

@@ -26,7 +26,7 @@ export const Default: Story = {
 	render: () => {
 		const Demo = () => {
 			const roleGrants: ReadonlySet<Permission> = new Set(['pages.edit', 'pages.delete']);
-			const [userGrants, setUserGrants] = useState<Set<Permission>>(new Set(['media.manage']));
+			const [userGrants, setUserGrants] = useState<Set<Permission>>(new Set(['media.upload']));
 			return (
 				<PermissionGroups
 					roleGrants={roleGrants}

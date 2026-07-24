@@ -92,7 +92,7 @@ const TabSkeleton = () => (
 // Getabde conventie-/event-detail. Query-param-route (?id=) i.p.v. [id] omdat de productie een statische
 // export is. Alles client-side via RLS. Items & tickets hergebruiken de bestaande EventDetail.
 const EventEditor = () => {
-	const { ready, fallback, session, permissions } = useDashboardGuard('inventory.manage', { className: 'inventory', label: 'Conventie laden' });
+	const { ready, fallback, session, permissions } = useDashboardGuard('events.view', { className: 'inventory', label: 'Conventie laden' });
 	const router = useRouter();
 	// EventsRouter only mounts this component when ?id= is present.
 	const eventId = useSearchParams().get('id') as string;
@@ -348,7 +348,7 @@ const EventEditor = () => {
 							eventId={eventId}
 							attendanceCount={attendance.length}
 							budget={event.budget_eur}
-							canReadExpenses={permissions.has('expenses.manage')}
+							canReadExpenses={permissions.has('finance.view')}
 							onJump={setTab}
 						/>
 					) : (

@@ -23,7 +23,7 @@ type Props = { eventId: string; initialBudget: number | null; onBudgetSaved: (bu
 const CostsTab = ({ eventId, initialBudget, onBudgetSaved }: Props) => {
 	const toast = Toast.useToastManager();
 	const { permissions } = usePermissions();
-	const canReadExpenses = permissions.has('expenses.manage');
+	const canReadExpenses = permissions.has('finance.view');
 	const [budget, setBudget] = useState(initialBudget !== null ? String(initialBudget) : '');
 	const [expenses, setExpenses] = useState<Expense[]>([]);
 	const [people, setPeople] = useState<Map<string, string>>(new Map());

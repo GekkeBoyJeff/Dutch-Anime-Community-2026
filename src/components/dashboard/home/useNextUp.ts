@@ -66,8 +66,8 @@ const mapsAction = (location: string | null): HeroAction[] =>
 // single most relevant sentence + card. Every row reuses a query an existing widget already runs; the
 // manager rows (5–6) stay gated on the same permission their RLS policy re-checks. No new data.
 export const useNextUp = (session: Session, permissions: ReadonlySet<Permission>): NextUpResult => {
-	const canManageExpenses = permissions.has('expenses.manage');
-	const canManageInventory = permissions.has('inventory.manage');
+	const canManageExpenses = permissions.has('expenses.review');
+	const canManageInventory = permissions.has('events.manage');
 
 	const { loading, error, data } = useWidgetData<{ sentence: string; card: NextUp | null }>(async (db) => {
 		const today = new Date().toISOString().slice(0, 10);

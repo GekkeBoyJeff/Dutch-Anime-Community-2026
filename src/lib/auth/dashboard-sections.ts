@@ -16,15 +16,15 @@ export interface DashboardSection {
 
 export const DASHBOARD_SECTIONS: DashboardSection[] = [
 	{ key: 'builder', title: 'Pagina-editor', navLabel: "Pagina's", description: "Bewerk pagina's met de visuele builder.", href: '/builder', permission: 'pages.edit' },
-	{ key: 'media', title: 'Media', navLabel: 'Media', description: 'Upload en beheer afbeeldingen.', href: '/upload', permission: 'media.manage' },
+	{ key: 'media', title: 'Media', navLabel: 'Media', description: 'Upload en beheer afbeeldingen.', href: '/upload', permission: 'media.upload' },
 	{ key: 'access', title: 'Toegangsbeheer', navLabel: 'Toegang', description: 'Ken rollen en permissies toe aan gebruikers.', href: '/dashboard/access', permission: 'roles.manage' },
-	{ key: 'events', title: 'Conventies & events', navLabel: 'Conventies & events', description: 'Beheer conventies, aanwezigheid en agenda.', href: '/dashboard/events', permission: 'inventory.manage' },
+	{ key: 'events', title: 'Conventies & events', navLabel: 'Conventies & events', description: 'Beheer conventies, aanwezigheid en agenda.', href: '/dashboard/events', permission: 'events.view' },
 	{ key: 'inventory', title: 'Inventaris', navLabel: 'Inventaris', description: 'Beheer items en toewijzingen.', href: '/dashboard/inventory', permission: 'inventory.manage' },
 	{ key: 'my-inventory', title: 'Mijn inventory & conventies', navLabel: 'Mijn spullen', description: 'Je eigen items en wat je moet meenemen.', href: '/dashboard/my-inventory', permission: 'inventory.view' },
 	// Eén route: tab "Mijn declaraties" (expenses.view) + tab "Beheer" die alleen verschijnt bij expenses.manage.
 	{ key: 'expenses', title: 'Declaraties', navLabel: 'Declaraties', description: 'Dien kosten in met bon en beoordeel declaraties.', href: '/dashboard/expenses', permission: 'expenses.view' },
-	{ key: 'finance', title: 'Financiën', navLabel: 'Financiën', description: 'Org-breed overzicht van kosten en declaraties.', href: '/dashboard/finance', permission: 'expenses.manage' },
-	{ key: 'team', title: 'Team', navLabel: 'Team', description: 'Standteam en yakuza met shifts en warnings.', href: '/dashboard/team', permission: 'staff.manage' },
+	{ key: 'finance', title: 'Financiën', navLabel: 'Financiën', description: 'Org-breed overzicht van kosten en declaraties.', href: '/dashboard/finance', permission: 'finance.view' },
+	{ key: 'team', title: 'Team', navLabel: 'Team', description: 'Standteam en yakuza met shifts en warnings.', href: '/dashboard/team', permission: 'staff.view' },
 	{ key: 'moderation', title: 'Moderatie', navLabel: 'Moderatie', description: 'Profielen, warnings, links en bans.', href: '/dashboard/moderation', permission: 'moderation.view' },
 	{ key: 'notifications', title: 'Meldingen', navLabel: 'Meldingen', description: 'Stuur meldingen naar leden.', href: '/dashboard/notifications', permission: 'notifications.send' },
 	{ key: 'surveys', title: 'Enquêtes & polls', navLabel: 'Enquêtes', description: 'Maak en beheer enquêtes en polls.', href: '/dashboard/surveys', permission: 'surveys.manage' },
@@ -233,10 +233,10 @@ interface PaletteActionMeta extends PaletteCommand {
 }
 const DASHBOARD_ACTIONS: PaletteActionMeta[] = [
 	{ key: 'declare-now', label: 'Declareer nu', href: '/dashboard/expenses?new=1', icon: 'file', permission: 'expenses.view' },
-	{ key: 'new-event', label: 'Nieuwe conventie', href: '/dashboard/events?new=1', icon: 'calendar', permission: 'inventory.manage' },
-	{ key: 'new-income', label: 'Inkomst toevoegen', href: '/dashboard/finance?new=1', icon: 'file', permission: 'expenses.manage' },
+	{ key: 'new-event', label: 'Nieuwe conventie', href: '/dashboard/events?new=1', icon: 'calendar', permission: 'events.manage' },
+	{ key: 'new-income', label: 'Inkomst toevoegen', href: '/dashboard/finance?new=1', icon: 'file', permission: 'finance.manage' },
 	{ key: 'send-notification', label: 'Melding sturen', href: '/dashboard/notifications', icon: 'mail', permission: 'notifications.send' },
-	{ key: 'upload-media', label: 'Media uploaden', href: '/upload', icon: 'upload', permission: 'media.manage' },
+	{ key: 'upload-media', label: 'Media uploaden', href: '/upload', icon: 'upload', permission: 'media.upload' },
 	{ key: 'upload-transcript', label: 'Transcript uploaden', href: '/dashboard/moderation', icon: 'file', permission: 'moderation.view' },
 	{ key: 'new-survey', label: 'Nieuwe enquête', href: '/dashboard/surveys?new=1', icon: 'list', permission: 'surveys.manage' },
 ];
@@ -261,7 +261,7 @@ export const buildPaletteActions = (permissions: ReadonlySet<Permission>): Palet
 // The href for the palette's people search, or null when the caller may search nobody. Moderation owns
 // the fuller profile search; staff-only callers fall back to the team list (both read ?q= as a filter).
 export const palettePersonSearchHref = (permissions: ReadonlySet<Permission>): ((query: string) => string) | null => {
-	const base = permissions.has('moderation.view') ? '/dashboard/moderation' : permissions.has('staff.manage') ? '/dashboard/team' : null;
+	const base = permissions.has('moderation.view') ? '/dashboard/moderation' : permissions.has('staff.view') ? '/dashboard/team' : null;
 	if (!base) return null;
 	return (query: string) => (query ? `${base}?q=${encodeURIComponent(query)}` : base);
 };

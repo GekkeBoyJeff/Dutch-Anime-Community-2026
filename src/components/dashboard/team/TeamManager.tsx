@@ -32,7 +32,7 @@ interface StaffRow {
 // met naam, rol, Discord-tag, eerstvolgende shift en open warnings. Rijacties linken door naar moderatie
 // en naar de event-editor; rol-/permissiebeheer blijft in Toegang. De échte grens zit in de RPC-RLS.
 const TeamManager = () => {
-	const { ready, fallback, session } = useDashboardGuard('staff.manage', { className: 'inventory', label: 'Team laden' });
+	const { ready, fallback, session } = useDashboardGuard('staff.view', { className: 'inventory', label: 'Team laden' });
 	const toast = Toast.useToastManager();
 	const router = useRouter();
 	const searchParams = useSearchParams();

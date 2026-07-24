@@ -67,7 +67,7 @@ const PuckEditor = () => {
 	const router = useRouter();
 	const { permissions, loading: permsLoading, session } = usePermissions();
 	const canEdit = permissions.has('pages.edit');
-	const canPublish = permissions.has('site.publish');
+	const canPublish = permissions.has('site.approve');
 
 	const [source, setSource] = useState<EditorSource>({ kind: 'page', path: '/' });
 	const [editorKey, setEditorKey] = useState(0);

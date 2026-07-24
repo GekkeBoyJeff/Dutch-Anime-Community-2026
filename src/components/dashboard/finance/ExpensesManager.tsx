@@ -17,7 +17,7 @@ const ExpensesManager = () => {
 
 	const tabs: DetailTab[] = [
 		{ label: 'Mijn declaraties', panel: <MyExpenses session={session} /> },
-		...(permissions.has('expenses.manage')
+		...(permissions.has('expenses.review')
 			? [
 					{ label: 'Beheer', panel: <ExpensesReview session={session} /> },
 					{ label: 'Overzicht', panel: <ExpensesOverview /> },

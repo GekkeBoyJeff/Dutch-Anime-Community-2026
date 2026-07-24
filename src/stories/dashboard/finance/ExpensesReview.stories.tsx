@@ -8,7 +8,7 @@ import { useDashboardGuard } from '@/hooks/useDashboardGuard';
 // one from the Storybook Supabase stand-in, and gates on the same permission the "Beheer" tab needs.
 // The .inventory container is the tab's real mount point — the filter row's layout is scoped to it.
 const ExpensesReviewHost = () => {
-	const { ready, fallback, session } = useDashboardGuard('expenses.manage', { className: 'inventory', label: 'Declaraties laden' });
+	const { ready, fallback, session } = useDashboardGuard('expenses.review', { className: 'inventory', label: 'Declaraties laden' });
 	if (!ready || !session) return fallback;
 	return (
 		<Container className="inventory">
