@@ -42,12 +42,14 @@ by a runtime array in `src/lib/auth/permissions.ts` (the single source for the `
 types and the access UI):
 
 - **`app_role`** — `user`, `author`, `yakuza`, `stand-staff`, `admin`, ordered least → most privileged.
-- **`app_permission`** — the fine-grained verbs (`pages.edit`, `moderation.view`, `expenses.manage`,
+- **`app_permission`** — the fine-grained verbs (`pages.edit`, `moderation.view`, `expenses.review`,
   `staff.manage`, …).
 
-A role grants a **bundle** of permissions (`role_permissions`); effective permissions are that bundle
-**plus** per-user grants (`user_permissions`). The client reads them once through the `my_permissions()`
-RPC (`usePermissions`); RLS re-derives them per request on the server. Roles are display-only in the UI —
+`user_permissions` is the single source of truth for what a person can do — `role_permissions` is only
+a preset template. Picking a role calls `set_user_role()`, which copies that role's preset into
+`user_permissions`, replacing the person's entire set (a role switch is not additive); rights can then be
+toggled individually per person. The client reads the effective set once through the `my_permissions()`
+RPC (`usePermissions`); RLS re-derives it per request on the server. Roles are display-only in the UI —
 the role chip shows the highest one, but nothing gates on a role, only on a permission.
 
 > **Forced logout on access change.** RLS already cuts data access the moment a grant changes (policies
@@ -103,14 +105,14 @@ extended as such routes appear.
 
 - **Mijn** — the member's own view: **Profiel** (`/account` in the admin shell: Discord block, profile
   fields on the `avatars` bucket, own signals/surveys/notifications/donations), **Mijn spullen** (own
-  inventory + packing) and **Declaraties** (submit expenses; a "Beheer" tab appears with `expenses.manage`).
+  inventory + packing) and **Declaraties** (submit expenses; a "Beheer" tab appears with `expenses.review`).
 - **Operaties** — **Conventies & events** (a landing with stats + an 8-tab editor: Info, Aanwezigheid,
   Agenda, Activiteiten, Kosten, Evaluatie, Items & tickets, Post), **Inventaris** (pure stock, split from
-  events), **Team** (`staff.manage` — the roster from `staff_overview()`) and **Moderatie** (a person
+  events), **Team** (`staff.view` — the roster from `staff_overview()`) and **Moderatie** (a person
   detail with Overzicht / Signalen / Verbindingen / Acties tabs, plus a **Tickets** tab: a Ticket-Tool
   transcript is uploaded, parsed client-side into tickets/messages/participants with Discord-ID matching,
   and shown in the `ChatTranscript` viewer).
-- **Financiën** (`expenses.manage`) — the org-wide money view: the `finance_rollup()` expense rollup plus
+- **Financiën** (`finance.view`) — the org-wide money view: the `finance_rollup()` expense rollup plus
   `org_income` for real income and balance.
 - **Content** — **Pagina's** (the Puck builder), **Media** and **Enquêtes**.
 - **Systeem** — **Toegang** (roles/permissions), **Meldingen** and **Logs**.
@@ -122,17 +124,18 @@ a `SECURITY DEFINER` function with an `authorize(...)` gate in its `WHERE` (and 
 every name is fully qualified). Without the permission, the function returns an **empty set**, not an
 error. Examples:
 
-- **`finance_rollup(from, to, event_id)`** — the filterable expense rollup, gated on `expenses.manage`;
+- **`finance_rollup(from, to, event_id)`** — the filterable expense rollup, gated on `finance.view`;
   omits PII (no IBAN / account holder).
 - **`staff_overview()`** — the convention team (stand-staff ∪ yakuza) with next shift and open warnings in
-  one round-trip, gated on `staff.manage`.
+  one round-trip, gated on `staff.view`.
 - **`media_is_used(name)` / `media_usage(paths)`** — is a bucket image referenced by any page? A substring
-  test of the object name against `pages.data`. Both self-gate on `media.manage` (a `SECURITY DEFINER`
-  function in `public` is callable by every role, so it must check itself), and `media_is_used` is wired
-  into the **storage delete policy** so a used image can't be deleted even by a direct storage API call:
+  test of the object name against `pages.data`. `media_is_used` self-gates on `media.delete` and
+  `media_usage` on `media.upload` (a `SECURITY DEFINER` function in `public` is callable by every role, so
+  each must check itself), and `media_is_used` is wired into the **storage delete policy** so a used image
+  can't be deleted even by a direct storage API call:
   ```sql
   create policy "media editors delete" on storage.objects for delete to authenticated
-  using (bucket_id = 'media' and (select public.authorize('media.manage')) and not public.media_is_used(name));
+  using (bucket_id = 'media' and (select public.authorize('media.delete')) and not public.media_is_used(name));
   ```
   Known limitation: the scan only covers `pages.data`, so a bucket image referenced solely from code would read as unused and could be deleted.
 
@@ -141,7 +144,7 @@ error. Examples:
 Meldingen is data plus a scheduler:
 
 - **`notification_types`** — admin-configurable types with an `enabled` toggle; read and managed through
-  `notifications.send`.
+  `notifications.manage`.
 - **`notification_history`** — every sent notification. Inserts come only from the service role (the
   `send-push` Edge Function) or from `SECURITY DEFINER` functions; reads go through `notifications.send`.
 - **`run_shift_reminders()`** — a `pg_cron` job (every 5 min) that finds shifts starting in the ~30- and

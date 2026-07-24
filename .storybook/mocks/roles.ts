@@ -8,36 +8,67 @@
 export const STORY_ROLES = ['stand-staff', 'yakuza', 'author', 'admin'] as const;
 export type StoryRole = (typeof STORY_ROLES)[number];
 
-const STAND_STAFF = ['inventory.view', 'expenses.view'];
+const STAND_STAFF = ['inventory.view', 'events.view', 'expenses.view', 'staff.view'];
 
 const YAKUZA = [
-	...STAND_STAFF,
-	'inventory.manage',
-	'expenses.manage',
-	'staff.manage',
 	'moderation.view',
-	'badges.manage',
+	'moderation.manage',
+	'events.view',
+	'events.manage',
+	'inventory.view',
+	'inventory.manage',
+	'expenses.view',
+	'expenses.review',
+	'finance.view',
+	'finance.manage',
+	'staff.view',
+	'staff.manage',
+	'surveys.manage',
+	'surveys.results',
 	'notifications.send',
+	'notifications.manage',
+	'badges.manage',
 ];
 
 const AUTHOR = [
+	'pages.create',
 	'pages.edit',
-	'pages.delete',
 	'structures.edit',
-	'media.manage',
-	'site.publish',
+	'media.upload',
+	'site.publish_staging',
 	'surveys.manage',
+	'surveys.results',
 ];
 
 const ADMIN = [
-	...new Set([
-		...YAKUZA,
-		...AUTHOR,
-		'moderation.manage',
-		'roles.manage',
-		'logs.view',
-		'records.delete',
-	]),
+	'pages.create',
+	'pages.edit',
+	'pages.delete',
+	'structures.edit',
+	'media.upload',
+	'media.delete',
+	'site.publish_staging',
+	'site.approve',
+	'moderation.view',
+	'moderation.manage',
+	'roles.manage',
+	'events.view',
+	'events.manage',
+	'inventory.view',
+	'inventory.manage',
+	'expenses.view',
+	'expenses.review',
+	'finance.view',
+	'finance.manage',
+	'staff.view',
+	'staff.manage',
+	'surveys.manage',
+	'surveys.results',
+	'notifications.send',
+	'notifications.manage',
+	'logs.view',
+	'badges.manage',
+	'records.delete',
 ];
 
 export const PERMISSIONS_BY_ROLE: Record<StoryRole, string[]> = {
