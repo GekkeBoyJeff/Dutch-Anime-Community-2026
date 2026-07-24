@@ -543,3 +543,191 @@ begin
 			)), '[]'::jsonb) from public.survey_responses r where r.survey_id = p_id));
 end;
 $$;
+
+-- ============================================================================
+-- D. Admin-slot: admins zijn via de app onaantastbaar (spec §5)
+-- ============================================================================
+create function public.user_is_admin(p_user uuid)
+returns boolean language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.user_roles where user_id = p_user and role = 'admin');
+$$;
+grant execute on function public.user_is_admin(uuid) to authenticated;
+
+-- user_roles: own row readable; managing requires roles.manage, a non-self target that is
+-- not an admin, and never a promotion TO admin (admins are managed via the database only).
+drop policy if exists "user_roles read"   on public.user_roles;
+drop policy if exists "user_roles insert" on public.user_roles;
+drop policy if exists "user_roles update" on public.user_roles;
+drop policy if exists "user_roles delete" on public.user_roles;
+create policy "user_roles read" on public.user_roles for select to authenticated
+  using (user_id = (select auth.uid()) or (select public.authorize('roles.manage')));
+create policy "user_roles insert" on public.user_roles for insert to authenticated
+  with check ((select public.authorize('roles.manage')) and user_id <> (select auth.uid())
+    and not public.user_is_admin(user_id) and role <> 'admin');
+create policy "user_roles update" on public.user_roles for update to authenticated
+  using ((select public.authorize('roles.manage')) and user_id <> (select auth.uid())
+    and not public.user_is_admin(user_id))
+  with check ((select public.authorize('roles.manage')) and user_id <> (select auth.uid()) and role <> 'admin');
+create policy "user_roles delete" on public.user_roles for delete to authenticated
+  using ((select public.authorize('roles.manage')) and user_id <> (select auth.uid())
+    and not public.user_is_admin(user_id));
+
+create policy "user_permissions read" on public.user_permissions for select to authenticated
+  using (user_id = (select auth.uid()) or (select public.authorize('roles.manage')));
+create policy "user_permissions insert" on public.user_permissions for insert to authenticated
+  with check ((select public.authorize('roles.manage')) and user_id <> (select auth.uid())
+    and not public.user_is_admin(user_id));
+create policy "user_permissions update" on public.user_permissions for update to authenticated
+  using ((select public.authorize('roles.manage')) and user_id <> (select auth.uid())
+    and not public.user_is_admin(user_id))
+  with check ((select public.authorize('roles.manage')) and user_id <> (select auth.uid())
+    and not public.user_is_admin(user_id));
+create policy "user_permissions delete" on public.user_permissions for delete to authenticated
+  using ((select public.authorize('roles.manage')) and user_id <> (select auth.uid())
+    and not public.user_is_admin(user_id));
+
+-- Rol kiezen = preset kopiëren (spec §3): vervangt de volledige permissieset van de persoon.
+create function public.set_user_role(p_user uuid, p_role public.app_role)
+returns void language plpgsql security definer set search_path = '' as $$
+begin
+  if not (select public.authorize('roles.manage')) then
+    raise exception 'roles.manage vereist';
+  end if;
+  if p_user = (select auth.uid()) then
+    raise exception 'Je kunt je eigen rol niet wijzigen';
+  end if;
+  if public.user_is_admin(p_user) then
+    raise exception 'Admins beheer je in de database';
+  end if;
+  if p_role = 'admin' then
+    raise exception 'Admin maken kan alleen via de database';
+  end if;
+  insert into public.user_roles (user_id, role) values (p_user, p_role)
+    on conflict (user_id) do update set role = excluded.role;
+  delete from public.user_permissions where user_id = p_user;
+  insert into public.user_permissions (user_id, permission, granted_by)
+    select p_user, rp.permission, (select auth.uid())
+    from public.role_permissions rp where rp.role = p_role;
+end;
+$$;
+grant execute on function public.set_user_role(uuid, public.app_role) to authenticated;
+
+-- ============================================================================
+-- E. Granting a permission no longer logs the target out; revoking/role change still does.
+-- ============================================================================
+create or replace function public.revoke_sessions_on_access_change()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  if tg_op = 'INSERT' and tg_table_name = 'user_permissions' then
+    return null; -- extra right: enforcement is already live via authorize(), no forced re-login
+  end if;
+  delete from auth.sessions where user_id = coalesce(new.user_id, old.user_id);
+  return null;
+end;
+$$;
+
+-- The user_permissions trigger was dropped with its table; recreate it (function above is shared).
+create trigger on_user_permissions_access_change
+  after insert or update or delete on public.user_permissions
+  for each row execute function public.revoke_sessions_on_access_change();
+
+-- ============================================================================
+-- F. Concept (data) vs. gepubliceerd (published_data); accepteren via RPC met site.approve
+-- ============================================================================
+alter table public.pages
+  add column published_data jsonb,
+  add column published_at   timestamptz,
+  add column published_by   uuid references auth.users(id);
+alter table public.structures
+  add column published_data jsonb,
+  add column published_at   timestamptz,
+  add column published_by   uuid references auth.users(id);
+
+-- One-off: the current live site stays byte-identical (spec §11).
+update public.pages      set published_data = data, published_at = now();
+update public.structures set published_data = data, published_at = now();
+
+-- Only the approve RPCs may touch published_*; direct writes silently keep the old values
+-- (and an INSERT never smuggles in a published version).
+create function public.protect_published_columns()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  if current_setting('app.approving', true) = '1' then return new; end if;
+  if tg_op = 'INSERT' then
+    new.published_data := null; new.published_at := null; new.published_by := null;
+  else
+    new.published_data := old.published_data;
+    new.published_at   := old.published_at;
+    new.published_by   := old.published_by;
+  end if;
+  return new;
+end;
+$$;
+create trigger protect_published_pages before insert or update on public.pages
+  for each row execute function public.protect_published_columns();
+create trigger protect_published_structures before insert or update on public.structures
+  for each row execute function public.protect_published_columns();
+
+create function public.approve_page(p_path text)
+returns void language plpgsql security definer set search_path = '' as $$
+begin
+  if not (select public.authorize('site.approve')) then
+    raise exception 'site.approve vereist';
+  end if;
+  perform set_config('app.approving', '1', true);
+  update public.pages
+    set published_data = data, published_at = now(), published_by = (select auth.uid())
+    where path = p_path;
+  if not found then raise exception 'Pagina niet gevonden'; end if;
+  perform set_config('app.approving', '0', true);
+end;
+$$;
+grant execute on function public.approve_page(text) to authenticated;
+
+create function public.approve_structure()
+returns void language plpgsql security definer set search_path = '' as $$
+begin
+  if not (select public.authorize('site.approve')) then
+    raise exception 'site.approve vereist';
+  end if;
+  perform set_config('app.approving', '1', true);
+  update public.structures
+    set published_data = data, published_at = now(), published_by = (select auth.uid())
+    where id = 1;
+  perform set_config('app.approving', '0', true);
+end;
+$$;
+grant execute on function public.approve_structure() to authenticated;
+
+-- ============================================================================
+-- G. Nothing may still reference a dropped permission name (spec §11)
+-- ============================================================================
+do $$
+declare bad text;
+begin
+  select string_agg(distinct tablename || '.' || policyname, ', ') into bad
+  from pg_policies
+  where coalesce(qual, '') || coalesce(with_check, '') like any (array[
+    '%''media.manage''%', '%''site.publish''%', '%''expenses.manage''%', '%app_permission_old%'
+  ]);
+  if bad is not null then
+    raise exception 'Policies met oude permissienamen: %', bad;
+  end if;
+
+  select string_agg(p.proname, ', ') into bad
+  from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+  where n.nspname = 'public'
+    and p.prosrc like any (array['%''media.manage''%', '%''site.publish''%', '%''expenses.manage''%']);
+  if bad is not null then
+    raise exception 'Functies met oude permissienamen: %', bad;
+  end if;
+
+  -- Events-domein mag niet meer op inventory.* gaten (patroon-check op de policy-teksten).
+  select string_agg(distinct tablename || '.' || policyname, ', ') into bad
+  from pg_policies
+  where tablename like 'event%'
+    and coalesce(qual, '') || coalesce(with_check, '') like '%''inventory.%';
+  if bad is not null then
+    raise exception 'Event-policies nog op inventory.*: %', bad;
+  end if;
+end $$;
