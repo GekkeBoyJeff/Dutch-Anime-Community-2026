@@ -15,8 +15,6 @@ import { buildNavGroups, buildPaletteActions, buildPalettePages, buildTabBarItem
 import { emphasisRole, usePermissions, ROLE_LABELS, highestRole, type AppRole, type Permission } from '@/lib/auth/permissions';
 import { getBrowserClient } from '@/lib/supabase/client';
 
-import { NAV_HIGHLIGHTS } from './NavHighlights';
-
 interface NavIndicator {
 	dot?: boolean;
 	badge?: number;
@@ -24,8 +22,8 @@ interface NavIndicator {
 
 // Live per-group nav indicators (blueprint §2 C1/C5/C6): a count pill or an attention dot on a group's
 // trigger when something waits, so a manager sees it without opening the panel. Deliberately cheap — one
-// eager pass of head/limited count queries on mount (the NavHighlights inside the panels stay lazy). Each
-// query is gated on the same permission that guards its data; RLS stays the real boundary.
+// eager pass of head/limited count queries on mount. Each query is gated on the same permission that
+// guards its data; RLS stays the real boundary.
 const useNavIndicators = (permissions: ReadonlySet<Permission>): Record<string, NavIndicator> => {
 	const [indicators, setIndicators] = useState<Record<string, NavIndicator>>({});
 	const canOps = permissions.has('events.manage');
@@ -149,15 +147,12 @@ const DashboardNavReady = () => {
 
 	const indicators = useNavIndicators(permissions);
 
-	// Attach each group's live highlight node onto the permission-filtered groups (the node self-fetches
-	// only when its panel opens). Groups are ordered for the emphasis role (blueprint §1c); a collapsed
-	// single-link group (directHref) renders as a plain link, so it takes no highlight. The cheap
-	// per-group indicator (dot/badge) rides along so a manager sees it without opening anything.
+	// Groups are ordered for the emphasis role (blueprint §1c). The cheap per-group indicator (dot/badge)
+	// rides along so a manager sees it without opening anything.
 	const groups = useMemo(
 		() =>
 			buildNavGroups(permissions, emphasisRole(permissions)).map((group) => ({
 				...group,
-				highlight: group.directHref ? undefined : NAV_HIGHLIGHTS[group.key],
 				dot: indicators[group.key]?.dot,
 				badge: indicators[group.key]?.badge,
 			})),
