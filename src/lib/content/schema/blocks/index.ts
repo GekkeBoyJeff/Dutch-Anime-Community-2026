@@ -1,9 +1,8 @@
 import { z } from 'zod';
 
-import { ArticleCardGridBlock } from '@/lib/content/schema/blocks/articleCardGrid';
 import { BentoGridBlock } from '@/lib/content/schema/blocks/bentoGrid';
+import { CardGridBlock } from '@/lib/content/schema/blocks/cardGrid';
 import { CTABannerBlock } from '@/lib/content/schema/blocks/ctaBanner';
-import { EventCardGridBlock } from '@/lib/content/schema/blocks/eventCardGrid';
 import { EventTeaserBlock } from '@/lib/content/schema/blocks/eventTeaser';
 import { FaqAccordionBlock } from '@/lib/content/schema/blocks/faqAccordion';
 import { FeatureCardsBlock } from '@/lib/content/schema/blocks/featureCards';
@@ -11,7 +10,6 @@ import { GrowingMediaOnScrollBlock } from '@/lib/content/schema/blocks/growingMe
 import { HeroBlock } from '@/lib/content/schema/blocks/hero';
 import { HighlightCardsBlock } from '@/lib/content/schema/blocks/highlightCards';
 import { IntroGridBlock } from '@/lib/content/schema/blocks/introGrid';
-import { LinkCardGridBlock } from '@/lib/content/schema/blocks/linkCardGrid';
 import { LogoCloudBlock } from '@/lib/content/schema/blocks/logoCloud';
 import { PhotoMosaicBlock } from '@/lib/content/schema/blocks/photoMosaic';
 import { ProfileCardsBlock } from '@/lib/content/schema/blocks/profileCards';
@@ -31,6 +29,7 @@ import { TitleTextBlock } from '@/lib/content/schema/blocks/titleText';
 // block type a page can contain.
 export const Block = z.discriminatedUnion('type', [
 	HeroBlock,
+	CardGridBlock,
 	FeatureCardsBlock,
 	TextMediaBlock,
 	ProseBlock,
@@ -43,7 +42,6 @@ export const Block = z.discriminatedUnion('type', [
 	HighlightCardsBlock,
 	BentoGridBlock,
 	ProfileCardsBlock,
-	LinkCardGridBlock,
 	StepsBlock,
 	StatBandBlock,
 	StickyShowcaseBlock,
@@ -51,8 +49,6 @@ export const Block = z.discriminatedUnion('type', [
 	SpotlightQuoteBlock,
 	GrowingMediaOnScrollBlock,
 	ShowreelBlock,
-	ArticleCardGridBlock,
-	EventCardGridBlock,
 	EventTeaserBlock,
 	SubscribeToNewsletterBlock,
 ]);
@@ -70,8 +66,8 @@ export * from '@/lib/content/schema/blocks/logoCloud';
 export * from '@/lib/content/schema/blocks/faqAccordion';
 export * from '@/lib/content/schema/blocks/highlightCards';
 export * from '@/lib/content/schema/blocks/bentoGrid';
+export * from '@/lib/content/schema/blocks/cardGrid';
 export * from '@/lib/content/schema/blocks/profileCards';
-export * from '@/lib/content/schema/blocks/linkCardGrid';
 export * from '@/lib/content/schema/blocks/steps';
 export * from '@/lib/content/schema/blocks/statBand';
 export * from '@/lib/content/schema/blocks/stickyShowcase';
@@ -79,7 +75,5 @@ export * from '@/lib/content/schema/blocks/photoMosaic';
 export * from '@/lib/content/schema/blocks/spotlightQuote';
 export * from '@/lib/content/schema/blocks/growingMediaOnScroll';
 export * from '@/lib/content/schema/blocks/showreel';
-export * from '@/lib/content/schema/blocks/articleCardGrid';
-export * from '@/lib/content/schema/blocks/eventCardGrid';
 export * from '@/lib/content/schema/blocks/eventTeaser';
 export * from '@/lib/content/schema/blocks/subscribeNewsletter';

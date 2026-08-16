@@ -23,7 +23,7 @@ const Skeleton = ({
 		<span
 			ref={ref}
 			aria-hidden="true"
-			className={classNames('skeleton', `radius-${radius}`, circle && 'is-circle', className)}
+			className={classNames('skeleton', `is-rounded-${radius}`, circle && 'is-circle', className)}
 			style={style}
 		/>
 	);

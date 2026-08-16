@@ -3,18 +3,18 @@
 
 	text-align: center;
 
-	.description {
+	.logo-cloud-description {
 		color: $color-secondary;
 		margin-inline: auto;
 		margin-block-start: spacing(s);
 	}
 
-	.logo-cloud-heading + .description {
+	.logo-cloud-heading + .logo-cloud-description {
 		margin-block-start: spacing(s);
 	}
 
-	.row,
-	.track {
+	.logo-cloud-row,
+	.logo-cloud-track {
 		display: flex;
 		align-items: center;
 		list-style: none;
@@ -22,19 +22,19 @@
 		padding: 0;
 	}
 
-	.row {
+	.logo-cloud-row {
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: spacing(2xl);
 		margin-block-start: spacing(2xl);
 	}
 
-	.logo {
+	.logo-cloud-logo {
 		display: flex;
 		align-items: center;
 	}
 
-	.logo-media .asset {
+	.logo-cloud-logo-media .media-asset {
 		block-size: auto;
 		max-block-size: 2.5rem;
 		inline-size: auto;
@@ -46,13 +46,13 @@
 			opacity $speed $ease;
 	}
 
-	.logo:hover .asset,
-	.logo-cloud-link:focus-visible .asset {
+	.logo-cloud-logo:hover .media-asset,
+	.logo-cloud-link:focus-visible .media-asset {
 		filter: grayscale(0);
 		opacity: 1;
 	}
 
-	.marquee {
+	.logo-cloud-marquee {
 		display: flex;
 		align-items: center;
 		margin-block-start: spacing(2xl);
@@ -60,7 +60,7 @@
 		mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
 	}
 
-	.marquee .track {
+	.logo-cloud-marquee .logo-cloud-track {
 		gap: spacing(2xl);
 		padding-inline: spacing(l);
 		flex-shrink: 0;
@@ -68,12 +68,12 @@
 		justify-content: space-around;
 	}
 
-	.marquee .track {
+	.logo-cloud-marquee .logo-cloud-track {
 		animation: logo-cloud-scroll var(--marquee-speed) linear infinite;
 	}
 
-	.marquee:hover .track,
-	.marquee:focus-within .track {
+	.logo-cloud-marquee:hover .logo-cloud-track,
+	.logo-cloud-marquee:focus-within .logo-cloud-track {
 		animation-play-state: paused;
 	}
 

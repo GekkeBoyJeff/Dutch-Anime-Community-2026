@@ -13,15 +13,15 @@
 	background-size: 200% 100%;
 	background-repeat: no-repeat;
 
-	&.radius-s {
+	&.is-rounded-s {
 		border-radius: $rounded-s;
 	}
 
-	&.radius-l {
+	&.is-rounded-l {
 		border-radius: $rounded-l;
 	}
 
-	&.radius-full {
+	&.is-rounded-full {
 		border-radius: $rounded-full;
 	}
 

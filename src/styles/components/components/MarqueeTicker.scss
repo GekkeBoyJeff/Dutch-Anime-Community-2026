@@ -8,18 +8,18 @@
 	padding-block: spacing(m);
 	user-select: none;
 
-	.viewport {
+	.marquee-ticker-viewport {
 		display: flex;
 		inline-size: max-content;
 
-		.track {
+		.marquee-ticker-track {
 			display: flex;
 			flex-shrink: 0;
 			align-items: center;
 			gap: var(--marquee-gap);
 			padding-inline-end: var(--marquee-gap);
 
-			.item {
+			.marquee-ticker-item {
 				display: inline-flex;
 				align-items: center;
 				gap: spacing(xs);
@@ -49,12 +49,12 @@
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
-		.track {
+		.marquee-ticker-track {
 			animation: marquee-scroll var(--marquee-speed) linear infinite;
 			animation-direction: var(--marquee-direction);
 		}
 
-		&:hover .track {
+		&:hover .marquee-ticker-track {
 			animation-play-state: paused;
 		}
 	}

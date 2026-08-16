@@ -13,7 +13,7 @@ const Columns = ({
 	ref,
 }: ColumnsProps & { children?: ReactNode; ref?: Ref<HTMLDivElement> }) => {
 	return (
-		<div ref={ref} className={classNames('columns', align && `is-${align}`, gap && `gap-${gap}`, className)}>
+		<div ref={ref} className={classNames('columns', align && `is-${align}`, gap && `has-gap-${gap}`, className)}>
 			{children}
 		</div>
 	);

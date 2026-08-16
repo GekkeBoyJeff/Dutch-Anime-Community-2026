@@ -20,21 +20,21 @@ const PhotoMosaic = ({ heading, variant = 'clean', items = [], colorset, ref }: 
 						size={heading.size}
 						intro={heading.intro}
 						element="header"
-						className="header"
+						className="photo-mosaic-header"
 					/>
 				)}
 
-				<ul className="grid">
+				<ul className="photo-mosaic-grid">
 					{items.map((item) => {
 						return (
-							<li key={item.id} className={classNames('mosaic-item', item.span && item.span !== 'standard' && `is-${item.span}`)}>
-								<figure className="frame">
+							<li key={item.id} className={classNames('photo-mosaic-item', item.span && item.span !== 'standard' && `is-${item.span}`)}>
+								<figure className="photo-mosaic-frame">
 									{/* Polaroids keep a fixed photo ratio via Media's own prop; the clean grid
 									lets the photo fill its grid cell instead (see the SCSS override). */}
 									<Media
 										{...item.media}
 										ratio={variant === 'scrapbook' ? (item.media.ratio ?? '4 / 3') : item.media.ratio}
-										className="photo"
+										className="photo-mosaic-photo"
 									/>
 									{item.caption && <figcaption className="caption">{item.caption}</figcaption>}
 								</figure>

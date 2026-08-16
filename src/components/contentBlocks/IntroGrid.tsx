@@ -32,16 +32,16 @@ const IntroGrid = ({
 					/>
 				)}
 
-				<ul className={classNames('grid', `is-count-${Math.min(panels.length, 4)}`)}>
+				<ul className={classNames('intro-grid-list', `is-count-${Math.min(panels.length, 4)}`)}>
 					{panels.map((panel) => {
 						const inner = (
 							<>
-								{panel.tagline && <Content element="p" className="tagline" value={panel.tagline} />}
+								{panel.tagline && <Content element="p" className="intro-grid-tagline" value={panel.tagline} />}
 								{panel.title && <Title element="h3" size={4} value={panel.title} />}
 								{panel.subtitle && <Content size="small" value={panel.subtitle} />}
 
 								{panel.action && (
-									<span className="action">
+									<span className="intro-grid-action">
 										{panel.action.icon && <Icon name={panel.action.icon} />}
 										{panel.action.label}
 									</span>
@@ -50,7 +50,7 @@ const IntroGrid = ({
 						);
 
 						return (
-							<li key={panel.id} className={classNames('panel', `is-${panel.accent ?? 'primary'}`)}>
+							<li key={panel.id} className={classNames('intro-grid-panel', `is-${panel.accent ?? 'intro-grid-primary'}`)}>
 								{panel.action ? (
 									<Interactive className="intro-grid-link" url={panel.action.url}>
 										{inner}

@@ -1,16 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import FieldLegend from '@/components/forms/FieldLegend';
-import FieldSet from '@/components/forms/FieldSet';
 import Radio from '@/components/forms/Radio';
+import RadioGroup from '@/components/forms/RadioGroup';
 import { RadioProps } from '@/lib/content/schema/forms/radio';
-
-const options = [
-	{ value: 'standard', label: 'Standard — 3–5 business days' },
-	{ value: 'express', label: 'Express — next business day' },
-	{ value: 'pickup', label: 'Pick up in store' },
-	{ value: 'freight', label: 'Freight (over 30kg)', disabled: true },
-];
 
 const meta: Meta<typeof Radio> = {
 	title: 'Forms/Radio',
@@ -19,15 +11,22 @@ const meta: Meta<typeof Radio> = {
 		docs: {
 			description: {
 				component:
-					'A set of mutually-exclusive choices. Wraps Base UI RadioGroup (one tab stop; arrow keys move between choices). Pair it with a FieldLegend variant="label" inside a FieldSet for the group name.',
+					'A single choice. Wraps Base UI Radio — role="radio" + aria-checked plus a hidden input for native forms. With a label it renders a clickable row; without one it is just the dot. It always lives inside a RadioGroup, which owns the selected value and the arrow-key navigation, so every story below supplies one.',
 			},
 		},
 		jsonSchema: { schema: RadioProps },
 	},
 	argTypes: {
-		horizontal: { control: 'boolean' },
 		disabled: { control: 'boolean' },
+		required: { control: 'boolean' },
 	},
+	decorators: [
+		(Story) => (
+			<RadioGroup aria-label="Shipping method" defaultValue="standard">
+				<Story />
+			</RadioGroup>
+		),
+	],
 };
 
 export default meta;
@@ -36,26 +35,31 @@ type Story = StoryObj<typeof Radio>;
 
 export const Default: Story = {
 	args: {
-		options,
-		name: 'shipping',
-		defaultValue: 'standard',
+		value: 'express',
+		label: 'Express — next business day',
 	},
 };
 
-export const Horizontal: Story = {
-	...Default,
+// The enclosing group starts on `standard`, so this is the selected one.
+export const Selected: Story = {
 	args: {
-		...Default.args,
-		horizontal: true
-	}
+		value: 'standard',
+		label: 'Standard — 3–5 business days',
+	},
 };
 
-export const InsideFieldSet: Story = {
-	...Default,
-	render: (args) => (
-		<FieldSet>
-			<FieldLegend variant="label">Shipping method</FieldLegend>
-			<Radio {...args} />
-		</FieldSet>
-	),
+export const Disabled: Story = {
+	args: {
+		value: 'freight',
+		label: 'Freight (over 30kg)',
+		disabled: true,
+	},
+};
+
+// Without a label it is just the dot — give it its own accessible name.
+export const WithoutLabel: Story = {
+	args: {
+		value: 'pickup',
+		'aria-label': 'Pick up in store',
+	},
 };

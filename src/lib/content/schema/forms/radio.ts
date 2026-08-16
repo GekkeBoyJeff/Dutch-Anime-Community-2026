@@ -1,24 +1,16 @@
 import { z } from 'zod';
 
-export const RadioOption = z
-	.object({
-		value: z.string().min(1).describe('The submitted form value'),
-		label: z.string().min(1).describe('Visible label (may contain HTML)'),
-		disabled: z.boolean().optional().describe('Renders the choice but blocks selection'),
-	})
-	.meta({ title: 'RadioOption' });
-export type RadioOption = z.infer<typeof RadioOption>;
-
+// Props for the Radio component: a single choice, wraps Base UI's Radio. Always rendered inside a
+// RadioGroup, which owns the selected value.
 export const RadioProps = z
 	.object({
-		options: z.array(RadioOption).optional().describe('The choices to render as a group; defaults to []'),
-		name: z.string().optional().describe('Submission key for native <form> submission'),
-		value: z.string().optional().describe('Controlled selected value; omit for an uncontrolled group'),
-		defaultValue: z.string().optional().describe('Uncontrolled initial selected value'),
-		horizontal: z.boolean().optional().describe('Lay the choices out in a row instead of a column; defaults to false'),
+		value: z.string().min(1).describe('The value this choice selects in its group'),
 		readOnly: z.boolean().optional().describe('Visible but not changeable'),
-		disabled: z.boolean().optional().describe('Blocks interaction and dims the whole group'),
-		required: z.boolean().optional().describe('Marks a choice required before the form can submit'),
+		disabled: z.boolean().optional().describe('Blocks interaction and dims the control'),
+		required: z.boolean().optional().describe('Marks this choice required before the form can submit'),
+		id: z.string().optional().describe('The id on the hidden input, to wire up an external <label htmlFor>'),
+		label: z.string().optional().describe('Inline label text (may contain HTML); children win over this'),
+		'aria-label': z.string().optional().describe('Accessible name when there is no visible label'),
 		className: z.string().optional().describe('Additional classes on the root element'),
 	})
 	.meta({ title: 'Radio' });

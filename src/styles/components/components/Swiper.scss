@@ -5,22 +5,22 @@
 	flex-direction: column;
 	gap: spacing(m);
 
-	.viewport {
+	.swiper-viewport {
 		overflow: hidden;
 		border-radius: var(--swiper-radius);
 
-		.track {
+		.swiper-track {
 			display: flex;
 			gap: var(--swiper-gap);
 
-			.slide {
+			.swiper-slide {
 				flex: 0 0 100%;
 				min-inline-size: 0;
 				display: flex;
 				flex-direction: column;
 				gap: spacing(s);
 
-				.frame {
+				.swiper-frame {
 					position: relative;
 					overflow: hidden;
 					border-radius: var(--swiper-radius);
@@ -29,17 +29,17 @@
 					--media-block-size: 100%;
 
 					.swiper-link,
-					.play {
+					.swiper-play {
 						display: block;
 						inline-size: 100%;
 						block-size: 100%;
 					}
 
-					.play {
+					.swiper-play {
 						position: relative;
 						cursor: pointer;
 
-						.play-icon {
+						.swiper-play-icon {
 							position: absolute;
 							inset-block-start: 50%;
 							inset-inline-start: 50%;
@@ -63,9 +63,8 @@
 							}
 						}
 
-
 						@include interactive {
-							.play-icon {
+							.swiper-play-icon {
 								scale: 1.08;
 							}
 						}
@@ -77,12 +76,12 @@
 					flex-direction: column;
 					gap: spacing(2);
 
-					.caption-title {
+					.swiper-caption-title {
 						margin: 0;
 						font-weight: $weight-medium;
 					}
 
-					.caption-text {
+					.swiper-caption-text {
 						--font-size: 0.875rem;
 						margin: 0;
 						color: $color-secondary;
@@ -92,20 +91,20 @@
 		}
 	}
 
-	.controls {
+	.swiper-controls {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
 		gap: spacing(m);
 
-		.counter {
+		.swiper-counter {
 			--font-size: 0.875rem;
 			margin: 0;
 			color: $color-secondary;
 			font-variant-numeric: tabular-nums;
 		}
 
-		.control {
+		.swiper-control {
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
@@ -126,7 +125,6 @@
 			@include interactive {
 				background-color: $surface-muted;
 			}
-
 
 			&:disabled,
 			&[aria-disabled='true'] {

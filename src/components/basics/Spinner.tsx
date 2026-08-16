@@ -14,7 +14,7 @@ const Spinner = ({
 }: SpinnerProps & { ref?: Ref<HTMLSpanElement> }) => {
 	return (
 		<span ref={ref} role="status" className={classNames('spinner', `is-${size}`, className)}>
-			<span className="ring" aria-hidden="true" />
+			<span className="spinner-ring" aria-hidden="true" />
 			<VisuallyHidden>{label}</VisuallyHidden>
 		</span>
 	);

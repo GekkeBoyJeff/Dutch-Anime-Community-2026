@@ -40,19 +40,19 @@ const Tabs = ({
 			orientation={orientation}
 			onValueChange={(next) => onValueChange?.(next as number)}
 		>
-			<BaseTabs.List className="list" activateOnFocus={activateOnFocus} aria-label={label}>
+			<BaseTabs.List className="tabs-list" activateOnFocus={activateOnFocus} aria-label={label}>
 				{items.map((item, index) => (
-					<BaseTabs.Tab key={index} className="tab" value={index} disabled={item.disabled}>
+					<BaseTabs.Tab key={index} className="tabs-tab" value={index} disabled={item.disabled}>
 						{item.icon && <Icon name={item.icon} className='tabs-tab-icon' />}
-						<Content element="span" className="label" value={item.label} />
+						<Content element="span" className="tabs-label" value={item.label} />
 					</BaseTabs.Tab>
 				))}
 
-				<BaseTabs.Indicator className="indicator" renderBeforeHydration />
+				<BaseTabs.Indicator className="tabs-indicator" renderBeforeHydration />
 			</BaseTabs.List>
 
 			{panels.map((panel, index) => (
-				<BaseTabs.Panel key={index} className="panel" value={index}>
+				<BaseTabs.Panel key={index} className="tabs-panel" value={index}>
 					{panel}
 				</BaseTabs.Panel>
 			))}

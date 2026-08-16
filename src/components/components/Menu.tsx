@@ -91,7 +91,7 @@ const MenuItem = ({
 	const body = (
 		<>
 			{icon && <Icon name={icon} className='menu-item-icon' />}
-			<Content element="span" className="label">{children}</Content>
+			<Content element="span" className="menu-label">{children}</Content>
 		</>
 	);
 
@@ -106,7 +106,7 @@ const MenuItem = ({
 		return (
 			<BaseMenu.LinkItem
 				ref={ref}
-				className={classNames('item', danger && 'is-danger', className)}
+				className={classNames('menu-item', danger && 'is-danger', className)}
 				label={label}
 				closeOnClick={!keepOpen}
 				render={<Interactive url={url} target={target} disabled={disabled} />}
@@ -119,7 +119,7 @@ const MenuItem = ({
 	return (
 		<BaseMenu.Item
 			ref={ref}
-			className={classNames('item', danger && 'is-danger', className)}
+			className={classNames('menu-item', danger && 'is-danger', className)}
 			label={label}
 			disabled={disabled}
 			closeOnClick={!keepOpen}
@@ -132,7 +132,7 @@ const MenuItem = ({
 
 const MenuGroup = ({ className, children, ref }: MenuGroupProps & { ref?: Ref<HTMLDivElement> }) => {
 	return (
-		<BaseMenu.Group ref={ref} className={classNames('group', className)}>
+		<BaseMenu.Group ref={ref} className={classNames('menu-group', className)}>
 			{children}
 		</BaseMenu.Group>
 	);
@@ -141,7 +141,7 @@ const MenuGroup = ({ className, children, ref }: MenuGroupProps & { ref?: Ref<HT
 // The non-focusable heading for a Group.
 const MenuGroupLabel = ({ className, children, ref }: MenuGroupLabelProps & { ref?: Ref<HTMLDivElement> }) => {
 	return (
-		<BaseMenu.GroupLabel ref={ref} className={classNames('group-label', className)}>
+		<BaseMenu.GroupLabel ref={ref} className={classNames('menu-group-label', className)}>
 			{children}
 		</BaseMenu.GroupLabel>
 	);
@@ -161,17 +161,17 @@ const MenuCheckboxItem = ({
 	return (
 		<BaseMenu.CheckboxItem
 			ref={ref}
-			className={classNames('item', 'is-checkbox', className)}
+			className={classNames('menu-item', 'is-checkbox', className)}
 			checked={checked}
 			defaultChecked={defaultChecked}
 			label={label}
 			disabled={disabled}
 			onCheckedChange={(next) => onCheckedChange?.(next)}
 		>
-			<BaseMenu.CheckboxItemIndicator className="indicator">
+			<BaseMenu.CheckboxItemIndicator className="menu-indicator">
 				<Icon name="check" className='menu-item-icon' />
 			</BaseMenu.CheckboxItemIndicator>
-			<Content element="span" className="label">{children}</Content>
+			<Content element="span" className="menu-label">{children}</Content>
 		</BaseMenu.CheckboxItem>
 	);
 };
@@ -208,21 +208,21 @@ const MenuRadioItem = ({
 	return (
 		<BaseMenu.RadioItem
 			ref={ref}
-			className={classNames('item', 'is-radio', className)}
+			className={classNames('menu-item', 'is-radio', className)}
 			value={value}
 			label={label}
 			disabled={disabled}
 		>
-			<BaseMenu.RadioItemIndicator className="indicator">
-				<span className="dot" />
+			<BaseMenu.RadioItemIndicator className="menu-indicator">
+				<span className="menu-dot" />
 			</BaseMenu.RadioItemIndicator>
-			<Content element="span" className="label">{children}</Content>
+			<Content element="span" className="menu-label">{children}</Content>
 		</BaseMenu.RadioItem>
 	);
 };
 
 const MenuSeparator = ({ className, ref }: MenuSeparatorProps & { ref?: Ref<HTMLDivElement> }) => {
-	return <BaseMenu.Separator ref={ref} className={classNames('separator', className)} />;
+	return <BaseMenu.Separator ref={ref} className={classNames('menu-separator', className)} />;
 };
 
 // An action / dropdown / kebab menu with roving focus, typeahead, submenus and checkbox/radio

@@ -40,8 +40,7 @@
 		cursor: default;
 	}
 
-
-	.thumb {
+	.switch-thumb {
 		display: block;
 		inline-size: calc(var(--switch-height) - (var(--switch-pad) * 2));
 		block-size: calc(var(--switch-height) - (var(--switch-pad) * 2));
@@ -54,11 +53,11 @@
 			inline-size $speed-fast $ease;
 	}
 
-	&:not([data-disabled]):not([data-readonly]):active .thumb {
+	&:not([data-disabled]):not([data-readonly]):active .switch-thumb {
 		inline-size: calc((var(--switch-height) - (var(--switch-pad) * 2)) * 1.15);
 	}
 
-	&[data-checked] .thumb {
+	&[data-checked] .switch-thumb {
 		translate: calc(var(--switch-width) - var(--switch-height)) 0;
 	}
 }

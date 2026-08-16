@@ -51,35 +51,35 @@ const ScrollytellingTimeline = ({
 
 	return (
 		<div ref={ref} className={classNames('scrollytelling-timeline', className)} aria-label={ariaLabel} role="group">
-			<div className="frame" aria-hidden="true">
+			<div className="scrollytelling-timeline-frame" aria-hidden="true">
 				{milestones.map((milestone, index) => {
 					if (!milestone.media) {
 						return null;
 					}
 
 					return (
-						<div className={classNames('frame-media', index === activeIndex && 'is-active')} key={index}>
+						<div className={classNames('scrollytelling-timeline-frame-media', index === activeIndex && 'is-active')} key={index}>
 							<Media {...milestone.media} />
 						</div>
 					);
 				})}
 			</div>
 
-			<ol className="cards">
+			<ol className="scrollytelling-timeline-cards">
 				{milestones.map((milestone, index) => {
 					return (
 						<li
-							className={classNames('scrollytelling-card', index === activeIndex && 'is-active')}
+							className={classNames('scrollytelling-timeline-scrollytelling-card', index === activeIndex && 'is-active')}
 							key={index}
 							data-index={index}
 							ref={(node) => {
 								cardsRef.current[index] = node;
 							}}
 						>
-							{milestone.tagline && <Content element="p" className="tagline" value={milestone.tagline} />}
-							{milestone.year && <Content element="p" className="year" value={milestone.year} />}
+							{milestone.tagline && <Content element="p" className="scrollytelling-timeline-tagline" value={milestone.tagline} />}
+							{milestone.year && <Content element="p" className="scrollytelling-timeline-year" value={milestone.year} />}
 							<Title element={`h${headingLevel}`} size={headingLevel} value={milestone.title} />
-							{milestone.date && <Content element="p" className="date" value={milestone.date} />}
+							{milestone.date && <Content element="p" className="scrollytelling-timeline-date" value={milestone.date} />}
 							{milestone.description && <Content value={milestone.description} />}
 						</li>
 					);

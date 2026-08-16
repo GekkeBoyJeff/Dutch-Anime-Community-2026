@@ -22,15 +22,15 @@ const Gallery = ({ items = [], variant = 'grid', columns = 3, gap = 'm', classNa
 		<div ref={ref} className={classNames('gallery', `is-${variant}`, `has-gap-${gap}`, className)} style={style}>
 			{items.map((item, index) => {
 				const figure = (
-					<figure className="item">
-						<div className="frame" style={item.ratio ? { aspectRatio: item.ratio } : undefined}>
+					<figure className="gallery-item">
+						<div className="gallery-frame" style={item.ratio ? { aspectRatio: item.ratio } : undefined}>
 							<Media type="image" src={item.src} alt={item.alt} />
 						</div>
 
 						{(item.caption || item.credit) && (
 							<figcaption className="caption">
 								{item.caption && <Content element="span" value={item.caption} />}
-								{item.credit && <Content element="span" className="credit" value={item.credit} />}
+								{item.credit && <Content element="span" className="gallery-credit" value={item.credit} />}
 							</figcaption>
 						)}
 					</figure>
@@ -41,7 +41,7 @@ const Gallery = ({ items = [], variant = 'grid', columns = 3, gap = 'm', classNa
 						{figure}
 					</Interactive>
 				) : (
-					<div key={index} className="cell">
+					<div key={index} className="gallery-cell">
 						{figure}
 					</div>
 				);

@@ -29,9 +29,9 @@ const DescriptionList = ({
 	return (
 		<dl ref={ref} className={classNames('description-list', `is-${layout}`, divided && 'is-divided', className)}>
 			{items.map((item) => (
-				<div className="row" key={item.term}>
-					<dt className="term">{parse(item.term)}</dt>
-					<dd className="description">
+				<div className="description-list-row" key={item.term}>
+					<dt className="description-list-term">{parse(item.term)}</dt>
+					<dd className="description-list-description">
 						{typeof item.description === 'string' ? parse(item.description) : item.description}
 					</dd>
 				</div>

@@ -36,7 +36,7 @@
 		box-shadow: inset 0 0 0 0.0625rem var(--status-error);
 	}
 
-	.indicator {
+	.checkbox-indicator {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -46,7 +46,7 @@
 
 		transition: opacity $speed-fast $ease;
 
-		.check {
+		.checkbox-check {
 			inline-size: 0.35em;
 			block-size: 0.6em;
 			border: solid currentColor;
@@ -55,12 +55,12 @@
 		}
 	}
 
-	&[data-checked] .indicator,
-	&[data-indeterminate] .indicator {
+	&[data-checked] .checkbox-indicator,
+	&[data-indeterminate] .checkbox-indicator {
 		opacity: 1;
 	}
 
-	&[data-indeterminate] .check {
+	&[data-indeterminate] .checkbox-check {
 		inline-size: 0.6em;
 		block-size: 0;
 		border-width: 0 0 0.125rem 0;
@@ -74,14 +74,14 @@
 	gap: spacing(s);
 	cursor: pointer;
 
-	.label {
+	.checkbox-label {
 		color: $color;
 	}
 
 	&:has(.checkbox[data-disabled]) {
 		cursor: not-allowed;
 
-		.label {
+		.checkbox-label {
 			opacity: 0.6;
 		}
 	}

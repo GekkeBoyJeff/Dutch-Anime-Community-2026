@@ -1,5 +1,5 @@
 .cta-banner {
-	.panel {
+	.cta-banner-panel {
 		display: flex;
 		flex-direction: column;
 		gap: spacing(xl);
@@ -17,7 +17,7 @@
 			}
 		}
 
-		.body {
+		.cta-banner-body {
 			display: flex;
 			flex-direction: column;
 			gap: spacing(l);
@@ -34,13 +34,13 @@
 			}
 		}
 
-		.figure {
+		.cta-banner-figure {
 			flex: 1;
 			min-inline-size: 0;
 		}
 	}
 
-	.panel.is-center .body {
+	.cta-banner-panel.is-center .cta-banner-body {
 		align-items: center;
 		text-align: center;
 
@@ -49,19 +49,19 @@
 		}
 	}
 
-	.panel.is-neutral {
+	.cta-banner-panel.is-neutral {
 		background-color: $surface-muted;
 	}
 
-	.panel.is-primary {
+	.cta-banner-panel.is-primary {
 		background-color: $tint-accent;
 	}
 
-	.panel.is-success {
+	.cta-banner-panel.is-success {
 		background-color: $tint-success;
 	}
 
-	.panel.is-warning {
+	.cta-banner-panel.is-warning {
 		background-color: $tint-warning;
 	}
 }

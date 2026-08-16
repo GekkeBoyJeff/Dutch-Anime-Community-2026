@@ -31,25 +31,25 @@ const HighlightCards = ({
 					size={heading?.size}
 					intro={heading?.intro}
 					element="header"
-					className="header"
+					className="highlight-cards-header"
 				/>
 
-				<ul className="grid" style={{ '--columns': columns } as React.CSSProperties}>
+				<ul className="highlight-cards-grid" style={{ '--columns': columns } as React.CSSProperties}>
 					{items.map((item, index) => (
 						<li key={item.id}>
 							<Card
 								variant="polaroid"
-								className="highlight-card"
+								className="highlight-cards-highlight-card"
 								tagline={item.tagline}
 								header={item.title ? <Title element="h3" size={4} value={item.title} /> : undefined}
 								image={
 									<>
-										{item.media && <Media {...item.media} ratio={item.media.ratio ?? '5 / 4'} className="photo" />}
+										{item.media && <Media {...item.media} ratio={item.media.ratio ?? '5 / 4'} className="highlight-cards-photo" />}
 
-										<span className="index" aria-hidden="true">{index + 1}</span>
+										<span className="highlight-cards-index" aria-hidden="true">{index + 1}</span>
 
 										{item.badges && item.badges.length > 0 && (
-											<div className="badges">
+											<div className="highlight-cards-badges">
 												{item.badges.map((badge) => (
 													<Badge key={badge} variant="primary">{badge}</Badge>
 												))}

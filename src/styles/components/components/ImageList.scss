@@ -2,7 +2,7 @@
 	--columns: 3;
 	--image-list-gap: #{spacing(m)};
 
-	.item {
+	.image-list-item {
 		--media-block-size: 100%;
 	}
 
@@ -17,7 +17,7 @@
 		grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
 		gap: var(--image-list-gap);
 
-		.item:first-child {
+		.image-list-item:first-child {
 			grid-column: 1 / -1;
 		}
 	}
@@ -26,7 +26,7 @@
 		column-count: var(--columns);
 		column-gap: var(--image-list-gap);
 
-		.item {
+		.image-list-item {
 			break-inside: avoid;
 			margin-block-end: var(--image-list-gap);
 		}
@@ -38,8 +38,8 @@
 		grid-auto-flow: dense;
 		gap: var(--image-list-gap);
 
-		.item:nth-child(6n + 1),
-		.item:nth-child(6n + 4) {
+		.image-list-item:nth-child(6n + 1),
+		.image-list-item:nth-child(6n + 4) {
 			grid-column: span 2;
 			grid-row: span 2;
 		}
@@ -56,7 +56,7 @@
 			column-count: 1;
 		}
 
-		&.is-mosaic .item {
+		&.is-mosaic .image-list-item {
 			grid-column: auto;
 			grid-row: auto;
 		}

@@ -26,7 +26,7 @@ const Divider = ({
 			className={classNames('divider', `is-${orientation}`, hasLabel && 'has-label', className)}
 		>
 			{hasLabel && (
-				<span className="label" aria-hidden="true">
+				<span className="divider-label" aria-hidden="true">
 					{label}
 				</span>
 			)}

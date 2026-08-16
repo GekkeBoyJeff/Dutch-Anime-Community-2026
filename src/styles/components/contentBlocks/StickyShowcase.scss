@@ -1,9 +1,9 @@
 .sticky-showcase {
-	.header {
+	.sticky-showcase-header {
 		margin-block-end: spacing(3xl);
 	}
 
-	.scene {
+	.sticky-showcase-scene {
 		display: grid;
 		gap: spacing(2xl);
 
@@ -13,7 +13,7 @@
 		}
 	}
 
-	.stage {
+	.sticky-showcase-stage {
 		display: none;
 
 		@include bp(l) {
@@ -27,7 +27,7 @@
 			background-color: $surface-muted;
 		}
 
-		.stage-media {
+		.sticky-showcase-stage-media {
 			position: absolute;
 			inset: 0;
 			opacity: 0;
@@ -38,12 +38,12 @@
 			}
 
 			.media,
-			.frame {
+			.media-frame {
 				position: absolute;
 				inset: 0;
 				block-size: 100%;
 
-				.frame {
+				.media-frame {
 					aspect-ratio: auto;
 					border-radius: 0;
 				}
@@ -51,7 +51,7 @@
 		}
 	}
 
-	.rail {
+	.sticky-showcase-rail {
 		display: grid;
 		gap: spacing(4xl);
 		margin: 0;
@@ -61,7 +61,7 @@
 			gap: 0;
 		}
 
-		.step {
+		.sticky-showcase-step {
 			display: flex;
 			flex-direction: column;
 			gap: spacing(m);
@@ -78,7 +78,7 @@
 				}
 			}
 
-			.step-index {
+			.sticky-showcase-step-index {
 				--font-size: 0.875rem;
 				display: inline-flex;
 				align-items: center;
@@ -92,20 +92,20 @@
 				font-variant-numeric: tabular-nums;
 			}
 
-			.step-title {
+			.sticky-showcase-step-title {
 				margin: 0;
 			}
 
-			.step-body {
+			.sticky-showcase-step-body {
 				color: $color-secondary;
 				max-inline-size: 32rem;
 			}
 
-			.step-media {
+			.sticky-showcase-step-media {
 				inline-size: 100%;
 				margin-block-start: spacing(s);
 
-				.frame {
+				.media-frame {
 					border-radius: 1.25rem;
 				}
 

@@ -6,7 +6,7 @@
 		flex-direction: column;
 	}
 
-	.item {
+	.toggle-group-item {
 		display: inline-flex;
 		align-items: center;
 		gap: spacing(xs);
@@ -57,7 +57,7 @@
 	&.is-segmented {
 		gap: 0;
 
-		.item {
+		.toggle-group-item {
 			border-radius: 0;
 			margin-inline-start: -0.0625rem;
 
@@ -81,7 +81,7 @@
 			}
 		}
 
-		&[data-orientation='vertical'] .item {
+		&[data-orientation='vertical'] .toggle-group-item {
 			margin-inline-start: 0;
 			margin-block-start: -0.0625rem;
 

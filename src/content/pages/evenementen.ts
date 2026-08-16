@@ -19,7 +19,8 @@ export const evenementenPage: Page = {
 			media: { type: 'image', src: '/media/hmia-2024.png', alt: 'DAC-groepsfoto op Heroes Made in Asia' },
 		},
 		{
-			type: 'eventCardGrid',
+			type: 'cardGrid',
+			variant: 'event',
 			id: 'cons',
 			colorset: 'light',
 			heading: {
@@ -34,7 +35,7 @@ export const evenementenPage: Page = {
 				{ label: 'Eerstvolgende eerst', value: 'oldest' },
 				{ label: 'Verste vooruit eerst', value: 'recent' },
 			],
-			events: [
+			items: [
 				{
 					id: 'con-abunai-2026',
 					title: 'Abunai! 2026',

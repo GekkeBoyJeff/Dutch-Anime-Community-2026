@@ -25,7 +25,7 @@ const Indicator = ({
 		<span ref={ref} className={classNames('indicator-badge', `is-${position}`, `is-${variant}`, className)}>
 			{children}
 			{!hidden && (
-				<span className={classNames('mark', count !== undefined && 'has-count')} aria-hidden="true">
+				<span className={classNames('indicator-mark', count !== undefined && 'has-count')} aria-hidden="true">
 					{count !== undefined && count}
 				</span>
 			)}

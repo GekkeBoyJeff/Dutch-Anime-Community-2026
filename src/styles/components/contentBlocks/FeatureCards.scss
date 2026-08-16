@@ -1,9 +1,9 @@
 .feature-cards {
-	.section-header {
+	.heading-group {
 		margin-block-end: spacing(4xl);
 	}
 
-	.grid {
+	.feature-cards-grid {
 		display: grid;
 		grid-template-columns: 1fr;
 		gap: spacing(xl);

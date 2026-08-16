@@ -1,5 +1,5 @@
 .reviews {
-	.grid {
+	.reviews-grid {
 		display: grid;
 		grid-template-columns: 1fr;
 		gap: spacing(xl);
@@ -23,7 +23,7 @@
 		.reviews-card {
 			background-color: $surface-faint;
 
-			.author {
+			.reviews-author {
 				color: $color-secondary;
 				font-weight: $weight-medium;
 			}

@@ -20,7 +20,7 @@ const Alert = ({
 	return (
 		<div ref={ref} role={role} className={classNames('alert', `is-${variant}`, className)}>
 			{icon && <Icon name={icon} className="alert-icon" />}
-			<div className="body">
+			<div className="alert-body">
 				{title && <Content element="p" className="alert-title" value={title} />}
 				{children}
 			</div>

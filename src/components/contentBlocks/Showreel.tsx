@@ -19,7 +19,7 @@ const Showreel = ({ heading, slides = [], ratio = '16 / 9', loop = true, showCou
 						size={heading.size}
 						intro={heading.intro}
 						element="header"
-						className="header"
+						className="showreel-header"
 					/>
 				)}
 

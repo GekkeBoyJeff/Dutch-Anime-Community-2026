@@ -20,7 +20,7 @@ const Container = ({
 	ref,
 }: ContainerProps & { ref?: Ref<HTMLElement> }) => {
 	return (
-		<Tag ref={ref} className={classNames('container', full && 'is-full', gutter && `gutter-${gutter}`, className)}>
+		<Tag ref={ref} className={classNames('container', full && 'is-full', gutter && `has-gutter-${gutter}`, className)}>
 			{children}
 		</Tag>
 	);

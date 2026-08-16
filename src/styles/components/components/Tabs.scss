@@ -11,7 +11,7 @@
 		align-items: flex-start;
 	}
 
-	.list {
+	.tabs-list {
 		position: relative;
 		display: flex;
 		gap: var(--tabs-gap);
@@ -22,7 +22,7 @@
 			border-inline-end: 0.0625rem solid $border-color;
 		}
 
-		.tab {
+		.tabs-tab {
 			display: inline-flex;
 			align-items: center;
 			gap: spacing(xs);
@@ -56,7 +56,7 @@
 
 		}
 
-		.indicator {
+		.tabs-indicator {
 			position: absolute;
 			inset-inline-start: var(--active-tab-left);
 			inset-block-end: 0;
@@ -71,7 +71,7 @@
 		}
 	}
 
-	&[data-orientation="vertical"] .indicator {
+	&[data-orientation="vertical"] .tabs-indicator {
 		inset-inline-start: auto;
 		inset-inline-end: 0;
 		inset-block-start: var(--active-tab-top);
@@ -83,17 +83,15 @@
 			block-size $speed $ease;
 	}
 
-	.panel {
+	.tabs-panel {
 		flex: 1;
 		min-inline-size: 0;
 
 	}
-}
 
-.is-admin {
-	.tabs {
-		.list {
-			.indicator {
+	.is-admin & {
+		.tabs-list {
+			.tabs-indicator {
 				transition:
 					inset-inline-start $speed $ease-snappy,
 					inline-size $speed $ease-snappy;
@@ -101,14 +99,14 @@
 		}
 
 		&[data-orientation="vertical"] {
-			.indicator {
+			.tabs-indicator {
 				transition:
 					inset-block-start $speed $ease-snappy,
 					block-size $speed $ease-snappy;
 			}
 		}
 
-		.panel {
+		.tabs-panel {
 			animation: tabs-panel-in 240ms $ease-entrance both;
 
 			&[data-activation-direction="right"] {
@@ -167,7 +165,7 @@
 @media (prefers-reduced-motion: reduce) {
 	.is-admin {
 		.tabs {
-			.panel {
+			.tabs-panel {
 				animation: none;
 			}
 		}

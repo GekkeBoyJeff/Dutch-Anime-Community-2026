@@ -10,19 +10,6 @@
 // decides what a caller may read, and no mock can or should stand in for that.
 
 import { FIXTURES, RPC_FIXTURES, STORAGE_FIXTURES, USER_ID } from './fixtures';
-import { PERMISSIONS_BY_ROLE, type StoryRole } from './roles';
-
-let activeRole: StoryRole = 'yakuza';
-
-/** Set by the Storybook "Rol" toolbar before a story renders. */
-export const setStoryRole = (role: StoryRole): void => {
-	activeRole = role;
-};
-
-// usePermissions caches its RPC result against the session's user id, so a role switch would keep
-// serving the previous role's permissions. Giving each role its own id invalidates that cache without
-// touching app code; queries normalise it back (see asString) so the fixtures still match.
-const roleUserId = (): string => `${USER_ID}-${activeRole}`;
 
 const session = () => ({
 	access_token: 'storybook',
@@ -30,7 +17,7 @@ const session = () => ({
 	expires_in: 3600,
 	refresh_token: 'storybook',
 	user: {
-		id: roleUserId(),
+		id: USER_ID,
 		email: 'jeffrey@example.test',
 		app_metadata: {},
 		aud: 'authenticated',
@@ -47,13 +34,9 @@ const session = () => ({
 type Row = Record<string, unknown>;
 type Filter = (row: Row) => boolean;
 
-// The session id carries a role suffix (see roleUserId) purely to bust a permissions cache. Strip it
-// here so `eq('user_id', session.user.id)` still matches the fixture rows.
-const asString = (value: unknown): string => {
-	if (value === null || value === undefined) return '';
-	const text = String(value);
-	return text.startsWith(`${USER_ID}-`) ? USER_ID : text;
-};
+// Filters compare loosely: a fixture may hold a number where the query passes a string, so both sides
+// are normalised before matching.
+const asString = (value: unknown): string => (value === null || value === undefined ? '' : String(value));
 
 // The subset of PostgREST the dashboard actually uses. Anything not listed simply passes rows through,
 // which keeps a story rendering instead of throwing on a filter nobody looks at.
@@ -233,7 +216,7 @@ export const getBrowserClient = () => ({
 	},
 	from: (table: string) => new Query(table),
 	rpc: async (name: string) => ({
-		data: name === 'my_permissions' ? PERMISSIONS_BY_ROLE[activeRole] : (RPC_FIXTURES[name] ?? null),
+		data: RPC_FIXTURES[name] ?? null,
 		error: null,
 	}),
 	// The notification composer delivers through the send-push Edge Function; without a stand-in, pressing

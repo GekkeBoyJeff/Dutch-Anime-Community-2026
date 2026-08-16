@@ -36,9 +36,9 @@ const HeadingGroup = ({
 				className,
 			)}
 		>
-			{tagline && <Content element="p" className="tagline" value={tagline} />}
+			{tagline && <Content element="p" className="heading-group-tagline" value={tagline} />}
 			{title && <Title size={size} value={title} />}
-			{intro && <Content className="intro" value={intro} />}
+			{intro && <Content className="heading-group-intro" value={intro} />}
 		</Tag>
 	);
 };

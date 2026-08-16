@@ -80,7 +80,7 @@ const ToggleGroup = ({
 				: items.map((item) => (
 						<BaseToggle
 							key={item.value}
-							className="item"
+							className="toggle-group-item"
 							value={item.value}
 							disabled={item.disabled}
 							aria-label={item.ariaLabel}

@@ -29,10 +29,10 @@ const AnnouncementBar = ({
 			dismissible={dismissible}
 			className={className}
 		>
-			<Content element="p" className="message" value={message} />
+			<Content element="p" className="announcement-bar-message" value={message} />
 
 			{cta?.label && (
-				<Button url={cta.url} target={cta.target} variant={cta.variant ?? 'ghost'} icon={cta.icon} className="cta">
+				<Button url={cta.url} target={cta.target} variant={cta.variant ?? 'ghost'} icon={cta.icon} className="announcement-bar-cta">
 					{cta.label}
 				</Button>
 			)}

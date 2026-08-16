@@ -98,24 +98,24 @@ const Swiper = ({
 
 	return (
 		<section ref={ref} className={classNames('swiper', `is-rounded-${rounded}`, className)} aria-roledescription="carousel" aria-label={label}>
-			<div className="viewport" ref={emblaRef}>
-				<div className="track">
+			<div className="swiper-viewport" ref={emblaRef}>
+				<div className="swiper-track">
 					{slides.map((slide, index) => {
 						const isVideo = Boolean(slide.embedId || slide.videoSrc);
 
 						return (
 							<div
 								key={index}
-								className="slide"
+								className="swiper-slide"
 								role="group"
 								aria-roledescription="slide"
 								aria-label={t.slideLabel({ index: index + 1, total: slides.length })}
 							>
-								<div className="frame" style={frameStyle}>
+								<div className="swiper-frame" style={frameStyle}>
 									{isVideo ? (
-										<Interactive className="play" onClick={() => setActiveVideo(slide)} aria-label={slide.title ? t.playLabel(slide.title) : t.playFallbackLabel}>
+										<Interactive className="swiper-play" onClick={() => setActiveVideo(slide)} aria-label={slide.title ? t.playLabel(slide.title) : t.playFallbackLabel}>
 											{slide.image && <Media type="image" src={slide.image} alt={slide.alt} />}
-											<span className="play-icon" aria-hidden="true" />
+											<span className="swiper-play-icon" aria-hidden="true" />
 										</Interactive>
 									) : slide.link ? (
 										<Interactive url={slide.link} className="swiper-link">
@@ -128,8 +128,8 @@ const Swiper = ({
 
 								{(slide.title || slide.description) && (
 									<div className="caption">
-										{slide.title && <Content element="p" className="caption-title" value={slide.title} />}
-										{slide.description && <Content element="p" className="caption-text" value={slide.description} />}
+										{slide.title && <Content element="p" className="swiper-caption-title" value={slide.title} />}
+										{slide.description && <Content element="p" className="swiper-caption-text" value={slide.description} />}
 									</div>
 								)}
 							</div>
@@ -138,13 +138,13 @@ const Swiper = ({
 				</div>
 			</div>
 
-			<div className="controls">
-				<Interactive className="control is-prev" onClick={scrollPrev} disabled={!canPrev} aria-label={t.prevLabel}>
+			<div className="swiper-controls">
+				<Interactive className="swiper-control is-prev" onClick={scrollPrev} disabled={!canPrev} aria-label={t.prevLabel}>
 					<span aria-hidden="true">&#8249;</span>
 				</Interactive>
 
 				{showCounter && (
-					<Content element="p" className="counter" aria-live="polite">
+					<Content element="p" className="swiper-counter" aria-live="polite">
 						<Content element="span">{selected + 1}</Content>
 						<span aria-hidden="true"> / </span>
 						<VisuallyHidden>{t.counterSeparatorLabel}</VisuallyHidden>
@@ -152,7 +152,7 @@ const Swiper = ({
 					</Content>
 				)}
 
-				<Interactive className="control is-next" onClick={scrollNext} disabled={!canNext} aria-label={t.nextLabel}>
+				<Interactive className="swiper-control is-next" onClick={scrollNext} disabled={!canNext} aria-label={t.nextLabel}>
 					<span aria-hidden="true">&#8250;</span>
 				</Interactive>
 			</div>

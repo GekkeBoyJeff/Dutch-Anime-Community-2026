@@ -4,7 +4,7 @@
 	gap: spacing(s);
 
 	&.is-reversed {
-		.tagline {
+		.heading-group-tagline {
 			order: 1;
 		}
 	}
@@ -13,7 +13,7 @@
 		align-items: center;
 	}
 
-	.tagline {
+	.heading-group-tagline {
 		--font-size: 0.875rem;
 		font-weight: $weight-medium;
 		text-transform: uppercase;
@@ -21,7 +21,7 @@
 		color: $accent-text;
 	}
 
-	.intro {
+	.heading-group-intro {
 		color: $color-secondary;
 		max-inline-size: $measure;
 	}

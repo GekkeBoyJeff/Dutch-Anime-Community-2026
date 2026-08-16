@@ -3,7 +3,7 @@
 		margin-block-end: spacing(2xl);
 	}
 
-	.grid {
+	.intro-grid-list {
 		display: grid;
 		grid-template-columns: 1fr;
 		gap: spacing(l);
@@ -24,7 +24,7 @@
 			}
 		}
 
-		.panel {
+		.intro-grid-panel {
 			display: flex;
 			flex-direction: column;
 			gap: spacing(s);
@@ -49,7 +49,7 @@
 				background-color: $tint-warning;
 			}
 
-			.tagline {
+			.intro-grid-tagline {
 				--font-size: 0.875rem;
 				font-weight: $weight-medium;
 				text-transform: uppercase;
@@ -65,17 +65,16 @@
 				text-decoration: none;
 				border-radius: $rounded-m;
 
-
-				.action {
+				.intro-grid-action {
 					transition: transform $speed-fast $ease;
 				}
 				@include interactive {
-					.action {
+					.intro-grid-action {
 						transform: translateX(0.125rem);
 					}
 				}
 
-				.action {
+				.intro-grid-action {
 					display: inline-flex;
 					align-items: center;
 					gap: spacing(xs);

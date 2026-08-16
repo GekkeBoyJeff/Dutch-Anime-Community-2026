@@ -208,10 +208,10 @@ const DashboardNavReady = () => {
 	}, [session, role]);
 
 	const searchPill = (
-		<button type="button" className="command-pill" onClick={() => setPaletteOpen(true)} aria-label="Snelzoeken openen">
-			<Icon name="search" className="command-pill-icon" />
-			<span className="command-pill-label">Zoeken…</span>
-			<Shortcut keys={[modKey, 'K']} separator="" className="command-pill-hint" />
+		<button type="button" className="command-palette-pill" onClick={() => setPaletteOpen(true)} aria-label="Snelzoeken openen">
+			<Icon name="search" className="command-palette-pill-icon" />
+			<span className="command-palette-pill-label">Zoeken…</span>
+			<Shortcut keys={[modKey, 'K']} separator="" className="command-palette-pill-hint" />
 		</button>
 	);
 

@@ -40,15 +40,15 @@ const AccordionItem = ({
 
 	return (
 		<BaseAccordion.Item ref={ref} className={classNames('accordion-item', className)} value={value} disabled={disabled}>
-			<BaseAccordion.Header className="header" render={<Heading />}>
-				<BaseAccordion.Trigger className="trigger">
-					<Content element="span" className="label" value={title} />
-					<Icon name={icon} className="chevron" />
+			<BaseAccordion.Header className="accordion-item-header" render={<Heading />}>
+				<BaseAccordion.Trigger className="accordion-item-trigger">
+					<Content element="span" className="accordion-item-label" value={title} />
+					<Icon name={icon} className="accordion-item-chevron" />
 				</BaseAccordion.Trigger>
 			</BaseAccordion.Header>
 
-			<BaseAccordion.Panel className="panel" keepMounted={panelKeepMounted} hiddenUntilFound={hiddenUntilFound}>
-				<div className="body">{children ?? content}</div>
+			<BaseAccordion.Panel className="accordion-item-panel" keepMounted={panelKeepMounted} hiddenUntilFound={hiddenUntilFound}>
+				<div className="accordion-item-body">{children ?? content}</div>
 			</BaseAccordion.Panel>
 		</BaseAccordion.Item>
 	);

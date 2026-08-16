@@ -196,7 +196,7 @@
 	}
 }
 
-.command-pill {
+.command-palette-pill {
 	display: none;
 	align-items: center;
 	gap: spacing(s);
@@ -220,18 +220,18 @@
 		border-color: $grey;
 	}
 
-	.command-pill-icon {
+	.command-palette-pill-icon {
 		inline-size: 1.05rem;
 		block-size: 1.05rem;
 		flex: none;
 	}
 
-	.command-pill-label {
+	.command-palette-pill-label {
 		font-size: 0.875rem;
 		font-weight: $weight-medium;
 	}
 
-	.command-pill-hint {
+	.command-palette-pill-hint {
 		margin-inline-start: spacing(xs);
 	}
 }

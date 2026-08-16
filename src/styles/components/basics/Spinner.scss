@@ -10,7 +10,7 @@
 		--spinner-size: 2.25rem;
 	}
 
-	.ring {
+	.spinner-ring {
 		inline-size: var(--spinner-size);
 		block-size: var(--spinner-size);
 		border-radius: $rounded-full;
@@ -19,7 +19,7 @@
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
-		.ring {
+		.spinner-ring {
 			animation: spinner-rotate 0.7s linear infinite;
 		}
 	}

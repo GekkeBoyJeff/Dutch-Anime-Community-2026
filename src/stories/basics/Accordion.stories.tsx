@@ -24,7 +24,6 @@ const meta: Meta<typeof Accordion> = {
 	},
 	argTypes: {
 		multiple: { control: 'boolean' },
-		orientation: { control: 'inline-radio', options: ['vertical', 'horizontal'] },
 	},
 };
 
@@ -36,7 +35,6 @@ export const Default: Story = {
 	args: {
 		items,
 		multiple: false,
-		orientation: 'vertical',
 		defaultValue: ['shipping'],
 	},
 };

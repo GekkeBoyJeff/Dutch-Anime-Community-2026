@@ -127,46 +127,46 @@ const CookieConsent = ({
 			aria-label={title}
 			className={classNames('cookie-consent', showPreferences && 'has-preferences', className)}
 		>
-			<div className="panel">
-				<div className="body">
-					<Content element="p" className="cookie-title" value={title} />
-					<Content element="p" className="cookie-text" value={description} />
+			<div className="cookie-consent-panel">
+				<div className="cookie-consent-body">
+					<Content element="p" className="cookie-consent-cookie-title" value={title} />
+					<Content element="p" className="cookie-consent-cookie-text" value={description} />
 				</div>
 
 				{showPreferences && categories.length > 0 && (
-					<ul className="categories">
-						<li className="category is-locked">
-							<span className="category-control">
-								<Checkbox.Root className="control" checked disabled aria-label="Essential cookies (always on)">
-									<Checkbox.Indicator className="indicator">
+					<ul className="cookie-consent-categories">
+						<li className="cookie-consent-category is-locked">
+							<span className="cookie-consent-category-control">
+								<Checkbox.Root className="cookie-consent-control" checked disabled aria-label="Essential cookies (always on)">
+									<Checkbox.Indicator className="cookie-consent-indicator">
 										<Icon name="check" />
 									</Checkbox.Indicator>
 								</Checkbox.Root>
-								<Content element="span" className="category-label">Essential</Content>
+								<Content element="span" className="cookie-consent-category-label">Essential</Content>
 							</span>
-							<Content element="span" className="category-description">Required for the site to work; always on.</Content>
+							<Content element="span" className="cookie-consent-category-description">Required for the site to work; always on.</Content>
 						</li>
 						{categories.map((category) => (
-							<li className="category" key={category.id}>
-								<label className="category-control">
+							<li className="cookie-consent-category" key={category.id}>
+								<label className="cookie-consent-category-control">
 									<Checkbox.Root
-										className="control"
+										className="cookie-consent-control"
 										checked={selection[category.id] ?? false}
 										onCheckedChange={() => toggle(category.id)}
 									>
-										<Checkbox.Indicator className="indicator">
+										<Checkbox.Indicator className="cookie-consent-indicator">
 											<Icon name="check" />
 										</Checkbox.Indicator>
 									</Checkbox.Root>
-									<Content element="span" className="category-label" value={category.label} />
+									<Content element="span" className="cookie-consent-category-label" value={category.label} />
 								</label>
-								{category.description && <Content element="span" className="category-description" value={category.description} />}
+								{category.description && <Content element="span" className="cookie-consent-category-description" value={category.description} />}
 							</li>
 						))}
 					</ul>
 				)}
 
-				<div className="actions">
+				<div className="cookie-consent-actions">
 					{categories.length > 0 &&
 						(showPreferences ? (
 							<Button variant="primary" onClick={saveSelection}>

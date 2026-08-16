@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import Field from '@/components/forms/Field';
 import Select from '@/components/forms/Select';
 import { SelectProps } from '@/lib/content/schema/forms/select';
 
@@ -88,15 +87,4 @@ export const Native: Story = {
 		...Default.args,
 		native: true
 	}
-};
-
-export const InsideField: Story = {
-	...Default,
-	render: (args) => (
-		<Field name="country">
-			<Field.Label>Country</Field.Label>
-			<Select {...args} aria-label={undefined} />
-			<Field.Description>Where the order ships to.</Field.Description>
-		</Field>
-	),
 };

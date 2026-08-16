@@ -1,20 +1,11 @@
 .progress {
-	--progress-size: #{spacing(s)};
 	inline-size: 100%;
-	block-size: var(--progress-size);
+	block-size: spacing(s);
 	border-radius: $rounded-full;
 	background-color: $surface-muted-strong;
 	overflow: hidden;
 
-	&.is-s {
-		--progress-size: #{spacing(xs)};
-	}
-
-	&.is-l {
-		--progress-size: #{spacing(m)};
-	}
-
-	.bar {
+	.progress-bar {
 		display: block;
 		block-size: 100%;
 		border-radius: inherit;
@@ -22,12 +13,12 @@
 		transition: inline-size $speed ease;
 	}
 
-	&.is-indeterminate .bar {
+	&.is-indeterminate .progress-bar {
 		inline-size: 40%;
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
-		&.is-indeterminate .bar {
+		&.is-indeterminate .progress-bar {
 			animation: progress-sweep 1.1s ease-in-out infinite;
 		}
 	}

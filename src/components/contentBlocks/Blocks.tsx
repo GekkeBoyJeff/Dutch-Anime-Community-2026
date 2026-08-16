@@ -1,7 +1,6 @@
-import ArticleCardGrid from '@/components/contentBlocks/ArticleCardGrid';
 import BentoGrid from '@/components/contentBlocks/BentoGrid';
+import CardGrid from '@/components/contentBlocks/CardGrid';
 import CTABanner from '@/components/contentBlocks/CTABanner';
-import EventCardGrid from '@/components/contentBlocks/EventCardGrid';
 import EventTeaser from '@/components/contentBlocks/EventTeaser';
 import FaqAccordion from '@/components/contentBlocks/FaqAccordion';
 import FeatureCards from '@/components/contentBlocks/FeatureCards';
@@ -9,7 +8,6 @@ import GrowingMediaOnScroll from '@/components/contentBlocks/GrowingMediaOnScrol
 import Hero from '@/components/contentBlocks/Hero';
 import HighlightCards from '@/components/contentBlocks/HighlightCards';
 import IntroGrid from '@/components/contentBlocks/IntroGrid';
-import LinkCardGrid from '@/components/contentBlocks/LinkCardGrid';
 import LogoCloud from '@/components/contentBlocks/LogoCloud';
 import PhotoMosaic from '@/components/contentBlocks/PhotoMosaic';
 import ProfileCards from '@/components/contentBlocks/ProfileCards';
@@ -38,6 +36,7 @@ type BlockRenderers = {
 
 export const REGISTRY: BlockRenderers = {
 	hero: Hero,
+	cardGrid: CardGrid,
 	featureCards: FeatureCards,
 	textMedia: TextMedia,
 	prose: Prose,
@@ -50,7 +49,6 @@ export const REGISTRY: BlockRenderers = {
 	highlightCards: HighlightCards,
 	bentoGrid: BentoGrid,
 	profileCards: ProfileCards,
-	linkCardGrid: LinkCardGrid,
 	steps: Steps,
 	statBand: StatBand,
 	stickyShowcase: StickyShowcase,
@@ -58,8 +56,6 @@ export const REGISTRY: BlockRenderers = {
 	spotlightQuote: SpotlightQuote,
 	growingMediaOnScroll: GrowingMediaOnScroll,
 	showreel: Showreel,
-	articleCardGrid: ArticleCardGrid,
-	eventCardGrid: EventCardGrid,
 	eventTeaser: EventTeaser,
 	subscribeNewsletter: SubscribeToNewsletter,
 };

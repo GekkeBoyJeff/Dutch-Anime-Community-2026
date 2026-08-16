@@ -50,7 +50,7 @@ const Switch = ({
 			id={id}
 			{...rest}
 		>
-			<BaseSwitch.Thumb className="thumb" />
+			<BaseSwitch.Thumb className="switch-thumb" />
 		</BaseSwitch.Root>
 	);
 };

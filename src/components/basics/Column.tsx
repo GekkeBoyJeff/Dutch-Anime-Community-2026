@@ -8,7 +8,7 @@ type ColumnComponentProps = ColumnProps & {
 };
 
 // A single cell of the 12-column grid. Each prop maps to a generated `is-{n}` / `is-{n}-{bp}` (span)
-// or `offset-{n}` / `offset-{n}-{bp}` (offset) class; omit `span` for an equal-width auto cell.
+// or `is-offset-{n}` / `is-offset-{n}-{bp}` (offset) class; omit `span` for an equal-width auto cell.
 const Column = ({
 	span,
 	spanM,
@@ -31,10 +31,10 @@ const Column = ({
 				spanM && `is-${spanM}-m`,
 				spanL && `is-${spanL}-l`,
 				spanXl && `is-${spanXl}-xl`,
-				offset && `offset-${offset}`,
-				offsetM && `offset-${offsetM}-m`,
-				offsetL && `offset-${offsetL}-l`,
-				offsetXl && `offset-${offsetXl}-xl`,
+				offset && `is-offset-${offset}`,
+				offsetM && `is-offset-${offsetM}-m`,
+				offsetL && `is-offset-${offsetL}-l`,
+				offsetXl && `is-offset-${offsetXl}-xl`,
 				className,
 			)}
 		>

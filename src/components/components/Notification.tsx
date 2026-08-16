@@ -21,15 +21,15 @@ const Notification = ({ position = 'bottom-right', closeLabel = 'Close', classNa
 		<Toast.Portal>
 			<Toast.Viewport ref={ref} className={classNames('notification', className)} data-position={position}>
 				{toasts.map((toast) => (
-					<Toast.Root key={toast.id} toast={toast} className="toast" data-type={toast.type}>
-						<div className="body">
+					<Toast.Root key={toast.id} toast={toast} className="notification-toast" data-type={toast.type}>
+						<div className="notification-body">
 							{toast.title && <Toast.Title className="title" />}
-							{toast.description && <Toast.Description className="description" />}
+							{toast.description && <Toast.Description className="notification-description" />}
 						</div>
 
 						<Toast.Close
 							render={
-								<Interactive className="close" aria-label={closeLabel}>
+								<Interactive className="notification-close" aria-label={closeLabel}>
 									&times;
 								</Interactive>
 							}

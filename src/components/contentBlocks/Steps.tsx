@@ -44,25 +44,25 @@ const Steps = ({
 					/>
 				)}
 
-				<ol className="list" data-variant={variant}>
+				<ol className="steps-list" data-variant={variant}>
 					{items.map((item, index) => {
 						const state = stateFor(index);
 
 						return (
 							<li
 								key={item.id}
-								className="step"
+								className="steps-step"
 								data-state={state}
 								aria-current={state === 'active' ? 'step' : undefined}
 							>
-								<span className="marker" aria-hidden="true">
+								<span className="steps-marker" aria-hidden="true">
 									{item.icon ? <Icon name={item.icon} className='steps-icon' /> : index + 1}
 								</span>
 
-								<div className="body">
+								<div className="steps-body">
 									{/* A real heading per step; the body role (not Title) because the visual is body text. */}
-									<Content element="h3" className="step-title" value={item.title} />
-									{item.body && <Content element="p" className="step-body" value={item.body} />}
+									<Content element="h3" className="steps-step-title" value={item.title} />
+									{item.body && <Content element="p" className="steps-step-body" value={item.body} />}
 								</div>
 							</li>
 						);

@@ -74,7 +74,7 @@
 			box-shadow $speed $ease-snappy,
 			transform $speed $ease-snappy;
 
-		.card-media .asset {
+		.card-media .media-asset {
 			transition: transform $speed-slow $ease;
 		}
 
@@ -84,7 +84,7 @@
 					box-shadow: inset 0 0 0 0.0625rem var(--border-color), $shadow-medium;
 					transform: translateY(-0.375rem);
 
-					.card-media .asset {
+					.card-media .media-asset {
 						transform: scale(1.05);
 					}
 				}

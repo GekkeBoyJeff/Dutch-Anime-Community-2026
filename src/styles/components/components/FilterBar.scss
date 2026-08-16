@@ -5,19 +5,19 @@
 	justify-content: space-between;
 	gap: spacing(m);
 
-	.chips {
+	.filter-bar-chips {
 		display: flex;
 		flex-wrap: wrap;
 		gap: spacing(xs);
 	}
 
-	.tools {
+	.filter-bar-tools {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		gap: spacing(s);
 
-		.search {
+		.filter-bar-search {
 			display: inline-flex;
 			align-items: center;
 			gap: spacing(xs);
@@ -38,7 +38,7 @@
 				font-size: 1.1em;
 			}
 
-			.search-input {
+			.filter-bar-search-input {
 				border: 0;
 				background: none;
 				color: $color;
@@ -54,12 +54,12 @@
 			}
 		}
 
-		.sort {
+		.filter-bar-sort {
 			position: relative;
 			display: inline-flex;
 			align-items: center;
 
-			.sort-select {
+			.filter-bar-sort-select {
 				appearance: none;
 				padding-block: 0;
 				padding-inline: spacing(s) spacing(xl);
@@ -77,7 +77,7 @@
 				}
 			}
 
-			.sort-icon {
+			.filter-bar-sort-icon {
 				position: absolute;
 				inset-inline-end: spacing(s);
 				color: $color-secondary;
@@ -85,7 +85,7 @@
 			}
 		}
 
-		.reset {
+		.filter-bar-reset {
 			display: inline-flex;
 			align-items: center;
 			padding-inline: spacing(s);
@@ -101,21 +101,19 @@
 
 		}
 	}
-}
 
-.is-admin {
-	.filter-bar {
-		.chips {
+	.is-admin & {
+		.filter-bar-chips {
 			align-items: center;
 			gap: spacing(xs);
 
-			.chips-lead {
+			.filter-bar-chips-lead {
 				margin-inline-end: spacing(xs);
 				color: $color-tertiary;
 				font-size: 1.05em;
 			}
 
-			.chip {
+			.filter-bar-chip {
 				display: inline-flex;
 				align-items: center;
 				gap: spacing(xs);
@@ -150,7 +148,7 @@
 					font-weight: $weight-semibold;
 				}
 
-				.chip-count {
+				.filter-bar-chip-count {
 					min-inline-size: 1.15rem;
 					padding-inline: 0.35rem;
 					border-radius: $rounded-full;
@@ -162,7 +160,7 @@
 					line-height: 1.4;
 					text-align: center;
 
-					.chip.is-active & {
+					.filter-bar-chip.is-active & {
 						background-color: color-mix(in srgb, #{$accent} 30%, transparent);
 						color: $accent-text;
 					}
@@ -170,8 +168,8 @@
 			}
 		}
 
-		.tools {
-			.search {
+		.filter-bar-tools {
+			.filter-bar-search {
 				min-block-size: 2.25rem;
 				border-radius: $admin-radius-control;
 				background-color: $background-color;
@@ -183,7 +181,7 @@
 					box-shadow: inset 0 0 0 0.0625rem $accent, $admin-focus;
 				}
 
-				.search-input {
+				.filter-bar-search-input {
 					color: $color;
 
 					&::placeholder {

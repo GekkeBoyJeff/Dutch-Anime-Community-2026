@@ -1,9 +1,9 @@
 .accordion-item {
-	.header {
+	.accordion-item-header {
 		margin: 0;
 		font: inherit;
 
-		.trigger {
+		.accordion-item-trigger {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -31,28 +31,28 @@
 				}
 			}
 
-
 			&[data-disabled] {
 				opacity: 0.5;
 				cursor: not-allowed;
 			}
 
-			.chevron {
+			.accordion-item-chevron {
 				flex: none;
 				color: $color-secondary;
 
 				transition: transform $speed $ease;
 			}
 
-			&[data-panel-open] .chevron {
+			&[data-panel-open] .accordion-item-chevron {
 				transform: rotate(180deg);
 			}
 		}
 	}
 
-	.panel {
+	.accordion-item-panel {
 		overflow: hidden;
 		block-size: var(--accordion-panel-height);
+		padding: 0;
 
 		&[data-starting-style],
 		&[data-ending-style] {
@@ -61,9 +61,9 @@
 
 		transition: block-size $speed $ease;
 
-		.body {
-			padding-block-end: spacing(l);
-			padding-inline: spacing(s);
+		.accordion-item-body {
+			padding-block: spacing(m);
+			padding-inline: spacing(m);
 			color: $color-secondary;
 		}
 	}

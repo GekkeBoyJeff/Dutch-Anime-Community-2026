@@ -31,26 +31,26 @@ const ProfileCards = ({
 					size={heading?.size}
 					intro={heading?.intro}
 					element="header"
-					className="header"
+					className="profile-cards-header"
 				/>
 
-				<ul className="grid" style={{ '--columns': columns } as React.CSSProperties}>
+				<ul className="profile-cards-grid" style={{ '--columns': columns } as React.CSSProperties}>
 					{items.map((item) => (
 						<li key={item.id}>
 							<Card
 								variant="bare"
-								className="profile-card"
-								image={<Media type="image" src={item.image} alt={item.name} ratio="4 / 5" className="portrait" />}
+								className="profile-cards-profile-card"
+								image={<Media type="image" src={item.image} alt={item.name} ratio="4 / 5" className="profile-cards-portrait" />}
 								header={<Title element="h3" size={5} value={item.name} />}
 							>
-								{item.role && <Content element="p" className="role" value={item.role} />}
+								{item.role && <Content element="p" className="profile-cards-role" value={item.role} />}
 								{item.text && <Content size="small" value={item.text} />}
 
 								{item.socials && item.socials.length > 0 && (
-									<ul className="socials">
+									<ul className="profile-cards-socials">
 										{item.socials.map((social, index) => (
 											<li key={`${social.label}-${index}`}>
-												<Interactive url={social.url} target="_blank" className="social">
+												<Interactive url={social.url} target="_blank" className="profile-cards-social">
 													{social.icon ? (
 														<>
 															<Icon name={social.icon} />

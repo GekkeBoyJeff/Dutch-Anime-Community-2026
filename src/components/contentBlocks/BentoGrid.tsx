@@ -17,15 +17,15 @@ const TileBody = ({ item }: { item: BentoItem }) => {
 
 	return (
 		<>
-			{item.media && <Media {...item.media} className="bento-media" />}
+			{item.media && <Media {...item.media} className="bento-grid-bento-media" />}
 
-			<div className="bento-content">
-				{item.tagline && <Content element="p" className="tagline" value={item.tagline} />}
+			<div className="bento-grid-bento-content">
+				{item.tagline && <Content element="p" className="bento-grid-tagline" value={item.tagline} />}
 				{item.title && <Title element="h3" size={4} value={item.title} />}
 				{item.body && <Content size="small" value={item.body} />}
 
 				{hasCta && (
-					<span className="cta">
+					<span className="bento-grid-cta">
 						{item.cta?.label}
 						{item.cta?.icon && <Icon name={item.cta.icon} />}
 					</span>
@@ -55,21 +55,21 @@ const BentoGrid = ({
 					size={heading?.size}
 					intro={heading?.intro ?? description}
 					element="header"
-					className="header"
+					className="bento-grid-header"
 				/>
 
-				<ul className="grid" style={{ '--bento-columns': columns } as React.CSSProperties}>
+				<ul className="bento-grid-list" style={{ '--bento-columns': columns } as React.CSSProperties}>
 					{items.map((item) => {
 						const href = item.url ?? item.cta?.url;
 						const span = item.span ?? 'standard';
 						const isOverlay = !!item.media && (span === 'feature' || span === 'tall');
 
 						return (
-							<li key={item.id} className={classNames('tile-cell', `is-${span}`)}>
+							<li key={item.id} className={classNames('bento-grid-tile-cell', `is-${span}`)}>
 								<Card
 									href={href}
 									linkLabel={item.title ?? item.cta?.label ?? item.tagline}
-									className={classNames('tile', `surface-${item.surface ?? 'default'}`, isOverlay && 'is-overlay')}
+									className={classNames('bento-grid-tile', `is-surface-${item.surface ?? 'default'}`, isOverlay && 'is-overlay')}
 								>
 									<TileBody item={item} />
 								</Card>

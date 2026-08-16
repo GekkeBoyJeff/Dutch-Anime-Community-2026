@@ -8,25 +8,25 @@
 	--font-size: 0.875rem;
 	text-align: center;
 
-	.content {
+	.announcement-bar-content {
 		display: inline-flex;
 		flex-wrap: wrap;
 		align-items: center;
 		justify-content: center;
 		gap: spacing(m);
 
-		.message {
+		.announcement-bar-message {
 			margin: 0;
 			font-weight: $weight-medium;
 		}
 
-		.cta {
+		.announcement-bar-cta {
 			padding-block: spacing(xs);
 			padding-inline: spacing(m);
 		}
 	}
 
-	.close {
+	.announcement-bar-close {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;

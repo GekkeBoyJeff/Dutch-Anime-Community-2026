@@ -9,7 +9,7 @@
 	display: flex;
 	flex-direction: column;
 
-	.milestone {
+	.timeline-milestone {
 		position: relative;
 		display: grid;
 		grid-template-columns: var(--timeline-gutter) 1fr;
@@ -33,13 +33,13 @@
 			inset-block-end: calc(100% - 0.5rem);
 		}
 
-		.marker {
+		.timeline-marker {
 			position: relative;
 			display: flex;
 			justify-content: center;
 			padding-block-start: 0.35rem;
 
-			.dot {
+			.timeline-dot {
 				inline-size: var(--timeline-dot);
 				block-size: var(--timeline-dot);
 				border-radius: $rounded-full;
@@ -48,11 +48,11 @@
 			}
 		}
 
-		.entry {
+		.timeline-entry {
 			min-inline-size: 0;
 			padding-block-end: spacing(2xl);
 
-			.year {
+			.timeline-year {
 				margin: 0 0 spacing(xs);
 				font-weight: $weight-bold;
 				color: $accent-text;
@@ -63,7 +63,7 @@
 				flex-direction: column;
 				gap: spacing(s);
 
-				.tagline {
+				.timeline-tagline {
 					margin: 0;
 					font-weight: $weight-medium;
 					color: $color-secondary;
@@ -72,13 +72,13 @@
 					--font-size: 0.8125rem;
 				}
 
-				.date {
+				.timeline-date {
 					margin: 0;
 					color: $color-secondary;
 					--font-size: 0.875rem;
 				}
 
-				.thumb {
+				.timeline-thumb {
 					margin-block-start: spacing(xs);
 					border-radius: $rounded-m;
 					overflow: hidden;
@@ -96,23 +96,23 @@
 
 	&.is-alternating {
 		@include bp(l) {
-			.milestone {
+			.timeline-milestone {
 				grid-template-columns: 1fr var(--timeline-gutter) 1fr;
 
 				&::before {
 					inset-inline-start: 50%;
 				}
 
-				.marker {
+				.timeline-marker {
 					grid-column: 2;
 				}
 
-				.entry {
+				.timeline-entry {
 					grid-column: 1;
 					text-align: end;
 				}
 
-				&.is-odd .entry {
+				&.is-odd .timeline-entry {
 					grid-column: 3;
 					text-align: start;
 				}
@@ -138,7 +138,7 @@
 
 	@media (prefers-reduced-motion: no-preference) {
 		@supports (animation-timeline: view()) {
-			.entry {
+			.timeline-entry {
 				animation: timeline-rise linear both;
 				animation-timeline: view();
 				animation-range: entry 0% cover 30%;

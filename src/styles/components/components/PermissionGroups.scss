@@ -1,23 +1,23 @@
 .permission-groups {
 	display: grid;
 	gap: spacing(l);
-}
 
-.permission-group {
-	display: grid;
-	gap: spacing(xs);
-}
+	.permission-groups-permission-group {
+		display: grid;
+		gap: spacing(xs);
+	}
 
-.permission-group-list {
-	display: grid;
-	gap: spacing(xs);
-}
+	.permission-groups-permission-group-list {
+		display: grid;
+		gap: spacing(xs);
+	}
 
-.permission-row {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: spacing(m);
-	padding-block: spacing(xs);
-	border-block-end: 0.0625rem solid $border-color;
+	.permission-groups-permission-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: spacing(m);
+		padding-block: spacing(xs);
+		border-block-end: 0.0625rem solid $border-color;
+	}
 }

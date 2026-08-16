@@ -21,22 +21,22 @@ const GrowingMediaOnScroll = ({ heading, media, caption, colorset, ref }: Growin
 						size={heading.size}
 						intro={heading.intro}
 						element="header"
-						className="header"
+						className="growing-media-on-scroll-header"
 					/>
 				</Container>
 			)}
 
-			<div className="scene">
-				<div className="stage">
-					<div className="frame-wrap">
-						<Media {...media} className="stage-media" />
+			<div className="growing-media-on-scroll-scene">
+				<div className="growing-media-on-scroll-stage">
+					<div className="growing-media-on-scroll-frame-wrap">
+						<Media {...media} className="growing-media-on-scroll-stage-media" />
 					</div>
 				</div>
 			</div>
 
 			{caption && (
 				<Container>
-					<Content element="p" size="small" className="stage-caption" value={caption} />
+					<Content element="p" size="small" className="growing-media-on-scroll-stage-caption" value={caption} />
 				</Container>
 			)}
 		</Section>

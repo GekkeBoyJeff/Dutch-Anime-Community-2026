@@ -10,7 +10,6 @@ export const AccordionProps = z
 		defaultValue: z.array(z.string()).optional().describe('The initially open item values when uncontrolled'),
 		multiple: z.boolean().optional().describe('Allows several items open at once; defaults to false (single-open)'),
 		disabled: z.boolean().optional().describe('Disables every item'),
-		orientation: z.enum(['vertical', 'horizontal']).optional().describe('Arrow-key navigation axis; defaults to \'vertical\''),
 		items: z
 			.array(AccordionItemProps.pick({ value: true, title: true, disabled: true, icon: true }))
 			.optional()

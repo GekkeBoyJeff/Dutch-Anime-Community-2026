@@ -8,8 +8,8 @@
 		display: block;
 	}
 
-	.dot,
-	.circle {
+	.custom-cursor-dot,
+	.custom-cursor-circle {
 		position: fixed;
 		inset-block-start: 0;
 		inset-inline-start: 0;
@@ -24,12 +24,12 @@
 		transition: opacity $speed-fast $ease;
 	}
 
-	.dot {
+	.custom-cursor-dot {
 		--size: var(--cursor-dot);
 		background-color: $accent;
 	}
 
-	.circle {
+	.custom-cursor-circle {
 		--size: var(--cursor-circle);
 		border: 0.09375rem solid $accent;
 		transition:

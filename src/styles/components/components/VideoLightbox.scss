@@ -13,7 +13,7 @@
 	place-items: center;
 	padding: spacing(l);
 
-	.frame {
+	.video-lightbox-frame {
 		position: relative;
 		inline-size: 100%;
 		max-inline-size: var(--video-lightbox-width);
@@ -25,27 +25,27 @@
 		background-position: center;
 		box-shadow: $shadow-medium;
 
-		.player {
+		.video-lightbox-player {
 			block-size: 100%;
 			inline-size: 100%;
 			gap: 0;
 			--media-radius: 0;
 			--media-block-size: 100%;
 
-			.frame {
+			.video-lightbox-frame {
 				background-color: transparent;
 			}
 		}
 	}
 
-	&.is-portrait .frame {
+	&.is-portrait .video-lightbox-frame {
 		aspect-ratio: 9 / 16;
 		inline-size: auto;
 		block-size: var(--video-lightbox-portrait-height);
 		max-block-size: calc(100vh - #{spacing(l)} * 2);
 	}
 
-	.close {
+	.video-lightbox-close {
 		position: absolute;
 		inset-block-start: spacing(m);
 		inset-inline-end: spacing(m);
@@ -72,14 +72,14 @@
 		}
 	}
 
-	.frame {
+	.video-lightbox-frame {
 		transition:
 			opacity $speed $ease-out,
 			transform $speed $ease-out;
 	}
 
-	&[data-starting-style] .frame,
-	&[data-ending-style] .frame {
+	&[data-starting-style] .video-lightbox-frame,
+	&[data-ending-style] .video-lightbox-frame {
 		opacity: 0;
 		transform: scale(0.96);
 	}

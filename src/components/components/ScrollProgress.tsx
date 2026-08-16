@@ -26,7 +26,7 @@ const ScrollProgress = ({
 			style={style}
 			aria-hidden="true"
 		>
-			<span className="bar" />
+			<span className="scroll-progress-bar" />
 		</div>
 	);
 };

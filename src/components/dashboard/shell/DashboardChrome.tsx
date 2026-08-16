@@ -18,7 +18,7 @@ const DashboardChrome = ({ children }: DashboardChromeProps) => {
 				Ga naar de inhoud
 			</a>
 			<DashboardNav />
-			<main id="main" tabIndex={-1} className="dashboard-main">
+			<main id="main" tabIndex={-1} className="dashboard-chrome-dashboard-main">
 				<RouteReveal>{children}</RouteReveal>
 			</main>
 		</>

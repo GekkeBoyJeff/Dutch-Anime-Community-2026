@@ -2,19 +2,19 @@
 	.event-teaser-inner {
 		margin-inline: auto;
 
-		.header {
+		.event-teaser-header {
 			display: flex;
 			flex-direction: column;
 			gap: spacing(s);
 			margin-block-end: spacing(2xl);
 
-			.description {
+			.event-teaser-description {
 				margin: 0;
 				color: $color-secondary;
 			}
 		}
 
-		.list {
+		.event-teaser-list {
 			display: flex;
 			flex-direction: column;
 			gap: spacing(m);
@@ -47,7 +47,7 @@
 			margin-block-start: spacing(xl);
 			text-align: center;
 
-			.view-all {
+			.event-teaser-view-all {
 				display: inline-flex;
 				align-items: center;
 				gap: spacing(xs);

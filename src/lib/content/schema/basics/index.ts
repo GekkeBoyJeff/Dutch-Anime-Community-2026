@@ -6,7 +6,6 @@ export * from '@/lib/content/schema/basics/avatar';
 export * from '@/lib/content/schema/basics/badge';
 export * from '@/lib/content/schema/basics/breadcrumb';
 export * from '@/lib/content/schema/basics/button';
-export * from '@/lib/content/schema/basics/collapsible';
 export * from '@/lib/content/schema/basics/column';
 export * from '@/lib/content/schema/basics/columns';
 export * from '@/lib/content/schema/basics/container';

@@ -26,11 +26,11 @@ const Shortcut = ({
 			{list.map((key, index) => (
 				<Fragment key={index}>
 					{index > 0 && separator !== '' && (
-						<span className="separator" aria-hidden="true">
+						<span className="shortcut-separator" aria-hidden="true">
 							{separator}
 						</span>
 					)}
-					<kbd className="key">{key}</kbd>
+					<kbd className="shortcut-key">{key}</kbd>
 				</Fragment>
 			))}
 		</kbd>

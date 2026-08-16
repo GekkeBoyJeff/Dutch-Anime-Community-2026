@@ -24,22 +24,22 @@ const Timeline = ({
 			{items.map((item, index) => {
 				return (
 					<li
-						className={classNames('milestone', index % 2 === 1 && 'is-odd')}
+						className={classNames('timeline-milestone', index % 2 === 1 && 'is-odd')}
 						key={`${item.year}-${index}`}
 						>
-							<div className="marker" aria-hidden="true">
-								<span className="dot" />
+							<div className="timeline-marker" aria-hidden="true">
+								<span className="timeline-dot" />
 							</div>
 
-							<div className="entry">
-								<Content element="p" className="year" value={item.year} />
+							<div className="timeline-entry">
+								<Content element="p" className="timeline-year" value={item.year} />
 
 								<div className="timeline-card">
-									{item.tagline && <Content element="p" className="tagline" value={item.tagline} />}
+									{item.tagline && <Content element="p" className="timeline-tagline" value={item.tagline} />}
 									<Title element={`h${headingLevel}`} size={headingLevel} value={item.title} />
-									{item.date && <Content element="p" className="date" value={item.date} />}
+									{item.date && <Content element="p" className="timeline-date" value={item.date} />}
 									{item.text && <Content size="small" value={item.text} />}
-									{item.media && <Media {...item.media} className="thumb" />}
+									{item.media && <Media {...item.media} className="timeline-thumb" />}
 
 									<Actions actions={item.actions} defaultVariant="primary" />
 								</div>

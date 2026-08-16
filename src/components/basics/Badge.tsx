@@ -22,7 +22,7 @@ const Badge = ({
 }: BadgeProps & { ref?: Ref<HTMLSpanElement> }) => {
 	return (
 		<span ref={ref} className={classNames('badge', `is-${variant}`, className)} {...rest}>
-			{dot && <span className="dot" aria-hidden="true" />}
+			{dot && <span className="badge-dot" aria-hidden="true" />}
 			{icon && <Icon name={icon} className='badge-icon' />}
 			{children}
 		</span>

@@ -19,16 +19,16 @@ const StatBand = ({ heading, items = [], colorset, ref }: StatBandProps & { ref?
 						size={heading.size}
 						intro={heading.intro}
 						element="header"
-						className="header"
+						className="stat-band-header"
 					/>
 				)}
 
-				<dl className="stats">
+				<dl className="stat-band-stats">
 					{items.map((item) => {
 						return (
-							<div key={item.id} className="stat">
-								<dt className="stat-label">{item.label}</dt>
-								<dd className="stat-number">
+							<div key={item.id} className="stat-band-stat">
+								<dt className="stat-band-stat-label">{item.label}</dt>
+								<dd className="stat-band-stat-number">
 									<CountUp value={item.value} prefix={item.prefix} suffix={item.suffix} decimals={item.decimals} />
 								</dd>
 							</div>

@@ -11,19 +11,19 @@ import type { SpotlightQuoteProps } from '@/lib/content';
 const SpotlightQuote = ({ quote, author, role, mascot, colorset, ref }: SpotlightQuoteProps & { ref?: Ref<HTMLElement> }) => {
 	return (
 		<Section ref={ref} colorset={colorset ?? 'dark'} className="spotlight-quote is-band">
-			<Container className="inner">
-				<figure className="spotlight">
-					<blockquote className="quote">
+			<Container className="spotlight-quote-inner">
+				<figure className="spotlight-quote-spotlight">
+					<blockquote className="spotlight-quote-body">
 						<Content value={quote} />
 					</blockquote>
-					<figcaption className="author">
-						<Content element="span" className="name" value={author} />
-						{role && <Content element="span" className="role" value={role} />}
+					<figcaption className="spotlight-quote-author">
+						<Content element="span" className="spotlight-quote-name" value={author} />
+						{role && <Content element="span" className="spotlight-quote-role" value={role} />}
 					</figcaption>
 				</figure>
 
 				{mascot && (
-					<div className="mascot" aria-hidden="true">
+					<div className="spotlight-quote-mascot" aria-hidden="true">
 						<Media {...mascot} ratio={mascot.ratio ?? '1 / 1'} />
 					</div>
 				)}

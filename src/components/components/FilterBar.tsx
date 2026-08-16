@@ -58,35 +58,35 @@ const FilterBar = ({
 	return (
 		<div ref={ref} className={classNames('filter-bar', className)}>
 			{filters.length > 0 && (
-			<div className="chips" role="group" aria-label={label}>
-				{filterIcon && <Icon name={filterIcon} className="chips-lead" />}
+			<div className="filter-bar-chips" role="group" aria-label={label}>
+				{filterIcon && <Icon name={filterIcon} className="filter-bar-chips-lead" />}
 				{filters.map((filter) => {
 					const isActive = filter.value === value;
 
 					return (
 						<Pill
 							key={filter.value}
-							className="chip"
+							className="filter-bar-chip"
 							active={isActive}
 							aria-pressed={isActive}
 							onClick={() => onValueChange?.(filter.value)}
 						>
 							{filter.label}
-							{filter.count !== undefined && <span className="chip-count">{filter.count}</span>}
+							{filter.count !== undefined && <span className="filter-bar-chip-count">{filter.count}</span>}
 						</Pill>
 					);
 				})}
 			</div>
 			)}
 
-			<div className="tools">
+			<div className="filter-bar-tools">
 				{searchable && (
-					<label className="search">
+					<label className="filter-bar-search">
 						<Icon name="search" className='filter-bar-search-icon' />
 						<VisuallyHidden>{searchLabel}</VisuallyHidden>
 						<input
 							type="search"
-							className="search-input"
+							className="filter-bar-search-input"
 							placeholder={searchPlaceholder}
 							value={searchValue ?? ''}
 							onChange={handleSearch}
@@ -95,23 +95,23 @@ const FilterBar = ({
 				)}
 
 				{sortOptions && sortOptions.length > 0 && (
-					<label className="sort">
+					<label className="filter-bar-sort">
 						<VisuallyHidden>{sortLabel}</VisuallyHidden>
-						<select className="sort-select" value={sortValue ?? ''} onChange={handleSort} aria-label={sortLabel}>
+						<select className="filter-bar-sort-select" value={sortValue ?? ''} onChange={handleSort} aria-label={sortLabel}>
 							{sortOptions.map((option) => (
 								<option key={option.value} value={option.value}>
 									{option.label}
 								</option>
 							))}
 						</select>
-						<Icon name="chevron-down" className="sort-icon" />
+						<Icon name="chevron-down" className="filter-bar-sort-icon" />
 					</label>
 				)}
 
 				{children}
 
 				{resettable && (
-					<Interactive className="reset" onClick={() => onReset?.()}>
+					<Interactive className="filter-bar-reset" onClick={() => onReset?.()}>
 						{resetLabel}
 					</Interactive>
 				)}

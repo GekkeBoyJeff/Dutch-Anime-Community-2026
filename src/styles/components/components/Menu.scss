@@ -15,7 +15,7 @@
 
 	@include popup-enter-exit($scale: 0.96);
 
-	.item {
+	.menu-item {
 		display: flex;
 		align-items: center;
 		gap: spacing(s);
@@ -36,14 +36,13 @@
 			color: $color-secondary;
 		}
 
-		.label {
+		.menu-label {
 			flex: 1;
 		}
 
 		&[data-highlighted] {
 			background-color: $background-hover;
 		}
-
 
 		&:active:not([data-disabled]) {
 			background-color: $background-active;
@@ -65,7 +64,7 @@
 
 	.is-checkbox,
 	.is-radio {
-		.indicator {
+		.menu-indicator {
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
@@ -73,7 +72,7 @@
 			block-size: 1em;
 			color: $accent-text;
 
-			.dot {
+			.menu-dot {
 				inline-size: 0.45em;
 				block-size: 0.45em;
 				border-radius: $rounded-full;
@@ -82,7 +81,7 @@
 		}
 	}
 
-	.group-label {
+	.menu-group-label {
 		padding-block: spacing(xs);
 		padding-inline: spacing(m);
 		color: $color-secondary;
@@ -90,7 +89,7 @@
 		font-weight: $weight-medium;
 	}
 
-	.separator {
+	.menu-separator {
 		block-size: 0.0625rem;
 		margin-block: spacing(xs);
 		background-color: $border-color;

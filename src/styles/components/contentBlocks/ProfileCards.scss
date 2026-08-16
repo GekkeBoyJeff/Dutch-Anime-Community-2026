@@ -1,11 +1,11 @@
 .profile-cards {
 	--columns: 3;
 
-	.header {
+	.profile-cards-header {
 		margin-block-end: spacing(3xl);
 	}
 
-	.grid {
+	.profile-cards-grid {
 		display: grid;
 		grid-template-columns: 1fr;
 		gap: spacing(xl);
@@ -23,15 +23,15 @@
 		> li {
 			display: flex;
 
-			.profile-card {
+			.profile-cards-profile-card {
 				flex: 1;
 			}
 		}
 
-		.profile-card {
+		.profile-cards-profile-card {
 			gap: spacing(m);
 
-			.portrait {
+			.profile-cards-portrait {
 				--media-radius: #{$rounded-s};
 			}
 
@@ -43,13 +43,13 @@
 				gap: spacing(xs);
 			}
 
-			.role {
+			.profile-cards-role {
 				margin: 0;
 				font-weight: $weight-medium;
 				color: $accent-text;
 			}
 
-			.socials {
+			.profile-cards-socials {
 				display: flex;
 				flex-wrap: wrap;
 				gap: spacing(s);
@@ -57,7 +57,7 @@
 				margin: spacing(xs) 0 0;
 				padding: 0;
 
-				.social {
+				.profile-cards-social {
 					display: inline-flex;
 					align-items: center;
 					justify-content: center;

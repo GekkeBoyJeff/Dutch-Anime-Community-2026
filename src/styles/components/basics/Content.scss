@@ -9,4 +9,8 @@
 	&.is-large {
 		--font-size: 1.125rem;
 	}
+
+	a {
+		@include link-underline;
+	}
 }

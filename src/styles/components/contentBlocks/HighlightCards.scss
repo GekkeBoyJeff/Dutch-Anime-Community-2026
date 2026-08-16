@@ -1,11 +1,11 @@
 .highlight-cards {
 	--columns: 3;
 
-	.header {
+	.highlight-cards-header {
 		margin-block-end: spacing(3xl);
 	}
 
-	.grid {
+	.highlight-cards-grid {
 		display: grid;
 		grid-template-columns: 1fr;
 		gap: spacing(xl);
@@ -23,18 +23,18 @@
 		> li {
 			display: flex;
 
-			.highlight-card {
+			.highlight-cards-highlight-card {
 				flex: 1;
 			}
 		}
 
-		.highlight-card {
+		.highlight-cards-highlight-card {
 			.card-tagline {
 				color: $accent-text;
 			}
 
 			.card-media {
-				.index {
+				.highlight-cards-index {
 					position: absolute;
 					inset-block-start: spacing(s);
 					inset-inline-start: spacing(s);
@@ -50,7 +50,7 @@
 					font-variant-numeric: tabular-nums;
 				}
 
-				.badges {
+				.highlight-cards-badges {
 					position: absolute;
 					inset-block-end: spacing(s);
 					inset-inline-start: spacing(s);

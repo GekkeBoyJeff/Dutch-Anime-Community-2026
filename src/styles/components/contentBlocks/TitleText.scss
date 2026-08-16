@@ -1,5 +1,5 @@
 .title-text {
-	.body {
+	.title-text-body {
 		display: flex;
 		flex-direction: column;
 		gap: spacing(l);
@@ -10,7 +10,7 @@
 			margin-inline: auto;
 		}
 
-		.text {
+		.title-text-body {
 			color: $color-secondary;
 		}
 

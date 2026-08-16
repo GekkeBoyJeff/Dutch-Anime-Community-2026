@@ -41,14 +41,26 @@ const Media = ({
 	// 'plain' skips the frame entirely: the bare asset at its natural size (logos, wordmarks,
 	// mascots) — no ratio box, no background, no crop. Images only; other types keep the frame.
 	if (variant === 'plain' && type === 'image' && src) {
+		// A plain image occupies its own width, not the viewport, so that width is what `sizes` must
+		// report. The srcset carries w descriptors, so the browser multiplies it by the device pixel
+		// ratio itself — a 48px logo fetches 96px on a 2x screen and 144px on a 3x one. Left on the
+		// '100vw' default it would size for the viewport and pull a full-width variant for a logo.
+		const displayWidth = width ?? image?.width;
+
 		return (
 			<figure ref={ref} className={classNames('media', 'is-plain', className)}>
 				<picture>
-					{image && <source type="image/webp" srcSet={variantsToSrcSet(image.variants)} sizes={compileSizes(sizes)} />}
+					{image && (
+						<source
+							type="image/webp"
+							srcSet={variantsToSrcSet(image.variants)}
+							sizes={compileSizes(sizes ?? (displayWidth ? `${displayWidth}px` : undefined))}
+						/>
+					)}
 					<img
 						src={withBasePath(src)}
 						alt={alt}
-						className="asset"
+						className="media-asset"
 						width={image?.width ?? width}
 						height={image?.height ?? height}
 						loading="lazy"
@@ -59,7 +71,7 @@ const Media = ({
 				{(caption || credit) && (
 					<figcaption className="caption">
 						{caption && <span>{caption}</span>}
-						{credit && <span className="credit">{credit}</span>}
+						{credit && <span className="media-credit">{credit}</span>}
 					</figcaption>
 				)}
 			</figure>
@@ -69,22 +81,22 @@ const Media = ({
 	return (
 		<figure ref={ref} className={classNames('media', `is-${mode}`, className)}>
 			{/* The frame carries the aspect ratio (default 16/9 in the stylesheet) for every media type. */}
-			<div className="frame" style={ratioStyle}>
+			<div className="media-frame" style={ratioStyle}>
 				{type === 'image' && src && (
 					<picture>
 						{image && <source type="image/webp" srcSet={variantsToSrcSet(image.variants)} sizes={compileSizes(sizes)} />}
 						{/* next/image not used here — Media is deliberately native-img-first; <img> inside <picture> is exempt from @next/next/no-img-element. */}
-						<img src={withBasePath(src)} alt={alt} className="asset" width={image?.width} height={image?.height} loading="lazy" decoding="async" />
+						<img src={withBasePath(src)} alt={alt} className="media-asset" width={image?.width} height={image?.height} loading="lazy" decoding="async" />
 					</picture>
 				)}
 
-				{type === 'video' && <video src={withBasePath(src)} className="asset" controls playsInline />}
+				{type === 'video' && <video src={withBasePath(src)} className="media-asset" controls playsInline />}
 
 				{type === 'embed' && (
 					<iframe
 						src={provider && embedId ? EMBEDS[provider]?.(embedId) : undefined}
 						title={alt || caption || 'Embedded media'}
-						className="asset"
+						className="media-asset"
 						loading="lazy"
 						allowFullScreen
 					/>
@@ -94,7 +106,7 @@ const Media = ({
 			{(caption || credit) && (
 				<figcaption className="caption">
 					{caption && <span>{caption}</span>}
-					{credit && <span className="credit">{credit}</span>}
+					{credit && <span className="media-credit">{credit}</span>}
 				</figcaption>
 			)}
 		</figure>

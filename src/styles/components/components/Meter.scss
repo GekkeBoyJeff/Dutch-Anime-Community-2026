@@ -8,86 +8,89 @@
 	&.is-ring {
 		align-items: center;
 	}
-}
 
-.meter-label {
-	color: $color-secondary;
-	font-size: $admin-label-size;
-	font-weight: $weight-medium;
-}
-
-.meter-track {
-	display: block;
-	overflow: hidden;
-	inline-size: 100%;
-	block-size: 0.5rem;
-	border-radius: $rounded-full;
-	background-color: $surface-track;
-}
-
-.meter-fill {
-	display: block;
-	block-size: 100%;
-	border-radius: $rounded-full;
-	background-color: $accent;
-	transition: inline-size $motion-standard;
-
-	.meter.is-positive & { background-color: $status-success; }
-	.meter.is-warning & { background-color: $status-warning; }
-	.meter.is-negative & { background-color: $status-error; }
-
-	@media (prefers-reduced-motion: reduce) {
-		transition: none;
+	.meter-label {
+		color: $color-secondary;
+		font-size: $admin-label-size;
+		font-weight: $weight-medium;
 	}
-}
 
-.meter-ring {
-	inline-size: 4rem;
-	block-size: 4rem;
-	rotate: -90deg;
-
-	circle {
-		fill: none;
-		stroke-width: 6;
-		stroke-linecap: round;
+	.meter-track {
+		display: block;
+		overflow: hidden;
+		inline-size: 100%;
+		block-size: 0.5rem;
+		border-radius: $rounded-full;
+		background-color: $surface-track;
 	}
-}
 
-.meter-ring-track {
-	stroke: $surface-track;
-}
+	.meter-fill {
+		display: block;
+		block-size: 100%;
+		border-radius: $rounded-full;
+		background-color: $accent;
+		transition: inline-size $motion-standard;
 
-.meter-ring-fill {
-	stroke: $accent;
-	transition: stroke-dashoffset $motion-standard;
-
-	.meter.is-positive & { stroke: $status-success; }
-	.meter.is-warning & { stroke: $status-warning; }
-	.meter.is-negative & { stroke: $status-error; }
-
-	@media (prefers-reduced-motion: reduce) {
-		transition: none;
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
 	}
-}
 
-.meter-readout {
-	display: inline-flex;
-	// The meter is a flex column, so without this the readout stretches the full width and the
-	// complete-state seal reads as a bar instead of a badge.
-	align-self: start;
-	align-items: center;
-	gap: spacing(xs);
-	color: $color-tertiary;
-	font-size: $admin-type-micro;
-	font-variant-numeric: tabular-nums;
+	.meter-ring {
+		inline-size: 4rem;
+		block-size: 4rem;
+		rotate: -90deg;
 
-	.meter.is-ring & {
+		circle {
+			fill: none;
+			stroke-width: 6;
+			stroke-linecap: round;
+		}
+	}
+
+	.meter-ring-track {
+		stroke: $surface-track;
+	}
+
+	.meter-ring-fill {
+		stroke: $accent;
+		transition: stroke-dashoffset $motion-standard;
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+
+	&.is-positive {
+		.meter-fill { background-color: $status-success; }
+		.meter-ring-fill { stroke: $status-success; }
+	}
+
+	&.is-warning {
+		.meter-fill { background-color: $status-warning; }
+		.meter-ring-fill { stroke: $status-warning; }
+	}
+
+	&.is-negative {
+		.meter-fill { background-color: $status-error; }
+		.meter-ring-fill { stroke: $status-error; }
+	}
+
+	.meter-readout {
+		display: inline-flex;
+		align-self: start;
+		align-items: center;
+		gap: spacing(xs);
+		color: $color-tertiary;
+		font-size: $admin-type-micro;
+		font-variant-numeric: tabular-nums;
+	}
+
+	&.is-ring .meter-readout {
 		align-self: center;
 	}
 
-	// Reaching the whole is treated as an event, not just 100%: the readout becomes a gold wax seal
-	// with a one-shot shimmer sweep. It is the payoff for finishing a packing list.
-	.meter.is-complete & {
+	&.is-complete .meter-readout {
 		position: relative;
 		overflow: hidden;
 		padding: 0.15rem 0.6rem;
@@ -106,31 +109,31 @@
 			animation: meter-seal-shimmer 900ms $ease-out 120ms 1;
 		}
 	}
-}
 
-.meter-seal {
-	display: grid;
-	place-items: center;
-	inline-size: 1rem;
-	block-size: 1rem;
-	border-radius: $rounded-full;
-	background-color: $accent;
-	color: $accent-contrast;
+	.meter-seal {
+		display: grid;
+		place-items: center;
+		inline-size: 1rem;
+		block-size: 1rem;
+		border-radius: $rounded-full;
+		background-color: $accent;
+		color: $accent-contrast;
 
-	.icon {
-		inline-size: 0.7rem;
-		block-size: 0.7rem;
+		.icon {
+			inline-size: 0.7rem;
+			block-size: 0.7rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.meter-readout::after {
+			animation: none;
+		}
 	}
 }
 
 @keyframes meter-seal-shimmer {
 	to {
 		translate: 120% 0;
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.meter-readout::after {
-		animation: none;
 	}
 }

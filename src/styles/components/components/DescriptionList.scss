@@ -4,23 +4,23 @@
 	display: grid;
 	gap: spacing(l);
 
-	.row {
+	.description-list-row {
 		display: grid;
 		gap: spacing(xs);
 	}
 
-	.term {
+	.description-list-term {
 		color: $color-secondary;
 		--font-size: 0.875rem;
 		font-weight: $weight-medium;
 	}
 
-	.description {
+	.description-list-description {
 		margin: 0;
 		color: $color;
 	}
 
-	&.is-inline .row {
+	&.is-inline .description-list-row {
 		@include bp(m) {
 			grid-template-columns: var(--description-list-term-width) 1fr;
 			align-items: baseline;
@@ -31,11 +31,11 @@
 	&.is-divided {
 		gap: 0;
 
-		.row {
+		.description-list-row {
 			padding-block: spacing(l);
 		}
 
-		.row + .row {
+		.description-list-row + .description-list-row {
 			border-block-start: 0.0625rem solid $border-color;
 		}
 	}

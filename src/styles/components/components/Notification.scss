@@ -43,7 +43,7 @@
 		margin-inline: auto;
 	}
 
-	.toast {
+	.notification-toast {
 		display: flex;
 		align-items: flex-start;
 		gap: spacing(s);
@@ -56,7 +56,7 @@
 			$shadow-medium,
 			inset 0 0 0 0.0625rem var(--border-color);
 
-		.body {
+		.notification-body {
 			display: flex;
 			flex-direction: column;
 			gap: spacing(xs);
@@ -68,14 +68,14 @@
 				font-weight: $weight-medium;
 			}
 
-			.description {
+			.notification-description {
 				--font-size: 0.875rem;
 				margin: 0;
 				color: $color-secondary;
 			}
 		}
 
-		.close {
+		.notification-close {
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
@@ -95,30 +95,30 @@
 		}
 	}
 
-	.toast[data-type='info'] {
+	.notification-toast[data-type='info'] {
 		border-inline-start: 0.1875rem solid $status-info;
 	}
 
-	.toast[data-type='success'] {
+	.notification-toast[data-type='success'] {
 		border-inline-start: 0.1875rem solid $status-success;
 	}
 
-	.toast[data-type='warning'] {
+	.notification-toast[data-type='warning'] {
 		border-inline-start: 0.1875rem solid $status-warning;
 	}
 
-	.toast[data-type='error'] {
+	.notification-toast[data-type='error'] {
 		border-inline-start: 0.1875rem solid $status-error;
 	}
 
-	.toast {
+	.notification-toast {
 		transition:
 			opacity $speed $ease,
 			transform $speed $ease;
 	}
 
-	.toast[data-starting-style],
-	.toast[data-ending-style] {
+	.notification-toast[data-starting-style],
+	.notification-toast[data-ending-style] {
 		opacity: 0;
 		transform: translateY(0.5rem);
 	}

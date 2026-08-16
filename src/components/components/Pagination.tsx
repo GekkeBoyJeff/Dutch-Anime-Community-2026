@@ -85,9 +85,9 @@ const Pagination = ({
 
 	const renderControl = (key: string, target: number, label: string, glyph: string, isDisabled: boolean) => {
 		return (
-			<li key={key} className="item">
+			<li key={key} className="pagination-item">
 				<Interactive
-					className={classNames('control', `is-${key}`)}
+					className={classNames('pagination-control', `is-${key}`)}
 					url={hrefFor(target)}
 					disabled={disabled || isDisabled}
 					aria-label={label}
@@ -102,15 +102,15 @@ const Pagination = ({
 
 	return (
 		<nav ref={ref} className={classNames('pagination', className)} aria-label={t.rootLabel}>
-			<ul className="list">
+			<ul className="pagination-list">
 				{withEdges && renderControl('first', 1, t.firstTriggerLabel, 'chevrons-left', active <= 1)}
 				{withControls && renderControl('prev', active - 1, t.prevTriggerLabel, 'chevron-left', active <= 1)}
 
 				{pages.map((entry, index) => {
 					if (entry === 'dots') {
 						return (
-							<li key={`dots-${index}`} className="item is-ellipsis" aria-hidden="true">
-								<span className="ellipsis">
+							<li key={`dots-${index}`} className="pagination-item is-ellipsis" aria-hidden="true">
+								<span className="pagination-ellipsis">
 									<Icon name="dots" />
 								</span>
 							</li>
@@ -118,9 +118,9 @@ const Pagination = ({
 					}
 
 					return (
-						<li key={entry} className="item">
+						<li key={entry} className="pagination-item">
 							<Interactive
-								className={classNames('page', entry === active && 'is-active')}
+								className={classNames('pagination-page', entry === active && 'is-active')}
 								url={hrefFor(entry)}
 								disabled={disabled}
 								aria-label={t.itemLabel({ page: entry, totalPages: resolvedTotalPages })}
@@ -160,8 +160,8 @@ export type PaginationEllipsisProps = {
 // content; the visually-hidden label keeps the meaning available to assistive tech.
 export const PaginationEllipsis = ({ label = 'More pages', className, children }: PaginationEllipsisProps) => {
 	return (
-		<li className={classNames('item', 'is-ellipsis', className)}>
-			<span className="ellipsis" aria-hidden="true">
+		<li className={classNames('pagination-item', 'is-ellipsis', className)}>
+			<span className="pagination-ellipsis" aria-hidden="true">
 				{children ?? <Icon name="dots" />}
 			</span>
 			<VisuallyHidden>{label}</VisuallyHidden>

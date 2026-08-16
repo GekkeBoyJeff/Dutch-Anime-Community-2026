@@ -88,8 +88,8 @@ const CustomCursor = ({
 
 	return (
 		<div ref={ref} className={classNames('custom-cursor', className)} aria-hidden="true">
-			<span ref={circleRef} className="circle" />
-			<span ref={dotRef} className="dot" />
+			<span ref={circleRef} className="custom-cursor-circle" />
+			<span ref={dotRef} className="custom-cursor-dot" />
 		</div>
 	);
 };

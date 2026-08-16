@@ -20,12 +20,12 @@ const PermissionGroups = ({ grants, onToggle, disabled = false }: PermissionGrou
 	return (
 		<div className="permission-groups">
 			{PERMISSION_GROUPS.map((group) => (
-				<section key={group.key} className="permission-group">
+				<section key={group.key} className="permission-groups-permission-group">
 					<Title element="h3" size={6} value={group.title} />
-					<ul className="permission-group-list">
+					<ul className="permission-groups-permission-group-list">
 						{group.permissions.map((permission) => (
-							<li key={permission} className="permission-row">
-								<span className="permission-label">{permission}</span>
+							<li key={permission} className="permission-groups-permission-row">
+								<span className="permission-groups-permission-label">{permission}</span>
 								<Switch
 									checked={grants.has(permission)}
 									disabled={disabled}

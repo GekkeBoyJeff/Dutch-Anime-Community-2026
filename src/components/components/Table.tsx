@@ -25,7 +25,7 @@ const Table = ({
 }: TableProps & { ref?: Ref<HTMLDivElement> }) => {
 	return (
 		<div ref={ref} className={classNames('table', striped && 'is-striped', bordered && 'is-bordered', className)}>
-			<div className="scroll">
+			<div className="table-scroll">
 				<table>
 					{caption && <caption>{caption}</caption>}
 					<thead>

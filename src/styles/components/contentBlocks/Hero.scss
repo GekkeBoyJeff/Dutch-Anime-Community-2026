@@ -1,9 +1,9 @@
 .hero {
-	.body {
+	.hero-body {
 		display: grid;
 		gap: spacing(m);
 
-		.tagline {
+		.hero-tagline {
 			--font-size: 0.875rem;
 			font-weight: $weight-medium;
 			text-transform: uppercase;
@@ -11,7 +11,7 @@
 			color: $accent-text;
 		}
 
-		.divider {
+		.hero-divider {
 			display: block;
 			inline-size: 4.5rem;
 			block-size: 0.0625rem;
@@ -28,13 +28,13 @@
 		}
 	}
 
-	.backdrop {
-		.frame {
+	.hero-backdrop {
+		.media-frame {
 			block-size: 100%;
 			aspect-ratio: auto;
 			border-radius: 0;
 
-			.asset {
+			.media-asset {
 				filter: brightness(0.75);
 			}
 
@@ -47,7 +47,7 @@
 		}
 	}
 
-	.stats {
+	.hero-stats {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: spacing(l);
@@ -65,28 +65,28 @@
 			padding-inline: spacing(2xl);
 		}
 
-		.item {
+		.hero-item {
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			gap: spacing(xs);
 			text-align: center;
 
-			.count {
+			.hero-count {
 				--font-size: 1.5rem;
 				font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
 				font-weight: $weight-bold;
 				line-height: 1.1;
 			}
 
-			.label {
+			.hero-label {
 				--font-size: 0.8125rem;
 				color: $color-secondary;
 			}
 		}
 	}
 
-	.panel {
+	.hero-panel {
 		position: relative;
 		display: grid;
 		grid-template-areas: 'stacked';
@@ -99,12 +99,12 @@
 			aspect-ratio: 21 / 9;
 		}
 
-		.backdrop {
+		.hero-backdrop {
 			grid-area: stacked;
 			block-size: 100%;
 		}
 
-		.inner {
+		.hero-inner {
 			grid-area: stacked;
 			z-index: $z-base;
 			display: flex;
@@ -122,12 +122,12 @@
 				padding-inline: spacing(4xl);
 			}
 
-			.body {
+			.hero-body {
 				max-inline-size: 40rem;
 			}
 		}
 
-		.stats {
+		.hero-stats {
 			@include bp(xl) {
 				position: absolute;
 				inset-block-end: spacing(4xl);
@@ -144,17 +144,17 @@
 		min-block-size: clamp(34rem, 92svh, 62rem);
 		color: var(--color-dark);
 
-		.backdrop {
+		.hero-backdrop {
 			position: absolute;
 			inset: 0;
 
-			.frame {
+			.media-frame {
 				position: absolute;
 				inset: 0;
 			}
 		}
 
-		.inner {
+		.hero-inner {
 			position: relative;
 			z-index: $z-base;
 			align-content: center;
@@ -169,7 +169,7 @@
 			}
 		}
 
-		.body {
+		.hero-body {
 			max-inline-size: 42rem;
 
 			.title {
@@ -177,12 +177,12 @@
 				line-height: 1.05;
 			}
 
-			.tagline {
+			.hero-tagline {
 				color: var(--accent-text-dark);
 			}
 		}
 
-		.stats {
+		.hero-stats {
 			@include bp(l) {
 				position: absolute;
 				inset-block-end: 0;
@@ -198,7 +198,7 @@
 				padding-inline: spacing(2xl);
 			}
 
-			.item .count {
+			.hero-item .hero-count {
 				@include bp(l) {
 					--font-size: 1.75rem;
 				}

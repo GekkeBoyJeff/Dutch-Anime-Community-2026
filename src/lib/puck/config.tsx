@@ -1,10 +1,11 @@
 import type { Config, Field } from '@puckeditor/core';
 import { useEffect, useRef } from 'react';
-import type { z } from 'zod';
+import { z } from 'zod';
 
 import { REGISTRY } from '@/components/contentBlocks/Blocks';
 import SiteChrome from '@/components/structures/SiteChrome';
 import { Block, PageMeta, SiteStructures } from '@/lib/content/schema';
+import { CARD_GRID_ITEM_BY_VARIANT } from '@/lib/content/schema/blocks/cardGrid';
 import { defaultValueFor, fieldFor, objectFieldsFor } from '@/lib/puck/fields';
 import { defaultPresetFor } from '@/lib/puck/presets';
 import type { BuilderRootProps } from '@/lib/puck/transform';
@@ -40,12 +41,25 @@ const componentEntries = (): Config['components'] => {
 					}),
 				);
 
+			// A card grid stores every variant's fields in one item, but an author should only ever see
+			// the ones their card actually renders — so swap the `items` field to the chosen variant's
+			// shape. Puck re-runs this whenever a prop changes, so picking a variant reshapes the form.
+			const resolveFields =
+				type === 'cardGrid'
+					? (data: { props: Record<string, unknown> }): Record<string, Field> => {
+							const variant = data.props.variant as keyof typeof CARD_GRID_ITEM_BY_VARIANT;
+							const items = fieldFor('items', z.array(CARD_GRID_ITEM_BY_VARIANT[variant] ?? CARD_GRID_ITEM_BY_VARIANT.article));
+							return items ? { ...fields, items } : fields;
+						}
+					: undefined;
+
 			return [
 				[
 					type,
 					{
 						fields,
 						defaultProps,
+						...(resolveFields ? { resolveFields } : {}),
 						// Strip Puck's injected editor props before spreading, mirroring Blocks.tsx.
 						render: ({ puck: _puck, id: _id, ...props }: Record<string, unknown>) => {
 							const Component = Renderer as React.ComponentType<typeof props>;
@@ -101,7 +115,7 @@ export const config: Config = {
 		},
 		grids: {
 			title: 'Grids & kaarten',
-			components: ['bentoGrid', 'highlightCards', 'featureCards', 'introGrid', 'articleCardGrid', 'eventCardGrid', 'profileCards', 'linkCardGrid'],
+			components: ['bentoGrid', 'highlightCards', 'featureCards', 'introGrid', 'cardGrid', 'profileCards'],
 		},
 		marketing: {
 			title: 'Marketing & social',

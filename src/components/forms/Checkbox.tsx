@@ -42,8 +42,8 @@ const Checkbox = ({
 			}}
 			{...rest}
 		>
-			<BaseCheckbox.Indicator className="indicator" keepMounted>
-				<span className="check" aria-hidden="true" />
+			<BaseCheckbox.Indicator className="checkbox-indicator" keepMounted>
+				<span className="checkbox-check" aria-hidden="true" />
 			</BaseCheckbox.Indicator>
 		</BaseCheckbox.Root>
 	);
@@ -55,7 +55,7 @@ const Checkbox = ({
 	return (
 		<label className={classNames('checkbox-field', className)}>
 			{box}
-			<Content element="span" className="label" value={label}>{children}</Content>
+			<Content element="span" className="checkbox-label" value={label}>{children}</Content>
 		</label>
 	);
 };

@@ -69,18 +69,18 @@ const VideoLightbox = ({
 
 					<Dialog.Close
 						render={
-							<Interactive className="close" aria-label={closeLabel}>
+							<Interactive className="video-lightbox-close" aria-label={closeLabel}>
 								&times;
 							</Interactive>
 						}
 					/>
 
-					<div className="frame" style={frameStyle}>
+					<div className="video-lightbox-frame" style={frameStyle}>
 						{mounted &&
 							(provider && embedId ? (
-								<Media type="embed" provider={provider} embedId={embedId} alt={title} ratio={ratio} className="player" />
+								<Media type="embed" provider={provider} embedId={embedId} alt={title} ratio={ratio} className="video-lightbox-player" />
 							) : (
-								src && <Media type="video" src={src} alt={title} ratio={ratio} className="player" />
+								src && <Media type="video" src={src} alt={title} ratio={ratio} className="video-lightbox-player" />
 							))}
 					</div>
 				</Dialog.Popup>

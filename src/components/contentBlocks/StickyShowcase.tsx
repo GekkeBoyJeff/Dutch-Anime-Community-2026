@@ -48,22 +48,22 @@ const StickyShowcase = ({ heading, steps = [], colorset, ref }: StickyShowcasePr
 						size={heading.size}
 						intro={heading.intro}
 						element="header"
-						className="header"
+						className="sticky-showcase-header"
 					/>
 				)}
 
-				<div className="scene">
-					<div className="stage" aria-hidden="true">
+				<div className="sticky-showcase-scene">
+					<div className="sticky-showcase-stage" aria-hidden="true">
 						{steps.map((step, index) => {
 							return (
-								<div key={step.id} className={classNames('stage-media', index === active && 'is-active')}>
+								<div key={step.id} className={classNames('sticky-showcase-stage-media', index === active && 'is-active')}>
 									<Media {...step.media} />
 								</div>
 							);
 						})}
 					</div>
 
-					<ol className="rail">
+					<ol className="sticky-showcase-rail">
 						{steps.map((step, index) => {
 							return (
 								<li
@@ -72,14 +72,14 @@ const StickyShowcase = ({ heading, steps = [], colorset, ref }: StickyShowcasePr
 									ref={(element) => {
 										stepRefs.current[index] = element;
 									}}
-									className={classNames('step', index === active && 'is-active')}
+									className={classNames('sticky-showcase-step', index === active && 'is-active')}
 								>
-									<span className="step-index" aria-hidden="true">
+									<span className="sticky-showcase-step-index" aria-hidden="true">
 										{String(index + 1).padStart(2, '0')}
 									</span>
-									<Title element="h3" size={3} value={step.title} className="step-title" />
-									{step.body && <Content value={step.body} className="step-body" />}
-									<div className="step-media">
+									<Title element="h3" size={3} value={step.title} className="sticky-showcase-step-title" />
+									{step.body && <Content value={step.body} className="sticky-showcase-step-body" />}
+									<div className="sticky-showcase-step-media">
 										<Media {...step.media} />
 									</div>
 								</li>

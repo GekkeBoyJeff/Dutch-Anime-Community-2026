@@ -2,7 +2,7 @@
 	position: relative;
 	display: inline-flex;
 
-	.mark {
+	.indicator-mark {
 		position: absolute;
 		z-index: 1;
 		display: flex;
@@ -15,7 +15,7 @@
 		box-shadow: 0 0 0 0.125rem $background-color;
 	}
 
-	.mark.has-count {
+	.indicator-mark.has-count {
 		inline-size: auto;
 		min-inline-size: 1.25rem;
 		block-size: 1.25rem;
@@ -25,25 +25,25 @@
 		font-weight: $weight-bold;
 	}
 
-	&.is-top-end .mark {
+	&.is-top-end .indicator-mark {
 		inset-block-start: 0;
 		inset-inline-end: 0;
 		transform: translate(50%, -50%);
 	}
 
-	&.is-top-start .mark {
+	&.is-top-start .indicator-mark {
 		inset-block-start: 0;
 		inset-inline-start: 0;
 		transform: translate(-50%, -50%);
 	}
 
-	&.is-bottom-end .mark {
+	&.is-bottom-end .indicator-mark {
 		inset-block-end: 0;
 		inset-inline-end: 0;
 		transform: translate(50%, 50%);
 	}
 
-	&.is-bottom-start .mark {
+	&.is-bottom-start .indicator-mark {
 		inset-block-end: 0;
 		inset-inline-start: 0;
 		transform: translate(-50%, 50%);

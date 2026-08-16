@@ -110,11 +110,11 @@ const Select = ({
 	}
 
 	const renderOption = (option: SelectOption): ReactNode => (
-		<BaseSelect.Item key={option.value} value={option.value} disabled={option.disabled} className="option">
-			<BaseSelect.ItemIndicator className="option-indicator" keepMounted>
-				<span className="check" aria-hidden="true" />
+		<BaseSelect.Item key={option.value} value={option.value} disabled={option.disabled} className="select-option">
+			<BaseSelect.ItemIndicator className="select-option-indicator" keepMounted>
+				<span className="select-check" aria-hidden="true" />
 			</BaseSelect.ItemIndicator>
-			<BaseSelect.ItemText className="option-label">{option.label}</BaseSelect.ItemText>
+			<BaseSelect.ItemText className="select-option-label">{option.label}</BaseSelect.ItemText>
 		</BaseSelect.Item>
 	);
 
@@ -131,9 +131,9 @@ const Select = ({
 	return (
 		<BaseSelect.Root multiple={multiple} items={items} {...(rootRest as object)}>
 			<BaseSelect.Trigger ref={assignTriggerRef} className={classNames('select', className)} aria-label={ariaLabel}>
-				<BaseSelect.Value className="value" placeholder={placeholder} />
-				<BaseSelect.Icon className="trigger-icon">
-					<span className="chevron" aria-hidden="true" />
+				<BaseSelect.Value className="select-value" placeholder={placeholder} />
+				<BaseSelect.Icon className="select-trigger-icon">
+					<span className="select-chevron" aria-hidden="true" />
 				</BaseSelect.Icon>
 			</BaseSelect.Trigger>
 
@@ -142,8 +142,8 @@ const Select = ({
 					<BaseSelect.Popup className={classNames('select-popup', adminScoped && 'is-admin')}>
 						{options.map((item) =>
 							isGroup(item) ? (
-								<BaseSelect.Group key={item.label} className="option-group">
-									<BaseSelect.GroupLabel className="option-group-label">{item.label}</BaseSelect.GroupLabel>
+								<BaseSelect.Group key={item.label} className="select-option-group">
+									<BaseSelect.GroupLabel className="select-option-group-label">{item.label}</BaseSelect.GroupLabel>
 									{item.options.map(renderOption)}
 								</BaseSelect.Group>
 							) : (

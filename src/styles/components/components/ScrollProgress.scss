@@ -15,7 +15,7 @@
 		inset-block-end: 0;
 	}
 
-	.bar {
+	.scroll-progress-bar {
 		display: block;
 		block-size: 100%;
 		inline-size: 100%;
@@ -23,22 +23,22 @@
 		transform-origin: left center;
 	}
 
-	&.is-primary .bar {
+	&.is-primary .scroll-progress-bar {
 		background-color: $accent;
 	}
 
-	&.is-secondary .bar {
+	&.is-secondary .scroll-progress-bar {
 		background-color: $color;
 	}
 
 	@supports (animation-timeline: scroll()) {
-		.bar {
+		.scroll-progress-bar {
 			animation: scroll-progress-grow linear;
 			animation-timeline: --page-scroll;
 		}
 
 		@media (prefers-reduced-motion: no-preference) {
-			.bar {
+			.scroll-progress-bar {
 				transition: none;
 			}
 		}

@@ -26,7 +26,6 @@ const Accordion = ({
 	defaultValue,
 	multiple = false,
 	disabled = false,
-	orientation = 'vertical',
 	items,
 	headingLevel = 3,
 	onValueChange,
@@ -42,7 +41,6 @@ const Accordion = ({
 			defaultValue={defaultValue}
 			multiple={multiple}
 			disabled={disabled}
-			orientation={orientation}
 			onValueChange={(next) => onValueChange?.(next as string[])}
 		>
 			{items

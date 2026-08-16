@@ -20,7 +20,7 @@ const TextMedia = ({
 	return (
 		<Section ref={ref} colorset={colorset}>
 			<Container className={classNames('text-media', reverse && 'is-reverse')}>
-				<div className="body">
+				<div className="text-media-body">
 					{title && <Title size={2} value={title} />}
 					{text && <Content value={text} />}
 				</div>

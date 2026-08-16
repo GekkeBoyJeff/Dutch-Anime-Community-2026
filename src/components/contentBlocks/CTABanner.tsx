@@ -25,8 +25,8 @@ const CTABanner = ({
 }: CTABannerProps & { ref?: Ref<HTMLElement> }) => {
 	return (
 		<Section ref={ref} colorset={colorset} className="cta-banner">
-			<Container className={classNames('panel', `is-${tone}`, `is-${align}`, media && 'has-media')}>
-				<div className="body">
+			<Container className={classNames('cta-banner-panel', `is-${tone}`, `is-${align}`, media && 'has-media')}>
+				<div className="cta-banner-body">
 					<HeadingGroup align={align} tagline={tagline} title={headline} intro={subline} />
 
 					{/* Slot defaults differ (primary vs secondary), so resolve them here before mapping. */}
@@ -38,7 +38,7 @@ const CTABanner = ({
 					/>
 				</div>
 
-				{media && <Media className="figure" {...media} />}
+				{media && <Media className="cta-banner-figure" {...media} />}
 			</Container>
 		</Section>
 	);

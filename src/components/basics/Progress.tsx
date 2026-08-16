@@ -9,7 +9,6 @@ const Progress = ({
 	value,
 	max = 100,
 	label,
-	size = 'm',
 	className,
 	ref,
 }: ProgressProps & { ref?: Ref<HTMLDivElement> }) => {
@@ -24,9 +23,9 @@ const Progress = ({
 			aria-valuemin={indeterminate ? undefined : 0}
 			aria-valuemax={indeterminate ? undefined : max}
 			aria-valuenow={indeterminate ? undefined : value}
-			className={classNames('progress', `is-${size}`, indeterminate && 'is-indeterminate', className)}
+			className={classNames('progress', indeterminate && 'is-indeterminate', className)}
 		>
-			<span className="bar" style={percent === undefined ? undefined : { inlineSize: `${percent}%` }} />
+			<span className="progress-bar" style={percent === undefined ? undefined : { inlineSize: `${percent}%` }} />
 		</div>
 	);
 };

@@ -28,9 +28,9 @@ const MarqueeTicker = ({
 
 	// One track of items; rendered twice below for the seamless wrap.
 	const track = items.map((item) => (
-		<span className="item" key={item.label}>
+		<span className="marquee-ticker-item" key={item.label}>
 			{item.icon && <Icon name={item.icon} className='marquee-ticker-icon' />}
-			<Content element="span" className="label" value={item.label} />
+			<Content element="span" className="marquee-ticker-label" value={item.label} />
 		</span>
 	));
 
@@ -41,9 +41,9 @@ const MarqueeTicker = ({
 			style={style}
 			aria-label={ariaLabel}
 		>
-			<div className="viewport">
-				<div className="track">{track}</div>
-				<div className="track" aria-hidden="true">
+			<div className="marquee-ticker-viewport">
+				<div className="marquee-ticker-track">{track}</div>
+				<div className="marquee-ticker-track" aria-hidden="true">
 					{track}
 				</div>
 			</div>

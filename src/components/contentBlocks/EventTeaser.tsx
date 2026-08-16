@@ -23,20 +23,20 @@ const EventTeaser = ({
 		<Section ref={ref} colorset={colorset} className="event-teaser">
 			<Container className="event-teaser-inner">
 				{(heading || description) && (
-					<header className="header">
+					<header className="event-teaser-header">
 						<HeadingGroup
 							tagline={heading?.tagline}
 							title={heading?.value}
 							size={heading?.size}
 							intro={heading?.intro}
 						/>
-						{description && <Content className="description" value={description} />}
+						{description && <Content className="event-teaser-description" value={description} />}
 					</header>
 				)}
 
-				<ul className="list">
+				<ul className="event-teaser-list">
 					{events.map((event) => (
-						<li key={event.id} className="item">
+						<li key={event.id} className="event-teaser-item">
 							<EventCard {...event} className="is-compact" />
 						</li>
 					))}
@@ -44,7 +44,7 @@ const EventTeaser = ({
 
 				{viewAllUrl && (
 					<footer className="event-teaser-footer">
-						<Interactive url={viewAllUrl} className="view-all">
+						<Interactive url={viewAllUrl} className="event-teaser-view-all">
 							{viewAllLabel}
 						</Interactive>
 					</footer>

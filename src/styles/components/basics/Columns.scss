@@ -24,23 +24,23 @@
 		align-items: baseline;
 	}
 
-	&.gap-none {
+	&.has-gap-none {
 		--columns-gap: 0;
 	}
 
-	&.gap-s {
+	&.has-gap-s {
 		--columns-gap: #{spacing(s)};
 	}
 
-	&.gap-m {
+	&.has-gap-m {
 		--columns-gap: #{spacing(m)};
 	}
 
-	&.gap-l {
+	&.has-gap-l {
 		--columns-gap: #{spacing(l)};
 	}
 
-	&.gap-xl {
+	&.has-gap-xl {
 		--columns-gap: #{spacing(xl)};
 	}
 }

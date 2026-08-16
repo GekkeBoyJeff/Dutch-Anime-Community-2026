@@ -22,19 +22,19 @@ const Breadcrumb = ({
 					return (
 						<li key={item.label}>
 							{item.url && !isLast ? (
-								<Interactive url={item.url} className="crumb link is-subtle">
+								<Interactive url={item.url} className="breadcrumb-crumb link is-subtle">
 									{item.label}
 								</Interactive>
 							) : (
 								<Content
 									element="span"
-									className="crumb is-current link is-subtle"
+									className="breadcrumb-crumb is-current link is-subtle"
 									aria-current={isLast ? 'page' : undefined}
 									value={item.label}
 								/>
 							)}
 							{!isLast && (
-								<span className="separator" aria-hidden="true">
+								<span className="breadcrumb-separator" aria-hidden="true">
 									{separator}
 								</span>
 							)}

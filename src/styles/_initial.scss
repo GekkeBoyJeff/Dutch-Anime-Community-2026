@@ -70,12 +70,11 @@ $speed-slow: 600ms;
 $ease: cubic-bezier(0.4, 0, 0.2, 1);
 $ease-out: cubic-bezier(0, 0, 0.2, 1);
 $ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
-$ease-entrance: cubic-bezier(0.22, 1, 0.36, 1); // decelerating fade-rise for content/page entrances
+$ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
 
-// Semantic motion aliases over the raw primitives above — reach for intent, not a duration guess.
-$motion-micro: $speed-fast $ease; // hover / press / focus feedback
-$motion-standard: $speed $ease-out; // drawers, dropdowns, collapsibles
-$motion-entrance: 220ms $ease-entrance; // skeleton→content reveal and page-entrance fade
+$motion-micro: $speed-fast $ease;
+$motion-standard: $speed $ease-out;
+$motion-entrance: 220ms $ease-entrance;
 
 $shadow-small: 0 0.0625rem 0.125rem rgba($black, 0.08);
 $shadow-medium: 0 0.25rem 1rem rgba($black, 0.12);

@@ -28,10 +28,10 @@ const Hero = ({
 	const isCover = variant === 'cover' && !!media;
 
 	const body = (
-		<div className="body">
-			{tagline && <Content element="span" className="tagline" value={tagline} />}
+		<div className="hero-body">
+			{tagline && <Content element="span" className="hero-tagline" value={tagline} />}
 			{title && <Title size={1} value={title} />}
-			{isCover && <span className="divider" aria-hidden="true" />}
+			{isCover && <span className="hero-divider" aria-hidden="true" />}
 			{text && <Content value={text} />}
 
 			<Actions actions={actions} defaultVariant="primary" badge />
@@ -39,12 +39,12 @@ const Hero = ({
 	);
 
 	const statsBar = stats.length > 0 && (
-		<div className="stats">
+		<div className="hero-stats">
 			{stats.map((stat) => {
 				return (
-					<div key={stat.label} className="item">
-						<span className="count">{stat.count}</span>
-						<span className="label">{stat.label}</span>
+					<div key={stat.label} className="hero-item">
+						<span className="hero-count">{stat.count}</span>
+						<span className="hero-label">{stat.label}</span>
 					</div>
 				);
 			})}
@@ -54,9 +54,9 @@ const Hero = ({
 	if (isCover) {
 		return (
 			<Section ref={ref} colorset={colorset} className="hero is-cover">
-				<Media {...media} className="backdrop" />
+				<Media {...media} className="hero-backdrop" />
 
-				<Container className="inner">
+				<Container className="hero-inner">
 					{body}
 					{statsBar}
 				</Container>
@@ -83,10 +83,10 @@ const Hero = ({
 		<Section ref={ref} colorset={colorset} className="hero">
 			<Container>
 				{media ? (
-					<div className="panel" data-colorset="dark">
-						<Media {...media} className="backdrop" />
+					<div className="hero-panel" data-colorset="dark">
+						<Media {...media} className="hero-backdrop" />
 
-						<div className="inner">
+						<div className="hero-inner">
 							{body}
 							{statsBar}
 						</div>

@@ -3,8 +3,6 @@
 // the dashboard actually selects; anything it does not read is absent on purpose, because a fixture
 // that is richer than the query hides which columns a screen depends on.
 
-import { PERMISSIONS_BY_ROLE } from './roles';
-
 const TODAY = new Date('2026-08-01T10:00:00.000Z');
 const day = (offset: number): string => new Date(TODAY.getTime() + offset * 86_400_000).toISOString().slice(0, 10);
 const at = (offset: number, hour: number): string => {
@@ -220,9 +218,6 @@ export const FIXTURES: Record<string, unknown[]> = {
 		{ id: 'upm-2', user_id: 'usr-0002', permission: 'expenses.manage', created_at: at(-9, 11) },
 		{ id: 'upm-3', user_id: 'usr-0002', permission: 'inventory.view', created_at: at(-30, 16) },
 	],
-	// The role bundles the access drawer shows behind the per-user toggles — the same table the role
-	// switcher reads, so a granted-by-role permission reads as granted there too.
-	role_permissions: Object.entries(PERMISSIONS_BY_ROLE).flatMap(([role, permissions]) => permissions.map((permission) => ({ role, permission }))),
 	pages: [
 		{ id: 'pag-1', path: '/', title: 'Home', published_at: at(-5, 9), updated_at: at(-2, 15) },
 		{ id: 'pag-2', path: '/conventies', title: 'Conventies', published_at: null, updated_at: at(-1, 11) },
@@ -236,6 +231,39 @@ export const FIXTURES: Record<string, unknown[]> = {
 // RPC results, keyed by function name. Anything absent resolves to null, which is what a Supabase RPC
 // returns when it has nothing to give.
 export const RPC_FIXTURES: Record<string, unknown> = {
+	// What my_permissions() answers: everything, so no screen is gated while you are demoing it. This
+	// mirrors APP_PERMISSIONS in src/lib/auth/permissions.ts rather than importing it — that module
+	// pulls in the Supabase client, which Storybook aliases back to this mock's own importer.
+	my_permissions: [
+		'pages.create',
+		'pages.edit',
+		'pages.delete',
+		'structures.edit',
+		'media.upload',
+		'media.delete',
+		'site.publish_staging',
+		'site.approve',
+		'moderation.view',
+		'moderation.manage',
+		'roles.manage',
+		'events.view',
+		'events.manage',
+		'inventory.view',
+		'inventory.manage',
+		'expenses.view',
+		'expenses.review',
+		'finance.view',
+		'finance.manage',
+		'staff.view',
+		'staff.manage',
+		'surveys.manage',
+		'surveys.results',
+		'notifications.send',
+		'notifications.manage',
+		'logs.view',
+		'badges.manage',
+		'records.delete',
+	],
 	my_subject_id: SUBJECT_ID,
 	my_warnings: [{ color: 'yellow', reason: 'Discussie in #algemeen niet gestaakt na verzoek', issued_at: at(-30, 20) }],
 	my_badges: [

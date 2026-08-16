@@ -12,7 +12,6 @@ const meta: Meta<typeof Progress> = {
 	},
 	argTypes: {
 		value: { control: { type: 'range', min: 0, max: 100, step: 1 } },
-		size: { control: 'inline-radio', options: ['s', 'm', 'l'] },
 	},
 };
 
@@ -24,7 +23,6 @@ export const Default: Story = {
 	args: {
 		value: 60,
 		label: 'Upload progress',
-		size: 'm',
 	},
 };
 

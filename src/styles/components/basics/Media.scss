@@ -6,7 +6,7 @@
 	margin: 0;
 	block-size: var(--media-block-size, auto);
 
-	.frame {
+	.media-frame {
 		position: relative;
 		overflow: hidden;
 		aspect-ratio: 16 / 9;
@@ -14,7 +14,7 @@
 		border-radius: var(--media-radius, #{$rounded-m});
 		background-color: $background-color;
 
-		.asset {
+		.media-asset {
 			position: absolute;
 			inset: 0;
 			inline-size: 100%;
@@ -26,18 +26,18 @@
 	&.is-plain {
 		display: inline-flex;
 
-		.asset {
+		.media-asset {
 			inline-size: auto;
 			block-size: auto;
 			max-inline-size: 100%;
 		}
 	}
 
-	&.is-fill .asset {
+	&.is-fill .media-asset {
 		object-fit: cover;
 	}
 
-	&.is-fit .asset {
+	&.is-fit .media-asset {
 		object-fit: contain;
 	}
 
@@ -48,7 +48,7 @@
 		gap: spacing(m);
 		color: $color-secondary;
 
-		.credit {
+		.media-credit {
 			font-style: italic;
 		}
 	}

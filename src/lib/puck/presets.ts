@@ -53,7 +53,7 @@ const buildPresets = (): Partial<Record<BlockType, BlockPreset[]>> => {
 		const mod = stories(key) as StoryModule;
 		const type = typeByComponent.get(mod.default?.component);
 		if (!type) {
-			continue; // library-only stories (PageHeader, ErrorState) aren't insertable blocks
+			continue; // a story for a shared piece rather than a block; nothing to insert
 		}
 
 		const blockPresets: BlockPreset[] = [];

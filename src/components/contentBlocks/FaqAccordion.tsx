@@ -68,13 +68,13 @@ const FaqAccordion = ({
 					size={heading?.size}
 					intro={heading?.intro ?? description}
 					element="header"
-					className="header"
+					className="faq-accordion-header"
 				/>
 
-				<div className="groups">
+				<div className="faq-accordion-groups">
 					{groups.map(({ category, items: groupItems }) => (
-						<div key={category ?? 'all'} className="group">
-							{category && <Title element="h3" size={5} className="group-title" value={category} />}
+						<div key={category ?? 'all'} className="faq-accordion-group">
+							{category && <Title element="h3" size={5} className="faq-accordion-group-title" value={category} />}
 
 							<Accordion multiple={!singleOpen}>
 								{groupItems.map((item) => (

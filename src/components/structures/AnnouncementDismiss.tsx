@@ -87,10 +87,10 @@ const AnnouncementDismiss = ({
 			className={classNames('announcement-bar', `is-${variant}`, leaving && 'is-leaving', className)}
 			onTransitionEnd={onLeaveEnd}
 		>
-			<div className="content">{children}</div>
+			<div className="announcement-bar-content">{children}</div>
 
 			{dismissible && (
-				<Interactive className="close" aria-label="Dismiss announcement" onClick={dismiss}>
+				<Interactive className="announcement-bar-close" aria-label="Dismiss announcement" onClick={dismiss}>
 					<span aria-hidden="true">&times;</span>
 				</Interactive>
 			)}

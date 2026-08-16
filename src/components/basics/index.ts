@@ -32,6 +32,5 @@ export { default as CountUp } from '@/components/basics/CountUp';
 // Non-visual building blocks: a structured-data <script> primitive and the service-worker registrar.
 export { default as JsonLd } from '@/components/basics/JsonLd';
 export { default as ServiceWorker } from '@/components/basics/ServiceWorker';
-export { default as Collapsible } from '@/components/basics/Collapsible';
 export { default as Accordion } from '@/components/basics/Accordion';
 export { default as AccordionItem } from '@/components/basics/AccordionItem';

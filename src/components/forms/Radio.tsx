@@ -1,64 +1,46 @@
 'use client';
 
 import { Radio as BaseRadio } from '@base-ui/react/radio';
-import { RadioGroup } from '@base-ui/react/radio-group';
-import type { Ref } from 'react';
+import type { ReactNode, Ref } from 'react';
 
 import Content from '@/components/basics/Content';
-import useHaptics from '@/hooks/useHaptics';
 import { classNames } from '@/lib/classNames';
-import type { RadioOption as RadioOptionSchema, RadioProps as RadioSchemaProps } from '@/lib/content/schema/forms/radio';
-
-/** One choice in a Radio group. */
-export type RadioOption = RadioOptionSchema;
+import type { RadioProps as RadioSchemaProps } from '@/lib/content/schema/forms/radio';
 
 type RadioProps = RadioSchemaProps & {
-	/** Fires with the newly selected value (Base UI's two-arg event is re-narrowed for us) */
-	onValueChange?: (value: string) => void;
+	/** Inline label content; takes precedence over `label` */
+	children?: ReactNode;
 };
 
-// A set of mutually-exclusive choices. Wraps Base UI's RadioGroup (one tab stop; arrow keys move
-// between choices) plus a Radio per option, each shipping role="radio" + aria-checked and a hidden
-// input for native forms. Pair it with a <FieldLegend variant="label"> inside a <FieldSet> for the
-// group's accessible name. Inside a <Field> it inherits the name/invalid state.
-const Radio = ({
-	options = [],
-	onValueChange,
-	horizontal = false,
-	className,
-	ref,
-	...rest
-}: RadioProps & { ref?: Ref<HTMLDivElement> }) => {
-	const { haptic } = useHaptics();
+// A single choice. Wraps Base UI's Radio, so it carries role="radio" + aria-checked and a hidden
+// input for native forms. When a label/children is given it renders a clickable <label> row;
+// otherwise it is just the dot (pair it with a <Field.Label> or pass aria-label). Always rendered
+// inside a <RadioGroup> — that is where the selected value and the arrow-key navigation live.
+const Radio = ({ label, className, children, ref, ...rest }: RadioProps & { ref?: Ref<HTMLElement> }) => {
+	// `children` (arbitrary nodes) wins over `label` (an HTML string) — Content resolves both, so it
+	// parses the HTML label instead of a local html-react-parser call.
+	const hasLabel = Boolean(children || label);
+
+	const dot = (
+		<BaseRadio.Root ref={ref} className={classNames('radio', !hasLabel && className)} {...rest}>
+			<BaseRadio.Indicator className="radio-indicator" keepMounted>
+				<span className="radio-dot" aria-hidden="true" />
+			</BaseRadio.Indicator>
+		</BaseRadio.Root>
+	);
+
+	if (!hasLabel) {
+		return dot;
+	}
 
 	return (
-		<RadioGroup
-			ref={ref}
-			className={classNames('radio-set', horizontal && 'is-horizontal', className)}
-			onValueChange={(next) => {
-				haptic();
-				onValueChange?.(next as string);
-			}}
-			{...rest}
-		>
-			{options.map((option) => (
-				<label key={option.value} className="radio-field">
-					<BaseRadio.Root value={option.value} disabled={option.disabled} className="radio">
-						<BaseRadio.Indicator className="indicator" keepMounted>
-							<span className="dot" aria-hidden="true" />
-						</BaseRadio.Indicator>
-					</BaseRadio.Root>
-					<Content element="span" className="label" value={option.label} />
-				</label>
-			))}
-		</RadioGroup>
+		<label className={classNames('radio-field', className)}>
+			{dot}
+			<Content element="span" className="radio-label" value={label}>
+				{children}
+			</Content>
+		</label>
 	);
 };
-
-// The raw Base UI radio parts, surfaced so richer single-choice controls (ListboxCards, the
-// SegmentedControl) compose the same primitive instead of importing Base UI a second time.
-Radio.Group = RadioGroup;
-Radio.Option = BaseRadio.Root;
-Radio.Indicator = BaseRadio.Indicator;
 
 export default Radio;

@@ -3,7 +3,7 @@ import type { Ref } from 'react';
 import Container from '@/components/basics/Container';
 import HeadingGroup from '@/components/basics/HeadingGroup';
 import Section from '@/components/basics/Section';
-import NewsletterForm from '@/components/contentBlocks/NewsletterForm';
+import NewsletterForm from '@/components/components/NewsletterForm';
 import type { SubscribeToNewsletterProps } from '@/lib/content';
 
 // A newsletter signup section: a heading cluster and description with the signup form beside/under
@@ -21,14 +21,14 @@ const SubscribeToNewsletter = ({
 	ref,
 }: SubscribeToNewsletterProps & { ref?: Ref<HTMLElement> }) => {
 	return (
-		<Section ref={ref} colorset={colorset} className="subscribe-newsletter">
-			<Container className="panel">
+		<Section ref={ref} colorset={colorset} className="subscribe-to-newsletter">
+			<Container className="subscribe-to-newsletter-panel">
 				<HeadingGroup
 					tagline={heading?.tagline}
 					title={heading?.value}
 					size={heading?.size}
 					intro={heading?.intro ?? description}
-					className="copy"
+					className="subscribe-to-newsletter-copy"
 				/>
 
 				<NewsletterForm

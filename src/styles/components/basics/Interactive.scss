@@ -17,7 +17,6 @@
 		color $speed-fast $ease,
 		box-shadow $speed-fast $ease;
 
-
 	&:disabled,
 	&[aria-disabled='true'] {
 		opacity: 0.5;

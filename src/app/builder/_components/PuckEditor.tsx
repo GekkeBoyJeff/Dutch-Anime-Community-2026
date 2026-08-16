@@ -29,6 +29,13 @@ import type { Json } from '@/types/database.types';
 /** What the editor is currently editing: an existing page, a blank page, or a template. */
 type EditorSource = { kind: 'page'; path: string } | { kind: 'new' } | { kind: 'template'; template: PageTemplate };
 
+// Paths whose route does not read like their content. /404 is a normal, block-built page that simply
+// never gets a route of its own — Next renders it for any unknown URL.
+const PAGE_LABELS: Record<string, string> = {
+	'/': 'Home',
+	'/404': '404 — pagina niet gevonden',
+};
+
 const NEW_PAGE = 'new';
 
 // True after hydration only — the canonical client-only detector (no setState-in-effect).
@@ -101,7 +108,7 @@ const PuckEditor = () => {
 			.from('pages')
 			.select('path')
 			.then(({ data }) => {
-				if (active) setPaths((data ?? []).map((r) => r.path as string).filter((p) => p !== '/404').sort());
+				if (active) setPaths((data ?? []).map((r) => r.path as string).sort());
 			});
 		return () => {
 			active = false;
@@ -162,7 +169,7 @@ const PuckEditor = () => {
 
 	const refreshPaths = async () => {
 		const { data } = await getBrowserClient().from('pages').select('path');
-		setPaths((data ?? []).map((r) => r.path as string).filter((p) => p !== '/404').sort());
+		setPaths((data ?? []).map((r) => r.path as string).sort());
 	};
 
 	// Validate → sanitize → upsert. The modal only surfaces validation errors or a save result.
@@ -250,7 +257,7 @@ const PuckEditor = () => {
 							<option value={NEW_PAGE}>Nieuwe pagina</option>
 							{paths.map((path) => (
 								<option key={path} value={path}>
-									{path === '/' ? 'Home' : path}
+									{PAGE_LABELS[path] ?? path}
 								</option>
 							))}
 						</select>

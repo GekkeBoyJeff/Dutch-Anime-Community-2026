@@ -20,7 +20,7 @@ const TitleText = ({
 }: TitleTextProps & { ref?: Ref<HTMLElement> }) => {
 	return (
 		<Section ref={ref} colorset={colorset} className="title-text">
-			<Container className={classNames('body', `is-${align}`)}>
+			<Container className={classNames('title-text-body', `is-${align}`)}>
 				{heading && (
 					<HeadingGroup
 						align={align}
@@ -31,7 +31,7 @@ const TitleText = ({
 					/>
 				)}
 
-				{text && <Content className="text" value={text} />}
+				{text && <Content className="title-text-body" value={text} />}
 
 				<Actions actions={actions} defaultVariant="primary" />
 			</Container>

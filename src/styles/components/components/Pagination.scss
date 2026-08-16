@@ -4,7 +4,7 @@
 
 	display: flex;
 
-	.list {
+	.pagination-list {
 		display: flex;
 		align-items: center;
 		gap: var(--pagination-gap);
@@ -12,11 +12,11 @@
 		padding: 0;
 		list-style: none;
 
-		.item {
+		.pagination-item {
 			display: flex;
 
-			.page,
-			.control {
+			.pagination-page,
+			.pagination-control {
 				display: inline-flex;
 				align-items: center;
 				justify-content: center;
@@ -40,7 +40,6 @@
 					}
 				}
 
-
 				&[disabled],
 				&[aria-disabled="true"] {
 					color: $color-secondary;
@@ -49,7 +48,7 @@
 				}
 			}
 
-			.page[data-selected] {
+			.pagination-page[data-selected] {
 				background-color: $accent;
 				color: $accent-contrast;
 
@@ -58,7 +57,7 @@
 				}
 			}
 
-			.ellipsis {
+			.pagination-ellipsis {
 				display: inline-flex;
 				align-items: center;
 				justify-content: center;

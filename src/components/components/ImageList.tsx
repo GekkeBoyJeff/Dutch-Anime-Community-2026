@@ -20,7 +20,7 @@ const ImageList = ({ items = [], mediaOptions, layout = 'grid', columns = 3, cla
 	return (
 		<div ref={ref} className={classNames('image-list', `is-${layout}`, className)} style={style}>
 			{items.map((item, index) => (
-				<Media key={index} {...mediaOptions} {...item} className="item" />
+				<Media key={index} {...mediaOptions} {...item} className="image-list-item" />
 			))}
 		</div>
 	);
