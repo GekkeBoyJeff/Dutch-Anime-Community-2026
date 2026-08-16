@@ -3,30 +3,4 @@
 	color: $color;
 	padding-block: spacing(5xl);
 	padding-inline: var(--section-gutter);
-
-	html[data-motion] main & {
-		:is(ul, ol) > li {
-			opacity: 0;
-			translate: 0 1rem;
-		}
-
-		&.is-revealed :is(ul, ol) > li {
-			opacity: 1;
-			translate: 0 0;
-			transition: opacity $speed-slow $ease-snappy, translate $speed-slow $ease-snappy;
-
-			@for $i from 2 through 12 {
-				&:nth-child(#{$i}) {
-					transition-delay: #{($i - 1) * 70}ms;
-				}
-			}
-		}
-
-		@media (prefers-reduced-motion: reduce) {
-			:is(ul, ol) > li {
-				opacity: 1;
-				translate: none;
-			}
-		}
-	}
 }

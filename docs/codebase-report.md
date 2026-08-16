@@ -167,7 +167,7 @@ docs/      dit rapport + superpowers/plans + specs
 
 | Bestand | Type | Details |
 | --- | --- | --- |
-| `layout.tsx` | Server (async) | `resolveChrome(getSiteStructures())` → `.page-frame > .page-frame-scroll` (dé scroll-container) met `<SiteChrome>`. Overlays (ScrollProgress, SearchPalette, CookieConsent, RevealObserver) hier (niet in SiteChrome) zodat de builder-preview ze niet krijgt. |
+| `layout.tsx` | Server (async) | `resolveChrome(getSiteStructures())` → `.page-frame > .page-frame-scroll` (dé scroll-container) met `<SiteChrome>`. Overlays (ScrollProgress, SearchPalette, CookieConsent) hier (niet in SiteChrome) zodat de builder-preview ze niet krijgt. |
 | `page.tsx` | Server | Home `/`; `generateMetadata` → `pageMetadata('/')`; `<PageView path="/">`. |
 | `[...slug]/page.tsx` | Server (async) | **Catch-all**. `generateStaticParams` = alle content-paden behalve `/` (statisch geprerenderd). `dynamicParams = false` → onbekend pad 404't. `<PageView path={pathFromSlug(slug)}>`. |
 
@@ -243,7 +243,7 @@ meegebouwd; ze bestaan voor de server-mode / dev.
 
 ### Componenten — 5 tiers (S = Server, C = Client)
 
-**`basics/` (35)** — atomaire primitives (typografie, layout-grid, knoppen/links, media, iconen, statusindicatoren, skeletons). Overwegend Server. Kern: `Interactive` (C, polymorfe `<button>`/`<a>` waar Button/Pill/Link/Menu doorheen renderen), `Button` (S, de enige CTA-face), `Section` (S, draagt `colorset`), `Columns`/`Column` (S, 12-grid), `Title`/`Content`/`HeadingGroup` (S, type-scale), `Media` (S, beeld/embed per provider), `StatusBadge` (S, domain+status → kleur/label voor beheer), `Icon` (S, lucide-map), `JsonLd` (S, veilige `<script>`-serialisatie). Client-eilanden: `Accordion(Item)`, `CountUp`, `RevealObserver`, `ServiceWorker`.
+**`basics/` (34)** — atomaire primitives (typografie, layout-grid, knoppen/links, media, iconen, statusindicatoren, skeletons). Overwegend Server. Kern: `Interactive` (C, polymorfe `<button>`/`<a>` waar Button/Pill/Link/Menu doorheen renderen), `Button` (S, de enige CTA-face), `Section` (S, draagt `colorset`), `Columns`/`Column` (S, 12-grid), `Title`/`Content`/`HeadingGroup` (S, type-scale), `Media` (S, beeld/embed per provider), `StatusBadge` (S, domain+status → kleur/label voor beheer), `Icon` (S, lucide-map), `JsonLd` (S, veilige `<script>`-serialisatie). Client-eilanden: `Accordion(Item)`, `CountUp`, `ServiceWorker`.
 
 **`components/` (45)** — samengestelde widgets met eigen interactie/state. Veelal Client, veel Base UI/Embla-wrappers. O.a.: `Card`/`ArticleCard`/`EventCard` (S), `Modal`/`ConfirmDialog`/`Drawer`/`Popover`/`Menu`/`Combobox` (C, Base UI), `DataTable` (C, sorteerbaar+gepagineerd generic), `Table`/`ScrollArea`/`Gallery`/`ImageList`/`MarqueeTicker`/`Timeline` (S), `FilterBar`/`SearchPalette`/`Swiper`/`VideoLightbox` (C), form-controls `RadioGroup`/`ToggleGroup`/`Switch`/`Slider`/`NumberField`/`Toggle`/`Tooltip` (C), `Notification(Provider)` (C, toast-stack), `CookieConsent`/`CustomCursor`/`ScrollProgress`/`ScrollytellingTimeline` (C), `PermissionGroups` (C, permissie-vocabulaire per domein met Switch — drijft de AccessManager-UI).
 

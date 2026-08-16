@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-import RevealObserver from '@/components/basics/RevealObserver';
 import CookieConsent from '@/components/components/CookieConsent';
 import ScrollProgress from '@/components/components/ScrollProgress';
 import SearchPalette from '@/components/components/SearchPalette';
@@ -31,7 +30,6 @@ const WebsiteLayout = async ({ children }: WebsiteLayoutProps) => {
 					<SiteChrome structures={structures}>{children}</SiteChrome>
 				</div>
 			</div>
-			<RevealObserver />
 			{searchPalette && <SearchPalette {...searchPalette} />}
 			{cookieConsent && <CookieConsent {...cookieConsent} />}
 		</>

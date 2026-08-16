@@ -77,28 +77,4 @@
 			background: none;
 		}
 	}
-
-	html[data-motion] & {
-		.spotlight-quote-mascot {
-			opacity: 0;
-			scale: 0.8;
-			rotate: 4deg;
-		}
-
-		&.is-revealed .spotlight-quote-mascot {
-			opacity: 1;
-			scale: 1;
-			rotate: 0deg;
-			transition: opacity $speed-slow $ease, scale $speed-slow cubic-bezier(0.34, 1.56, 0.64, 1), rotate $speed-slow cubic-bezier(0.34, 1.56, 0.64, 1);
-			transition-delay: 200ms;
-		}
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	html[data-motion] .spotlight-quote .spotlight-quote-mascot {
-		opacity: 1;
-		scale: none;
-		rotate: none;
-	}
 }

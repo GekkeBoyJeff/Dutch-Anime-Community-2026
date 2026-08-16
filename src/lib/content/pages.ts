@@ -37,8 +37,16 @@ export const getPageByPath = async (path: string): Promise<Page | null> => {
 	const { data, error } = await getAdminClient().from('pages').select(column).eq('path', path).maybeSingle();
 	if (error || !data) return null;
 	// The row type is a union keyed by the selected column; `column` isn't a literal to either side of it.
-	const parsed = Page.safeParse((data as Record<'data' | 'published_data', unknown>)[column]);
-	return parsed.success ? parsed.data : null; // invalid rows never reach the build (or unpublished, on the published channel)
+	const content = (data as Record<'data' | 'published_data', unknown>)[column];
+	// Nothing in this channel means the page simply has no published version — a genuine 404.
+	if (content === null || content === undefined) return null;
+	// Content that IS there but no longer matches the schema is drift, not a missing page. Throwing
+	// points at the page + field; returning null would 404 a route that getAllPagePaths still lists,
+	// which is how a renamed block type once took a live page down without a single error anywhere.
+	return parseContent(Page, content, {
+		label: `page content for "${path}"`,
+		locate: (issuePath) => ({ source: path, field: issuePath.join('.') }),
+	});
 };
 
 export const getAllPagePaths = async (): Promise<string[]> => {
@@ -56,6 +64,12 @@ export const getNotFoundPage = async (): Promise<Page> => {
 	if (!dbEnabled()) return staticNotFound;
 	const column = contentColumn();
 	const { data } = await getAdminClient().from('pages').select(column).eq('path', '/404').maybeSingle();
-	const parsed = data ? Page.safeParse((data as Record<'data' | 'published_data', unknown>)[column]) : undefined;
-	return parsed?.success ? parsed.data : staticNotFound; // always return something renderable
+	const content = data ? (data as Record<'data' | 'published_data', unknown>)[column] : null;
+	// No row (or nothing in this channel) falls back to the registry; content that IS there gets held to
+	// the schema like every other page, so drift fails the build instead of quietly serving the fallback.
+	if (content === null || content === undefined) return staticNotFound;
+	return parseContent(Page, content, {
+		label: '404 content',
+		locate: (issuePath) => ({ source: 'notFound page', field: issuePath.join('.') }),
+	});
 };

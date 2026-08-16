@@ -60,14 +60,13 @@ export const REGISTRY: BlockRenderers = {
 	subscribeNewsletter: SubscribeToNewsletter,
 };
 
-// Renders a page's block list. An unknown type (e.g. from untrusted CMS data) is skipped.
+// Renders a page's block list. Every type resolves: REGISTRY is a mapped type over the same Zod union
+// the content is validated against, and content that doesn't match that union never gets this far — it
+// throws at the accessor. The cast only tells TypeScript that this indexed access and these props
+// belong to the same union member.
 const Blocks = ({ blocks = [] }: BlocksProps) => {
 	return blocks.map(({ type, id, ...props }, index) => {
-		const Renderer = REGISTRY[type] as React.ComponentType<typeof props> | undefined;
-
-		if (!Renderer) {
-			return null;
-		}
+		const Renderer = REGISTRY[type] as React.ComponentType<typeof props>;
 
 		return <Renderer key={id ?? `${type}-${index}`} {...props} />;
 	});

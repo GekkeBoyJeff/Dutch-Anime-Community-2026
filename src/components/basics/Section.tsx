@@ -22,7 +22,6 @@ const Section = ({
 			ref={ref}
 			className={classNames('section', className)}
 			data-colorset={colorset}
-			data-reveal=""
 			{...rest}
 		>
 			{children}
