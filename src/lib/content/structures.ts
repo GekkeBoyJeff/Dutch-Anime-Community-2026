@@ -25,8 +25,8 @@ export const getSiteStructures = async (): Promise<SiteStructures> => {
 	const { data } = await getAdminClient().from('structures').select(column).eq('id', 1).maybeSingle();
 	// The row type is a union keyed by the selected column; `column` isn't a literal to either side of it.
 	const content = data ? (data as Record<'data' | 'published_data', unknown>)[column] : null;
-	// No row (or nothing in this channel) falls back to the registry; content that IS there gets held to
-	// the schema, so drifted chrome fails the build instead of silently serving the hardcoded version.
+	// No content falls back to the registry; content that IS there is held to the schema, so drifted
+	// chrome fails the build instead of silently serving the hardcoded version.
 	if (content === null || content === undefined) return staticStructures;
 	return parseContent(SiteStructures, content, {
 		label: 'site structures',

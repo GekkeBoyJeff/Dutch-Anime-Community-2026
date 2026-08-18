@@ -12,8 +12,12 @@ const EMBEDS: Record<'youtube' | 'vimeo' | 'tiktok' | 'wistia', (id: string) => 
 	wistia: (id) => `https://fast.wistia.net/embed/iframe/${id}`,
 };
 
-// The Media content shape from the schema, so the component can't drift from the contract.
-type MediaProps = MediaData;
+// The Media content shape from the schema, so the component can't drift from the contract. `eager` is
+// deliberately not part of it: Blocks derives it from position, so no author can set it wrong.
+type MediaProps = MediaData & {
+	/** The page's leading image: loaded eagerly at high fetch priority instead of lazily. */
+	eager?: boolean;
+};
 
 // Renders an image (native <picture> + a build-time webp srcset from the manifest, no next/image), a
 // video or an embed inside a fixed-ratio frame, plus caption/credit. `sizes` drives which variant the
@@ -32,11 +36,20 @@ const Media = ({
 	variant = 'framed',
 	width,
 	height,
+	eager = false,
 	className,
 	ref,
 }: MediaProps & { ref?: Ref<HTMLElement> }) => {
 	const ratioStyle: CSSProperties | undefined = ratio ? { aspectRatio: ratio } : undefined;
 	const image = type === 'image' && src ? getImage(src) : undefined;
+
+	const loadingProps = eager
+		? ({ loading: 'eager', fetchPriority: 'high' } as const)
+		: ({ loading: 'lazy', decoding: 'async' } as const);
+
+	// `auto` picks from the srcset using the width the element actually got, so the layout is never
+	// restated here. Lazy images only; browsers without it fall through to the 100vw after the comma.
+	const defaultSizes = eager ? '100vw' : 'auto, 100vw';
 
 	// 'plain' skips the frame entirely: the bare asset at its natural size (logos, wordmarks,
 	// mascots) — no ratio box, no background, no crop. Images only; other types keep the frame.
@@ -63,8 +76,7 @@ const Media = ({
 						className="media-asset"
 						width={image?.width ?? width}
 						height={image?.height ?? height}
-						loading="lazy"
-						decoding="async"
+						{...loadingProps}
 					/>
 				</picture>
 
@@ -84,9 +96,9 @@ const Media = ({
 			<div className="media-frame" style={ratioStyle}>
 				{type === 'image' && src && (
 					<picture>
-						{image && <source type="image/webp" srcSet={variantsToSrcSet(image.variants)} sizes={compileSizes(sizes)} />}
+						{image && <source type="image/webp" srcSet={variantsToSrcSet(image.variants)} sizes={compileSizes(sizes ?? defaultSizes)} />}
 						{/* next/image not used here — Media is deliberately native-img-first; <img> inside <picture> is exempt from @next/next/no-img-element. */}
-						<img src={withBasePath(src)} alt={alt} className="media-asset" width={image?.width} height={image?.height} loading="lazy" decoding="async" />
+						<img src={withBasePath(src)} alt={alt} className="media-asset" width={image?.width} height={image?.height} {...loadingProps} />
 					</picture>
 				)}
 

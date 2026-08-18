@@ -23,8 +23,9 @@ const Hero = ({
 	socials = [],
 	media,
 	colorset,
+	eager,
 	ref,
-}: HeroProps & { ref?: Ref<HTMLElement> }) => {
+}: HeroProps & { eager?: boolean; ref?: Ref<HTMLElement> }) => {
 	const isCover = variant === 'cover' && !!media;
 
 	const body = (
@@ -54,7 +55,7 @@ const Hero = ({
 	if (isCover) {
 		return (
 			<Section ref={ref} colorset={colorset} className="hero is-cover">
-				<Media {...media} className="hero-backdrop" />
+				<Media {...media} eager={eager} className="hero-backdrop" />
 
 				<Container className="hero-inner">
 					{body}
@@ -84,7 +85,7 @@ const Hero = ({
 			<Container>
 				{media ? (
 					<div className="hero-panel" data-colorset="dark">
-						<Media {...media} className="hero-backdrop" />
+						<Media {...media} eager={eager} className="hero-backdrop" />
 
 						<div className="hero-inner">
 							{body}

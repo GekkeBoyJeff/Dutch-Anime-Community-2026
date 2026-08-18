@@ -21,8 +21,9 @@ const CTABanner = ({
 	align = 'start',
 	media,
 	colorset,
+	eager,
 	ref,
-}: CTABannerProps & { ref?: Ref<HTMLElement> }) => {
+}: CTABannerProps & { eager?: boolean; ref?: Ref<HTMLElement> }) => {
 	return (
 		<Section ref={ref} colorset={colorset} className="cta-banner">
 			<Container className={classNames('cta-banner-panel', `is-${tone}`, `is-${align}`, media && 'has-media')}>
@@ -38,7 +39,7 @@ const CTABanner = ({
 					/>
 				</div>
 
-				{media && <Media className="cta-banner-figure" {...media} />}
+				{media && <Media className="cta-banner-figure" {...media} eager={eager} />}
 			</Container>
 		</Section>
 	);

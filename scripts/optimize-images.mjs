@@ -12,16 +12,19 @@ const DEFAULTS = {
 	publicBase: '/media',
 	optPublicBase: '/media/_opt',
 	manifestPath: 'src/lib/images/manifest.json',
-	widths: [320, 480, 640, 768, 1024, 1280, 1536],
+	widths: [320, 480, 640, 768, 1024, 1280, 1536, 1920],
+	// Bytes budget for the leading image (the only one that can't measure itself), not a fact about
+	// viewports. Raise it — and add rungs — if a full-bleed layout needs 4K sharpness.
+	maxWidth: 2560,
 	quality: 80,
 	extensions: ['.jpg', '.jpeg', '.png'],
 };
 
-// Widths to emit for a source: ladder values below the intrinsic width, plus the intrinsic width
-// itself as the largest candidate. Never exceeds the source (no upscaling). Deduped, ascending.
-export const variantWidths = (intrinsicWidth, ladder = DEFAULTS.widths) => {
-	const below = ladder.filter((w) => w < intrinsicWidth);
-	return [...new Set([...below, intrinsicWidth])].sort((a, b) => a - b);
+// Ladder values below the top rung, plus that rung: the intrinsic width, clamped to maxWidth.
+export const variantWidths = (intrinsicWidth, ladder = DEFAULTS.widths, maxWidth = DEFAULTS.maxWidth) => {
+	const top = Math.min(intrinsicWidth, maxWidth);
+	const below = ladder.filter((w) => w < top);
+	return [...new Set([...below, top])].sort((a, b) => a - b);
 };
 
 // SHA-1 used as a cache discriminator (content-change detection), not a security primitive.

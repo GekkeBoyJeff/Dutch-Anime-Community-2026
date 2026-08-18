@@ -122,6 +122,10 @@
 				"url": "/media/_opt/dac-meetup-1536.webp"
 			},
 			{
+				"w": 1920,
+				"url": "/media/_opt/dac-meetup-1920.webp"
+			},
+			{
 				"w": 2120,
 				"url": "/media/_opt/dac-meetup-2120.webp"
 			}
@@ -161,8 +165,12 @@
 				"url": "/media/_opt/dac-stand-1536.webp"
 			},
 			{
-				"w": 4032,
-				"url": "/media/_opt/dac-stand-4032.webp"
+				"w": 1920,
+				"url": "/media/_opt/dac-stand-1920.webp"
+			},
+			{
+				"w": 2560,
+				"url": "/media/_opt/dac-stand-2560.webp"
 			}
 		]
 	},
@@ -332,8 +340,12 @@
 				"url": "/media/_opt/spelletjesmiddag-1536.webp"
 			},
 			{
-				"w": 3000,
-				"url": "/media/_opt/spelletjesmiddag-3000.webp"
+				"w": 1920,
+				"url": "/media/_opt/spelletjesmiddag-1920.webp"
+			},
+			{
+				"w": 2560,
+				"url": "/media/_opt/spelletjesmiddag-2560.webp"
 			}
 		]
 	}
