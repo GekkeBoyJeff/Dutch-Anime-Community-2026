@@ -77,11 +77,6 @@ body:has(.page-frame) {
 	overflow-x: clip;
 	overflow-y: auto;
 	scroll-timeline: --page-scroll block;
-	scroll-padding-block-end: calc(3.75rem + #{spacing(l)});
-
-	@include bp(l) {
-		scroll-padding-block-end: 0;
-	}
 
 	&:has(> .announcement-bar) {
 		grid-template-rows: auto auto 1fr auto;

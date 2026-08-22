@@ -19,7 +19,6 @@ export * from '@/lib/content/schema/components/notificationProvider';
 export * from '@/lib/content/schema/components/pagination';
 export * from '@/lib/content/schema/components/popover';
 export * from '@/lib/content/schema/components/scrollProgress';
-export * from '@/lib/content/schema/components/statCluster';
 export * from '@/lib/content/schema/components/scrollytellingTimeline';
 export * from '@/lib/content/schema/components/searchPalette';
 export * from '@/lib/content/schema/components/swiper';

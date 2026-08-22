@@ -7,7 +7,7 @@
 	border-radius: $rounded-l;
 	background-color: $background-color;
 	color: $color;
-	box-shadow: $shadow-card;
+	box-shadow: inset 0 0 0 0.0625rem var(--border-color), $shadow-card;
 
 	@include on-colorset(dark) {
 		box-shadow: inset 0 0 0 0.0625rem var(--border-color);

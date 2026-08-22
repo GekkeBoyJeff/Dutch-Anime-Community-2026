@@ -1,10 +1,6 @@
 .section {
 	background-color: $background-color;
 	color: $color;
-	padding-block: spacing(6xl);
+	padding-block: spacing(5xl);
 	padding-inline: var(--section-gutter);
-
-	@include bp(l) {
-		padding-block: spacing(7xl);
-	}
 }
