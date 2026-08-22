@@ -4,6 +4,7 @@ import { structures as rawStructures } from '@/content/structures';
 import { SiteStructures } from '@/lib/content/schema';
 import { parseContent } from '@/lib/content/validate';
 import { env } from '@/lib/env';
+import { dbEnabled } from '@/lib/content/pages';
 import { getAdminClient } from '@/lib/supabase/admin';
 
 // Validated static structures — the local-dev fallback (see pages.ts for the same pattern). Bad chrome
@@ -20,7 +21,7 @@ const contentColumn = () => (env.CONTENT_CHANNEL === 'published' ? 'published_da
 // Async so the public API survives a future CMS swap unchanged (same contract as getPageByPath).
 // Supabase-backed when SUPABASE_SERVICE_ROLE_KEY is set; the static structures otherwise.
 export const getSiteStructures = async (): Promise<SiteStructures> => {
-	if (!env.SUPABASE_SERVICE_ROLE_KEY) return staticStructures;
+	if (!dbEnabled()) return staticStructures;
 	const column = contentColumn();
 	const { data } = await getAdminClient().from('structures').select(column).eq('id', 1).maybeSingle();
 	// The row type is a union keyed by the selected column; `column` isn't a literal to either side of it.

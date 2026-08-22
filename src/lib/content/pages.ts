@@ -8,10 +8,11 @@ import { parseContent } from '@/lib/content/validate';
 import { env } from '@/lib/env';
 import { getAdminClient } from '@/lib/supabase/admin';
 
-// Content accessors. When SUPABASE_SERVICE_ROLE_KEY is set (CI build / a local build with the key),
-// pages come from Supabase; otherwise they fall back to the validated static registry so a plain
-// `next dev` (no key) still runs. The service-role client bypasses RLS — reads are unrestricted.
-const dbEnabled = () => Boolean(env.SUPABASE_SERVICE_ROLE_KEY);
+// Content accessors. CONTENT_SOURCE decides where pages come from; unset, it infers Supabase from
+// SUPABASE_SERVICE_ROLE_KEY so existing deploys keep working. Set it to 'registry' to serve the
+// typed files in src/content with the key still in place — that is how you preview unpublished work.
+export const dbEnabled = () =>
+	env.CONTENT_SOURCE ? env.CONTENT_SOURCE === 'supabase' : Boolean(env.SUPABASE_SERVICE_ROLE_KEY);
 
 // Which column carries the content for the current build: the live build reads `published_data`
 // (CONTENT_CHANNEL=published), staging and local builds read the draft `data` column.

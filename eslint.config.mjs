@@ -22,7 +22,9 @@ const config = [
 			],
 		},
 	},
-	{ ignores: ['.next/**', 'storybook-static/**'] },
+	// Serwist writes its service worker into public/ on a PWA build; a generated, minified
+	// artifact has no author to fix its style. Same grouping as .gitignore:11-13.
+	{ ignores: ['.next/**', 'storybook-static/**', 'public/sw.js', 'public/swe-worker-*.js'] },
 ];
 
 export default config;

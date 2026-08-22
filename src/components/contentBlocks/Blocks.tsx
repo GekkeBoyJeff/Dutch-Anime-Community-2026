@@ -1,5 +1,6 @@
 import BentoGrid from '@/components/contentBlocks/BentoGrid';
 import CardGrid from '@/components/contentBlocks/CardGrid';
+import CommunityQuestion from '@/components/contentBlocks/CommunityQuestion';
 import CTABanner from '@/components/contentBlocks/CTABanner';
 import EventTeaser from '@/components/contentBlocks/EventTeaser';
 import FaqAccordion from '@/components/contentBlocks/FaqAccordion';
@@ -9,8 +10,10 @@ import Hero from '@/components/contentBlocks/Hero';
 import HighlightCards from '@/components/contentBlocks/HighlightCards';
 import IntroGrid from '@/components/contentBlocks/IntroGrid';
 import LogoCloud from '@/components/contentBlocks/LogoCloud';
+import MomentList from '@/components/contentBlocks/MomentList';
 import PhotoMosaic from '@/components/contentBlocks/PhotoMosaic';
 import ProfileCards from '@/components/contentBlocks/ProfileCards';
+import ProofTicker from '@/components/contentBlocks/ProofTicker';
 import Prose from '@/components/contentBlocks/Prose';
 import Reviews from '@/components/contentBlocks/Reviews';
 import Showreel from '@/components/contentBlocks/Showreel';
@@ -59,6 +62,9 @@ export const REGISTRY: BlockRenderers = {
 	showreel: Showreel,
 	eventTeaser: EventTeaser,
 	subscribeNewsletter: SubscribeToNewsletter,
+	communityQuestion: CommunityQuestion,
+	momentList: MomentList,
+	proofTicker: ProofTicker,
 };
 
 // Renders a page's block list. Every type resolves — REGISTRY covers the same union the content is

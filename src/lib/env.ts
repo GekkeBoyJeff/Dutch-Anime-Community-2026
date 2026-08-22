@@ -26,6 +26,9 @@ export const env = createEnv({
 		// Which content column the build reads: 'published' for the live DirectAdmin build,
 		// unset/'draft' for staging (GitHub Pages) and local builds.
 		CONTENT_CHANNEL: z.enum(['draft', 'published']).optional(),
+		// Where pages and site chrome come from. Unset infers it from SUPABASE_SERVICE_ROLE_KEY;
+		// 'registry' forces the typed files in src/content even when the key is present.
+		CONTENT_SOURCE: z.enum(['registry', 'supabase']).optional(),
 	},
 	shared: {
 		// Set by Next/tooling; lives in `shared` because it exists on both the server and the client.
@@ -64,6 +67,7 @@ export const env = createEnv({
 		SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
 		ENABLE_PWA: process.env.ENABLE_PWA,
 		CONTENT_CHANNEL: process.env.CONTENT_CHANNEL,
+		CONTENT_SOURCE: process.env.CONTENT_SOURCE,
 		NODE_ENV: process.env.NODE_ENV,
 		HOST_TYPE: process.env.HOST_TYPE,
 		NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,

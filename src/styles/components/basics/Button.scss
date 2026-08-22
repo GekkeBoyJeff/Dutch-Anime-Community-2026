@@ -7,7 +7,7 @@
 	&.is-primary {
 		background-color: $accent;
 		color: $accent-contrast;
-		box-shadow: inset 0 0 0 0.0625rem rgba($black, 0.25);
+		box-shadow: inset 0 0 0 0.0625rem rgba($black, 0.38);
 
 		@include interactive {
 			background-color: $accent-hover;

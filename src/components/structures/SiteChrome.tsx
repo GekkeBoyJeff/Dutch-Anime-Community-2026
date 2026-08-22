@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import AnnouncementBar from '@/components/structures/AnnouncementBar';
 import Footer from '@/components/structures/Footer';
-import Navigation from '@/components/structures/Navigation';
+import SiteHeader from '@/components/structures/SiteHeader';
 import type { SiteStructures } from '@/lib/content/schema/structures/site';
 
 interface SiteChromeProps {
@@ -25,7 +25,7 @@ const SiteChrome = ({ structures, children }: SiteChromeProps) => {
 				Ga naar de inhoud
 			</a>
 			{announcementBar && <AnnouncementBar {...announcementBar} />}
-			<Navigation {...navigation} />
+			<SiteHeader {...navigation} />
 			{children}
 			<Footer {...footer} />
 		</>

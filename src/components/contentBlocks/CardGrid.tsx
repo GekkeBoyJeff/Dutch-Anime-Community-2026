@@ -29,6 +29,13 @@ const toGridItem = (item: CardGridProps['items'][number]): CardGridItem => ({
 	cta: item.cta,
 });
 
+// An event runs until the end of its last day. A static build bakes its HTML long before the visit,
+// so this runs in the browser: the first paint may still show an event that ended since the build.
+const isOver = (item: CardGridProps['items'][number]) => {
+	const end = item.endDate ?? item.startDate;
+	return !!end && end.slice(0, 10) < new Date().toISOString().slice(0, 10);
+};
+
 const CardGrid = ({
 	variant,
 	heading,
@@ -47,7 +54,10 @@ const CardGrid = ({
 	colorset,
 	ref,
 }: CardGridProps & { ref?: Ref<HTMLElement> }) => {
-	const gridItems = useMemo(() => items.map(toGridItem), [items]);
+	const gridItems = useMemo(
+		() => items.filter((item) => variant !== 'event' || !isOver(item)).map(toGridItem),
+		[items, variant],
+	);
 
 	return (
 		<ItemCardGrid

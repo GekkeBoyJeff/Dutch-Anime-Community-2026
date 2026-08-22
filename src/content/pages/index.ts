@@ -1,6 +1,7 @@
 import { communityPage } from '@/content/pages/community';
 import { evenementenPage } from '@/content/pages/evenementen';
 import { homePage } from '@/content/pages/home';
+import { supportersPage } from '@/content/pages/supporters';
 import { wordLidPage } from '@/content/pages/word-lid';
 import type { Page } from '@/lib/content';
 
@@ -9,5 +10,6 @@ export const pages: Record<string, Page> = {
 	'/': homePage,
 	'/community': communityPage,
 	'/evenementen': evenementenPage,
+	'/supporters': supportersPage,
 	'/word-lid': wordLidPage,
 };

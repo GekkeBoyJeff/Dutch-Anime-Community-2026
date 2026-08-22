@@ -169,7 +169,7 @@ const CookieConsent = ({
 				<div className="cookie-consent-actions">
 					{categories.length > 0 &&
 						(showPreferences ? (
-							<Button variant="primary" onClick={saveSelection}>
+							<Button variant="secondary" onClick={saveSelection}>
 								{saveLabel}
 							</Button>
 						) : (
@@ -180,7 +180,7 @@ const CookieConsent = ({
 					<Button variant="secondary" onClick={rejectAll}>
 						{rejectLabel}
 					</Button>
-					<Button variant="primary" onClick={acceptAll}>
+					<Button variant="secondary" onClick={acceptAll}>
 						{acceptLabel}
 					</Button>
 				</div>

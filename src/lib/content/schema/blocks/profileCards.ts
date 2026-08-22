@@ -16,7 +16,11 @@ export type ProfileSocial = z.infer<typeof ProfileSocial>;
 export const ProfileCardItem = z
 	.object({
 		id: Id,
-		image: z.string().min(1).describe('Portrait image rendered at a 4:5 ratio'),
+		image: z
+			.string()
+			.optional()
+			.describe('Portrait image rendered at a 4:5 ratio. Leave empty to show initials instead. Never a URL from the avatars bucket — that leaks a member\'s account id'),
+		initials: z.string().max(2).optional().describe('One or two letters for the fallback; leave empty to derive them from the name'),
 		name: z.string().min(1).describe('Person\'s name, shown as the card heading and used as the portrait\'s alt text'),
 		role: z.string().optional().describe('Person\'s role or title, shown below the name'),
 		text: z.string().optional().describe('Short bio text shown below the role'),
@@ -31,8 +35,25 @@ export const ProfileCardsProps = z
 		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) rendered above the grid'),
 		// Grid width; drives the --columns var (responsive cap below).
 		columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).optional().describe('Number of columns in the profile grid'),
-		// A profileCards block with zero people has no reason to exist; require at least one.
-		items: z.array(ProfileCardItem).min(1).describe('The people rendered as cards in the grid'),
+		items: z.array(ProfileCardItem).describe('The people rendered as cards in the grid'),
+		// The card that honours whoever gave without being named. A block-level field, not an item, so
+		// tidying the list can't remove it — the whole point is that nobody who gave goes unmentioned.
+		anonymousLabel: z
+			.string()
+			.optional()
+			.describe('Adds one final card standing in for everyone who gave anonymously, e.g. \'Iedereen die anoniem geeft\''),
+	})
+	// The rule is about what renders, not about what is typed: a block that shows nothing is a heading
+	// with a hole under it. An empty `items` is fine as long as the anonymous card fills the grid — that
+	// is a supporters page before the first name, which is a complete list, not an empty one.
+	.check((ctx) => {
+		if (ctx.value.items.length > 0 || ctx.value.anonymousLabel) return;
+		ctx.issues.push({
+			code: 'custom',
+			message: 'A profileCards block renders nothing: add at least one person, or set anonymousLabel',
+			input: ctx.value,
+			path: ['items'],
+		});
 	})
 	.meta({ title: 'ProfileCards' });
 export type ProfileCardsProps = z.infer<typeof ProfileCardsProps>;

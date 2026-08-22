@@ -14,17 +14,14 @@
 		text-decoration: underline;
 		text-underline-offset: 0.15em;
 
-		transition:
-			text-decoration-thickness $speed-fast $ease,
-			color $speed-fast $ease;
+		transition: text-decoration-thickness $speed-fast $ease;
 
 		@include interactive {
 			text-decoration-thickness: 0.125rem;
-			color: $accent-hover;
 		}
 
 		&:active {
-			color: $accent-active;
+			text-decoration-thickness: 0.1875rem;
 		}
 
 	}

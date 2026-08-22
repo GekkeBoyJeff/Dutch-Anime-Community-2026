@@ -34,11 +34,15 @@
 			}
 
 			.content {
-				--font-size: clamp(1.5rem, 3vw, 2.25rem);
+				--font-size: 1.375rem;
 				font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
 				font-weight: $weight-medium;
 				line-height: 1.3;
 				letter-spacing: $tracking-tight;
+
+				@include bp(m) {
+					--font-size: 1.625rem;
+				}
 			}
 		}
 

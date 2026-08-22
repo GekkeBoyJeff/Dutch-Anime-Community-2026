@@ -43,3 +43,16 @@ export const FourColumns: Story = {
 		columns: 4,
 	},
 };
+
+export const WithoutPortraits: Story = {
+	args: {
+		heading: { value: 'Zij maken DAC mede mogelijk', tagline: 'Supporters' },
+		columns: 4,
+		items: [
+			{ id: 's1', name: 'Anne Willems', role: 'sinds 2024' },
+			{ id: 's2', name: 'Bram', role: 'sinds 2025' },
+			{ id: 's3', name: 'Noor de Jong', role: 'sinds 2023' },
+		],
+		anonymousLabel: 'Iedereen die anoniem geeft',
+	},
+};

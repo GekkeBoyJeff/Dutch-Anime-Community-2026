@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { BentoGridBlock } from '@/lib/content/schema/blocks/bentoGrid';
 import { CardGridBlock } from '@/lib/content/schema/blocks/cardGrid';
+import { CommunityQuestionBlock } from '@/lib/content/schema/blocks/communityQuestion';
 import { CTABannerBlock } from '@/lib/content/schema/blocks/ctaBanner';
 import { EventTeaserBlock } from '@/lib/content/schema/blocks/eventTeaser';
 import { FaqAccordionBlock } from '@/lib/content/schema/blocks/faqAccordion';
@@ -11,8 +12,10 @@ import { HeroBlock } from '@/lib/content/schema/blocks/hero';
 import { HighlightCardsBlock } from '@/lib/content/schema/blocks/highlightCards';
 import { IntroGridBlock } from '@/lib/content/schema/blocks/introGrid';
 import { LogoCloudBlock } from '@/lib/content/schema/blocks/logoCloud';
+import { MomentListBlock } from '@/lib/content/schema/blocks/momentList';
 import { PhotoMosaicBlock } from '@/lib/content/schema/blocks/photoMosaic';
 import { ProfileCardsBlock } from '@/lib/content/schema/blocks/profileCards';
+import { ProofTickerBlock } from '@/lib/content/schema/blocks/proofTicker';
 import { ProseBlock } from '@/lib/content/schema/blocks/prose';
 import { ReviewsBlock } from '@/lib/content/schema/blocks/reviews';
 import { ShowreelBlock } from '@/lib/content/schema/blocks/showreel';
@@ -51,6 +54,9 @@ export const Block = z.discriminatedUnion('type', [
 	ShowreelBlock,
 	EventTeaserBlock,
 	SubscribeToNewsletterBlock,
+	CommunityQuestionBlock,
+	MomentListBlock,
+	ProofTickerBlock,
 ]);
 export type Block = z.infer<typeof Block>;
 
@@ -77,3 +83,6 @@ export * from '@/lib/content/schema/blocks/growingMediaOnScroll';
 export * from '@/lib/content/schema/blocks/showreel';
 export * from '@/lib/content/schema/blocks/eventTeaser';
 export * from '@/lib/content/schema/blocks/subscribeNewsletter';
+export * from '@/lib/content/schema/blocks/communityQuestion';
+export * from '@/lib/content/schema/blocks/momentList';
+export * from '@/lib/content/schema/blocks/proofTicker';

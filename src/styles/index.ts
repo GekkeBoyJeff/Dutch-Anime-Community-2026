@@ -76,6 +76,7 @@ import '@/styles/components/components/VideoLightbox.scss';
 
 // contentBlocks
 import '@/styles/components/contentBlocks/BentoGrid.scss';
+import '@/styles/components/contentBlocks/CommunityQuestion.scss';
 import '@/styles/components/contentBlocks/CTABanner.scss';
 import '@/styles/components/contentBlocks/EventTeaser.scss';
 import '@/styles/components/contentBlocks/FaqAccordion.scss';
@@ -86,7 +87,9 @@ import '@/styles/components/contentBlocks/HighlightCards.scss';
 import '@/styles/components/contentBlocks/IntroGrid.scss';
 import '@/styles/components/contentBlocks/LogoCloud.scss';
 import '@/styles/components/contentBlocks/ProfileCards.scss';
+import '@/styles/components/contentBlocks/MomentList.scss';
 import '@/styles/components/contentBlocks/PhotoMosaic.scss';
+import '@/styles/components/contentBlocks/ProofTicker.scss';
 import '@/styles/components/contentBlocks/Prose.scss';
 import '@/styles/components/contentBlocks/Reviews.scss';
 import '@/styles/components/contentBlocks/Showreel.scss';
@@ -126,6 +129,7 @@ import '@/styles/components/structures/Footer.scss';
 import '@/styles/components/structures/MegaMenu.scss';
 import '@/styles/components/structures/Navigation.scss';
 import '@/styles/components/dashboard/structures/RouteReveal.scss';
+import '@/styles/components/structures/SiteHeader.scss';
 
 // dashboard shell
 import '@/styles/components/dashboard/shell/Dashboard.scss';

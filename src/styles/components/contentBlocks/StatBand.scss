@@ -24,13 +24,21 @@
 		padding-inline-start: spacing(l);
 
 		.stat-band-stat-number {
-			--font-size: clamp(2.25rem, 4.5vw, 3.75rem);
+			--font-size: 2rem;
 			margin: 0;
 			font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
 			font-weight: $weight-semibold;
 			font-variant-numeric: tabular-nums;
 			line-height: 1.05;
 			color: $accent-text;
+
+			@include bp(m) {
+				--font-size: 2.5rem;
+			}
+
+			@include bp(l) {
+				--font-size: 3rem;
+			}
 		}
 
 		.stat-band-stat-label {

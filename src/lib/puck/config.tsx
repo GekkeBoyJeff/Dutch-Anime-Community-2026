@@ -111,7 +111,7 @@ export const config: Config = {
 		},
 		content: {
 			title: 'Content',
-			components: ['prose', 'textMedia', 'steps', 'faqAccordion'],
+			components: ['prose', 'textMedia', 'steps', 'faqAccordion', 'momentList'],
 		},
 		grids: {
 			title: 'Grids & kaarten',
@@ -119,7 +119,7 @@ export const config: Config = {
 		},
 		marketing: {
 			title: 'Marketing & social',
-			components: ['reviews', 'logoCloud', 'eventTeaser', 'subscribeNewsletter'],
+			components: ['reviews', 'logoCloud', 'eventTeaser', 'subscribeNewsletter', 'communityQuestion', 'proofTicker'],
 		},
 		other: {
 			title: 'Overig',
