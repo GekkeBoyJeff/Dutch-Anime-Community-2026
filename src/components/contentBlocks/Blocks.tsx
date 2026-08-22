@@ -1,5 +1,7 @@
 import BentoGrid from '@/components/contentBlocks/BentoGrid';
 import CardGrid from '@/components/contentBlocks/CardGrid';
+import ChannelBoard from '@/components/contentBlocks/ChannelBoard';
+import ChatPreview from '@/components/contentBlocks/ChatPreview';
 import CommunityQuestion from '@/components/contentBlocks/CommunityQuestion';
 import CTABanner from '@/components/contentBlocks/CTABanner';
 import EventTeaser from '@/components/contentBlocks/EventTeaser';
@@ -63,6 +65,8 @@ export const REGISTRY: BlockRenderers = {
 	eventTeaser: EventTeaser,
 	subscribeNewsletter: SubscribeToNewsletter,
 	communityQuestion: CommunityQuestion,
+	chatPreview: ChatPreview,
+	channelBoard: ChannelBoard,
 	momentList: MomentList,
 	proofTicker: ProofTicker,
 };

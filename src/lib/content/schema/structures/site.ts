@@ -6,6 +6,7 @@ import { SearchPaletteProps } from '@/lib/content/schema/components/searchPalett
 import { AnnouncementBarProps } from '@/lib/content/schema/structures/announcementBar';
 import { FooterProps } from '@/lib/content/schema/structures/footer';
 import { NavigationProps } from '@/lib/content/schema/structures/navigation';
+import { StickyCtaProps } from '@/lib/content/schema/structures/stickyCta';
 
 // The site-wide chrome document: the announcement bar, navigation and footer rendered around every
 // page. One validated document (src/content/structures.ts) — the chrome is data, editable in the
@@ -18,6 +19,7 @@ export const SiteStructures = z
 		scrollProgress: ScrollProgressProps.optional().describe('Optional reading-progress bar pinned to the viewport'),
 		searchPalette: SearchPaletteProps.optional().describe('Optional Cmd/Ctrl+K command palette'),
 		cookieConsent: CookieConsentProps.optional().describe('Optional site-wide cookie consent bar'),
+		stickyCta: StickyCtaProps.optional().describe('Optional fixed action bar on small screens; shows the navigation\'s call to action once the hero has scrolled by'),
 	})
 	.meta({ title: 'SiteStructures' });
 export type SiteStructures = z.infer<typeof SiteStructures>;

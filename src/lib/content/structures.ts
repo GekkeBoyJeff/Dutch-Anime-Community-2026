@@ -1,10 +1,10 @@
 import 'server-only';
 
 import { structures as rawStructures } from '@/content/structures';
+import { dbEnabled } from '@/lib/content/pages';
 import { SiteStructures } from '@/lib/content/schema';
 import { parseContent } from '@/lib/content/validate';
 import { env } from '@/lib/env';
-import { dbEnabled } from '@/lib/content/pages';
 import { getAdminClient } from '@/lib/supabase/admin';
 
 // Validated static structures — the local-dev fallback (see pages.ts for the same pattern). Bad chrome

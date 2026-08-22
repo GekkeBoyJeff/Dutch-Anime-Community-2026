@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import { BentoGridBlock } from '@/lib/content/schema/blocks/bentoGrid';
 import { CardGridBlock } from '@/lib/content/schema/blocks/cardGrid';
+import { ChannelBoardBlock } from '@/lib/content/schema/blocks/channelBoard';
+import { ChatPreviewBlock } from '@/lib/content/schema/blocks/chatPreview';
 import { CommunityQuestionBlock } from '@/lib/content/schema/blocks/communityQuestion';
 import { CTABannerBlock } from '@/lib/content/schema/blocks/ctaBanner';
 import { EventTeaserBlock } from '@/lib/content/schema/blocks/eventTeaser';
@@ -55,6 +57,8 @@ export const Block = z.discriminatedUnion('type', [
 	EventTeaserBlock,
 	SubscribeToNewsletterBlock,
 	CommunityQuestionBlock,
+	ChatPreviewBlock,
+	ChannelBoardBlock,
 	MomentListBlock,
 	ProofTickerBlock,
 ]);
@@ -84,5 +88,7 @@ export * from '@/lib/content/schema/blocks/showreel';
 export * from '@/lib/content/schema/blocks/eventTeaser';
 export * from '@/lib/content/schema/blocks/subscribeNewsletter';
 export * from '@/lib/content/schema/blocks/communityQuestion';
+export * from '@/lib/content/schema/blocks/chatPreview';
+export * from '@/lib/content/schema/blocks/channelBoard';
 export * from '@/lib/content/schema/blocks/momentList';
 export * from '@/lib/content/schema/blocks/proofTicker';

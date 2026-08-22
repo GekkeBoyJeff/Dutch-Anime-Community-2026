@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import AnnouncementBar from '@/components/structures/AnnouncementBar';
 import Footer from '@/components/structures/Footer';
 import SiteHeader from '@/components/structures/SiteHeader';
+import StickyCta from '@/components/structures/StickyCta';
 import type { SiteStructures } from '@/lib/content/schema/structures/site';
 
 interface SiteChromeProps {
@@ -17,7 +18,7 @@ interface SiteChromeProps {
 // The type import points at the schema file, not the @/lib/content barrel, so the client-side
 // editor bundle never touches the server-only accessor modules.
 const SiteChrome = ({ structures, children }: SiteChromeProps) => {
-	const { announcementBar, navigation, footer } = structures;
+	const { announcementBar, navigation, footer, stickyCta } = structures;
 
 	return (
 		<>
@@ -27,6 +28,7 @@ const SiteChrome = ({ structures, children }: SiteChromeProps) => {
 			{announcementBar && <AnnouncementBar {...announcementBar} />}
 			<SiteHeader {...navigation} />
 			{children}
+			{stickyCta && navigation.cta && <StickyCta {...stickyCta} cta={navigation.cta} />}
 			<Footer {...footer} />
 		</>
 	);

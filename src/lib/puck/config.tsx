@@ -111,11 +111,11 @@ export const config: Config = {
 		},
 		content: {
 			title: 'Content',
-			components: ['prose', 'textMedia', 'steps', 'faqAccordion', 'momentList'],
+			components: ['prose', 'textMedia', 'steps', 'faqAccordion', 'momentList', 'chatPreview'],
 		},
 		grids: {
 			title: 'Grids & kaarten',
-			components: ['bentoGrid', 'highlightCards', 'featureCards', 'introGrid', 'cardGrid', 'profileCards'],
+			components: ['bentoGrid', 'highlightCards', 'featureCards', 'introGrid', 'cardGrid', 'profileCards', 'channelBoard'],
 		},
 		marketing: {
 			title: 'Marketing & social',

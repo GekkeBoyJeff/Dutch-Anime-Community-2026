@@ -24,11 +24,14 @@ export const homePage: Page = {
 				{ label: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
 				{ label: 'Hoe het werkt', variant: 'ghost', url: '/word-lid' },
 			],
+			// Volgorde is bewust: de stats staan onder de herotekst, dus het eerste wat je na 'Dat doet
+			// iedereen' leest moet de drempel verlagen. Het ledenaantal beantwoordt 'leeft dit nog' en
+			// blijft staan, maar niet vooraan — 4.500 leest voor een twijfelaar als 'ik ben onzichtbaar'.
 			stats: [
-				{ count: '4.500+', label: 'leden' },
-				{ count: 'honderden', label: 'vaak online' },
-				{ count: '4', label: 'cons per jaar' },
 				{ count: 'Gratis', label: 'altijd' },
+				{ count: '4.500+', label: 'leden' },
+				{ count: '4', label: 'cons per jaar' },
+				{ count: 'honderden', label: 'regelmatig online' },
 			],
 			socials: [
 				{ label: 'Discord', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },

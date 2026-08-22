@@ -67,6 +67,9 @@ export const structures: SiteStructures = {
 			{ id: 'sp-discord', label: 'Word lid', hint: 'discord.gg', category: 'Meedoen', url: 'https://discord.gg/dutchanimecommunity' },
 		],
 	},
+	stickyCta: {
+		excludePaths: ['/supporters'],
+	},
 	cookieConsent: {
 		title: 'Wij gebruiken cookies',
 		acceptLabel: 'Alles accepteren',

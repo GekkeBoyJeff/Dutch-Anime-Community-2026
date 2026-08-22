@@ -62,6 +62,7 @@ import '@/styles/components/components/Panel.scss';
 import '@/styles/components/components/Person.scss';
 import '@/styles/components/components/PermissionGroups.scss';
 import '@/styles/components/components/Popover.scss';
+import '@/styles/components/components/StatCluster.scss';
 import '@/styles/components/components/ScrollProgress.scss';
 import '@/styles/components/components/ScrollytellingTimeline.scss';
 import '@/styles/components/components/SearchPalette.scss';
@@ -76,6 +77,8 @@ import '@/styles/components/components/VideoLightbox.scss';
 
 // contentBlocks
 import '@/styles/components/contentBlocks/BentoGrid.scss';
+import '@/styles/components/contentBlocks/ChannelBoard.scss';
+import '@/styles/components/contentBlocks/ChatPreview.scss';
 import '@/styles/components/contentBlocks/CommunityQuestion.scss';
 import '@/styles/components/contentBlocks/CTABanner.scss';
 import '@/styles/components/contentBlocks/EventTeaser.scss';
@@ -130,6 +133,7 @@ import '@/styles/components/structures/MegaMenu.scss';
 import '@/styles/components/structures/Navigation.scss';
 import '@/styles/components/dashboard/structures/RouteReveal.scss';
 import '@/styles/components/structures/SiteHeader.scss';
+import '@/styles/components/structures/StickyCta.scss';
 
 // dashboard shell
 import '@/styles/components/dashboard/shell/Dashboard.scss';

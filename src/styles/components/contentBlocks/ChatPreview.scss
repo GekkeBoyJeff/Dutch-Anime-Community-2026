@@ -1,0 +1,81 @@
+.chat-preview {
+	.chat-preview-window {
+		max-inline-size: 34rem;
+		margin-inline: auto;
+		padding: spacing(l);
+		border-radius: $rounded-l;
+		border: 0.0625rem solid $border-color;
+		background-color: $surface-faint;
+
+		.chat-preview-channel {
+			margin: 0 0 spacing(m);
+			padding-block-end: spacing(s);
+			border-block-end: 0.0625rem solid $border-color;
+			color: $color-secondary;
+			font-size: 0.8125rem;
+			font-weight: $weight-medium;
+		}
+
+		.chat-preview-messages {
+			display: flex;
+			flex-direction: column;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			.chat-preview-message {
+				display: flex;
+				gap: spacing(s);
+				padding-block: spacing(3xs);
+
+				&[data-opens-turn] {
+					margin-block-start: spacing(m);
+
+					&:first-child {
+						margin-block-start: 0;
+					}
+				}
+
+				.chat-preview-avatar {
+					inline-size: 2rem;
+					flex: none;
+				}
+
+				.chat-preview-body {
+					display: flex;
+					flex-direction: column;
+					gap: spacing(3xs);
+					min-inline-size: 0;
+
+					.chat-preview-meta {
+						display: flex;
+						align-items: baseline;
+						gap: spacing(s);
+
+						.chat-preview-author {
+							font-weight: $weight-semibold;
+						}
+
+						.chat-preview-time {
+							color: $color-secondary;
+							font-size: 0.8125rem;
+							font-variant-numeric: tabular-nums;
+						}
+					}
+
+					.chat-preview-text {
+						color: $color;
+					}
+				}
+			}
+		}
+	}
+
+	.chat-preview-caption {
+		max-inline-size: 34rem;
+		margin: spacing(m) auto 0;
+		color: $color-secondary;
+		font-size: 0.875rem;
+		text-align: center;
+	}
+}
