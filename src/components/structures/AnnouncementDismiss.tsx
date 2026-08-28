@@ -1,25 +1,20 @@
 'use client';
 
 import React, { useState, useSyncExternalStore } from 'react';
-import type { ReactNode, Ref } from 'react';
 
+import Button from '@/components/basics/Button';
+import Content from '@/components/basics/Content';
 import Interactive from '@/components/basics/Interactive';
 import useReducedMotion from '@/hooks/useReducedMotion';
-import { classNames } from '@/lib/classNames';
-import type { AnnouncementDismissProps as AnnouncementDismissSchemaProps } from '@/lib/content/schema/structures/announcementDismiss';
+import { classNames } from '@/lib/shared/classNames';
+import type { AnnouncementDismissProps as AnnouncementDismissSchemaProps } from '@/lib/site/content/schema/structures/announcementDismiss';
 
-type AnnouncementDismissProps = AnnouncementDismissSchemaProps & {
-	/** Fires once the slide-out finishes */
-	onDismiss?: () => void;
-	/** The server-rendered message and CTA */
-	children?: ReactNode;
-};
+type AnnouncementDismissProps = AnnouncementDismissSchemaProps;
 
 const STORAGE_PREFIX = 'announcement-dismissed:';
 
-// Reads the persisted dismissal as an external store: the server snapshot is always "not dismissed",
-// so the banner renders server-side and only hides on the client once we know it was closed — no
-// hydration mismatch. Subscribing to the cross-tab `storage` event hides it in other tabs too.
+// The server snapshot is always "not dismissed", so the banner renders server-side and only hides on
+// the client once we know it was closed — reading localStorage there is a hydration mismatch.
 // https://react.dev/reference/react/useSyncExternalStore#adding-support-for-server-rendering
 const subscribe = (callback: () => void) => {
 	window.addEventListener('storage', callback);
@@ -33,22 +28,19 @@ const makeSnapshots = (id: string) => {
 	};
 };
 
-// The interactive wrapper for AnnouncementBar: holds the open/leaving state, the close button, and
-// the per-id persistence. Kept small — the message and CTA are passed in as server-rendered children.
 const AnnouncementDismiss = ({
+	message,
+	cta,
 	variant = 'info',
 	dismissible = true,
 	id,
 	onDismiss,
 	className,
-	children,
-	ref,
-}: AnnouncementDismissProps & { ref?: Ref<HTMLDivElement> }) => {
+}: AnnouncementDismissProps) => {
 	const reducedMotion = useReducedMotion();
 	const snapshots = React.useMemo(() => (id ? makeSnapshots(id) : { get: () => false, server: () => false }), [id]);
 	const persistedDismissed = useSyncExternalStore(subscribe, snapshots.get, snapshots.server);
 
-	// In-session close (and the slide-out) are local; the persisted flag covers reloads.
 	const [closed, setClosed] = useState(false);
 	const [leaving, setLeaving] = useState(false);
 
@@ -80,17 +72,22 @@ const AnnouncementDismiss = ({
 
 	return (
 		<div
-			ref={ref}
 			role="region"
 			aria-label="Announcement"
 			aria-live="polite"
 			className={classNames('announcement-bar', `is-${variant}`, leaving && 'is-leaving', className)}
 			onTransitionEnd={onLeaveEnd}
 		>
-			<div className="announcement-bar-content">{children}</div>
+			<div className="announcement-bar-content">
+				<Content element="p" className="announcement-bar-message" value={message} />
+
+				{cta?.value && (
+					<Button url={cta.url} target={cta.target} variant={cta.variant ?? 'ghost'} icon={cta.icon} value={cta.value} className="announcement-bar-cta" />
+				)}
+			</div>
 
 			{dismissible && (
-				<Interactive className="announcement-bar-close" aria-label="Dismiss announcement" onClick={dismiss}>
+				<Interactive className="announcement-bar-close" ariaLabel="Dismiss announcement" onClick={dismiss}>
 					<span aria-hidden="true">&times;</span>
 				</Interactive>
 			)}

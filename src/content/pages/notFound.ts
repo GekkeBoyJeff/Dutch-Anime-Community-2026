@@ -1,4 +1,4 @@
-import type { Page } from '@/lib/content';
+import type { Page } from '@/lib/site/content';
 
 // The 404 page, authored as content blocks like any other page — but kept OUT of the routable registry
 // (pages/index.ts) on purpose: not-found.tsx loads it via getNotFoundPage(), so it never becomes a real
@@ -13,10 +13,10 @@ export const notFoundPage: Page = {
 			type: 'hero',
 			id: 'intro',
 			title: 'Oeps. Deze pagina bestaat niet.',
-			text: 'Amelia heeft overal gezocht. Niks.',
+			value: 'Amelia heeft overal gezocht. Niks.',
 			actions: [
-				{ label: 'Terug naar home', variant: 'primary', url: '/' },
-				{ label: 'Word lid', variant: 'ghost', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
+				{ value: 'Terug naar home', variant: 'primary', url: '/' },
+				{ value: 'Word lid', variant: 'ghost', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
 			],
 		},
 	],

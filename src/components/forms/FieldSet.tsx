@@ -1,10 +1,10 @@
 'use client';
 
 import { Fieldset } from '@base-ui/react/fieldset';
-import { createContext, type ReactNode, type Ref } from 'react';
+import { createContext } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { FieldSetProps as FieldSetSchemaProps } from '@/lib/content/schema/forms/fieldSet';
+import { classNames } from '@/lib/shared/classNames';
+import type { FieldSetProps as FieldSetSchemaProps } from '@/lib/site/content/schema/forms/fieldSet';
 
 /** How a FieldSet stacks its child Fields; child Fields inherit this unless they set their own. */
 export type FieldOrientation = 'vertical' | 'horizontal';
@@ -14,10 +14,7 @@ export type FieldOrientation = 'vertical' | 'horizontal';
 // This is the one piece of new logic in the forms layer.
 export const FieldSetContext = createContext<FieldOrientation | undefined>(undefined);
 
-type FieldSetProps = FieldSetSchemaProps & {
-	/** A FieldLegend followed by Fields */
-	children?: ReactNode;
-};
+type FieldSetProps = FieldSetSchemaProps;
 
 // Semantic grouping for a set of related fields. Renders a real <fieldset> (via Base UI) so
 // assistive tech reads the FieldLegend as the group's accessible name, and a disabled set removes
@@ -28,7 +25,7 @@ const FieldSet = ({
 	className,
 	children,
 	ref,
-}: FieldSetProps & { ref?: Ref<HTMLFieldSetElement> }) => {
+}: FieldSetProps) => {
 	return (
 		<FieldSetContext value={orientation}>
 			<Fieldset.Root

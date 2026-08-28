@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import ArticleCard from '@/components/components/ArticleCard';
-import { ArticleCardProps } from '@/lib/content/schema/components/articleCard';
+import { ArticleCardProps } from '@/lib/site/content/schema/components/articleCard';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof ArticleCard> = {
@@ -31,7 +31,7 @@ type Story = StoryObj<typeof ArticleCard>;
 export const Default: Story = {
 	args: {
 		title: 'Terugblik: de DAC-stand op Dutch Comic Con',
-		excerpt: 'Twee dagen vol cosplay, spontane meetups en nieuwe gezichten — zo gezellig was onze stand dit voorjaar in de Jaarbeurs.',
+		value: 'Twee dagen vol cosplay, spontane meetups en nieuwe gezichten — zo gezellig was onze stand dit voorjaar in de Jaarbeurs.',
 		tag: 'Terugblik',
 		readTime: 4,
 		publishedAt: '2026-03-30',

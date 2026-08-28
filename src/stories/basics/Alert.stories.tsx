@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Alert from '@/components/basics/Alert';
-import { AlertProps } from '@/lib/content/schema/basics/alert';
+import { AlertProps } from '@/lib/site/content/schema/basics/alert';
 
 const meta: Meta<typeof Alert> = {
 	title: 'Basics/Alert',
@@ -23,36 +23,43 @@ export const Default: Story = {
 	args: {
 		variant: 'info',
 		title: 'Heads up',
-		children: 'This is an informational message for the reader.',
+		value: 'This is an informational message for the reader.',
 	},
 };
 
 export const Success: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		variant: 'success',
 		title: 'Saved',
-		children: 'Your changes have been saved.',
+		value: 'Your changes have been saved.',
 	},
 };
 
 export const Warning: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		variant: 'warning',
 		title: 'Almost full',
-		children: 'You are close to your storage limit.',
+		value: 'You are close to your storage limit.',
 	},
 };
 
 export const Error: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		variant: 'error',
 		title: 'Something went wrong',
-		children: 'We could not complete your request.',
+		value: 'We could not complete your request.',
+	},
+};
+
+export const Neutral: Story = {
+	args: {
+		...Default.args,
+		variant: 'neutral',
+		icon: 'info',
+		title: 'Good to know',
+		value: 'A neutral note that carries no severity.',
 	},
 };

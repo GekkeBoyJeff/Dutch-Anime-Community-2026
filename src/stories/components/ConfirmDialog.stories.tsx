@@ -28,7 +28,7 @@ export const Default: Story = {
 			const [open, setOpen] = useState(false);
 			return (
 				<>
-					<Button onClick={() => setOpen(true)}>Wijzigingen opslaan…</Button>
+					<Button onClick={() => setOpen(true)} value="Wijzigingen opslaan…" />
 					<ConfirmDialog
 						open={open}
 						onOpenChange={setOpen}
@@ -50,9 +50,7 @@ export const Destructive: Story = {
 			const [open, setOpen] = useState(false);
 			return (
 				<>
-					<Button variant="ghost" icon="trash" onClick={() => setOpen(true)}>
-						Item verwijderen
-					</Button>
+					<Button variant="ghost" icon="trash" onClick={() => setOpen(true)} value="Item verwijderen" />
 					<ConfirmDialog
 						open={open}
 						onOpenChange={setOpen}

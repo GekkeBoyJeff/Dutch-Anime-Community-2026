@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import GrowingMediaOnScroll from '@/components/contentBlocks/GrowingMediaOnScroll';
-import { GrowingMediaOnScrollProps } from '@/lib/content/schema/blocks/growingMediaOnScroll';
+import { GrowingMediaOnScrollProps } from '@/lib/site/content/schema/blocks/growingMediaOnScroll';
 
 const meta: Meta<typeof GrowingMediaOnScroll> = {
 	title: 'ContentBlocks/GrowingMediaOnScroll',
@@ -21,7 +21,7 @@ type Story = StoryObj<typeof GrowingMediaOnScroll>;
 
 export const Default: Story = {
 	args: {
-		heading: { tagline: 'Proef de sfeer', value: 'Eén scroll zegt alles' },
+		heading: { tagline: 'Proef de sfeer', title: 'Eén scroll zegt alles' },
 		media: { type: 'image', src: '/media/dac-meetup.png', alt: 'DAC-leden samen op een meetup' },
 		caption: 'Scroll om het paneel te zien groeien.',
 	},

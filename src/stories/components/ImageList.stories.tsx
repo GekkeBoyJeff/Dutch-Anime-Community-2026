@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import ImageList from '@/components/components/ImageList';
-import { ImageListProps } from '@/lib/content/schema/components/imageList';
+import { ImageListProps } from '@/lib/site/content/schema/components/imageList';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 // Six of the same demo asset — the story shows the list layout, and alt comes from demoImage.

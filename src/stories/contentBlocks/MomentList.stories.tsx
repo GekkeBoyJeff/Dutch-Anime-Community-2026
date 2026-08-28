@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import MomentList from '@/components/contentBlocks/MomentList';
-import { MomentListProps } from '@/lib/content/schema/blocks/momentList';
+import { MomentListProps } from '@/lib/site/content/schema/blocks/momentList';
 
 const meta: Meta<typeof MomentList> = {
 	title: 'ContentBlocks/MomentList',
@@ -23,7 +23,7 @@ type Story = StoryObj<typeof MomentList>;
 
 export const Default: Story = {
 	args: {
-		heading: { tagline: 'Agenda', value: 'Wat er speelt', intro: 'Wat we net deden en wat eraan komt.' },
+		heading: { tagline: 'Agenda', title: 'Wat er speelt', intro: 'Wat we net deden en wat eraan komt.' },
 		items: [
 			{ id: 'm1', date: '2026-06-14', title: 'Meetup Utrecht', meta: '18 mensen, Neude' },
 			{ id: 'm2', date: '2026-07-19', title: 'Watch party: Summer Wars', meta: 'Online, 40 kijkers' },

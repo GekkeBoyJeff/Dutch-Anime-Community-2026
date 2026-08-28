@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Checkbox from '@/components/forms/Checkbox';
-import { CheckboxProps } from '@/lib/content/schema/forms/checkbox';
+import { CheckboxProps } from '@/lib/site/content/schema/forms/checkbox';
 
 const meta: Meta<typeof Checkbox> = {
 	title: 'Forms/Checkbox',
@@ -64,6 +64,6 @@ export const NoLabel: Story = {
 	args: {
 		...Default.args,
 		label: undefined,
-		'aria-label': 'Accept'
+		ariaLabel: 'Accept'
 	}
 };

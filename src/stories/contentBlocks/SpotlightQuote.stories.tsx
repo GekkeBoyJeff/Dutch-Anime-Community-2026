@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import SpotlightQuote from '@/components/contentBlocks/SpotlightQuote';
-import { SpotlightQuoteProps } from '@/lib/content/schema/blocks/spotlightQuote';
+import { SpotlightQuoteProps } from '@/lib/site/content/schema/blocks/spotlightQuote';
 
 const meta: Meta<typeof SpotlightQuote> = {
 	title: 'ContentBlocks/SpotlightQuote',

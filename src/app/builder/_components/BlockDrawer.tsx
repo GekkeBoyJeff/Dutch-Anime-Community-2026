@@ -4,11 +4,8 @@ import { createUsePuck, Drawer } from '@puckeditor/core';
 import { useEffect, useState } from 'react';
 
 import { dispatchRef, setPendingPreset } from '@/app/builder/_components/presetBridge';
-import { config } from '@/lib/puck/config';
-import { presets } from '@/lib/puck/presets';
-
-// The component drawer, extended with story variants: expanding a block lists its Storybook
-// presets, and dragging a preset inserts the block WITH that story's data (via presetBridge).
+import { config } from '@/lib/admin/puck/config';
+import { presets } from '@/lib/admin/puck/presets';
 
 const usePuck = createUsePuck();
 
@@ -41,7 +38,6 @@ const BlockDrawer = () => {
 	const dispatch = usePuck((s) => s.dispatch);
 	const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
-	// Register dispatch for the editor's onAction preset hand-off (see presetBridge).
 	useEffect(() => {
 		dispatchRef.current = dispatch;
 		return () => {

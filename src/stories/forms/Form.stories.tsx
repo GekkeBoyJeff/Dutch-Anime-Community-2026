@@ -6,7 +6,7 @@ import Button from '@/components/basics/Button';
 import Field from '@/components/forms/Field';
 import Form from '@/components/forms/Form';
 import TextInput from '@/components/forms/TextInput';
-import { FormProps } from '@/lib/content/schema/forms/form';
+import { FormProps } from '@/lib/site/content/schema/forms/form';
 
 const meta: Meta<typeof Form> = {
 	title: 'Forms/Form',
@@ -65,7 +65,7 @@ const SignupForm = (validateOn: 'blur' | 'input' | 'submit', onSubmit: SubmitHan
 						</Field>
 
 						<div className="actions">
-							<Button type="submit">Create account</Button>
+							<Button type="submit" value="Create account" />
 						</div>
 					</>
 				);

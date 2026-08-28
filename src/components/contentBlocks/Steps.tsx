@@ -1,25 +1,19 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 import HeadingGroup from '@/components/basics/HeadingGroup';
 import Icon from '@/components/basics/Icon';
 import Section from '@/components/basics/Section';
-import type { StepsProps } from '@/lib/content';
+import type { StepsProps as StepsSchemaProps } from '@/lib/site/content/schema/blocks/steps';
 
-// A numbered process / progress block. As `process` it reads like a marketing "how it works" row; as
-// `progress` it is a compact strip for a multi-step form or checkout, where `current` marks the active
-// step (aria-current) and earlier steps as done. State lives in [data-state] so the whole block stays
-// a Server Component — distinct from the vertical Timeline in both layout and semantics.
+type StepsProps = StepsSchemaProps;
+
 const Steps = ({
 	heading,
 	items = [],
 	variant = 'process',
 	current,
 	colorset,
-	ref,
-}: StepsProps & { ref?: Ref<HTMLElement> }) => {
-	// Step state is only meaningful for the progress variant (undefined `current` = none).
+}: StepsProps) => {
 	const stateFor = (index: number): 'done' | 'active' | 'upcoming' | undefined => {
 		if (current === undefined) {
 			return undefined;
@@ -33,16 +27,9 @@ const Steps = ({
 	};
 
 	return (
-		<Section ref={ref} colorset={colorset} className="steps">
+		<Section colorset={colorset} className="steps">
 			<Container>
-				{heading && (
-					<HeadingGroup
-						tagline={heading.tagline}
-						title={heading.value}
-						size={heading.size}
-						intro={heading.intro}
-					/>
-				)}
+				{heading && <HeadingGroup {...heading} />}
 
 				<ol className="steps-list" data-variant={variant}>
 					{items.map((item, index) => {
@@ -62,7 +49,7 @@ const Steps = ({
 								<div className="steps-body">
 									{/* A real heading per step; the body role (not Title) because the visual is body text. */}
 									<Content element="h3" className="steps-step-title" value={item.title} />
-									{item.body && <Content element="p" className="steps-step-body" value={item.body} />}
+									{item.value && <Content element="p" className="steps-step-body" value={item.value} />}
 								</div>
 							</li>
 						);

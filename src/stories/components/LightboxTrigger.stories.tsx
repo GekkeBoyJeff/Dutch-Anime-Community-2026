@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Button from '@/components/basics/Button';
 import LightboxTrigger from '@/components/components/LightboxTrigger';
-import { LightboxTriggerProps } from '@/lib/content/schema/components/lightboxTrigger';
+import { LightboxTriggerProps } from '@/lib/site/content/schema/components/lightboxTrigger';
 
 const meta: Meta<typeof LightboxTrigger> = {
 	title: 'Components/LightboxTrigger',
@@ -27,9 +27,7 @@ export const Default: Story = {
 		return (
 			<LightboxTrigger {...args}>
 				{(open) => (
-					<Button icon="play" onClick={open}>
-						Bekijk de aftermovie
-					</Button>
+					<Button icon="play" onClick={open} value="Bekijk de aftermovie" />
 				)}
 			</LightboxTrigger>
 		);
@@ -45,9 +43,7 @@ export const NativeVideo: Story = {
 		return (
 			<LightboxTrigger {...args}>
 				{(open) => (
-					<Button variant="secondary" icon="play" onClick={open}>
-						Bekijk de video
-					</Button>
+					<Button variant="secondary" icon="play" onClick={open} value="Bekijk de video" />
 				)}
 			</LightboxTrigger>
 		);

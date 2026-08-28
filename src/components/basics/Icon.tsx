@@ -48,13 +48,13 @@ import {
 	X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import type { ComponentPropsWithoutRef, Ref } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { IconProps } from '@/lib/content/schema/basics/icon';
+import { classNames } from '@/lib/shared/classNames';
+import type { IconProps as IconSchemaProps } from '@/lib/site/content/schema/basics/icon';
 
-// Kebab-case icon name → lucide-react glyph. This is the library's icon set; add a row to support a
-// new name. Only the glyphs imported above are bundled (lucide tree-shakes), so the set stays small.
+type IconProps = IconSchemaProps;
+
+// The explicit imports above are what keeps lucide tree-shakeable; a dynamic lookup bundles every glyph.
 export const ICONS: Record<string, LucideIcon> = {
 	'align-center': AlignCenter,
 	'align-left': AlignLeft,
@@ -105,18 +105,17 @@ export const ICONS: Record<string, LucideIcon> = {
 	warning: TriangleAlert,
 };
 
-// Renders a single icon glyph by name via lucide-react. aria-hidden, because an icon is decorative —
-// the accessible label belongs on the surrounding interactive component. The SVG inherits the text
-// colour (stroke: currentColor) and is sized in `em` (1em by default) so it tracks the font-size.
-// An unknown name renders nothing rather than a broken glyph.
-const Icon = ({ name, className, ref, ...rest }: IconProps & ComponentPropsWithoutRef<'svg'> & { ref?: Ref<SVGSVGElement> }) => {
+const Icon = ({
+	name,
+	className,
+}: IconProps) => {
 	const Glyph = ICONS[name];
 
 	if (!Glyph) {
 		return null;
 	}
 
-	return <Glyph ref={ref} className={classNames('icon', `icon-${name}`, className)} aria-hidden="true" {...rest} />;
+	return <Glyph className={classNames('icon', `icon-${name}`, className)} aria-hidden="true" />;
 };
 
 export default Icon;

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import ShinyText from '@/components/basics/ShinyText';
-import { ShinyTextProps } from '@/lib/content/schema/basics/shinyText';
+import { ShinyTextProps } from '@/lib/site/content/schema/basics/shinyText';
 
 const meta: Meta<typeof ShinyText> = {
 	title: 'Basics/ShinyText',
@@ -22,21 +22,19 @@ type Story = StoryObj<typeof ShinyText>;
 export const Default: Story = {
 	args: {
 		value: 'Shiny by default',
-		speed: 3,
+		speed: 'normal',
 		disabled: false,
 	},
 };
 
 export const Slow: Story = {
-	...Default,
 	args: {
 		...Default.args,
-		speed: 6,
+		speed: 'slow',
 	},
 };
 
 export const Disabled: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		disabled: true,

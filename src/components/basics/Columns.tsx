@@ -1,19 +1,19 @@
-import type { ReactNode, Ref } from 'react';
+import type { ComponentPropsWithoutRef } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { ColumnsProps } from '@/lib/content/schema/basics/columns';
+import { classNames } from '@/lib/shared/classNames';
+import type { ColumnsProps as ColumnsSchemaProps } from '@/lib/site/content/schema/basics/columns';
 
-// The row half of the grid pair: a 12-column CSS grid that Column children span into. Columns that
-// overflow 12 wrap to the next row automatically.
+type ColumnsProps = ColumnsSchemaProps;
+
 const Columns = ({
 	align,
 	gap,
 	className,
 	children,
-	ref,
-}: ColumnsProps & { children?: ReactNode; ref?: Ref<HTMLDivElement> }) => {
+	...rest
+}: ColumnsProps) => {
 	return (
-		<div ref={ref} className={classNames('columns', align && `is-${align}`, gap && `has-gap-${gap}`, className)}>
+		<div className={classNames('columns', align && `is-${align}`, gap && `has-gap-${gap}`, className)} {...rest}>
 			{children}
 		</div>
 	);

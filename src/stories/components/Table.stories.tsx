@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Table from '@/components/components/Table';
-import { TableProps } from '@/lib/content/schema/components/table';
+import { TableProps } from '@/lib/site/content/schema/components/table';
 
 const meta: Meta<typeof Table> = {
 	title: 'Components/Table',

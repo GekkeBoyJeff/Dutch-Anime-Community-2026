@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import CTABanner from '@/components/contentBlocks/CTABanner';
-import { CTABannerProps } from '@/lib/content/schema/blocks/ctaBanner';
+import { CTABannerProps } from '@/lib/site/content/schema/blocks/ctaBanner';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof CTABanner> = {
 	title: 'ContentBlocks/CTABanner',
 	component: CTABanner,
 	parameters: {
-		docs: { description: { component: 'A conversion banner: tagline, headline and subline with one or two call-to-action buttons, optionally beside media. Server Component.' } },
+		docs: { description: { component: 'A conversion banner: a heading cluster with one or two call-to-action buttons, optionally beside media. Server Component.' } },
 		jsonSchema: { schema: CTABannerProps },
 	},
 	argTypes: {
@@ -33,11 +33,13 @@ type Story = StoryObj<typeof CTABanner>;
 
 export const Default: Story = {
 	args: {
-		tagline: 'Get started',
-		headline: 'Ready to build your next page?',
-		subline: 'Compose a page from validated blocks and ship it the same afternoon.',
-		primaryCta: { label: 'Start now', variant: 'primary' },
-		secondaryCta: { label: 'Read the docs', variant: 'secondary', url: '/docs' },
+		heading: {
+			tagline: 'Get started',
+			title: 'Ready to build your next page?',
+			intro: 'Compose a page from validated blocks and ship it the same afternoon.',
+		},
+		primaryCta: { value: 'Start now', variant: 'primary' },
+		secondaryCta: { value: 'Read the docs', variant: 'secondary', url: '/docs' },
 		tone: 'primary',
 		align: 'start',
 	},

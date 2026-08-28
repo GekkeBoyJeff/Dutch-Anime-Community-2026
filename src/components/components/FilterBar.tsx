@@ -1,35 +1,16 @@
 'use client';
 
-import type { ChangeEvent, ReactNode, Ref } from 'react';
+import type { ChangeEvent } from 'react';
 
 import Icon from '@/components/basics/Icon';
 import Interactive from '@/components/basics/Interactive';
 import Pill from '@/components/basics/Pill';
 import VisuallyHidden from '@/components/basics/VisuallyHidden';
-import { classNames } from '@/lib/classNames';
-import type { FilterBarProps as FilterBarSchemaProps } from '@/lib/content/schema/components/filterBar';
+import { classNames } from '@/lib/shared/classNames';
+import type { FilterBarProps as FilterBarSchemaProps } from '@/lib/site/content/schema/components/filterBar';
 
-export interface FilterBarProps extends FilterBarSchemaProps {
-	/** Fires with the next filter value when a chip is selected */
-	onValueChange?: (value: string) => void;
-	/** Fires with the next sort value */
-	onSortChange?: (value: string) => void;
-	/** Fires with the search query on every keystroke */
-	onSearchValueChange?: (value: string) => void;
-	/** Fires when the reset button is pressed */
-	onReset?: () => void;
-	/** A leading glyph before the chips (the admin pill-bar's filter icon). */
-	filterIcon?: string;
-	/** Extra controls rendered after the built-in ones */
-	children?: ReactNode;
-}
+export type FilterBarProps = FilterBarSchemaProps;
 
-// A fully controlled filter toolbar: filter chips (a group of toggle Pills), an optional search
-// input, a native sort <select> and a reset button. It owns no state — the parent reflects the
-// values (e.g. to searchParams) and passes them back down. A small client island because the inputs
-// fire change handlers; the surrounding page stays a Server Component. Under `.is-admin`
-// the chips take the dashboard pill skin (count badges, a leading filter glyph); the public look is
-// untouched.
 const FilterBar = ({
 	filters,
 	value,
@@ -42,7 +23,7 @@ const FilterBar = ({
 	searchLabel = 'Search',
 	sortLabel = 'Sort',
 	resetLabel = 'Reset',
-	label = 'Filters',
+	ariaLabel = 'Filters',
 	filterIcon,
 	onValueChange,
 	onSortChange,
@@ -50,15 +31,14 @@ const FilterBar = ({
 	onReset,
 	className,
 	children,
-	ref,
-}: FilterBarProps & { ref?: Ref<HTMLDivElement> }) => {
+}: FilterBarProps) => {
 	const handleSearch = (event: ChangeEvent<HTMLInputElement>) => onSearchValueChange?.(event.target.value);
 	const handleSort = (event: ChangeEvent<HTMLSelectElement>) => onSortChange?.(event.target.value);
 
 	return (
-		<div ref={ref} className={classNames('filter-bar', className)}>
+		<div className={classNames('filter-bar', className)}>
 			{filters.length > 0 && (
-			<div className="filter-bar-chips" role="group" aria-label={label}>
+			<div className="filter-bar-chips" role="group" aria-label={ariaLabel}>
 				{filterIcon && <Icon name={filterIcon} className="filter-bar-chips-lead" />}
 				{filters.map((filter) => {
 					const isActive = filter.value === value;
@@ -67,13 +47,12 @@ const FilterBar = ({
 						<Pill
 							key={filter.value}
 							className="filter-bar-chip"
+							value={filter.label}
+							count={filter.count}
 							active={isActive}
-							aria-pressed={isActive}
+							ariaPressed={isActive}
 							onClick={() => onValueChange?.(filter.value)}
-						>
-							{filter.label}
-							{filter.count !== undefined && <span className="filter-bar-chip-count">{filter.count}</span>}
-						</Pill>
+						/>
 					);
 				})}
 			</div>
@@ -83,7 +62,7 @@ const FilterBar = ({
 				{searchable && (
 					<label className="filter-bar-search">
 						<Icon name="search" className='filter-bar-search-icon' />
-						<VisuallyHidden>{searchLabel}</VisuallyHidden>
+						<VisuallyHidden value={searchLabel} />
 						<input
 							type="search"
 							className="filter-bar-search-input"
@@ -96,7 +75,7 @@ const FilterBar = ({
 
 				{sortOptions && sortOptions.length > 0 && (
 					<label className="filter-bar-sort">
-						<VisuallyHidden>{sortLabel}</VisuallyHidden>
+						<VisuallyHidden value={sortLabel} />
 						<select className="filter-bar-sort-select" value={sortValue ?? ''} onChange={handleSort} aria-label={sortLabel}>
 							{sortOptions.map((option) => (
 								<option key={option.value} value={option.value}>

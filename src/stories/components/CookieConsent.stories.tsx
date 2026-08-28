@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import CookieConsent from '@/components/components/CookieConsent';
-import { CookieConsentProps } from '@/lib/content/schema/components/cookieConsent';
+import { CookieConsentProps } from '@/lib/site/content/schema/components/cookieConsent';
 
 const meta: Meta<typeof CookieConsent> = {
 	title: 'Components/CookieConsent',

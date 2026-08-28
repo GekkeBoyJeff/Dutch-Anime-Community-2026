@@ -2,32 +2,16 @@
 
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
-import type { Ref } from 'react';
 
 import Content from '@/components/basics/Content';
 import Interactive from '@/components/basics/Interactive';
 import Media from '@/components/basics/Media';
 import VisuallyHidden from '@/components/basics/VisuallyHidden';
 import VideoLightbox from '@/components/components/VideoLightbox';
-import { classNames } from '@/lib/classNames';
-import type { SwiperProps as SwiperSchemaProps, SwiperSlide } from '@/lib/content/schema/components/swiper';
+import { classNames } from '@/lib/shared/classNames';
+import type { SwiperProps as SwiperSchemaProps, SwiperSlide, SwiperTranslations } from '@/lib/site/content/schema/components/swiper';
 
-export type { SwiperSlide };
-
-export interface SwiperTranslations {
-	/** Builds a slide's accessible position label @default '{index} of {total}' */
-	slideLabel?: (details: { index: number; total: number }) => string;
-	/** Builds the play button label for a titled video slide @default 'Play {title}' */
-	playLabel?: (title: string) => string;
-	/** Play button label when the video slide has no title @default 'Play video' */
-	playFallbackLabel?: string;
-	/** Sr-only word joining the current index and total in the counter @default 'of' */
-	counterSeparatorLabel?: string;
-	/** Label for the previous control @default 'Previous' */
-	prevLabel?: string;
-	/** Label for the next control @default 'Next' */
-	nextLabel?: string;
-}
+export type { SwiperSlide, SwiperTranslations };
 
 const DEFAULT_TRANSLATIONS: Required<SwiperTranslations> = {
 	slideLabel: ({ index, total }) => `${index} of ${total}`,
@@ -38,37 +22,28 @@ const DEFAULT_TRANSLATIONS: Required<SwiperTranslations> = {
 	nextLabel: 'Next',
 };
 
-export type SwiperProps = SwiperSchemaProps & {
-	/** Localised strings; defaults to English */
-	translations?: SwiperTranslations;
-};
+export type SwiperProps = SwiperSchemaProps;
 
-// Pointer/keyboard content swiper. The Embla viewport is the only client island; each slide is
-// plain markup composed from the Media primitive. Prev/next + counter are built from the Embla API,
-// and a video slide defers to the shared VideoLightbox instead of playing inline.
 const Swiper = ({
 	slides = [],
 	ratio = '16 / 9',
 	rounded = 'm',
 	showCounter = true,
 	loop = true,
-	label = 'Swiper',
+	ariaLabel = 'Swiper',
 	translations,
 	className,
-	ref,
-}: SwiperProps & { ref?: Ref<HTMLDivElement> }) => {
+}: SwiperProps) => {
 	const t = { ...DEFAULT_TRANSLATIONS, ...translations };
 	const [emblaRef, embla] = useEmblaCarousel({ loop, align: 'start' });
 	const [selected, setSelected] = useState(0);
 	const [canPrev, setCanPrev] = useState(false);
 	const [canNext, setCanNext] = useState(false);
-	// The slide whose video the lightbox is showing; null when closed.
 	const [activeVideo, setActiveVideo] = useState<SwiperSlide | null>(null);
 
 	const scrollPrev = useCallback(() => embla?.scrollPrev(), [embla]);
 	const scrollNext = useCallback(() => embla?.scrollNext(), [embla]);
 
-	// Keep the selected index + arrow-enabled flags in sync with Embla's own state.
 	useEffect(() => {
 		if (!embla) {
 			return undefined;
@@ -97,7 +72,7 @@ const Swiper = ({
 	const frameStyle = ratio ? { aspectRatio: ratio } : undefined;
 
 	return (
-		<section ref={ref} className={classNames('swiper', `is-rounded-${rounded}`, className)} aria-roledescription="carousel" aria-label={label}>
+		<section className={classNames('swiper', `is-rounded-${rounded}`, className)} aria-roledescription="carousel" aria-label={ariaLabel}>
 			<div className="swiper-viewport" ref={emblaRef}>
 				<div className="swiper-track">
 					{slides.map((slide, index) => {
@@ -113,12 +88,12 @@ const Swiper = ({
 							>
 								<div className="swiper-frame" style={frameStyle}>
 									{isVideo ? (
-										<Interactive className="swiper-play" onClick={() => setActiveVideo(slide)} aria-label={slide.title ? t.playLabel(slide.title) : t.playFallbackLabel}>
+										<Interactive className="swiper-play" onClick={() => setActiveVideo(slide)} ariaLabel={slide.title ? t.playLabel(slide.title) : t.playFallbackLabel}>
 											{slide.image && <Media type="image" src={slide.image} alt={slide.alt} />}
 											<span className="swiper-play-icon" aria-hidden="true" />
 										</Interactive>
-									) : slide.link ? (
-										<Interactive url={slide.link} className="swiper-link">
+									) : slide.href ? (
+										<Interactive url={slide.href} className="swiper-link">
 											{slide.image && <Media type="image" src={slide.image} alt={slide.alt} />}
 										</Interactive>
 									) : (
@@ -139,20 +114,20 @@ const Swiper = ({
 			</div>
 
 			<div className="swiper-controls">
-				<Interactive className="swiper-control is-prev" onClick={scrollPrev} disabled={!canPrev} aria-label={t.prevLabel}>
+				<Interactive className="swiper-control is-prev" onClick={scrollPrev} disabled={!canPrev} ariaLabel={t.prevLabel}>
 					<span aria-hidden="true">&#8249;</span>
 				</Interactive>
 
 				{showCounter && (
-					<Content element="p" className="swiper-counter" aria-live="polite">
-						<Content element="span">{selected + 1}</Content>
+					<p className="content swiper-counter" aria-live="polite">
+						<Content element="span" value={String(selected + 1)} />
 						<span aria-hidden="true"> / </span>
-						<VisuallyHidden>{t.counterSeparatorLabel}</VisuallyHidden>
-						<Content element="span">{slides.length}</Content>
-					</Content>
+						<VisuallyHidden value={t.counterSeparatorLabel} />
+						<Content element="span" value={String(slides.length)} />
+					</p>
 				)}
 
-				<Interactive className="swiper-control is-next" onClick={scrollNext} disabled={!canNext} aria-label={t.nextLabel}>
+				<Interactive className="swiper-control is-next" onClick={scrollNext} disabled={!canNext} ariaLabel={t.nextLabel}>
 					<span aria-hidden="true">&#8250;</span>
 				</Interactive>
 			</div>

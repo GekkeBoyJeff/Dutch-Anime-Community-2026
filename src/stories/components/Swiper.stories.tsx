@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Swiper from '@/components/components/Swiper';
-import { SwiperProps } from '@/lib/content/schema/components/swiper';
+import { SwiperProps } from '@/lib/site/content/schema/components/swiper';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof Swiper> = {
@@ -55,8 +55,8 @@ export const Linked: Story = {
 	args: {
 		...Default.args,
 		slides: [
-			{ image: demoImage.src, alt: 'Slide een', title: 'Naar de homepage', link: '/' },
-			{ image: demoImage.src, alt: 'Slide twee', title: 'Naar de blog', link: '/blog' },
+			{ image: demoImage.src, alt: 'Slide een', title: 'Naar de homepage', href: '/' },
+			{ image: demoImage.src, alt: 'Slide twee', title: 'Naar de blog', href: '/blog' },
 		],
 	},
 };

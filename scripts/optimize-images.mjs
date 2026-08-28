@@ -1,35 +1,24 @@
 import { createHash } from 'node:crypto';
 import { access, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import sharp from 'sharp';
 
-// Config kept here (no separate config file — YAGNI). Paths are relative to `root` (cwd by default).
-const DEFAULTS = {
+const CONFIG = {
 	srcDir: 'public/media',
 	optDir: 'public/media/_opt',
 	publicBase: '/media',
 	optPublicBase: '/media/_opt',
 	manifestPath: 'src/lib/images/manifest.json',
 	widths: [320, 480, 640, 768, 1024, 1280, 1536, 1920],
-	// Bytes budget for the leading image (the only one that can't measure itself), not a fact about
-	// viewports. Raise it — and add rungs — if a full-bleed layout needs 4K sharpness.
 	maxWidth: 2560,
 	quality: 80,
 	extensions: ['.jpg', '.jpeg', '.png'],
 };
 
-// Ladder values below the top rung, plus that rung: the intrinsic width, clamped to maxWidth.
-export const variantWidths = (intrinsicWidth, ladder = DEFAULTS.widths, maxWidth = DEFAULTS.maxWidth) => {
-	const top = Math.min(intrinsicWidth, maxWidth);
-	const below = ladder.filter((w) => w < top);
-	return [...new Set([...below, top])].sort((a, b) => a - b);
-};
-
-// SHA-1 used as a cache discriminator (content-change detection), not a security primitive.
-const hashBuffer = (buffer) => {
-	return createHash('sha1').update(buffer).digest('hex');
+const variantWidths = (intrinsicWidth) => {
+	const top = Math.min(intrinsicWidth, CONFIG.maxWidth);
+	return [...CONFIG.widths.filter((w) => w < top), top];
 };
 
 const exists = async (filePath) => {
@@ -41,15 +30,11 @@ const exists = async (filePath) => {
 	}
 };
 
-// Generates webp variants for every image in srcDir and writes the manifest. Idempotent: a source
-// whose hash is unchanged AND whose variant files all still exist is skipped; orphaned variants are
-// pruned. Unreadable/unprocessable files are logged and skipped (never fail the build).
-export const optimizeImages = async (config = {}) => {
-	const cfg = { ...DEFAULTS, ...config };
-	const root = cfg.root ?? process.cwd();
-	const srcDir = path.join(root, cfg.srcDir);
-	const optDir = path.join(root, cfg.optDir);
-	const manifestPath = path.join(root, cfg.manifestPath);
+const optimizeImages = async () => {
+	const root = process.cwd();
+	const srcDir = path.join(root, CONFIG.srcDir);
+	const optDir = path.join(root, CONFIG.optDir);
+	const manifestPath = path.join(root, CONFIG.manifestPath);
 
 	let previous = {};
 	try {
@@ -60,7 +45,7 @@ export const optimizeImages = async (config = {}) => {
 
 	let names = [];
 	try {
-		names = (await readdir(srcDir)).filter((name) => cfg.extensions.includes(path.extname(name).toLowerCase()));
+		names = (await readdir(srcDir)).filter((name) => CONFIG.extensions.includes(path.extname(name).toLowerCase()));
 	} catch {
 		names = [];
 	}
@@ -92,17 +77,17 @@ export const optimizeImages = async (config = {}) => {
 			continue;
 		}
 
-		const hash = hashBuffer(buffer);
-		const key = `${cfg.publicBase}/${name}`;
+		// SHA-1 used as a cache discriminator (content-change detection), not a security primitive.
+		const hash = createHash('sha1').update(buffer).digest('hex');
+		const key = `${CONFIG.publicBase}/${name}`;
 		const base = name.slice(0, name.length - path.extname(name).length);
-		const widths = variantWidths(meta.width, cfg.widths);
-		const variants = widths.map((w) => ({ w, url: `${cfg.optPublicBase}/${base}-${w}.webp` }));
+		const widths = variantWidths(meta.width);
+		const variants = widths.map((w) => ({ w, url: `${CONFIG.optPublicBase}/${base}-${w}.webp` }));
 		// Track all expected variant filenames for every current source (so cached sources aren't pruned).
 		variants.forEach((v) => keptFiles.add(path.basename(v.url)));
 
-		const cached = previous[key];
 		const filesExist =
-			cached && cached.hash === hash
+			previous[key]?.hash === hash
 				? (await Promise.all(variants.map((v) => exists(path.join(optDir, path.basename(v.url)))))).every(Boolean)
 				: false;
 
@@ -110,7 +95,7 @@ export const optimizeImages = async (config = {}) => {
 			for (const w of widths) {
 				await sharp(buffer)
 					.resize({ width: w })
-					.webp({ quality: cfg.quality })
+					.webp({ quality: CONFIG.quality })
 					.toFile(path.join(optDir, `${base}-${w}.webp`));
 			}
 		}
@@ -118,14 +103,7 @@ export const optimizeImages = async (config = {}) => {
 		manifest[key] = { width: meta.width, height: meta.height, hash, variants };
 	}
 
-	// Prune variant files no longer referenced by the manifest (renamed/deleted sources).
-	let existing = [];
-	try {
-		existing = await readdir(optDir);
-	} catch {
-		existing = []; // optDir may be absent
-	}
-	for (const file of existing) {
+	for (const file of await readdir(optDir)) {
 		if (!keptFiles.has(file)) await rm(path.join(optDir, file));
 	}
 
@@ -134,12 +112,9 @@ export const optimizeImages = async (config = {}) => {
 	return manifest;
 };
 
-// CLI entry: run only when invoked directly (node scripts/optimize-images.mjs).
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-	optimizeImages()
-		.then((m) => console.log(`[images] ${Object.keys(m).length} source image(s) processed`))
-		.catch((err) => {
-			console.error('[images] failed:', err);
-			process.exit(1);
-		});
-}
+optimizeImages()
+	.then((m) => console.log(`[images] ${Object.keys(m).length} source image(s) processed`))
+	.catch((err) => {
+		console.error('[images] failed:', err);
+		process.exit(1);
+	});

@@ -1,12 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import CountUp from '@/components/basics/CountUp';
+import { CountUpProps } from '@/lib/site/content/schema/basics/countUp';
 
 const meta: Meta<typeof CountUp> = {
 	title: 'Basics/CountUp',
 	component: CountUp,
 	parameters: {
 		docs: { description: { component: 'Counts up to `value` once the number scrolls into view, with an easeOutExpo curve and nl-NL formatting. Server-rendered at its final value, so crawlers and no-JS visitors read real data; reduced motion keeps the final value untouched. Stat composes this for numeric values — blocks don\'t animate numbers themselves.' } },
+		jsonSchema: { schema: CountUpProps },
 	},
 };
 

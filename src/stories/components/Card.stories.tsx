@@ -6,7 +6,7 @@ import Content from '@/components/basics/Content';
 import Media from '@/components/basics/Media';
 import Title from '@/components/basics/Title';
 import Card from '@/components/components/Card';
-import { CardProps } from '@/lib/content/schema/components/card';
+import { CardProps } from '@/lib/site/content/schema/components/card';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof Card> = {
@@ -56,7 +56,7 @@ export const WithFooter: Story = {
 	...Default,
 	args: {
 		...Default.args,
-		footer: <Button variant="secondary" url="https://example.com/">Lees meer</Button>,
+		footer: <Button variant="secondary" url="https://example.com/" value="Lees meer" />,
 	},
 };
 
@@ -116,7 +116,7 @@ export const WithBadges: Story = {
 		...Default.args,
 		header: (
 			<>
-				<Badge variant="primary">New</Badge>
+				<Badge variant="primary" value="New" />
 				<Title element="h3" size={4} value="Card with a badge header" />
 			</>
 		),

@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import Button from '@/components/basics/Button';
 import Modal from '@/components/components/Modal';
-import { ModalProps } from '@/lib/content/schema/components/modal';
+import { ModalProps } from '@/lib/site/content/schema/components/modal';
 
 const meta: Meta<typeof Modal> = {
 	title: 'Components/Modal',
@@ -34,7 +34,7 @@ export const Default: Story = {
 		dismissible: true,
 	},
 	render: (args) => (
-		<Modal {...args} trigger={<Button>Open modal</Button>}>
+		<Modal {...args} trigger={<Button value="Open modal" />}>
 			Tab through the actions to confirm focus stays trapped inside the dialog.
 		</Modal>
 	),
@@ -44,7 +44,7 @@ export const AlertDialog: Story = {
 	...Default,
 	args: { ...Default.args, variant: 'alert', title: 'Discard changes?', description: 'Your unsaved edits will be lost.' },
 	render: (args) => (
-		<Modal {...args} trigger={<Button variant="secondary">Discard</Button>} />
+		<Modal {...args} trigger={<Button variant="secondary" value="Discard" />} />
 	),
 };
 
@@ -56,19 +56,15 @@ export const Controlled: Story = {
 
 		return (
 			<>
-				<Button onClick={() => setOpen(true)}>Open modal</Button>
+				<Button onClick={() => setOpen(true)} value="Open modal" />
 				<Modal
 					{...args}
 					open={open}
 					onOpenChange={setOpen}
 					footer={
 						<>
-							<Button variant="ghost" onClick={() => setOpen(false)}>
-								Cancel
-							</Button>
-							<Button variant="primary" onClick={() => setOpen(false)}>
-								Confirm
-							</Button>
+							<Button variant="ghost" onClick={() => setOpen(false)} value="Cancel" />
+							<Button variant="primary" onClick={() => setOpen(false)} value="Confirm" />
 						</>
 					}
 				>

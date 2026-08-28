@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Button from '@/components/basics/Button';
 import Tooltip, { TooltipProvider } from '@/components/components/Tooltip';
-import { TooltipProps } from '@/lib/content/schema/components/tooltip';
+import { TooltipProps } from '@/lib/site/content/schema/components/tooltip';
 
 const meta: Meta<typeof Tooltip> = {
 	title: 'Components/Tooltip',
@@ -47,7 +47,7 @@ export const Default: Story = {
 	},
 	render: (args) => (
 		<Tooltip {...args}>
-			<Button variant="primary">Hover or focus me</Button>
+			<Button variant="primary" value="Hover or focus me" />
 		</Tooltip>
 	),
 };
@@ -57,7 +57,7 @@ export const Bottom: Story = {
 	args: { ...Default.args, side: 'bottom' },
 	render: (args) => (
 		<Tooltip {...args}>
-			<Button variant="secondary">Bottom side</Button>
+			<Button variant="secondary" value="Bottom side" />
 		</Tooltip>
 	),
 };
@@ -67,7 +67,7 @@ export const NoArrow: Story = {
 	args: { ...Default.args, arrow: false },
 	render: (args) => (
 		<Tooltip {...args}>
-			<Button variant="ghost">No arrow</Button>
+			<Button variant="ghost" value="No arrow" />
 		</Tooltip>
 	),
 };
@@ -77,7 +77,7 @@ export const RichLabel: Story = {
 	args: { ...Default.args, label: 'Press <strong>S</strong> to save' },
 	render: (args) => (
 		<Tooltip {...args}>
-			<Button variant="primary">Rich label</Button>
+			<Button variant="primary" value="Rich label" />
 		</Tooltip>
 	),
 };

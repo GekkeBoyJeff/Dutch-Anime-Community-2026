@@ -86,7 +86,7 @@ const BLOCK_BUILDERS: {
 			'@id': subject ? undefined : ORGANIZATION_ID,
 			name: subject ?? site.name,
 			aggregateRating: { '@type': 'AggregateRating', ratingValue: averageRating(items), reviewCount: items.length, bestRating: 5 },
-			review: items.map((r) => ({ '@type': 'Review', author: { '@type': 'Person', name: r.author }, reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 }, reviewBody: r.body })),
+			review: items.map((r) => ({ '@type': 'Review', author: { '@type': 'Person', name: r.author }, reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 }, reviewBody: r.value })),
 		};
 	},
 };

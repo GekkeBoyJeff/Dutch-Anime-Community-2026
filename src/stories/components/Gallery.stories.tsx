@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Gallery from '@/components/components/Gallery';
-import { GalleryProps } from '@/lib/content/schema/components/gallery';
+import { GalleryProps } from '@/lib/site/content/schema/components/gallery';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const items = [
 	{ ...demoImage, caption: 'Eerste foto', credit: '© Fotograaf' },
 	{ ...demoImage, caption: 'Tweede foto' },
 	demoImage,
-	{ ...demoImage, caption: 'Vierde foto', url: '/' },
+	{ ...demoImage, caption: 'Vierde foto', href: '/' },
 	demoImage,
 	{ ...demoImage, credit: '© Studio' },
 ];

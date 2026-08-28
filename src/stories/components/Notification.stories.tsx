@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Notification from '@/components/components/Notification';
 import NotificationProvider from '@/components/components/NotificationProvider';
-import { NotificationProps } from '@/lib/content/schema/components/notification';
+import { NotificationProps } from '@/lib/site/content/schema/components/notification';
 
 const meta: Meta<typeof Notification> = {
 	title: 'Components/Notification',

@@ -11,26 +11,21 @@ import Button from '@/components/basics/Button';
 import Content from '@/components/basics/Content';
 import Spinner from '@/components/basics/Spinner';
 import Modal from '@/components/components/Modal';
-import { usePermissions } from '@/lib/auth/permissions';
-import { Page, SiteStructures } from '@/lib/content/schema';
-import { env } from '@/lib/env';
-import { config } from '@/lib/puck/config';
-import { pageTemplates, type PageTemplate } from '@/lib/puck/templates';
-import { fromPuckData, structuresChanged, toPuckData, type BuilderData } from '@/lib/puck/transform';
-import { sanitizePage } from '@/lib/sanitize';
-import { getBrowserClient } from '@/lib/supabase/client';
+import { config } from '@/lib/admin/puck/config';
+import { pageTemplates, type PageTemplate } from '@/lib/admin/puck/templates';
+import { fromPuckData, structuresChanged, toPuckData, type BuilderData } from '@/lib/admin/puck/transform';
+import { usePermissions } from '@/lib/shared/auth/permissions';
+import { env } from '@/lib/shared/env';
+import { sanitizePage } from '@/lib/shared/sanitize';
+import { getBrowserClient } from '@/lib/shared/supabase/client';
+import { Page, SiteStructures } from '@/lib/site/content/schema';
 import type { Json } from '@/types/database.types';
 
-// The visual builder island. Content now lives in Supabase: the editor loads the selected page +
-// site structures with the browser client (under the author's JWT / RLS), and publishing upserts the
-// validated, sanitized result back. The /builder route ships in the static export but is gated on the
-// `pages.edit` permission — RLS is the real boundary, this gate is UX only.
+// The /builder route ships in the static export and is gated on the `pages.edit` permission — RLS
+// is the real boundary, this gate is UX only.
 
-/** What the editor is currently editing: an existing page, a blank page, or a template. */
 type EditorSource = { kind: 'page'; path: string } | { kind: 'new' } | { kind: 'template'; template: PageTemplate };
 
-// Paths whose route does not read like their content. /404 is a normal, block-built page that simply
-// never gets a route of its own — Next renders it for any unknown URL.
 const PAGE_LABELS: Record<string, string> = {
 	'/': 'Home',
 	'/404': '404 — pagina niet gevonden',
@@ -80,17 +75,14 @@ const PuckEditor = () => {
 	const [editorKey, setEditorKey] = useState(0);
 	const [feedback, setFeedback] = useState<Feedback | null>(null);
 	const [paths, setPaths] = useState<string[]>([]);
-	// Keyed by editorKey so a stale fetch never shows: initialData is derived below and is null (→ spinner)
-	// until the load for the current editorKey lands. setState stays inside the async callback.
+	// Keyed by editorKey so a stale fetch never shows: initialData is null (→ spinner) until the load
+	// for the current editorKey lands.
 	const [loaded, setLoaded] = useState<{ key: number; data: BuilderData } | null>(null);
 	const loadedStructuresRef = useRef<SiteStructures>(EMPTY_STRUCTURES);
-	// The live editor data, kept via Puck's onChange so the "Opslaan" button can save without Puck's
-	// (confusingly-named) default Publish button.
 	const latestDataRef = useRef<BuilderData | null>(null);
 
 	const templates = useMemo(() => pageTemplates(), []);
 
-	// Gate: signed in with pages.edit, else bounce.
 	useEffect(() => {
 		if (permsLoading) return;
 		if (!session) {
@@ -100,7 +92,6 @@ const PuckEditor = () => {
 		if (!canEdit) router.replace('/dashboard');
 	}, [permsLoading, session, canEdit, router]);
 
-	// The page-picker list.
 	useEffect(() => {
 		if (!mounted || permsLoading || !session || !canEdit) return;
 		let active = true;
@@ -115,7 +106,6 @@ const PuckEditor = () => {
 		};
 	}, [mounted, permsLoading, session, canEdit]);
 
-	// Load the selected page + structures → initial Puck data (re-runs on source / editorKey change).
 	useEffect(() => {
 		if (!mounted || permsLoading || !session || !canEdit) return;
 		let active = true;
@@ -154,12 +144,11 @@ const PuckEditor = () => {
 	if (!mounted || permsLoading || !session || !canEdit) {
 		return (
 			<div className="builder-loading">
-				<Spinner label="Builder laden" />
+				<Spinner ariaLabel="Builder laden" />
 			</div>
 		);
 	}
 
-	// null while the load for the current editorKey is in flight (or after a source change bumps it).
 	const initialData = loaded && loaded.key === editorKey ? loaded.data : null;
 
 	const loadSource = (next: EditorSource) => {
@@ -172,7 +161,6 @@ const PuckEditor = () => {
 		setPaths((data ?? []).map((r) => r.path as string).sort());
 	};
 
-	// Validate → sanitize → upsert. The modal only surfaces validation errors or a save result.
 	const savePage = async (data: Data) => {
 		const result = fromPuckData(data as BuilderData);
 		if (result.issues.length) {
@@ -222,7 +210,6 @@ const PuckEditor = () => {
 		});
 	};
 
-	// Fire the deploy Edge Function (site.approve permission verified server-side).
 	const publishLive = async () => {
 		const {
 			data: { session: current },
@@ -241,9 +228,7 @@ const PuckEditor = () => {
 	return (
 		<div className="builder">
 			<div className="builder-topbar">
-				<Button variant="ghost" icon="chevron-left" url="/dashboard" className="builder-back">
-					Terug naar dashboard
-				</Button>
+				<Button variant="ghost" icon="chevron-left" url="/dashboard" className="builder-back" value="Terug naar dashboard" />
 				<div className="builder-topbar-actions">
 					<label className="builder-page-select">
 						<span className="sr-only">Pagina</span>
@@ -291,13 +276,10 @@ const PuckEditor = () => {
 						onClick={() => {
 							if (latestDataRef.current) savePage(latestDataRef.current);
 						}}
-					>
-						Opslaan
-					</Button>
+						value="Opslaan"
+					/>
 					{canPublish && (
-						<Button variant="secondary" icon="upload" onClick={publishLive}>
-							Publiceren naar live
-						</Button>
+						<Button variant="secondary" icon="upload" onClick={publishLive} value="Publiceren naar live" />
 					)}
 				</div>
 			</div>
@@ -313,8 +295,6 @@ const PuckEditor = () => {
 					onChange={(nextData) => {
 						latestDataRef.current = nextData as BuilderData;
 					}}
-					// A dragged story preset only carries its component type through Puck's dnd; right after the
-					// insert lands, swap the default props for the story's props (see presetBridge).
 					onAction={(action, newState) => {
 						if (action.type !== 'insert') {
 							return;
@@ -343,7 +323,7 @@ const PuckEditor = () => {
 				/>
 			) : (
 				<div className="builder-loading">
-					<Spinner label="Pagina laden" />
+					<Spinner ariaLabel="Pagina laden" />
 				</div>
 			)}
 
@@ -355,9 +335,7 @@ const PuckEditor = () => {
 				title={feedback?.title ?? ''}
 				size="l"
 				footer={
-					<Button variant="secondary" onClick={() => setFeedback(null)}>
-						Sluiten
-					</Button>
+					<Button variant="secondary" onClick={() => setFeedback(null)} value="Sluiten" />
 				}
 			>
 				{feedback?.issues?.length ? (
@@ -367,7 +345,7 @@ const PuckEditor = () => {
 						))}
 					</ul>
 				) : feedback?.message ? (
-					<Content element="p">{feedback.message}</Content>
+					<Content element="p" value={feedback.message} />
 				) : null}
 			</Modal>
 		</div>

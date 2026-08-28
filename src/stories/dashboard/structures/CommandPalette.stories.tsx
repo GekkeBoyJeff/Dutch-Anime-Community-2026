@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import Button from '@/components/basics/Button';
 import CommandPalette, { type PaletteResult } from '@/components/dashboard/structures/CommandPalette';
-import type { PaletteCommand } from '@/lib/auth/dashboard-sections';
+import type { PaletteCommand } from '@/lib/shared/auth/dashboard-sections';
 
 const pages: PaletteCommand[] = [
 	{ key: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'home' },
@@ -58,7 +58,7 @@ export const Default: Story = {
 		const [open, setOpen] = useState(true);
 		return (
 			<>
-				<Button onClick={() => setOpen(true)}>Open palette</Button>
+				<Button onClick={() => setOpen(true)} value="Open palette" />
 				<CommandPalette {...args} open={open} onOpenChange={setOpen} />
 			</>
 		);

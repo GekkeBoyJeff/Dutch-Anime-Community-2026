@@ -3,33 +3,12 @@
 import { Select as BaseSelect } from '@base-ui/react/select';
 import { useCallback, useState, type ReactNode, type Ref } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { SelectProps as SelectSchemaProps } from '@/lib/content/schema/forms/select';
+import { classNames } from '@/lib/shared/classNames';
+import type { SelectOption, SelectOptionGroup, SelectProps as SelectSchemaProps } from '@/lib/site/content/schema/forms/select';
 
-/** One selectable option. */
-export interface SelectOption {
-	/** The submitted form value */
-	value: string;
-	/** Visible label (also used for typeahead) */
-	label: string;
-	/** Renders the row but blocks selection */
-	disabled?: boolean;
-}
+export type { SelectOption, SelectOptionGroup };
 
-/** A labelled set of options shown under a heading. */
-export interface SelectOptionGroup {
-	/** Group heading */
-	label: string;
-	/** Options under this heading */
-	options: SelectOption[];
-}
-
-type SelectProps = Omit<SelectSchemaProps, 'options'> & {
-	/** Options, flat or grouped */
-	options?: (SelectOption | SelectOptionGroup)[];
-	/** Fires with the new value */
-	onValueChange?: (value: string | string[] | null) => void;
-};
+type SelectProps = SelectSchemaProps;
 
 // Narrows a flat-or-grouped option list to a flat array of groups for rendering.
 const isGroup = (item: SelectOption | SelectOptionGroup): item is SelectOptionGroup => {
@@ -41,7 +20,7 @@ const isGroup = (item: SelectOption | SelectOptionGroup): item is SelectOptionGr
 //     navigation, aria-activedescendant, floating positioning — the a11y-hard parts we must not
 //     hand-roll. It is interactive, so this file is a client island.
 //   - native: a real <select>, which renders meaningfully without JS and is bulletproof on mobile.
-// Inside a <Field> it inherits id/name/aria/invalid wiring; standalone, pass aria-label.
+// Inside a <Field> it inherits id/name/aria/invalid wiring; standalone, pass ariaLabel.
 const Select = ({
 	options = [],
 	native = false,
@@ -51,7 +30,7 @@ const Select = ({
 	className,
 	ref,
 	...rest
-}: SelectProps & { ref?: Ref<HTMLButtonElement> }) => {
+}: SelectProps) => {
 	// The popup is portalled to <body>, escaping the admin subtree, so tag it with `.is-admin` when the
 	// trigger resolves inside one — that lets the work-surface skin reach the portal.
 	const [adminScoped, setAdminScoped] = useState(false);
@@ -67,7 +46,7 @@ const Select = ({
 	// Native mode: a real <select>. Optgroups for grouped data; the placeholder is a disabled,
 	// value-less first option so it shows but cannot be re-chosen.
 	if (native) {
-		const { value, defaultValue, onValueChange, ...nativeRest } = rest as SelectProps;
+		const { value, defaultValue, onValueChange, ariaLabel, ...nativeRest } = rest;
 
 		return (
 			<select
@@ -84,6 +63,7 @@ const Select = ({
 					}
 				}}
 				{...nativeRest}
+				aria-label={ariaLabel}
 			>
 				{placeholder && !multiple && (
 					<option value="" disabled>
@@ -120,7 +100,7 @@ const Select = ({
 
 	// aria-label belongs on the focusable Trigger <button>, not on Select.Root (a context provider that
 	// renders no DOM node) — spreading it on Root drops it, leaving the custom-mode select with no name.
-	const { 'aria-label': ariaLabel, ...rootRest } = rest as SelectProps;
+	const { ariaLabel, ...rootRest } = rest;
 
 	// Without a value→label map Base UI's Select.Value shows the raw value(s) in the trigger; feed it
 	// the labels so the selection reads as its name(s), not e.g. a UUID.

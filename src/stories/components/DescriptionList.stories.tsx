@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import DescriptionList from '@/components/components/DescriptionList';
-import { DescriptionListProps } from '@/lib/content/schema/components/descriptionList';
+import { DescriptionListProps } from '@/lib/site/content/schema/components/descriptionList';
 
 const meta: Meta<typeof DescriptionList> = {
 	title: 'Components/DescriptionList',

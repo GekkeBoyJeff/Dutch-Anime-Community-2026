@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import Content from '@/components/basics/Content';
 import Section from '@/components/basics/Section';
 import Title from '@/components/basics/Title';
-import { SectionProps } from '@/lib/content/schema/basics/section';
+import { SectionProps } from '@/lib/site/content/schema/basics/section';
 
 const meta: Meta<typeof Section> = {
 	title: 'Basics/Section',
@@ -18,29 +18,37 @@ const meta: Meta<typeof Section> = {
 			options: ['light', 'dark'],
 		},
 	},
-	render: (args) => (
-		<Section {...args}>
-			<Title size={2} value="A section" />
-			<Content value="The section carries the colorset; everything inside reads the runtime colors." />
-		</Section>
-	),
 };
 
 export default meta;
 
 type Story = StoryObj<typeof Section>;
 
-export const Default: Story = {};
+export const Default: Story = {
+	args: {
+		children: (
+			<>
+				<Title size={2} value="A section" />
+				<Content value="The section carries the colorset; everything inside reads the runtime colors." />
+			</>
+		),
+	},
+};
 
-// Nesting: a dark panel inside a light section switches only its own subtree.
 export const Nested: Story = {
-	render: () => (
-		<Section colorset="light">
-			<Title size={3} value="Light" />
-			<Content value="The outer section is light." />
-			<Section colorset="dark">
-				<Content value="This nested panel is dark — the cascade switches only here." />
-			</Section>
-		</Section>
-	),
+	parameters: {
+		docs: { description: { story: 'A dark panel inside a light section switches only its own subtree.' } },
+	},
+	args: {
+		colorset: 'light',
+		children: (
+			<>
+				<Title size={3} value="Light" />
+				<Content value="The outer section is light." />
+				<Section colorset="dark">
+					<Content value="This nested panel is dark — the cascade switches only here." />
+				</Section>
+			</>
+		),
+	},
 };

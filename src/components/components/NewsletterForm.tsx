@@ -9,28 +9,14 @@ import Form from '@/components/forms/Form';
 import TextInput from '@/components/forms/TextInput';
 // Deep import, deliberately NOT the schema barrel: this is a client component, and a VALUE import
 // of the barrel would ship the entire content contract (109 schema modules + zod) in every page's bundle.
-import { NewsletterSignup } from '@/lib/content/schema/blocks/subscribeNewsletter';
-import type { NewsletterSignup as NewsletterSignupValues } from '@/lib/content/schema/blocks/subscribeNewsletter';
+import { NewsletterSignup } from '@/lib/site/content/schema/blocks/subscribeToNewsletter';
+import type { NewsletterSignup as NewsletterSignupValues } from '@/lib/site/content/schema/blocks/subscribeToNewsletter';
+import type { NewsletterFormProps as NewsletterFormSchemaProps } from '@/lib/site/content/schema/components/newsletterForm';
 
-interface NewsletterFormProps {
-	/** Field placeholder. */
-	placeholder?: string;
-	/** Submit button label. */
-	ctaLabel?: string;
-	/** Note under the field; may contain HTML (a privacy-policy link) */
-	privacyText?: string;
-	/** Copy shown after a successful signup. */
-	successText?: string;
-	/** Where to POST the { email } payload; omit to no-op (e.g. in Storybook) */
-	endpoint?: string;
-}
+type NewsletterFormProps = NewsletterFormSchemaProps;
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
-// The interactive island for SubscribeToNewsletter. It composes the shared Form shell (which owns the
-// react-hook-form + zod plumbing — same NewsletterSignup schema the server handler uses) and the
-// TextInput primitive, instead of re-implementing useForm and a raw <input>. Only the submit-status
-// swap (success/error copy) is local. Kept small so the surrounding section stays a Server Component.
 const NewsletterForm = ({
 	placeholder = 'you@example.com',
 	ctaLabel = 'Subscribe',
@@ -43,8 +29,6 @@ const NewsletterForm = ({
 	const submit = async (values: NewsletterSignupValues) => {
 		setStatus('submitting');
 
-		// No endpoint configured (e.g. in Storybook): treat as a successful no-op so the success state
-		// is still demonstrable.
 		if (!endpoint) {
 			setStatus('success');
 			return;
@@ -74,13 +58,10 @@ const NewsletterForm = ({
 						return (
 							<>
 								<Field name="email" invalid={invalid} className="newsletter-form-field">
-									{/* Visually hidden (the placeholder carries the visual); .sr-only keeps it out of flow. */}
 									<Field.Label className="sr-only">Email address</Field.Label>
 									<div className="newsletter-form-row">
 										<TextInput type="email" autoComplete="email" placeholder={placeholder} {...props} />
-										<Button type="submit" disabled={status === 'submitting'}>
-											{ctaLabel}
-										</Button>
+										<Button type="submit" value={ctaLabel} disabled={status === 'submitting'} />
 									</div>
 
 									{error && (
@@ -91,9 +72,7 @@ const NewsletterForm = ({
 								</Field>
 
 								{status === 'error' && (
-									<Content element="p" className="newsletter-form-error" role="alert">
-										Something went wrong. Please try again.
-									</Content>
+									<Content element="p" className="newsletter-form-error" role="alert" value="Something went wrong. Please try again." />
 								)}
 
 								{privacyText && <Content element="p" className="newsletter-form-privacy" value={privacyText} />}

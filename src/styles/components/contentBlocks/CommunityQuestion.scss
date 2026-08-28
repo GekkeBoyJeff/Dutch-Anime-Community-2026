@@ -46,43 +46,40 @@
 
 				&:has(.radio:focus-visible) {
 					.radio-label {
-						.community-question-answer {
-							box-shadow: $shadow-focus;
-						}
+						box-shadow: $shadow-focus;
 					}
 				}
 
-				&:has(.community-question-check) {
+				&:has(.radio-group-option-check) {
 					.radio-label {
-						.community-question-answer {
-							.community-question-bar {
-								background-color: $accent;
-							}
+						.radio-group-option-bar {
+							background-color: $accent;
 						}
 					}
 				}
 
 				.radio-label {
+					position: relative;
+					display: flex;
+					align-items: center;
+					gap: spacing(s);
+					overflow: hidden;
 					inline-size: 100%;
+					min-block-size: 3rem;
+					padding-inline: spacing(l);
+					border-radius: $rounded-m;
+					background-color: $surface-faint;
 
-					.community-question-answer {
-						position: relative;
-						display: flex;
-						align-items: center;
-						gap: spacing(s);
-						overflow: hidden;
-						min-block-size: 3rem;
-						padding-inline: spacing(l);
-						border-radius: $rounded-m;
-						background-color: $surface-faint;
+					transition: background-color $motion-micro;
 
-						transition: background-color $motion-micro;
+					@include interactive {
+						background-color: $background-hover;
+					}
 
-						@include interactive {
-							background-color: $background-hover;
-						}
+					.radio-group-option {
+						display: contents;
 
-						.community-question-bar {
+						.radio-group-option-bar {
 							position: absolute;
 							inset-block-end: 0;
 							inset-inline-start: 0;
@@ -95,17 +92,17 @@
 							animation: community-question-reveal $motion-standard;
 						}
 
-						.community-question-answer-text {
+						.radio-group-option-label {
 							flex: 1;
 						}
 
-						.community-question-share {
+						.radio-group-option-share {
 							color: $color;
 							font-weight: $weight-medium;
 							font-variant-numeric: tabular-nums;
 						}
 
-						.community-question-check {
+						.radio-group-option-check {
 							display: grid;
 							place-items: center;
 							inline-size: 1.25rem;

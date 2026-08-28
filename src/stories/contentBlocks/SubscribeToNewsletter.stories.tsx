@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import SubscribeToNewsletter from '@/components/contentBlocks/SubscribeToNewsletter';
-import { SubscribeToNewsletterProps } from '@/lib/content/schema/blocks/subscribeNewsletter';
+import { SubscribeToNewsletterProps } from '@/lib/site/content/schema/blocks/subscribeToNewsletter';
 
 const meta: Meta<typeof SubscribeToNewsletter> = {
 	title: 'ContentBlocks/SubscribeToNewsletter',
@@ -10,7 +10,7 @@ const meta: Meta<typeof SubscribeToNewsletter> = {
 		docs: {
 			description: {
 				component:
-					'Newsletter signup section: a heading cluster and description with a form that validates the email inline (shared zod schema), submits to `endpoint` and swaps to a success state. Only the form is a client island. Submit with no endpoint to see the success state.',
+					'Newsletter signup section: a heading cluster with a form that validates the email inline (shared zod schema), submits to `endpoint` and swaps to a success state. Only the form is a client island. Submit with no endpoint to see the success state.',
 			},
 		},
 		jsonSchema: { schema: SubscribeToNewsletterProps },
@@ -28,9 +28,11 @@ type Story = StoryObj<typeof SubscribeToNewsletter>;
 
 export const Default: Story = {
 	args: {
-		heading: { value: 'Blijf op de hoogte', tagline: 'Nieuwsbrief' },
-		description:
-			'Eén mailtje per maand met aankomende meetups, watch parties en waar je onze stand vindt op conventies als Dutch Comic Con en Abunai!. Geen spam, uitschrijven kan altijd.',
+		heading: {
+			title: 'Blijf op de hoogte',
+			tagline: 'Nieuwsbrief',
+			intro: 'Eén mailtje per maand met aankomende meetups, watch parties en waar je onze stand vindt op conventies als Dutch Comic Con en Abunai!. Geen spam, uitschrijven kan altijd.',
+		},
 		placeholder: 'jij@voorbeeld.nl',
 		ctaLabel: 'Aanmelden',
 		privacyText: 'We gaan zorgvuldig om met je gegevens. Lees ons <a href="/privacy">privacybeleid</a>.',

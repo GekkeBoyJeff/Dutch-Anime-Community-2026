@@ -1,21 +1,18 @@
-import type { Ref } from 'react';
-
 import VisuallyHidden from '@/components/basics/VisuallyHidden';
-import { classNames } from '@/lib/classNames';
-import type { SpinnerProps } from '@/lib/content/schema/basics/spinner';
+import { classNames } from '@/lib/shared/classNames';
+import type { SpinnerProps as SpinnerSchemaProps } from '@/lib/site/content/schema/basics/spinner';
 
-// Inline async indicator (CSS-only, no JS). role="status" + an sr-only label announce the loading
-// state; the spin is gated by prefers-reduced-motion in the stylesheet.
+type SpinnerProps = SpinnerSchemaProps;
+
 const Spinner = ({
 	size = 'm',
-	label = 'Loading',
+	ariaLabel = 'Loading',
 	className,
-	ref,
-}: SpinnerProps & { ref?: Ref<HTMLSpanElement> }) => {
+}: SpinnerProps) => {
 	return (
-		<span ref={ref} role="status" className={classNames('spinner', `is-${size}`, className)}>
+		<span role="status" className={classNames('spinner', `is-${size}`, className)}>
 			<span className="spinner-ring" aria-hidden="true" />
-			<VisuallyHidden>{label}</VisuallyHidden>
+			<VisuallyHidden value={ariaLabel} />
 		</span>
 	);
 };

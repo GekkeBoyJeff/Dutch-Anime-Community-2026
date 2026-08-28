@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Field from '@/components/forms/Field';
 import TextInput from '@/components/forms/TextInput';
-import { TextInputProps } from '@/lib/content/schema/forms/textInput';
+import { TextInputProps } from '@/lib/site/content/schema/forms/textInput';
 
 const meta: Meta<typeof TextInput> = {
 	title: 'Forms/TextInput',

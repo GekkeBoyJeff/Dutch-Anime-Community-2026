@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import SkeletonText from '@/components/basics/SkeletonText';
-import { SkeletonTextProps } from '@/lib/content/schema/basics/skeletonText';
+import { SkeletonTextProps } from '@/lib/site/content/schema/basics/skeletonText';
 
 const meta: Meta<typeof SkeletonText> = {
-	title: 'Basics/Skeleton/SkeletonText',
+	title: 'Basics/SkeletonText',
 	component: SkeletonText,
 	parameters: {
 		docs: { description: { component: 'A stack of Skeleton lines for paragraph placeholders; the last line is shortened so the block reads like real copy.' } },
@@ -27,7 +27,6 @@ export const Default: Story = {
 };
 
 export const Long: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		lines: 5,

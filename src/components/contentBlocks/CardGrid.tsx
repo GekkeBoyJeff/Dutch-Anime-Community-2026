@@ -1,21 +1,18 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { Ref } from 'react';
 
 import ItemCardGrid from '@/components/components/ItemCardGrid';
 import type { CardGridItem } from '@/components/components/ItemCardGrid';
-import type { CardGridProps } from '@/lib/content';
+import type { CardGridProps as CardGridSchemaProps } from '@/lib/site/content/schema/blocks/cardGrid';
 
-// One card grid for every card type. The shared ItemCardGrid owns the filter chips, search box,
-// sorting and pagination; this block only translates the author's vocabulary into the grid's item
-// shape. Each variant names its fields differently — an article's `excerpt`, an event's `summary`, a
-// link's `description` — so nothing collides and a single mapping covers all three.
+type CardGridProps = CardGridSchemaProps;
+
 const toGridItem = (item: CardGridProps['items'][number]): CardGridItem => ({
 	id: item.id,
 	title: item.title,
-	href: item.href ?? item.url,
-	text: item.excerpt ?? item.summary ?? item.description,
+	href: item.href,
+	text: item.value,
 	media: item.media,
 	tag: item.tag,
 	category: item.category ?? item.tag,
@@ -52,8 +49,7 @@ const CardGrid = ({
 	searchLabel,
 	sortLabel,
 	colorset,
-	ref,
-}: CardGridProps & { ref?: Ref<HTMLElement> }) => {
+}: CardGridProps) => {
 	const gridItems = useMemo(
 		() => items.filter((item) => variant !== 'event' || !isOver(item)).map(toGridItem),
 		[items, variant],
@@ -61,7 +57,6 @@ const CardGrid = ({
 
 	return (
 		<ItemCardGrid
-			ref={ref}
 			variant={variant}
 			items={gridItems}
 			heading={heading}

@@ -1,8 +1,8 @@
+import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Radio from '@/components/forms/Radio';
-import RadioGroup from '@/components/forms/RadioGroup';
-import { RadioProps } from '@/lib/content/schema/forms/radio';
+import { RadioProps } from '@/lib/site/content/schema/forms/radio';
 
 const meta: Meta<typeof Radio> = {
 	title: 'Forms/Radio',
@@ -22,9 +22,9 @@ const meta: Meta<typeof Radio> = {
 	},
 	decorators: [
 		(Story) => (
-			<RadioGroup aria-label="Shipping method" defaultValue="standard">
+			<BaseRadioGroup className="radio-group" aria-label="Shipping method" defaultValue="standard">
 				<Story />
-			</RadioGroup>
+			</BaseRadioGroup>
 		),
 	],
 };
@@ -60,6 +60,6 @@ export const Disabled: Story = {
 export const WithoutLabel: Story = {
 	args: {
 		value: 'pickup',
-		'aria-label': 'Pick up in store',
+		ariaLabel: 'Pick up in store',
 	},
 };

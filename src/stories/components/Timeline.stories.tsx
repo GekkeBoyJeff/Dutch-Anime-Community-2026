@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Timeline from '@/components/components/Timeline';
-import { TimelineProps } from '@/lib/content/schema/components/timeline';
+import { TimelineProps } from '@/lib/site/content/schema/components/timeline';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof Timeline> = {
@@ -42,24 +42,24 @@ export const Default: Story = {
 				tagline: 'The start',
 				title: 'Community founded',
 				date: 'March 2019',
-				text: 'A handful of fans started a Discord to watch series together.',
+				value: 'A handful of fans started a Discord to watch series together.',
 			},
 			{
 				year: '2021',
 				title: 'First live event',
 				date: 'October 2021',
-				text: 'Two hundred members met up for a season premiere screening.',
+				value: 'Two hundred members met up for a season premiere screening.',
 			},
 			{
 				year: '2023',
 				title: 'Crossed 10,000 members',
-				text: 'The community grew into one of the largest in the region.',
+				value: 'The community grew into one of the largest in the region.',
 			},
 			{
 				year: '2025',
 				tagline: 'Today',
 				title: 'New platform launch',
-				text: 'A rebuilt site with watch parties, reviews and event listings.',
+				value: 'A rebuilt site with watch parties, reviews and event listings.',
 			},
 		],
 	},
@@ -81,14 +81,14 @@ export const WithMedia: Story = {
 			{
 				year: '2021',
 				title: 'First live event',
-				text: 'Two hundred members met up for a season premiere screening.',
+				value: 'Two hundred members met up for a season premiere screening.',
 				media: { ...demoImage, ratio: '16 / 9' },
 			},
 			{
 				year: '2025',
 				title: 'New platform launch',
-				text: 'A rebuilt site with watch parties, reviews and event listings.',
-				actions: [{ label: 'Read the story', url: '#', variant: 'secondary' }],
+				value: 'A rebuilt site with watch parties, reviews and event listings.',
+				actions: [{ value: 'Read the story', url: '#', variant: 'secondary' }],
 			},
 		],
 	},

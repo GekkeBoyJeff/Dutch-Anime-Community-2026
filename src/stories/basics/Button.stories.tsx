@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Button from '@/components/basics/Button';
-import { ButtonProps } from '@/lib/content/schema/basics/button';
+import { ButtonProps } from '@/lib/site/content/schema/basics/button';
 
 const meta: Meta<typeof Button> = {
 	title: 'Basics/Button',
@@ -28,55 +28,46 @@ type Story = StoryObj<typeof Button>;
 
 export const Default: Story = {
 	args: {
-		children: 'Word lid',
+		value: 'Join now',
 		variant: 'primary',
 	},
 };
 
 export const Secondary: Story = {
-	...Default,
 	args: {
 		...Default.args,
-		children: 'Bekijk evenementen',
+		value: 'View events',
 		variant: 'secondary',
 	},
 };
 
 export const Ghost: Story = {
-	...Default,
 	args: {
 		...Default.args,
-		children: 'Lees meer',
+		value: 'Read more',
 		variant: 'ghost',
 	},
 };
 
-// A link wearing the button's visual: pass a url and Interactive picks the honest element
-// (next/link here). This replaces the old hand-rolled `<Interactive className="button is-…">`.
 export const AsLink: Story = {
-	...Default,
 	args: {
 		...Default.args,
-		url: '/word-lid',
+		url: '/join',
 	},
 };
 
 export const WithIcon: Story = {
-	...Default,
 	args: {
 		...Default.args,
-		children: 'Bekijk agenda',
+		value: 'View calendar',
 		icon: 'calendar',
 	},
 };
 
-// The site's leading CTA: the circular badge chip whose glyph nudges up-right on hover.
-// Exactly what the hero renders — hover it to see the motion.
 export const WithBadge: Story = {
-	...Default,
 	args: {
 		...Default.args,
-		url: '/word-lid',
+		url: '/join',
 		icon: 'arrow-up-right',
 		iconStyle: 'badge',
 	},
@@ -84,9 +75,6 @@ export const WithBadge: Story = {
 
 export const Hover: Story = {
 	...WithBadge,
-	args: {
-		...WithBadge.args,
-	},
 	parameters: {
 		pseudo: { hover: true },
 	},
@@ -94,16 +82,12 @@ export const Hover: Story = {
 
 export const Focus: Story = {
 	...Default,
-	args: {
-		...Default.args,
-	},
 	parameters: {
 		pseudo: { focusVisible: true },
 	},
 };
 
 export const Disabled: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		disabled: true,

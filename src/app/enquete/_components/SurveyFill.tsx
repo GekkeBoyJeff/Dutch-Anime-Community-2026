@@ -10,9 +10,9 @@ import Title from '@/components/basics/Title';
 import Field from '@/components/forms/Field';
 import TextArea from '@/components/forms/TextArea';
 import TextInput from '@/components/forms/TextInput';
-import { signInWithDiscord, useSession } from '@/lib/auth/permissions';
-import { classNames } from '@/lib/classNames';
-import { getBrowserClient } from '@/lib/supabase/client';
+import { signInWithDiscord, useSession } from '@/lib/shared/auth/permissions';
+import { classNames } from '@/lib/shared/classNames';
+import { getBrowserClient } from '@/lib/shared/supabase/client';
 
 type Kind = 'rating_1_5' | 'scale_0_10' | 'yes_no' | 'number' | 'date' | 'text' | 'single_choice' | 'multi_choice';
 
@@ -61,7 +61,7 @@ const fmtValue = (q: Question, a: (AnswerInput & { question_id: string }) | unde
 const Message = ({ title, children }: { title: string; children?: React.ReactNode }) => (
 	<Container className="enquete">
 		<div className="enquete-card enquete-message">
-			<Title size={3}>{title}</Title>
+			<Title size={3} value={title} />
 			{children}
 			<Link href="/" className="enquete-back">
 				← Terug naar de website
@@ -129,8 +129,8 @@ const SurveyFill = () => {
 
 	if (!id) return <Message title="Geen enquête opgegeven" />;
 	if (loading || sessionLoading) return <Message title="Laden…" />;
-	if (error && !data) return <Message title="Er ging iets mis">{<p>{error}</p>}</Message>;
-	if (!data || data.error) return <Message title="Deze enquête is niet beschikbaar">{<p>De enquête bestaat niet, is gesloten of gearchiveerd.</p>}</Message>;
+	if (error && !data) return <Message title="Er ging iets mis"><p>{error}</p></Message>;
+	if (!data || data.error) return <Message title="Deze enquête is niet beschikbaar"><p>De enquête bestaat niet, is gesloten of gearchiveerd.</p></Message>;
 
 	const { survey, questions, eligible, already_submitted } = data;
 
@@ -138,12 +138,10 @@ const SurveyFill = () => {
 		return (
 			<Message title={survey.title}>
 				<p>Log in met Discord om deze enquête in te vullen.</p>
-				<Button variant="primary" onClick={() => signInWithDiscord(`/enquete?id=${id}`)}>
-					Log in met Discord
-				</Button>
+				<Button variant="primary" onClick={() => signInWithDiscord(`/enquete?id=${id}`)} value="Log in met Discord" />
 			</Message>
 		);
-	if (!eligible) return <Message title={survey.title}>{<p>Deze enquête is niet voor jou bedoeld.</p>}</Message>;
+	if (!eligible) return <Message title={survey.title}><p>Deze enquête is niet voor jou bedoeld.</p></Message>;
 	if (submitted)
 		return (
 			<Message title="Bedankt!">
@@ -155,7 +153,7 @@ const SurveyFill = () => {
 		return (
 			<Container className="enquete">
 				<div className="enquete-card">
-					<Title size={2}>{survey.title}</Title>
+					<Title size={2} value={survey.title} />
 					<p className="enquete-anon">Je hebt deze enquête al ingevuld. Dit zijn je antwoorden:</p>
 					<div className="enquete-questions">
 						{questions.map((q) => (
@@ -175,7 +173,7 @@ const SurveyFill = () => {
 	return (
 		<Container className="enquete">
 			<div className="enquete-card">
-				<Title size={2}>{survey.title}</Title>
+				<Title size={2} value={survey.title} />
 				{survey.description && <p className="enquete-description">{survey.description}</p>}
 				{survey.anonymous && <p className="enquete-anon">Deze enquête is anoniem — je antwoorden zijn niet aan je naam gekoppeld.</p>}
 
@@ -270,9 +268,7 @@ const SurveyFill = () => {
 				{error && <p className="enquete-error">{error}</p>}
 
 				<div className="enquete-actions">
-					<Button variant="primary" onClick={submit} disabled={submitting}>
-						Versturen
-					</Button>
+					<Button variant="primary" onClick={submit} disabled={submitting} value="Versturen" />
 					<Link href="/" className="enquete-back">
 						Annuleren
 					</Link>

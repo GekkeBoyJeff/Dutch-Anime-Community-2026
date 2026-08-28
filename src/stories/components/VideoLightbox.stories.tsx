@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { ComponentProps } from 'react';
 
 import VideoLightbox from '@/components/components/VideoLightbox';
-import { VideoLightboxProps } from '@/lib/content/schema/components/videoLightbox';
+import { VideoLightboxProps } from '@/lib/site/content/schema/components/videoLightbox';
 import { demoVideo } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof VideoLightbox> = {

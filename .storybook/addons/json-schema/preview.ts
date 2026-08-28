@@ -5,11 +5,10 @@ import * as z from 'zod';
 
 import { EVENTS, PARAM_KEY, type SchemaResult } from './constants';
 
-// Conversion is cheap (~0.04 ms) but returns a new object per call; the cache gives referential
-// stability. HMR creates fresh schema instances, so stale entries fall out of the WeakMap naturally.
+// HMR creates fresh schema instances, so stale entries fall out of the WeakMap without invalidation.
 const jsonSchemaCache = new WeakMap<z.ZodType, Record<string, unknown>>();
 
-// The manager can subscribe after the first RESULT was emitted (channel has no replay), so the
+// The manager can subscribe after the first RESULT was emitted (the channel has no replay), so the
 // preview answers REQUEST events from this cache.
 const lastResultByStory = new Map<string, SchemaResult>();
 
@@ -22,8 +21,8 @@ channel.on(EVENTS.REQUEST, ({ storyId }: { storyId: string }) => {
 const convert = (schema: z.ZodType): Record<string, unknown> => {
 	let json = jsonSchemaCache.get(schema);
 	if (!json) {
-		// io:'input' documents what a story author may pass (defaulted fields leave `required`);
-		// unrepresentable:'any' emits {} instead of throwing on z.date() and friends.
+		// io:'input' keeps defaulted fields out of `required`; unrepresentable:'any' emits {} instead of
+		// throwing on z.date() and friends.
 		json = z.toJSONSchema(schema, { io: 'input', unrepresentable: 'any' }) as Record<string, unknown>;
 		jsonSchemaCache.set(schema, json);
 	}
@@ -31,9 +30,7 @@ const convert = (schema: z.ZodType): Record<string, unknown> => {
 };
 
 export const withJsonSchema: Decorator = (StoryFn, context) => {
-	const raw = context.parameters[PARAM_KEY]?.schema;
-	// Thunk form is the escape hatch that keeps zod internals out of the serialized parameters.
-	const schema: z.ZodType | undefined = typeof raw === 'function' ? raw() : raw;
+	const schema: z.ZodType | undefined = context.parameters[PARAM_KEY]?.schema;
 
 	let result: SchemaResult;
 	if (!schema) {
@@ -63,12 +60,11 @@ export const withJsonSchema: Decorator = (StoryFn, context) => {
 	return StoryFn();
 };
 
-// One .describe() in the zod schema feeds both the JSON Schema panel and this props-table description;
-// without it the docgen table shows blank descriptions for zod-inferred prop types.
+// A prop type that is `z.infer<…>` reaches docgen as a plain alias: every description is blank and
+// nothing is marked required. The zod schema's `.describe()` and `required` array fill both in.
 export const withJsonSchemaArgTypes: ArgTypesEnhancer = (context) => {
 	const argTypes = context.argTypes ?? {};
-	const raw = context.parameters[PARAM_KEY]?.schema;
-	const schema: z.ZodType | undefined = typeof raw === 'function' ? raw() : raw;
+	const schema: z.ZodType | undefined = context.parameters[PARAM_KEY]?.schema;
 	if (!schema) return argTypes;
 
 	let json: Record<string, unknown>;
@@ -81,10 +77,18 @@ export const withJsonSchemaArgTypes: ArgTypesEnhancer = (context) => {
 	const properties = json.properties as Record<string, { description?: unknown }> | undefined;
 	if (!properties) return argTypes;
 
+	const required = new Set(Array.isArray(json.required) ? (json.required as string[]) : []);
+
 	return Object.fromEntries(
 		Object.entries(argTypes).map(([name, argType]) => {
 			const description = properties[name]?.description;
-			return !argType.description && typeof description === 'string' ? [name, { ...argType, description }] : [name, argType];
+			const enhanced = { ...argType };
+			if (!enhanced.description && typeof description === 'string') enhanced.description = description;
+			if (required.has(name)) {
+				enhanced.type = { ...(enhanced.type ?? { name: 'other', value: 'unknown' }), required: true };
+				enhanced.table = { ...enhanced.table, type: { ...enhanced.table?.type, required: true } };
+			}
+			return [name, enhanced];
 		}),
 	);
 };

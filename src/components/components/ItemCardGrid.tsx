@@ -1,7 +1,6 @@
 'use client';
 
 import { useId, useMemo, useState } from 'react';
-import type { ReactNode, Ref } from 'react';
 
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
@@ -17,92 +16,15 @@ import Card from '@/components/components/Card';
 import EventCard from '@/components/components/EventCard';
 import Select from '@/components/forms/Select';
 import TextInput from '@/components/forms/TextInput';
-import { classNames } from '@/lib/classNames';
-import type { Colorset, EventCardProps, Heading, Media as MediaData } from '@/lib/content';
+import { classNames } from '@/lib/shared/classNames';
+import type { CardGridItem, ItemCardGridProps as ItemCardGridSchemaProps } from '@/lib/site/content/schema/components/itemCardGrid';
+import type { SortOption } from '@/lib/site/content/schema/primitives';
 
-// The shared item shape: enough metadata to render any card variant, filter by category and search
-// by text. The card-specific extras (date, location, author …) ride along untyped per variant.
-export interface CardGridItem {
-	/** Stable key + filter/search anchor */
-	id: string | number;
-	title: string;
-	/** Whole-card link target */
-	href?: string;
-	/** Short summary / excerpt, also matched by the search box */
-	text?: string;
-	media?: MediaData;
-	/** The category value this item belongs to (matched against the filter chips) */
-	category?: string;
-	/** ISO start date — used by event cards and the date sort */
-	startDate?: string;
-	/** ISO end date — used by event cards */
-	endDate?: string;
-	/** Where it happens — event cards */
-	location?: string;
-	/** A status label — event cards */
-	status?: string;
-	/** Status chip variant — event cards */
-	statusVariant?: EventCardProps['statusVariant'];
-	/** Localised meta labels — event cards */
-	translations?: EventCardProps['translations'];
-	/** A single topic tag — article cards */
-	tag?: string;
-	/** Leading glyph — link cards */
-	icon?: string;
-	/** Call-to-action label beside the trailing arrow — link cards */
-	cta?: string;
-}
+export type { CardGridItem };
 
-export interface CardGridCategory {
-	label: string;
-	/** The value matched against each item's `category` */
-	value: string;
-	/** Optional count shown beside the label */
-	count?: number;
-}
+type ItemCardGridProps = ItemCardGridSchemaProps;
 
-export interface CardGridSortOption {
-	label: string;
-	value: 'recent' | 'oldest' | 'title';
-}
-
-export interface ItemCardGridProps {
-	items?: CardGridItem[];
-	/** Which card to render per item */
-	variant?: 'article' | 'event' | 'link';
-	heading?: Heading;
-	/** A featured/lead slot rendered above the grid (e.g. a hero card) */
-	featured?: ReactNode;
-	/** Filter chips; an "All" chip is prepended automatically */
-	categories?: CardGridCategory[];
-	/** Shows a text search box that matches title + summary */
-	searchable?: boolean;
-	/** Sort options; the first is the default. Omit to leave the items in source order */
-	sortOptions?: CardGridSortOption[];
-	/** Grid width on wide screens */
-	columns?: 1 | 2 | 3 | 4;
-	/** Card density passed to the card variant */
-	cardSize?: 'compact' | 'standard';
-	/** Page size; 0 (default) shows everything on one page */
-	pageSize?: number;
-	/** Shown when the filters/search leave no results */
-	emptyMessage?: string;
-	/** Label for the "all categories" chip */
-	allLabel?: string;
-	/** Accessible label for the filter chip group */
-	filtersLabel?: string;
-	/** Accessible label for the search box */
-	searchLabel?: string;
-	/** Accessible label for the sort control */
-	sortLabel?: string;
-	/** Accessible label for the pagination nav */
-	paginationLabel?: string;
-	colorset?: Colorset;
-}
-
-// Sorts a copy by the chosen key. `recent`/`oldest` lean on the ISO `startDate`; missing dates sink
-// to the end so a half-populated list stays sensible.
-const sortItems = (items: CardGridItem[], sort: CardGridSortOption['value']): CardGridItem[] => {
+const sortItems = (items: CardGridItem[], sort: SortOption['value']): CardGridItem[] => {
 	if (sort === 'title') {
 		return [...items].sort((a, b) => a.title.localeCompare(b.title));
 	}
@@ -120,13 +42,12 @@ const sortItems = (items: CardGridItem[], sort: CardGridSortOption['value']): Ca
 	});
 };
 
-// Renders one item as the requested card variant, mapping the generic shape onto that card's props.
 const renderCard = (item: CardGridItem, variant: ItemCardGridProps['variant']) => {
 	if (variant === 'event') {
 		return (
 			<EventCard
 				title={item.title}
-				summary={item.text}
+				value={item.text}
 				startDate={item.startDate}
 				endDate={item.endDate}
 				location={item.location}
@@ -143,7 +64,7 @@ const renderCard = (item: CardGridItem, variant: ItemCardGridProps['variant']) =
 		return (
 			<ArticleCard
 				title={item.title}
-				excerpt={item.text}
+				value={item.text}
 				media={item.media}
 				tag={item.tag ?? item.category}
 				publishedAt={item.startDate}
@@ -153,8 +74,6 @@ const renderCard = (item: CardGridItem, variant: ItemCardGridProps['variant']) =
 		);
 	}
 
-	// 'link' / fallback: an optional glyph, the title and summary, and a trailing arrow that leans in
-	// on hover. The stretched link makes the whole surface the target.
 	return (
 		<Card href={item.href} linkLabel={item.title} className="item-card-grid-link-card">
 			{item.icon && (
@@ -166,7 +85,7 @@ const renderCard = (item: CardGridItem, variant: ItemCardGridProps['variant']) =
 			<div className="item-card-grid-link-card-body">
 				<Title element="h3" size={5} value={item.title} />
 				{item.text && <Content size="small" value={item.text} />}
-				{item.cta && <Content element="span" className="item-card-grid-link-card-cta">{item.cta}</Content>}
+				{item.cta && <Content element="span" className="item-card-grid-link-card-cta" value={item.cta} />}
 			</div>
 
 			<span className="item-card-grid-link-card-arrow" aria-hidden="true" />
@@ -174,10 +93,6 @@ const renderCard = (item: CardGridItem, variant: ItemCardGridProps['variant']) =
 	);
 };
 
-// The generalised, filterable card grid all the typed grids share. Holds the active filter, the
-// search query and the current page in local state, then derives the visible slice with useMemo so a
-// large list re-filters cheaply. A client island; the typed block wrappers around it stay server-
-// renderable because every prop crossing the boundary is plain data (no render props).
 const ItemCardGrid = ({
 	items = [],
 	variant = 'article',
@@ -196,13 +111,12 @@ const ItemCardGrid = ({
 	sortLabel = 'Sort by',
 	paginationLabel = 'Pagination',
 	colorset,
-	ref,
-}: ItemCardGridProps & { ref?: Ref<HTMLElement> }) => {
+}: ItemCardGridProps) => {
 	const searchId = useId();
 
 	const [activeCategory, setActiveCategory] = useState<string | null>(null);
 	const [query, setQuery] = useState('');
-	const [sort, setSort] = useState<CardGridSortOption['value'] | null>(sortOptions[0]?.value ?? null);
+	const [sort, setSort] = useState<SortOption['value'] | null>(sortOptions[0]?.value ?? null);
 	const [page, setPage] = useState(0);
 
 	const filtered = useMemo(() => {
@@ -229,21 +143,16 @@ const ItemCardGrid = ({
 	const safePage = Math.min(page, Math.max(0, pageCount - 1));
 	const visible = pageSize > 0 ? filtered.slice(safePage * pageSize, safePage * pageSize + pageSize) : filtered;
 
-	// Any control that changes the result set resets to the first page so the reader isn't stranded on
-	// an empty trailing page.
 	const pickCategory = (value: string | null) => {
 		setActiveCategory(value);
 		setPage(0);
 	};
 
 	return (
-		<Section ref={ref} colorset={colorset} className="item-card-grid">
+		<Section colorset={colorset} className="item-card-grid">
 			<Container>
 				<HeadingGroup
-					tagline={heading?.tagline}
-					title={heading?.value}
-					size={heading?.size}
-					intro={heading?.intro}
+					{...heading}
 					element="header"
 					className="item-card-grid-header"
 				/>
@@ -254,24 +163,16 @@ const ItemCardGrid = ({
 					<div className="item-card-grid-controls">
 						{categories.length > 0 && (
 							<div className="item-card-grid-filters" role="group" aria-label={filtersLabel}>
-								<Pill active={activeCategory === null} onClick={() => pickCategory(null)}>
-									{allLabel}
-								</Pill>
+								<Pill value={allLabel} active={activeCategory === null} onClick={() => pickCategory(null)} />
 
 								{categories.map((category) => (
 									<Pill
 										key={category.value}
+										value={category.label}
+										count={category.count}
 										active={activeCategory === category.value}
 										onClick={() => pickCategory(category.value)}
-									>
-										{category.label}
-										{typeof category.count === 'number' && (
-											<span className="item-card-grid-count" aria-hidden="true">
-												{' '}
-												{category.count}
-											</span>
-										)}
-									</Pill>
+									/>
 								))}
 							</div>
 						)}
@@ -280,7 +181,7 @@ const ItemCardGrid = ({
 							{searchable && (
 								<div className="item-card-grid-search">
 									<label htmlFor={searchId}>
-										<VisuallyHidden>{searchLabel}</VisuallyHidden>
+										<VisuallyHidden value={searchLabel} />
 									</label>
 									<TextInput
 										id={searchId}
@@ -297,14 +198,13 @@ const ItemCardGrid = ({
 
 							{sortOptions.length > 0 && (
 								<div className="item-card-grid-sort">
-									{/* A visible cue beside the control; the Select carries its own accessible name via aria-label. */}
 									<span className="item-card-grid-sort-label">{sortLabel}</span>
 									<Select
 										native
-										aria-label={sortLabel}
+										ariaLabel={sortLabel}
 										value={sort ?? ''}
 										onValueChange={(value) => {
-											setSort(value as CardGridSortOption['value']);
+											setSort(value as SortOption['value']);
 											setPage(0);
 										}}
 										options={sortOptions.map((option) => ({ value: option.value, label: option.label }))}
@@ -336,20 +236,20 @@ const ItemCardGrid = ({
 							disabled={safePage === 0}
 							onClick={() => setPage((current) => Math.max(0, current - 1))}
 						>
-							<VisuallyHidden>Previous page</VisuallyHidden>
+							<VisuallyHidden value="Previous page" />
 							<Icon name="chevron-left" />
 						</Interactive>
 
-						<Content element="p" className="item-card-grid-page-status" aria-live="polite">
+						<p className="content item-card-grid-page-status" aria-live="polite">
 							{safePage + 1} / {pageCount}
-						</Content>
+						</p>
 
 						<Interactive
 							className="item-card-grid-page-step"
 							disabled={safePage >= pageCount - 1}
 							onClick={() => setPage((current) => Math.min(pageCount - 1, current + 1))}
 						>
-							<VisuallyHidden>Next page</VisuallyHidden>
+							<VisuallyHidden value="Next page" />
 							<Icon name="chevron-right" />
 						</Interactive>
 					</nav>

@@ -2,12 +2,14 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Badge from '@/components/basics/Badge';
 import Person from '@/components/components/Person';
+import { PersonProps } from '@/lib/site/content/schema/components/person';
 
 const meta: Meta<typeof Person> = {
 	title: 'Components/Person',
 	component: Person,
 	parameters: {
 		docs: { description: { component: 'A human, shown as a human: avatar with an optional presence dot, name over role, and a trailing slot.' } },
+		jsonSchema: { schema: PersonProps },
 	},
 	argTypes: {
 		status: { control: 'inline-radio', options: [undefined, 'online', 'busy', 'away', 'offline'] },
@@ -32,7 +34,7 @@ export const Interactive: Story = {
 };
 
 export const WithTrailing: Story = {
-	args: { name: 'Eva Smit', role: 'Beheerder', trailing: <Badge variant="primary">3 shifts</Badge> },
+	args: { name: 'Eva Smit', role: 'Beheerder', trailing: <Badge variant="primary" value="3 shifts" /> },
 };
 
 export const Loading: Story = {
@@ -42,7 +44,7 @@ export const Loading: Story = {
 export const Roster: Story = {
 	render: () => (
 		<div>
-			<Person name="Jeffrey de Vries" role="Yakuza" status="online" trailing={<Badge variant="primary">4</Badge>} />
+			<Person name="Jeffrey de Vries" role="Yakuza" status="online" trailing={<Badge variant="primary" value="4" />} />
 			<Person name="Sanne Bakker" role="Stand-staff" status="away" />
 			<Person name="Milan Jansen" role="Auteur" status="offline" />
 		</div>

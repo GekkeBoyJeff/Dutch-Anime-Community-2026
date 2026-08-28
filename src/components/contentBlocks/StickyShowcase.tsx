@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { Ref } from 'react';
 
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
@@ -9,14 +8,16 @@ import HeadingGroup from '@/components/basics/HeadingGroup';
 import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
 import Title from '@/components/basics/Title';
-import { classNames } from '@/lib/classNames';
-import type { StickyShowcaseProps } from '@/lib/content';
+import { classNames } from '@/lib/shared/classNames';
+import type { StickyShowcaseProps as StickyShowcaseSchemaProps } from '@/lib/site/content/schema/blocks/stickyShowcase';
 
-// Apple-style scroll showcase: the media stage pins while the steps scroll past; the stage
-// crossfades to the active step's image. A client island — the active step comes from an
-// IntersectionObserver watching the middle band of the viewport. On small screens the stage is
-// hidden and each step simply shows its own media.
-const StickyShowcase = ({ heading, steps = [], colorset, ref }: StickyShowcaseProps & { ref?: Ref<HTMLElement> }) => {
+type StickyShowcaseProps = StickyShowcaseSchemaProps;
+
+const StickyShowcase = ({
+	heading,
+	steps = [],
+	colorset,
+}: StickyShowcaseProps) => {
 	const [active, setActive] = useState(0);
 	const stepRefs = useRef<(HTMLLIElement | null)[]>([]);
 
@@ -30,7 +31,6 @@ const StickyShowcase = ({ heading, steps = [], colorset, ref }: StickyShowcasePr
 				}
 			},
 			// Only the middle band of the viewport counts, so exactly one step is active at a time.
-			// https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin
 				{ rootMargin: '-45% 0px -45% 0px' },
 		);
 
@@ -39,18 +39,9 @@ const StickyShowcase = ({ heading, steps = [], colorset, ref }: StickyShowcasePr
 	}, [steps.length]);
 
 	return (
-		<Section ref={ref} colorset={colorset} className="sticky-showcase">
+		<Section colorset={colorset} className="sticky-showcase">
 			<Container>
-				{heading && (
-					<HeadingGroup
-						tagline={heading.tagline}
-						title={heading.value}
-						size={heading.size}
-						intro={heading.intro}
-						element="header"
-						className="sticky-showcase-header"
-					/>
-				)}
+				{heading && <HeadingGroup {...heading} element="header" className="sticky-showcase-header" />}
 
 				<div className="sticky-showcase-scene">
 					<div className="sticky-showcase-stage" aria-hidden="true">
@@ -78,7 +69,7 @@ const StickyShowcase = ({ heading, steps = [], colorset, ref }: StickyShowcasePr
 										{String(index + 1).padStart(2, '0')}
 									</span>
 									<Title element="h3" size={3} value={step.title} className="sticky-showcase-step-title" />
-									{step.body && <Content value={step.body} className="sticky-showcase-step-body" />}
+									{step.value && <Content value={step.value} className="sticky-showcase-step-body" />}
 									<div className="sticky-showcase-step-media">
 										<Media {...step.media} />
 									</div>

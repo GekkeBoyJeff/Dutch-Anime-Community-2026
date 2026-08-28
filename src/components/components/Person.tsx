@@ -1,31 +1,11 @@
-import type { ReactNode, Ref } from 'react';
-
 import Avatar from '@/components/basics/Avatar';
 import Icon from '@/components/basics/Icon';
 import Interactive from '@/components/basics/Interactive';
 import Skeleton from '@/components/basics/Skeleton';
-import { classNames } from '@/lib/classNames';
+import { classNames } from '@/lib/shared/classNames';
+import type { PersonProps as PersonSchemaProps, PersonStatus } from '@/lib/site/content/schema/components/person';
 
-export type PersonStatus = 'online' | 'busy' | 'away' | 'offline';
-
-export interface PersonProps {
-	name: string;
-	/** Role or function, shown under the name */
-	role?: ReactNode;
-	avatarUrl?: string | null;
-	/** Falls back to the first two letters of `name` */
-	initials?: string;
-	/** Presence dot on the avatar; omit when presence is not tracked */
-	status?: PersonStatus;
-	/** Trailing slot — badges, a count, a row action */
-	trailing?: ReactNode;
-	href?: string;
-	onClick?: () => void;
-	/** Shows a chevron when the row leads somewhere */
-	chevron?: boolean;
-	loading?: boolean;
-	className?: string;
-}
+type PersonProps = PersonSchemaProps;
 
 const STATUS_LABEL: Record<PersonStatus, string> = {
 	online: 'Online',
@@ -34,9 +14,19 @@ const STATUS_LABEL: Record<PersonStatus, string> = {
 	offline: 'Offline',
 };
 
-// A human, shown as a human. The organisation is people; rendering them as bare strings is what makes
-// a roster read as a database dump.
-const Person = ({ name, role, avatarUrl, initials, status, trailing, href, onClick, chevron, loading = false, className, ref }: PersonProps & { ref?: Ref<HTMLDivElement> }) => {
+const Person = ({
+	name,
+	role,
+	avatarUrl,
+	initials,
+	status,
+	trailing,
+	href,
+	onClick,
+	chevron,
+	loading = false,
+	className,
+}: PersonProps) => {
 	const body = (
 		<>
 			<span className={classNames('person-avatar', status && `is-${status}`)}>
@@ -48,13 +38,13 @@ const Person = ({ name, role, avatarUrl, initials, status, trailing, href, onCli
 				{(role !== undefined || loading) && <span className="person-role">{loading ? <Skeleton height="0.8rem" width="4.5rem" /> : role}</span>}
 			</span>
 			{trailing !== undefined && !loading && <span className="person-trailing">{trailing}</span>}
-			{chevron && !loading && <Icon name="chevron-right" className="person-chevron" aria-hidden="true" />}
+			{chevron && !loading && <Icon name="chevron-right" className="person-chevron" />}
 		</>
 	);
 
 	if (loading) {
 		return (
-			<div ref={ref} className={classNames('person', 'is-loading', className)} aria-hidden="true">
+			<div className={classNames('person', 'is-loading', className)} aria-hidden="true">
 				{body}
 			</div>
 		);
@@ -77,7 +67,7 @@ const Person = ({ name, role, avatarUrl, initials, status, trailing, href, onCli
 	}
 
 	return (
-		<div ref={ref} className={classNames('person', className)}>
+		<div className={classNames('person', className)}>
 			{body}
 		</div>
 	);

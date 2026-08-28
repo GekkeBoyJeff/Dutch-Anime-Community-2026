@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Select from '@/components/forms/Select';
-import { SelectProps } from '@/lib/content/schema/forms/select';
+import { SelectProps } from '@/lib/site/content/schema/forms/select';
 
 const flat = [
 	{ value: 'nl', label: 'Netherlands' },
@@ -60,7 +60,7 @@ export const Default: Story = {
 	args: {
 		options: flat,
 		placeholder: 'Choose a country',
-		'aria-label': 'Country',
+		ariaLabel: 'Country',
 	},
 };
 

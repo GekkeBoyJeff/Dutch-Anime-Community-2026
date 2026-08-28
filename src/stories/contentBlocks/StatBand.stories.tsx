@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import StatBand from '@/components/contentBlocks/StatBand';
-import { StatBandProps } from '@/lib/content/schema/blocks/statBand';
+import { StatBandProps } from '@/lib/site/content/schema/blocks/statBand';
 
 const meta: Meta<typeof StatBand> = {
 	title: 'ContentBlocks/StatBand',
@@ -37,6 +37,6 @@ export const WithHeading: Story = {
 	...Default,
 	args: {
 		...Default.args,
-		heading: { tagline: 'In numbers', value: 'The community keeps growing' },
+		heading: { tagline: 'In numbers', title: 'The community keeps growing' },
 	},
 };

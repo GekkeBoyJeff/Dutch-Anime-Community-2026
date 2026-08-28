@@ -6,9 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Icon from '@/components/basics/Icon';
 import Shortcut from '@/components/basics/Shortcut';
-import type { PaletteCommand } from '@/lib/auth/dashboard-sections';
+import type { PaletteCommand } from '@/lib/shared/auth/dashboard-sections';
 
-// A live search hit for a real record (a convention or a member), deep-linking straight to that record.
 export interface PaletteResult {
 	key: string;
 	group: 'events' | 'people';
@@ -18,16 +17,12 @@ export interface PaletteResult {
 	icon: string;
 }
 
-export interface CommandPaletteProps {
+interface CommandPaletteProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	/** The "Pagina's" group — the caller's permission-filtered destinations. */
 	pages: PaletteCommand[];
-	/** The "Acties" group — deep-links into create flows; empty hides the group. */
 	actions: PaletteCommand[];
-	/** Builds the "see all people" target from the live query; omit to hide that fallback. */
 	personSearchHref?: (query: string) => string;
-	/** Live search over real records (conventions, members). Omit to disable inline record results. */
 	searchEntities?: (query: string) => Promise<PaletteResult[]>;
 }
 
@@ -36,7 +31,6 @@ const RECENT_MAX = 5;
 const MIN_QUERY = 2;
 const DEBOUNCE_MS = 180;
 
-// The last-picked commands, newest first, read defensively (private-mode / bad JSON never throws).
 const readRecent = (): PaletteCommand[] => {
 	try {
 		const parsed = JSON.parse(localStorage.getItem(RECENT_KEY) ?? '[]');
@@ -46,8 +40,8 @@ const readRecent = (): PaletteCommand[] => {
 	}
 };
 
-// One static command row: icon + label. `value` drives cmdk's fuzzy match; recents pass a distinct value
-// so a command showing in both "Recent" and its own group never collides on selection.
+// Recents pass a distinct `value` so a command showing in both "Recent" and its own group never
+// collides on selection.
 const PaletteItem = ({ command, value, onSelect }: { command: PaletteCommand; value?: string; onSelect: (command: PaletteCommand) => void }) => (
 	<Command.Item className="command-palette-item" value={value ?? command.label} onSelect={() => onSelect(command)}>
 		<Icon name={command.icon} className="command-palette-item-icon" />
@@ -55,8 +49,7 @@ const PaletteItem = ({ command, value, onSelect }: { command: PaletteCommand; va
 	</Command.Item>
 );
 
-// One live-record row: force-mounted (the server already matched it, so cmdk must not filter it out) with
-// an optional second line (location / discord tag).
+// Force-mounted: the server already matched it, so cmdk must not filter it out.
 const ResultItem = ({ result, onNavigate }: { result: PaletteResult; onNavigate: (href: string) => void }) => (
 	<Command.Item className="command-palette-item" value={`${result.label} ${result.key}`} forceMount onSelect={() => onNavigate(result.href)}>
 		<Icon name={result.icon} className="command-palette-item-icon" />
@@ -67,8 +60,6 @@ const ResultItem = ({ result, onNavigate }: { result: PaletteResult; onNavigate:
 	</Command.Item>
 );
 
-// Recents only make sense on an empty query — cmdk keeps every group mounted, so once the user types this
-// folds away and normal fuzzy matching over Pagina's/Acties takes over.
 const RecentGroup = ({ items, onSelect }: { items: PaletteCommand[]; onSelect: (command: PaletteCommand) => void }) => {
 	const search = useCommandState((state) => state.search);
 	if (search.trim() !== '' || items.length === 0) return null;
@@ -81,8 +72,6 @@ const RecentGroup = ({ items, onSelect }: { items: PaletteCommand[]; onSelect: (
 	);
 };
 
-// The live conventions group — hidden until there is at least one hit (results are empty until the user
-// types), so it never leaves a dangling heading.
 const ConventionsGroup = ({ events, onNavigate }: { events: PaletteResult[]; onNavigate: (href: string) => void }) => {
 	if (events.length === 0) return null;
 	// forceMount on the GROUP too: cmdk scores async items as non-matching and hides the group,
@@ -96,8 +85,6 @@ const ConventionsGroup = ({ events, onNavigate }: { events: PaletteResult[]; onN
 	);
 };
 
-// The people group: live member hits plus a "see all in the list" fallback. Only shows once the user is
-// typing, so an empty query never renders a lone heading.
 const PeopleGroup = ({ people, personSearchHref, onNavigate }: { people: PaletteResult[]; personSearchHref?: (query: string) => string; onNavigate: (href: string) => void }) => {
 	const query = useCommandState((state) => state.search).trim();
 	if (query === '' || (people.length === 0 && !personSearchHref)) return null;
@@ -116,8 +103,6 @@ const PeopleGroup = ({ people, personSearchHref, onNavigate }: { people: Palette
 	);
 };
 
-// A render-null probe: reads the live query from cmdk and reports it (debounced) to the parent, which owns
-// the async record search. Debouncing here keeps the effect body free of synchronous setState.
 const QueryProbe = ({ onQuery }: { onQuery: (query: string) => void }) => {
 	const query = useCommandState((state) => state.search);
 	useEffect(() => {
@@ -127,7 +112,6 @@ const QueryProbe = ({ onQuery }: { onQuery: (query: string) => void }) => {
 	return null;
 };
 
-// Empty state with a little character; the query echoes back so a dead end reads as intentional.
 const EmptyLabel = () => {
 	const query = useCommandState((state) => state.search).trim();
 	return (
@@ -140,15 +124,10 @@ const EmptyLabel = () => {
 	);
 };
 
-// The dashboard ⌘K palette: cmdk's Radix-backed Command.Dialog (focus-trap/ESC/scroll-lock come free).
-// Static groups (Recent/Pagina's/Acties) fuzzy-match client-side; Conventies/Personen are live Supabase
-// hits from `searchEntities`. The dialog portals to the body and styles itself from the global tokens;
-// the box is fixed-size (no CLS on filter).
 const CommandPalette = ({ open, onOpenChange, pages, actions, personSearchHref, searchEntities }: CommandPaletteProps) => {
 	const router = useRouter();
-	// Seed the MRU from localStorage once (client-only); selecting a command updates both store and state,
-	// so the component stays mounted across opens without re-reading. The list only shows inside the open
-	// dialog (Radix mounts content lazily), so a non-empty seed never affects the closed-state markup.
+	// The list only shows inside the open dialog (Radix mounts content lazily), so a non-empty client seed
+	// never affects the closed-state markup.
 	const [recent, setRecent] = useState<PaletteCommand[]>(() => (typeof window === 'undefined' ? [] : readRecent()));
 	const [results, setResults] = useState<PaletteResult[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -156,7 +135,6 @@ const CommandPalette = ({ open, onOpenChange, pages, actions, personSearchHref, 
 	// flash stale hits.
 	const searchToken = useRef(0);
 
-	// Runs from QueryProbe's debounce timer (an event callback, not an effect body), so setState is fine.
 	const runSearch = useCallback(
 		(query: string) => {
 			if (!searchEntities || query.length < MIN_QUERY) {
@@ -186,7 +164,6 @@ const CommandPalette = ({ open, onOpenChange, pages, actions, personSearchHref, 
 
 	const handleOpenChange = useCallback(
 		(next: boolean) => {
-			// Drop stale hits on close so a reopen never flashes the previous query's results.
 			if (!next) {
 				searchToken.current += 1;
 				setResults([]);
@@ -270,16 +247,16 @@ const CommandPalette = ({ open, onOpenChange, pages, actions, personSearchHref, 
 
 			<footer className="command-palette-footer">
 				<span className="command-palette-hint">
-					<Shortcut>↑</Shortcut>
-					<Shortcut>↓</Shortcut>
+					<Shortcut keys={['↑']} />
+					<Shortcut keys={['↓']} />
 					navigeren
 				</span>
 				<span className="command-palette-hint">
-					<Shortcut>↵</Shortcut>
+					<Shortcut keys={['↵']} />
 					openen
 				</span>
 				<span className="command-palette-hint">
-					<Shortcut>esc</Shortcut>
+					<Shortcut keys={['esc']} />
 					sluiten
 				</span>
 			</footer>

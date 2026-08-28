@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import ProofTicker from '@/components/contentBlocks/ProofTicker';
-import { ProofTickerProps } from '@/lib/content/schema/blocks/proofTicker';
+import { ProofTickerProps } from '@/lib/site/content/schema/blocks/proofTicker';
 
 const meta: Meta<typeof ProofTicker> = {
 	title: 'ContentBlocks/ProofTicker',

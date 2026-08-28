@@ -1,30 +1,19 @@
 'use client';
 
-import type { ReactNode, Ref } from 'react';
-
 import Icon from '@/components/basics/Icon';
 import Interactive from '@/components/basics/Interactive';
 import VisuallyHidden from '@/components/basics/VisuallyHidden';
 import usePagination from '@/hooks/usePagination';
-import { classNames } from '@/lib/classNames';
+import { classNames } from '@/lib/shared/classNames';
 import type {
+	PaginationEllipsisProps as PaginationEllipsisSchemaProps,
 	PaginationProps as PaginationSchemaProps,
 	PaginationTranslations as PaginationTranslationsSchema,
-} from '@/lib/content/schema/components/pagination';
+} from '@/lib/site/content/schema/components/pagination';
 
-export type PaginationTranslations = PaginationTranslationsSchema & {
-	/** Builds the accessible name of each page control @default 'Go to page {page}' */
-	itemLabel?: (details: { page: number; totalPages: number }) => string;
-};
+export type PaginationTranslations = PaginationTranslationsSchema;
 
-export type PaginationProps = Omit<PaginationSchemaProps, 'translations'> & {
-	/** Fires on any page change; payload mirrors the Ark data contract */
-	onPageChange?: (details: { page: number; pageSize: number }) => void;
-	/** Href builder, only used when type='link' */
-	getPageUrl?: (details: { page: number; pageSize: number }) => string;
-	/** Localised strings; defaults to English */
-	translations?: PaginationTranslations;
-};
+export type PaginationProps = PaginationSchemaProps;
 
 const DEFAULT_TRANSLATIONS: Required<PaginationTranslations> = {
 	rootLabel: 'Pagination',
@@ -32,14 +21,9 @@ const DEFAULT_TRANSLATIONS: Required<PaginationTranslations> = {
 	nextTriggerLabel: 'Next page',
 	firstTriggerLabel: 'First page',
 	lastTriggerLabel: 'Last page',
-	itemLabel: ({ page }) => `Go to page ${page}`,
+	itemLabel: 'Go to page {page}',
 };
 
-// A list of page links/buttons with ellipsis truncation. The range math lives in usePagination; this
-// island only wires the active state to onPageChange and renders the default layout. It is a client
-// component (useState for the uncontrolled case + onClick) — a parent Server Component drops it in
-// where pagination is needed. Mirrors the Ark data contract (count/pageSize/page, payload
-// { page, pageSize }) so it stays swappable and pairs with a future Table.
 const Pagination = ({
 	page,
 	defaultPage = 1,
@@ -49,15 +33,14 @@ const Pagination = ({
 	siblingCount = 1,
 	boundaryCount = 1,
 	onPageChange,
-	type = 'button',
+	variant = 'button',
 	getPageUrl,
 	withControls = true,
 	withEdges = false,
 	disabled = false,
 	translations,
 	className,
-	ref,
-}: PaginationProps & { ref?: Ref<HTMLElement> }) => {
+}: PaginationProps) => {
 	const t = { ...DEFAULT_TRANSLATIONS, ...translations };
 
 	// Ark's contract: count is TOTAL ITEMS, so derive the page count when it (and not totalPages) is given.
@@ -77,11 +60,12 @@ const Pagination = ({
 	}
 
 	const hrefFor = (target: number) =>
-		type === 'link' && getPageUrl ? getPageUrl({ page: target, pageSize }) : undefined;
+		variant === 'link' && getPageUrl ? getPageUrl({ page: target, pageSize }) : undefined;
 
-	// A control's onClick is a no-op for links — navigation comes from the href — but still drives the
-	// controlled page for button mode and the uncontrolled state either way.
 	const goTo = (target: number) => () => setPage(target);
+
+	const itemLabelFor = (target: number) =>
+		t.itemLabel.replace('{page}', String(target)).replace('{totalPages}', String(resolvedTotalPages));
 
 	const renderControl = (key: string, target: number, label: string, glyph: string, isDisabled: boolean) => {
 		return (
@@ -90,18 +74,18 @@ const Pagination = ({
 					className={classNames('pagination-control', `is-${key}`)}
 					url={hrefFor(target)}
 					disabled={disabled || isDisabled}
-					aria-label={label}
+					ariaLabel={label}
 					onClick={goTo(target)}
 				>
 					<Icon name={glyph} className='pagination-icon' />
-					<VisuallyHidden>{label}</VisuallyHidden>
+					<VisuallyHidden value={label} />
 				</Interactive>
 			</li>
 		);
 	};
 
 	return (
-		<nav ref={ref} className={classNames('pagination', className)} aria-label={t.rootLabel}>
+		<nav className={classNames('pagination', className)} aria-label={t.rootLabel}>
 			<ul className="pagination-list">
 				{withEdges && renderControl('first', 1, t.firstTriggerLabel, 'chevrons-left', active <= 1)}
 				{withControls && renderControl('prev', active - 1, t.prevTriggerLabel, 'chevron-left', active <= 1)}
@@ -123,8 +107,8 @@ const Pagination = ({
 								className={classNames('pagination-page', entry === active && 'is-active')}
 								url={hrefFor(entry)}
 								disabled={disabled}
-								aria-label={t.itemLabel({ page: entry, totalPages: resolvedTotalPages })}
-								aria-current={entry === active ? 'page' : undefined}
+								ariaLabel={itemLabelFor(entry)}
+								ariaCurrent={entry === active ? 'page' : undefined}
 								data-selected={entry === active || undefined}
 								onClick={goTo(entry)}
 							>
@@ -145,26 +129,19 @@ const Pagination = ({
 
 export default Pagination;
 
-// Re-export the parts for custom composition alongside the batteries-included default.
-export type PaginationEllipsisProps = {
-	/** Position key in the list */
-	index?: number;
-	/** Accessible label announced in place of the glyph */
-	label?: string;
-	className?: string;
-	/** Defaults to a '…' glyph; always aria-hidden with an sr-only label */
-	children?: ReactNode;
-};
+export type PaginationEllipsisProps = PaginationEllipsisSchemaProps;
 
-// A non-interactive gap marker for custom layouts. aria-hidden so the glyph is never announced as
-// content; the visually-hidden label keeps the meaning available to assistive tech.
-export const PaginationEllipsis = ({ label = 'More pages', className, children }: PaginationEllipsisProps) => {
+export const PaginationEllipsis = ({
+	label = 'More pages',
+	className,
+	children,
+}: PaginationEllipsisProps) => {
 	return (
 		<li className={classNames('pagination-item', 'is-ellipsis', className)}>
 			<span className="pagination-ellipsis" aria-hidden="true">
 				{children ?? <Icon name="dots" />}
 			</span>
-			<VisuallyHidden>{label}</VisuallyHidden>
+			<VisuallyHidden value={label} />
 		</li>
 	);
 };

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import FeatureCards from '@/components/contentBlocks/FeatureCards';
-import { FeatureCardsProps } from '@/lib/content/schema/blocks/featureCards';
+import { FeatureCardsProps } from '@/lib/site/content/schema/blocks/featureCards';
 
 const meta: Meta<typeof FeatureCards> = {
 	title: 'ContentBlocks/FeatureCards',
@@ -27,9 +27,9 @@ export const Default: Story = {
 		title: 'What you get',
 		intro: 'A contentBlock that receives all its data via props.',
 		items: [
-			{ id: 'components', title: 'Components', body: 'A small set of primitives you compose every page from.' },
-			{ id: 'content', title: 'Content as data', body: 'Pages are validated data, ready for a CMS.' },
-			{ id: 'theming', title: 'Theming', body: 'Colour and typography cascade through tokens.' },
+			{ id: 'components', title: 'Components', value: 'A small set of primitives you compose every page from.' },
+			{ id: 'content', title: 'Content as data', value: 'Pages are validated data, ready for a CMS.' },
+			{ id: 'theming', title: 'Theming', value: 'Colour and typography cascade through tokens.' },
 		],
 	},
 };

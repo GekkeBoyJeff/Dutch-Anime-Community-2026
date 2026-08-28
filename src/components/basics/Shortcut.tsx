@@ -1,29 +1,18 @@
 import { Fragment } from 'react';
-import type { ReactNode, Ref } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { ShortcutProps } from '@/lib/content/schema/basics/shortcut';
+import { classNames } from '@/lib/shared/classNames';
+import type { ShortcutProps as ShortcutSchemaProps } from '@/lib/site/content/schema/basics/shortcut';
 
-type Props = ShortcutProps & {
-	/** A single key as children (alternative to `keys`) */
-	children?: ReactNode;
-};
+type ShortcutProps = ShortcutSchemaProps;
 
-// A keyboard shortcut hint: one or more `<kbd>` keys joined by a separator. Nesting `<kbd>` inside a
-// `<kbd>` is the HTML spec's own way to mark up a key combination, so a combo stays semantic. Pass
-// `keys` for a combo (`['⌘','K']`) or a single key via children; pairs with SearchPalette / useHotkey.
 const Shortcut = ({
-	keys,
+	keys = [],
 	separator = '+',
 	className,
-	children,
-	ref,
-}: Props & { ref?: Ref<HTMLElement> }) => {
-	const list: ReactNode[] = keys && keys.length > 0 ? keys : children != null ? [children] : [];
-
+}: ShortcutProps) => {
 	return (
-		<kbd ref={ref} className={classNames('shortcut', className)}>
-			{list.map((key, index) => (
+		<kbd className={classNames('shortcut', className)}>
+			{keys.map((key, index) => (
 				<Fragment key={index}>
 					{index > 0 && separator !== '' && (
 						<span className="shortcut-separator" aria-hidden="true">

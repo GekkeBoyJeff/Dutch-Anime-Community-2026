@@ -1,12 +1,10 @@
-import type { Ref } from 'react';
-
 import Content from '@/components/basics/Content';
 import Media from '@/components/basics/Media';
-import { classNames } from '@/lib/classNames';
-import type { AvatarProps } from '@/lib/content/schema/basics/avatar';
+import { classNames } from '@/lib/shared/classNames';
+import type { AvatarProps as AvatarSchemaProps } from '@/lib/site/content/schema/basics/avatar';
 
-// Circular avatar built on Media (square frame, rounded full) with an optional presence dot and an
-// initials fallback when there is no image.
+type AvatarProps = AvatarSchemaProps;
+
 const Avatar = ({
 	src,
 	alt = '',
@@ -14,10 +12,9 @@ const Avatar = ({
 	status,
 	initials,
 	className,
-	ref,
-}: AvatarProps & { ref?: Ref<HTMLSpanElement> }) => {
+}: AvatarProps) => {
 	return (
-		<span ref={ref} className={classNames('avatar', `is-${size}`, className)}>
+		<span className={classNames('avatar', `is-${size}`, className)}>
 			{src ? (
 				<Media type="image" src={src} alt={alt} ratio="1" className="avatar-image" />
 			) : (

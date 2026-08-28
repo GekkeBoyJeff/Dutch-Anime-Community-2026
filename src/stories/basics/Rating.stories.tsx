@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Rating from '@/components/basics/Rating';
-import { RatingProps } from '@/lib/content/schema/basics/rating';
+import { RatingProps } from '@/lib/site/content/schema/basics/rating';
 
 const meta: Meta<typeof Rating> = {
 	title: 'Basics/Rating',
@@ -19,23 +19,21 @@ type Story = StoryObj<typeof Rating>;
 export const Default: Story = {
 	args: {
 		value: 4,
-		label: '4 van 5 sterren',
+		ariaLabel: '4 van 5 sterren',
 	},
 };
 
 export const Full: Story = {
-	...Default,
 	args: {
 		value: 5,
-		label: '5 van 5 sterren',
+		ariaLabel: '5 van 5 sterren',
 	},
 };
 
 export const CustomMax: Story = {
-	...Default,
 	args: {
 		value: 7,
 		max: 10,
-		label: '7 van 10',
+		ariaLabel: '7 van 10',
 	},
 };

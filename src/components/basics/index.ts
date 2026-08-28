@@ -10,7 +10,6 @@ export { default as Media } from '@/components/basics/Media';
 export { default as Section } from '@/components/basics/Section';
 export { default as Badge } from '@/components/basics/Badge';
 export { default as StatusBadge } from '@/components/basics/StatusBadge';
-export type { StatusDomain } from '@/components/basics/StatusBadge';
 export { default as Divider } from '@/components/basics/Divider';
 export { default as Spinner } from '@/components/basics/Spinner';
 export { default as Progress } from '@/components/basics/Progress';
@@ -29,7 +28,6 @@ export { default as Skeleton } from '@/components/basics/Skeleton';
 export { default as SkeletonText } from '@/components/basics/SkeletonText';
 export { default as Rating } from '@/components/basics/Rating';
 export { default as CountUp } from '@/components/basics/CountUp';
-// Non-visual building blocks: a structured-data <script> primitive and the service-worker registrar.
 export { default as JsonLd } from '@/components/basics/JsonLd';
 export { default as ServiceWorker } from '@/components/basics/ServiceWorker';
 export { default as Accordion } from '@/components/basics/Accordion';

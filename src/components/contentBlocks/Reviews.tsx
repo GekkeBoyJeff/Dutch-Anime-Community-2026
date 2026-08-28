@@ -1,25 +1,21 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 import HeadingGroup from '@/components/basics/HeadingGroup';
 import Rating from '@/components/basics/Rating';
 import Section from '@/components/basics/Section';
 import Card from '@/components/components/Card';
-import type { ReviewsProps } from '@/lib/content';
+import type { ReviewsProps as ReviewsSchemaProps } from '@/lib/site/content/schema/blocks/reviews';
 
-// Grid of reviews: each one a Card with a Rating, the quote and the author. The matching JSON-LD
-// (rich snippets) comes from the same data via the builder in lib/seo — this component only renders
-// the UI.
+type ReviewsProps = ReviewsSchemaProps;
+
 const Reviews = ({
 	title,
 	intro,
 	items = [],
 	colorset,
-	ref,
-}: ReviewsProps & { ref?: Ref<HTMLElement> }) => {
+}: ReviewsProps) => {
 	return (
-		<Section ref={ref} colorset={colorset} className="reviews">
+		<Section colorset={colorset} className="reviews">
 			<Container>
 				<HeadingGroup element="header" title={title} intro={intro} />
 
@@ -27,8 +23,8 @@ const Reviews = ({
 					{items.map((review) => (
 						<li key={review.id}>
 							<Card className="reviews-card">
-								<Rating value={review.rating} label={`${review.rating} van 5`} />
-								<Content value={review.body} />
+								<Rating value={review.rating} ariaLabel={`${review.rating} van 5`} />
+								<Content value={review.value} />
 								<Content size="small" className="reviews-author" value={review.author} />
 							</Card>
 						</li>

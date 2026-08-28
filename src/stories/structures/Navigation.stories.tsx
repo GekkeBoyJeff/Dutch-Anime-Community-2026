@@ -4,15 +4,13 @@ import Metric from '@/components/components/Metric';
 import Moment from '@/components/components/Moment';
 import Panel from '@/components/components/Panel';
 import Navigation, { type MegaMenuGroup } from '@/components/structures/Navigation';
-import { NavigationProps } from '@/lib/content/schema/structures/navigation';
+import { NavigationProps } from '@/lib/site/content/schema/structures/navigation';
 
 // Static stand-ins for the live highlights the dashboard wires per group (NavHighlights), in the same
 // two shapes: a moment on a rail, or a single figure.
 const mockMoment = (panelTitle: string, marker: string, title: string, meta: string, linkLabel: string) => (
 	<Panel title={panelTitle} href="#" linkLabel={linkLabel}>
-		<Moment.List>
-			<Moment marker={marker} title={title} meta={meta} />
-		</Moment.List>
+		<Moment.List items={[{ marker, title, meta }]} />
 	</Panel>
 );
 

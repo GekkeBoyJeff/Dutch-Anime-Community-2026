@@ -2,11 +2,11 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, screen, userEvent, waitFor } from 'storybook/test';
 
 import Combobox from '@/components/components/Combobox';
-import { ComboboxProps } from '@/lib/content/schema/components/combobox';
+import { ComboboxProps } from '@/lib/site/content/schema/components/combobox';
 
 const FRUITS = ['Apple', 'Apricot', 'Banana', 'Blueberry', 'Cherry', 'Grape', 'Mango', 'Orange', 'Peach', 'Pear'];
 
-const meta: Meta<typeof Combobox<string>> = {
+const meta: Meta<typeof Combobox> = {
 	title: 'Components/Combobox',
 	component: Combobox,
 	parameters: {
@@ -28,13 +28,13 @@ const meta: Meta<typeof Combobox<string>> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Combobox<string>>;
+type Story = StoryObj<typeof Combobox>;
 
 // Empty and searchable: click to open the full list, type to filter.
 export const Default: Story = {
 	args: {
 		items: FRUITS,
-		label: 'Search fruit',
+		ariaLabel: 'Search fruit',
 		placeholder: 'Search fruit…',
 	},
 	play: async () => {
@@ -62,32 +62,4 @@ export const ReadOnly: Story = {
 		readOnly: true,
 		defaultValue: 'Banana'
 	}
-};
-
-// Object items with a custom option layout (emoji + name) via `renderItem` + `itemToStringLabel`.
-export const CustomOptions: StoryObj<typeof Combobox> = {
-	render: () => {
-		type Fruit = { name: string; emoji: string };
-		const fruits: Fruit[] = [
-			{ name: 'Apple', emoji: '🍎' },
-			{ name: 'Banana', emoji: '🍌' },
-			{ name: 'Cherry', emoji: '🍒' },
-			{ name: 'Grape', emoji: '🍇' },
-			{ name: 'Peach', emoji: '🍑' },
-		];
-
-		return (
-			<Combobox<Fruit>
-				items={fruits}
-				label="Search fruit"
-				placeholder="Search fruit…"
-				itemToStringLabel={(fruit) => fruit.name}
-				renderItem={(fruit) => (
-					<>
-						<span aria-hidden="true">{fruit.emoji}</span> {fruit.name}
-					</>
-				)}
-			/>
-		);
-	},
 };

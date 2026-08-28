@@ -1,4 +1,4 @@
-import type { NavItem, SiteStructures } from '@/lib/content';
+import type { NavItem, SiteStructures } from '@/lib/site/content';
 
 // Primary navigation. All pages are registered in src/content/pages/index.ts; the 'Word lid' CTA
 // goes straight to the Discord invite — the one conversion goal of the whole site.
@@ -22,19 +22,19 @@ export const structures: SiteStructures = {
 		brand: { title: 'Dutch Anime Community', tagline: 'Nederlandstalige anime-community op Discord. Sinds 2019.' },
 		navColumns: [
 			{
-				heading: 'Over DAC',
+				title: 'Over DAC',
 				links: [
-					{ label: 'Wat we doen', url: '/community' },
-					{ label: 'Evenementen', url: '/evenementen' },
-					{ label: 'Hoe het werkt', url: '/word-lid' },
-					{ label: 'Supporters', url: '/supporters' },
+					{ value: 'Wat we doen', url: '/community' },
+					{ value: 'Evenementen', url: '/evenementen' },
+					{ value: 'Hoe het werkt', url: '/word-lid' },
+					{ value: 'Supporters', url: '/supporters' },
 				],
 			},
 			{
-				heading: 'Meedoen',
+				title: 'Meedoen',
 				links: [
-					{ label: 'Word lid', url: 'https://discord.gg/dutchanimecommunity' },
-					{ label: 'Wat is Discord?', url: 'https://discord.com/safety/360044149331-What-is-Discord' },
+					{ value: 'Word lid', url: 'https://discord.gg/dutchanimecommunity' },
+					{ value: 'Wat is Discord?', url: 'https://discord.com/safety/360044149331-What-is-Discord' },
 				],
 			},
 		],

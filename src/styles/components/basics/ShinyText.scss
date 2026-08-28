@@ -1,5 +1,13 @@
 .shiny-text {
 	--shiny-duration: 3s;
+
+	&.is-slow {
+		--shiny-duration: 5s;
+	}
+
+	&.is-fast {
+		--shiny-duration: 1.5s;
+	}
 	display: inline-block;
 	background-image: linear-gradient(
 		120deg,

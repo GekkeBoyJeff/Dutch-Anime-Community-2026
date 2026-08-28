@@ -4,17 +4,11 @@ import CookieConsent from '@/components/components/CookieConsent';
 import ScrollProgress from '@/components/components/ScrollProgress';
 import SearchPalette from '@/components/components/SearchPalette';
 import SiteChrome from '@/components/structures/SiteChrome';
-import { getSiteStructures } from '@/lib/content';
-import { resolveChrome } from '@/lib/site';
+import { getSiteStructures } from '@/lib/site/content';
+import { resolveChrome } from '@/lib/site/site';
 
-interface WebsiteLayoutProps {
-	/** The routed page content */
-	children?: ReactNode;
-}
+type WebsiteLayoutProps = { children: ReactNode };
 
-// The website route group's shared frame: validated chrome data around every page. The builder
-// route lives outside this group so the editor canvas doesn't get double chrome. resolveChrome swaps
-// the Storybook nav item's sentinel URL for the environment-correct one (dev :6006 vs. static build).
 const WebsiteLayout = async ({ children }: WebsiteLayoutProps) => {
 	const structures = resolveChrome(await getSiteStructures());
 	const { scrollProgress, searchPalette, cookieConsent } = structures;

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import ScrollProgress from '@/components/components/ScrollProgress';
-import { ScrollProgressProps } from '@/lib/content/schema/components/scrollProgress';
+import { ScrollProgressProps } from '@/lib/site/content/schema/components/scrollProgress';
 
 const meta: Meta<typeof ScrollProgress> = {
 	title: 'Components/ScrollProgress',

@@ -1,10 +1,5 @@
 // A stand-in for src/lib/supabase/client.ts, aliased in for Storybook only (see .storybook/main.js).
 //
-// Why this exists: nearly every dashboard component fetches its own data through getBrowserClient().
-// Without a stand-in, a story for one of them renders a spinner and then an error, which looks like
-// coverage while verifying nothing. Because usePermissions and useDashboardGuard also derive from this
-// one module, replacing it here is enough to make every screen render — including its own gate.
-//
 // It is a fixture, not a simulator. Filters are applied so a screen shows plausibly narrowed data
 // rather than every row, but nothing here enforces anything: in the real app Row Level Security
 // decides what a caller may read, and no mock can or should stand in for that.
@@ -38,8 +33,6 @@ type Filter = (row: Row) => boolean;
 // are normalised before matching.
 const asString = (value: unknown): string => (value === null || value === undefined ? '' : String(value));
 
-// The subset of PostgREST the dashboard actually uses. Anything not listed simply passes rows through,
-// which keeps a story rendering instead of throwing on a filter nobody looks at.
 class Query implements PromiseLike<{ data: unknown; error: null; count: number | null }> {
 	private rows: Row[];
 	private filters: Filter[] = [];
@@ -84,11 +77,6 @@ class Query implements PromiseLike<{ data: unknown; error: null; count: number |
 		return this;
 	}
 
-	neq(column: string, value: unknown) {
-		this.filters.push((row) => asString(row[column]) !== asString(value));
-		return this;
-	}
-
 	is(column: string, value: unknown) {
 		this.filters.push((row) => (row[column] ?? null) === value);
 		return this;
@@ -110,27 +98,9 @@ class Query implements PromiseLike<{ data: unknown; error: null; count: number |
 		return this;
 	}
 
-	gt(column: string, value: unknown) {
-		this.filters.push((row) => asString(row[column]) > asString(value));
-		return this;
-	}
-
-	lt(column: string, value: unknown) {
-		this.filters.push((row) => asString(row[column]) < asString(value));
-		return this;
-	}
-
 	ilike(column: string, pattern: string) {
 		const needle = pattern.replace(/%/g, '').toLowerCase();
 		this.filters.push((row) => asString(row[column]).toLowerCase().includes(needle));
-		return this;
-	}
-
-	not() {
-		return this;
-	}
-
-	or() {
 		return this;
 	}
 
@@ -145,24 +115,8 @@ class Query implements PromiseLike<{ data: unknown; error: null; count: number |
 		return this;
 	}
 
-	range(from: number, to: number) {
-		this.filters.push(() => true);
-		this.limitTo = to - from + 1;
-		return this;
-	}
-
 	maybeSingle() {
 		this.singleRow = true;
-		return this;
-	}
-
-	// `single()` throws in PostgREST when there is no row; the dashboard only calls it where a row is
-	// expected, so it behaves like maybeSingle here rather than inventing an error path no screen handles.
-	single() {
-		return this.maybeSingle();
-	}
-
-	returns() {
 		return this;
 	}
 
@@ -191,18 +145,13 @@ class Query implements PromiseLike<{ data: unknown; error: null; count: number |
 	}
 }
 
-// Every bucket object resolves to one real image in /public/media, with the object path kept as the
-// fragment so a story still shows which row it came from. It has to be a file that exists: a made-up
-// placeholder path 404s, and a media grid of broken images verifies nothing.
+// It has to be a file that exists: a made-up placeholder path 404s, and a media grid of broken images
+// verifies nothing. The object path rides along as the fragment so a story still shows its row.
 const STAND_IN_IMAGE = '/media/_opt/dac-stand-640.webp';
 
 const storageBucket = (bucket: string) => ({
 	list: async () => ({ data: STORAGE_FIXTURES[bucket] ?? [], error: null }),
 	getPublicUrl: (path: string) => ({ data: { publicUrl: `${STAND_IN_IMAGE}#${path}` } }),
-	createSignedUrl: async (path: string) => ({ data: { signedUrl: `${STAND_IN_IMAGE}#${path}` }, error: null }),
-	upload: async () => ({ data: { path: 'storybook/upload' }, error: null }),
-	download: async () => ({ data: new Blob([]), error: null }),
-	remove: async () => ({ data: [], error: null }),
 });
 
 export const getBrowserClient = () => ({
@@ -212,19 +161,14 @@ export const getBrowserClient = () => ({
 		onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
 		signOut: async () => ({ error: null }),
 		signInWithOAuth: async () => ({ data: null, error: null }),
-		exchangeCodeForSession: async () => ({ data: { session: session() }, error: null }),
 	},
 	from: (table: string) => new Query(table),
 	rpc: async (name: string) => ({
 		data: RPC_FIXTURES[name] ?? null,
 		error: null,
 	}),
-	// The notification composer delivers through the send-push Edge Function; without a stand-in, pressing
-	// "Versturen" throws instead of reporting a result.
 	functions: {
-		invoke: async () => ({ data: { inserted: 3, pushed: 2 }, error: null }),
+		invoke: async () => ({ data: null, error: null }),
 	},
 	storage: { from: storageBucket },
-	channel: () => ({ on: () => ({ subscribe: () => ({ unsubscribe: () => {} }) }), subscribe: () => ({ unsubscribe: () => {} }) }),
-	removeChannel: () => {},
 });

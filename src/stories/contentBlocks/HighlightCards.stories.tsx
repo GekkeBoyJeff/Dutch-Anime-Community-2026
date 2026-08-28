@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import HighlightCards from '@/components/contentBlocks/HighlightCards';
-import { HighlightCardsProps } from '@/lib/content/schema/blocks/highlightCards';
+import { HighlightCardsProps } from '@/lib/site/content/schema/blocks/highlightCards';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const photo = demoImage;
@@ -25,12 +25,12 @@ type Story = StoryObj<typeof HighlightCards>;
 
 export const Default: Story = {
 	args: {
-		heading: { value: 'Highlights', tagline: 'This season', intro: 'A few things worth a closer look.' },
+		heading: { title: 'Highlights', tagline: 'This season', intro: 'A few things worth a closer look.' },
 		columns: 3,
 		items: [
-			{ id: 'h1', media: photo, badges: ['New'], tagline: 'Series', title: 'Spring picks', text: 'Hand-chosen favourites for the new season.', actions: [{ label: 'Explore' }] },
-			{ id: 'h2', media: photo, badges: ['Popular'], tagline: 'Series', title: 'Crowd favourites', text: 'What everyone has been watching lately.' },
-			{ id: 'h3', media: photo, tagline: 'Series', title: 'Hidden gems', text: 'Quieter releases you might have missed.', actions: [{ label: 'See all', variant: 'ghost' }] },
+			{ id: 'h1', media: photo, badges: ['New'], tagline: 'Series', title: 'Spring picks', value: 'Hand-chosen favourites for the new season.', actions: [{ value: 'Explore' }] },
+			{ id: 'h2', media: photo, badges: ['Popular'], tagline: 'Series', title: 'Crowd favourites', value: 'What everyone has been watching lately.' },
+			{ id: 'h3', media: photo, tagline: 'Series', title: 'Hidden gems', value: 'Quieter releases you might have missed.', actions: [{ value: 'See all', variant: 'ghost' }] },
 		],
 	},
 };

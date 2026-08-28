@@ -1,25 +1,13 @@
 'use client';
 
 import { Field } from '@base-ui/react/field';
-import type { ReactNode, Ref } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { FieldErrorProps as FieldErrorSchemaProps } from '@/lib/content/schema/forms/fieldError';
+import { classNames } from '@/lib/shared/classNames';
+import type { FieldErrorProps as FieldErrorSchemaProps } from '@/lib/site/content/schema/forms/fieldError';
 
-/** The validity snapshot passed to a FieldError render function. */
-export interface FieldErrorValidity {
-	/** Whether the field currently fails validation */
-	isInvalid: boolean;
-	/** Human-readable message(s) for the active failure(s) */
-	validationErrors: string[];
-	/** The native ValidityState (valueMissing, typeMismatch, patternMismatch, tooShort, …) */
-	validationDetails: ValidityState;
-}
+export type { FieldErrorValidity } from '@/lib/site/content/schema/forms/fieldError';
 
-type FieldErrorProps = FieldErrorSchemaProps & {
-	/** A static message, or a render function receiving the field's validity snapshot */
-	children?: ReactNode | ((validity: FieldErrorValidity) => ReactNode);
-};
+type FieldErrorProps = FieldErrorSchemaProps;
 
 // The field's error message. Base UI shows it only once the field is touched/submitted, links its
 // id into the control's aria-describedby, and announces it via role="alert" without stealing focus.
@@ -29,7 +17,7 @@ const FieldError = ({
 	className,
 	children,
 	ref,
-}: FieldErrorProps & { ref?: Ref<HTMLDivElement> }) => {
+}: FieldErrorProps) => {
 	// Render-prop form: read the live validity via Base UI's Field.Validity and hand the consumer the
 	// react-aria-parity shape (isInvalid / validationErrors / validationDetails).
 	if (typeof children === 'function') {

@@ -2,15 +2,16 @@
 
 import { ContextMenu as BaseContextMenu } from '@base-ui/react/context-menu';
 import { Menu as BaseMenu } from '@base-ui/react/menu';
-import type { MouseEvent, ReactNode, Ref } from 'react';
+import type { MouseEvent } from 'react';
 
 import Content from '@/components/basics/Content';
 import Icon from '@/components/basics/Icon';
 import Interactive from '@/components/basics/Interactive';
 import useHaptics from '@/hooks/useHaptics';
-import { classNames } from '@/lib/classNames';
+import { classNames } from '@/lib/shared/classNames';
 import type {
 	MenuCheckboxItemProps as MenuCheckboxItemSchemaProps,
+	MenuContextProps as MenuContextSchemaProps,
 	MenuGroupLabelProps as MenuGroupLabelSchemaProps,
 	MenuGroupProps as MenuGroupSchemaProps,
 	MenuItemProps as MenuItemSchemaProps,
@@ -18,61 +19,26 @@ import type {
 	MenuRadioGroupProps as MenuRadioGroupSchemaProps,
 	MenuRadioItemProps as MenuRadioItemSchemaProps,
 	MenuSeparatorProps as MenuSeparatorSchemaProps,
-} from '@/lib/content/schema/components/menu';
+} from '@/lib/site/content/schema/components/menu';
 
-type MenuProps = MenuSchemaProps & {
-	/** The trigger node — usually a Button or Pill that opens the menu */
-	trigger: ReactNode;
-	/** Fires with the next open state whenever it changes */
-	onOpenChange?: (open: boolean) => void;
-	/** Also open when the trigger is hovered (for lightweight dropdowns like a profile chip). */
-	openOnHover?: boolean;
-	/** Hover-intent open delay in ms (needs `openOnHover`). */
-	delay?: number;
-	/** Hover-intent close delay in ms (needs `openOnHover`). */
-	closeDelay?: number;
-	/** The menu items, groups and separators */
-	children?: ReactNode;
-};
+type MenuProps = MenuSchemaProps;
 
-type MenuItemProps = MenuItemSchemaProps & {
-	/** Activation handler */
-	onClick?: (event: MouseEvent<HTMLElement>) => void;
-	/** Marks a destructive action (delete, hard-remove) with the danger idiom. */
-	danger?: boolean;
-	children?: ReactNode;
-};
+type MenuItemProps = MenuItemSchemaProps;
 
-type MenuGroupProps = MenuGroupSchemaProps & {
-	/** The GroupLabel and items */
-	children?: ReactNode;
-};
+type MenuGroupProps = MenuGroupSchemaProps;
 
-type MenuGroupLabelProps = MenuGroupLabelSchemaProps & {
-	children?: ReactNode;
-};
+type MenuGroupLabelProps = MenuGroupLabelSchemaProps;
 
-type MenuCheckboxItemProps = MenuCheckboxItemSchemaProps & {
-	/** Fires with the next checked state on toggle */
-	onCheckedChange?: (checked: boolean) => void;
-	children?: ReactNode;
-};
+type MenuCheckboxItemProps = MenuCheckboxItemSchemaProps;
 
-type MenuRadioGroupProps = MenuRadioGroupSchemaProps & {
-	/** Fires with the next value on selection */
-	onValueChange?: (value: string) => void;
-	/** The MenuRadioItem children */
-	children?: ReactNode;
-};
+type MenuRadioGroupProps = MenuRadioGroupSchemaProps;
 
-type MenuRadioItemProps = MenuRadioItemSchemaProps & {
-	children?: ReactNode;
-};
+type MenuRadioItemProps = MenuRadioItemSchemaProps;
 
 type MenuSeparatorProps = MenuSeparatorSchemaProps;
 
-// A single action item. Routes through Interactive when given a `url` (so internal routes use
-// next/link), otherwise stays the default role=menuitem with a haptic-wrapped click.
+type MenuContextProps = MenuContextSchemaProps;
+
 const MenuItem = ({
 	icon,
 	label,
@@ -83,15 +49,13 @@ const MenuItem = ({
 	danger = false,
 	onClick,
 	className,
-	children,
-	ref,
-}: MenuItemProps & { ref?: Ref<HTMLElement> }) => {
+}: MenuItemProps) => {
 	const { haptic } = useHaptics();
 
 	const body = (
 		<>
 			{icon && <Icon name={icon} className='menu-item-icon' />}
-			<Content element="span" className="menu-label">{children}</Content>
+			<Content element="span" className="menu-label" value={label} />
 		</>
 	);
 
@@ -100,12 +64,9 @@ const MenuItem = ({
 		onClick?.(event);
 	};
 
-	// A link item renders an <a>; we slot our Interactive so internal vs external routing matches the
-	// rest of the app. Navigation items keep the menu open by default.
 	if (url) {
 		return (
 			<BaseMenu.LinkItem
-				ref={ref}
 				className={classNames('menu-item', danger && 'is-danger', className)}
 				label={label}
 				closeOnClick={!keepOpen}
@@ -118,7 +79,6 @@ const MenuItem = ({
 
 	return (
 		<BaseMenu.Item
-			ref={ref}
 			className={classNames('menu-item', danger && 'is-danger', className)}
 			label={label}
 			disabled={disabled}
@@ -130,24 +90,28 @@ const MenuItem = ({
 	);
 };
 
-const MenuGroup = ({ className, children, ref }: MenuGroupProps & { ref?: Ref<HTMLDivElement> }) => {
+const MenuGroup = ({
+	className,
+	children,
+}: MenuGroupProps) => {
 	return (
-		<BaseMenu.Group ref={ref} className={classNames('menu-group', className)}>
+		<BaseMenu.Group className={classNames('menu-group', className)}>
 			{children}
 		</BaseMenu.Group>
 	);
 };
 
-// The non-focusable heading for a Group.
-const MenuGroupLabel = ({ className, children, ref }: MenuGroupLabelProps & { ref?: Ref<HTMLDivElement> }) => {
+const MenuGroupLabel = ({
+	className,
+	children,
+}: MenuGroupLabelProps) => {
 	return (
-		<BaseMenu.GroupLabel ref={ref} className={classNames('menu-group-label', className)}>
+		<BaseMenu.GroupLabel className={classNames('menu-group-label', className)}>
 			{children}
 		</BaseMenu.GroupLabel>
 	);
 };
 
-// A toggle item that keeps the menu open so several can be flipped in one pass.
 const MenuCheckboxItem = ({
 	checked,
 	defaultChecked = false,
@@ -155,12 +119,9 @@ const MenuCheckboxItem = ({
 	disabled = false,
 	onCheckedChange,
 	className,
-	children,
-	ref,
-}: MenuCheckboxItemProps & { ref?: Ref<HTMLDivElement> }) => {
+}: MenuCheckboxItemProps) => {
 	return (
 		<BaseMenu.CheckboxItem
-			ref={ref}
 			className={classNames('menu-item', 'is-checkbox', className)}
 			checked={checked}
 			defaultChecked={defaultChecked}
@@ -171,7 +132,7 @@ const MenuCheckboxItem = ({
 			<BaseMenu.CheckboxItemIndicator className="menu-indicator">
 				<Icon name="check" className='menu-item-icon' />
 			</BaseMenu.CheckboxItemIndicator>
-			<Content element="span" className="menu-label">{children}</Content>
+			<Content element="span" className="menu-label" value={label} />
 		</BaseMenu.CheckboxItem>
 	);
 };
@@ -182,11 +143,9 @@ const MenuRadioGroup = ({
 	onValueChange,
 	className,
 	children,
-	ref,
-}: MenuRadioGroupProps & { ref?: Ref<HTMLDivElement> }) => {
+}: MenuRadioGroupProps) => {
 	return (
 		<BaseMenu.RadioGroup
-			ref={ref}
 			className={classNames('menu-radio-group', className)}
 			value={value}
 			defaultValue={defaultValue}
@@ -202,12 +161,9 @@ const MenuRadioItem = ({
 	label,
 	disabled = false,
 	className,
-	children,
-	ref,
-}: MenuRadioItemProps & { ref?: Ref<HTMLDivElement> }) => {
+}: MenuRadioItemProps) => {
 	return (
 		<BaseMenu.RadioItem
-			ref={ref}
 			className={classNames('menu-item', 'is-radio', className)}
 			value={value}
 			label={label}
@@ -216,18 +172,17 @@ const MenuRadioItem = ({
 			<BaseMenu.RadioItemIndicator className="menu-indicator">
 				<span className="menu-dot" />
 			</BaseMenu.RadioItemIndicator>
-			<Content element="span" className="menu-label">{children}</Content>
+			<Content element="span" className="menu-label" value={label} />
 		</BaseMenu.RadioItem>
 	);
 };
 
-const MenuSeparator = ({ className, ref }: MenuSeparatorProps & { ref?: Ref<HTMLDivElement> }) => {
-	return <BaseMenu.Separator ref={ref} className={classNames('menu-separator', className)} />;
+const MenuSeparator = ({
+	className,
+}: MenuSeparatorProps) => {
+	return <BaseMenu.Separator className={classNames('menu-separator', className)} />;
 };
 
-// An action / dropdown / kebab menu with roving focus, typeahead, submenus and checkbox/radio
-// items. Wraps Base UI Menu — the a11y-hard focus management, typeahead and collision positioning
-// are exactly what a starter must not hand-roll. A client island; the page around it stays server.
 const Menu = ({
 	trigger,
 	open,
@@ -237,7 +192,7 @@ const Menu = ({
 	side = 'bottom',
 	align = 'start',
 	sideOffset = 6,
-	label,
+	ariaLabel,
 	openOnHover,
 	delay,
 	closeDelay,
@@ -257,7 +212,7 @@ const Menu = ({
 
 			<BaseMenu.Portal>
 				<BaseMenu.Positioner className="menu-positioner" side={side} align={align} sideOffset={sideOffset}>
-					<BaseMenu.Popup className={classNames('menu', className)} aria-label={label}>
+					<BaseMenu.Popup className={classNames('menu', className)} aria-label={ariaLabel}>
 						{children}
 					</BaseMenu.Popup>
 				</BaseMenu.Positioner>
@@ -266,28 +221,19 @@ const Menu = ({
 	);
 };
 
-type MenuContextProps = {
-	/** The surface that opens the menu on right-click / long-press (e.g. a table row or a card). */
-	trigger: ReactNode;
-	/** Fires with the next open state whenever it changes */
-	onOpenChange?: (open: boolean) => void;
-	/** Accessible name for the popup */
-	label?: string;
-	/** The menu items, groups and separators */
-	children?: ReactNode;
-	className?: string;
-};
-
-// A right-click / long-press context menu. Shares Base UI's Menu parts with <Menu>, so the same
-// Menu.Item/Group/Separator children render identically — pair it with a row's overflow menu to put
-// the same actions on both surfaces. The popup anchors to the pointer.
-const MenuContext = ({ trigger, onOpenChange, label, className, children }: MenuContextProps) => {
+const MenuContext = ({
+	trigger,
+	onOpenChange,
+	ariaLabel,
+	className,
+	children,
+}: MenuContextProps) => {
 	return (
 		<BaseContextMenu.Root onOpenChange={(next) => onOpenChange?.(next)}>
 			<BaseContextMenu.Trigger render={trigger as React.ReactElement} />
 			<BaseMenu.Portal>
 				<BaseMenu.Positioner className="menu-positioner">
-					<BaseMenu.Popup className={classNames('menu', className)} aria-label={label}>
+					<BaseMenu.Popup className={classNames('menu', className)} aria-label={ariaLabel}>
 						{children}
 					</BaseMenu.Popup>
 				</BaseMenu.Positioner>

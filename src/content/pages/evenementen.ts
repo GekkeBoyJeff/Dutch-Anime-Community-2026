@@ -1,4 +1,4 @@
-import type { Page } from '@/lib/content';
+import type { Page } from '@/lib/site/content';
 
 // De terugblik-collages zijn eraf: twee van de drie hebben een conlogo dwars over het beeld gebrand,
 // en dat zet het merk van een ander in het onze.
@@ -17,9 +17,11 @@ export const evenementenPage: Page = {
 			type: 'ctaBanner',
 			id: 'header',
 			colorset: 'dark',
-			tagline: 'Agenda',
-			headline: 'Waar je ons tegenkomt',
-			subline: 'Elke week iets online, en een stuk of vijf keer per jaar in het echt.',
+			heading: {
+				tagline: 'Agenda',
+				title: 'Waar je ons tegenkomt',
+				intro: 'Elke week iets online, en een stuk of vijf keer per jaar in het echt.',
+			},
 			media: { type: 'image', src: '/media/hmia-2024.png', alt: 'DAC-groepsfoto op Heroes Made in Asia' },
 		},
 		{
@@ -29,9 +31,9 @@ export const evenementenPage: Page = {
 			align: 'center',
 			heading: {
 				tagline: 'Zonder aanmelden',
-				value: 'Je kunt gewoon langskomen',
+				title: 'Je kunt gewoon langskomen',
 			},
-			text: 'Op Dutch Comic Con en Heroes Made in Asia staan we met een eigen stand. Je herkent ons aan de zwarte banner met het gouden logo, met prints en bordspellen op tafel. Je hoeft je nergens voor aan te melden en je hoeft geen lid te zijn. Langslopen en even kijken mag ook; niemand vraagt je iets. Op Abunai en AnimeCon hebben we geen stand, maar loopt er wel een groep van ons rond.',
+			value: 'Op Dutch Comic Con en Heroes Made in Asia staan we met een eigen stand. Je herkent ons aan de zwarte banner met het gouden logo, met prints en bordspellen op tafel. Je hoeft je nergens voor aan te melden en je hoeft geen lid te zijn. Langslopen en even kijken mag ook; niemand vraagt je iets. Op Abunai en AnimeCon hebben we geen stand, maar loopt er wel een groep van ons rond.',
 		},
 		{
 			type: 'textMedia',
@@ -39,7 +41,7 @@ export const evenementenPage: Page = {
 			colorset: 'dark',
 			reverse: true,
 			title: 'Zo ziet onze stand eruit',
-			text: 'Art prints aan de wand, bordspellen op tafel, en een quiz die de hele dag doorloopt. Waag een potje galgje of maak een groepsfoto met de crew. Even hoi zeggen is genoeg; blijven hangen mag ook.',
+			value: 'Art prints aan de wand, bordspellen op tafel, en een quiz die de hele dag doorloopt. Waag een potje galgje of maak een groepsfoto met de crew. Even hoi zeggen is genoeg; blijven hangen mag ook.',
 			media: { type: 'image', src: '/media/dac-stand.jpg', alt: 'De DAC-stand op een conventie' },
 		},
 		{
@@ -50,7 +52,7 @@ export const evenementenPage: Page = {
 			columns: 2,
 			heading: {
 				tagline: 'In het echt',
-				value: 'De cons dit jaar en volgend jaar',
+				title: 'De cons dit jaar en volgend jaar',
 				intro: 'Datums komen van de officiële con-sites.',
 			},
 			sortLabel: 'Sorteer op',
@@ -63,7 +65,7 @@ export const evenementenPage: Page = {
 				{
 					id: 'con-dcc-2026',
 					title: 'Heroes Dutch Comic Con',
-					summary: 'Onze drukste con. Zwarte banner, gouden logo, en de anime-quiz draait de hele dag door.',
+					value: 'Onze drukste con. Zwarte banner, gouden logo, en de anime-quiz draait de hele dag door.',
 					startDate: '2026-11-21',
 					endDate: '2026-11-22',
 					location: 'Jaarbeurs, Utrecht',
@@ -75,7 +77,7 @@ export const evenementenPage: Page = {
 				{
 					id: 'con-hmia-2027',
 					title: 'Heroes Made in Asia',
-					summary: 'De grootste Azië-beurs van de Benelux. Wij staan er met een eigen stand.',
+					value: 'De grootste Azië-beurs van de Benelux. Wij staan er met een eigen stand.',
 					startDate: '2027-03-20',
 					endDate: '2027-03-21',
 					location: 'Jaarbeurs, Utrecht',
@@ -87,7 +89,7 @@ export const evenementenPage: Page = {
 				{
 					id: 'con-animecon-2027',
 					title: 'AnimeCon',
-					summary: 'Drie dagen anime en cosplay. Geen stand, wel een flinke groep DAC\'ers.',
+					value: 'Drie dagen anime en cosplay. Geen stand, wel een flinke groep DAC\'ers.',
 					startDate: '2027-04-16',
 					endDate: '2027-04-18',
 					location: 'De Broodfabriek, Rijswijk',
@@ -104,14 +106,14 @@ export const evenementenPage: Page = {
 			colorset: 'dark',
 			heading: {
 				tagline: 'Elke week',
-				value: 'Wat er steeds terugkomt',
+				title: 'Wat er steeds terugkomt',
 				intro: 'Hier hoef je niks voor te plannen. Het gebeurt gewoon.',
 			},
 			events: [
 				{
 					id: 're-watchparty',
 					title: 'Watch party',
-					summary: 'Samen kijken, met de chat ernaast. Aanzetten mag, meepraten hoeft niet.',
+					value: 'Samen kijken, met de chat ernaast. Aanzetten mag, meepraten hoeft niet.',
 					location: 'Online · Discord',
 					status: 'Elke vrijdag',
 					statusVariant: 'success',
@@ -120,7 +122,7 @@ export const evenementenPage: Page = {
 				{
 					id: 're-gamenight',
 					title: 'Game night',
-					summary: 'Meestal Minecraft, soms een toernooitje. Instappen kan halverwege.',
+					value: 'Meestal Minecraft, soms een toernooitje. Instappen kan halverwege.',
 					location: 'Online · Discord',
 					status: 'Wekelijks',
 					statusVariant: 'success',
@@ -129,7 +131,7 @@ export const evenementenPage: Page = {
 				{
 					id: 're-weerwolven',
 					title: 'Weerwolven van Wakkerdam',
-					summary: 'Je stemt één keer per dag, op je eigen moment.',
+					value: 'Je stemt één keer per dag, op je eigen moment.',
 					location: 'Online · Discord',
 					status: 'Nieuwe ronde',
 					statusVariant: 'info',
@@ -138,7 +140,7 @@ export const evenementenPage: Page = {
 				{
 					id: 're-spelletjes',
 					title: 'Spelletjesmiddag',
-					summary: 'Bordspellen, kaartspellen en veel gelach. Een meetup in het echt.',
+					value: 'Bordspellen, kaartspellen en veel gelach. Een meetup in het echt.',
 					location: 'Den Haag',
 					status: 'Terugkerend',
 					statusVariant: 'info',
@@ -147,7 +149,7 @@ export const evenementenPage: Page = {
 				{
 					id: 're-uitjes',
 					title: 'Dagjes uit',
-					summary: 'Een middag Rotterdam, een dag pretpark. Samen eropuit.',
+					value: 'Een middag Rotterdam, een dag pretpark. Samen eropuit.',
 					location: 'Wisselend',
 					status: 'Paar keer per jaar',
 					statusVariant: 'info',
@@ -161,11 +163,13 @@ export const evenementenPage: Page = {
 			colorset: 'dark',
 			tone: 'primary',
 			align: 'center',
-			tagline: 'Zin om te komen?',
-			headline: 'De agenda staat in Discord',
-			subline: 'Daar hoor je waar we afspreken, en met wie je meerijdt.',
-			primaryCta: { label: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
-			secondaryCta: { label: 'Hoe het werkt', variant: 'secondary', url: '/word-lid' },
+			heading: {
+				tagline: 'Zin om te komen?',
+				title: 'De agenda staat in Discord',
+				intro: 'Daar hoor je waar we afspreken, en met wie je meerijdt.',
+			},
+			primaryCta: { value: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
+			secondaryCta: { value: 'Hoe het werkt', variant: 'secondary', url: '/word-lid' },
 			media: { type: 'image', src: '/media/amelia-smile.webp', alt: 'Amelia, de mascotte van DAC', mode: 'fit', ratio: '1 / 1' },
 		},
 	],

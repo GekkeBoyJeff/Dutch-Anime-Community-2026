@@ -3,16 +3,10 @@
 import Button from '@/components/basics/Button';
 import Section from '@/components/basics/Section';
 
-interface ErrorProps {
-	/** The caught error; `digest` correlates this screen to a server log line in production */
-	error?: Error & { digest?: string };
-	/** Retries rendering the segment */
-	reset?: () => void;
-}
+type ErrorProps = { error: Error & { digest?: string }; reset: () => void };
 
-// Route error boundary; must be a Client Component (`reset` re-renders the segment). Uses plain
-// type-role classes instead of Title/Content so html-react-parser doesn't end up in every route's
-// client bundle.
+// Uses plain type-role classes instead of Title/Content so html-react-parser doesn't end up in
+// every route's client bundle.
 const Error = ({ error, reset }: ErrorProps) => {
 	return (
 		<main>
@@ -21,8 +15,8 @@ const Error = ({ error, reset }: ErrorProps) => {
 				<p className="content">
 					Probeer het opnieuw. Blijft het misgaan, neem dan contact met ons op.
 				</p>
-				<Button onClick={reset}>Probeer opnieuw</Button>
-				{error?.digest && <p className="content is-small">Foutcode: {error.digest}</p>}
+				<Button onClick={reset} value="Probeer opnieuw" />
+				{error.digest && <p className="content is-small">Foutcode: {error.digest}</p>}
 			</Section>
 		</main>
 	);

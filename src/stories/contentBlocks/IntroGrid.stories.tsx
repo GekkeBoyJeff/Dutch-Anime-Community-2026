@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import IntroGrid from '@/components/contentBlocks/IntroGrid';
-import { IntroGridProps } from '@/lib/content/schema/blocks/introGrid';
+import { IntroGridProps } from '@/lib/site/content/schema/blocks/introGrid';
 
 const meta: Meta<typeof IntroGrid> = {
 	title: 'ContentBlocks/IntroGrid',
@@ -25,13 +25,13 @@ type Story = StoryObj<typeof IntroGrid>;
 export const Default: Story = {
 	args: {
 		heading: {
-			value: 'Three ways to start',
+			title: 'Three ways to start',
 			intro: 'Pick the path that fits where you are.',
 		},
 		panels: [
-			{ id: 'p1', tagline: 'New', title: 'Quick start', subtitle: 'Spin up a page in minutes.', accent: 'primary', action: { label: 'Open guide', url: '/start' } },
-			{ id: 'p2', tagline: 'Build', title: 'Components', subtitle: 'Compose from primitives.', accent: 'info', action: { label: 'Browse', url: '/components' } },
-			{ id: 'p3', tagline: 'Ship', title: 'Deploy', subtitle: 'Go live the same day.', accent: 'success', action: { label: 'Read more', url: '/deploy' } },
+			{ id: 'p1', tagline: 'New', title: 'Quick start', subtitle: 'Spin up a page in minutes.', accent: 'primary', action: { label: 'Open guide', href: '/start' } },
+			{ id: 'p2', tagline: 'Build', title: 'Components', subtitle: 'Compose from primitives.', accent: 'info', action: { label: 'Browse', href: '/components' } },
+			{ id: 'p3', tagline: 'Ship', title: 'Deploy', subtitle: 'Go live the same day.', accent: 'success', action: { label: 'Read more', href: '/deploy' } },
 		],
 	},
 };

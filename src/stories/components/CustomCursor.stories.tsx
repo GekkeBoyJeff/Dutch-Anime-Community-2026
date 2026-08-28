@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import Button from '@/components/basics/Button';
 import Link from '@/components/basics/Link';
 import CustomCursor from '@/components/components/CustomCursor';
-import { CustomCursorProps } from '@/lib/content/schema/components/customCursor';
+import { CustomCursorProps } from '@/lib/site/content/schema/components/customCursor';
 
 const meta: Meta<typeof CustomCursor> = {
 	title: 'Components/CustomCursor',
@@ -28,8 +28,8 @@ const meta: Meta<typeof CustomCursor> = {
 				<div style={{ minBlockSize: '60vh', display: 'grid', placeItems: 'center', gap: '1rem' }}>
 					<p>Move your pointer around. Hover the controls to grow the ring.</p>
 					<div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-						<Button variant="secondary">A button</Button>
-						<Link url="#">A link</Link>
+						<Button variant="secondary" value="A button" />
+						<Link url="#" value="A link" />
 						<span className="hover-target" style={{ padding: '0.5rem 1rem', border: '1px solid' }}>
 							A marked target
 						</span>

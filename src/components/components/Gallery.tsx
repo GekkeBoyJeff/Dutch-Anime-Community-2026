@@ -1,17 +1,20 @@
-import type { CSSProperties, Ref } from 'react';
+import type { CSSProperties } from 'react';
 
 import Content from '@/components/basics/Content';
 import Interactive from '@/components/basics/Interactive';
 import Media from '@/components/basics/Media';
-import { classNames } from '@/lib/classNames';
-import type { GalleryProps as GallerySchemaProps } from '@/lib/content/schema/components/gallery';
+import { classNames } from '@/lib/shared/classNames';
+import type { GalleryProps as GallerySchemaProps } from '@/lib/site/content/schema/components/gallery';
 
 type GalleryProps = GallerySchemaProps;
 
-// Image gallery in masonry/grid/strip layouts. Fully server-rendered: each item is a <figure> built
-// from the Media primitive, optionally wrapped in Interactive when it links somewhere. The column
-// count drives a --columns custom property the SCSS reads for grid and masonry.
-const Gallery = ({ items = [], variant = 'grid', columns = 3, gap = 'm', className, ref }: GalleryProps & { ref?: Ref<HTMLDivElement> }) => {
+const Gallery = ({
+	items = [],
+	variant = 'grid',
+	columns = 3,
+	gap = 'm',
+	className,
+}: GalleryProps) => {
 	if (items.length === 0) {
 		return null;
 	}
@@ -19,7 +22,7 @@ const Gallery = ({ items = [], variant = 'grid', columns = 3, gap = 'm', classNa
 	const style = { '--columns': columns } as CSSProperties;
 
 	return (
-		<div ref={ref} className={classNames('gallery', `is-${variant}`, `has-gap-${gap}`, className)} style={style}>
+		<div className={classNames('gallery', `is-${variant}`, `has-gap-${gap}`, className)} style={style}>
 			{items.map((item, index) => {
 				const figure = (
 					<figure className="gallery-item">
@@ -36,8 +39,8 @@ const Gallery = ({ items = [], variant = 'grid', columns = 3, gap = 'm', classNa
 					</figure>
 				);
 
-				return item.url ? (
-					<Interactive key={index} url={item.url} className="gallery-link">
+				return item.href ? (
+					<Interactive key={index} url={item.href} className="gallery-link">
 						{figure}
 					</Interactive>
 				) : (

@@ -1,30 +1,21 @@
-import type { ComponentPropsWithoutRef, ReactNode, Ref } from 'react';
-
 import Icon from '@/components/basics/Icon';
-import { classNames } from '@/lib/classNames';
-import type { BadgeProps as BadgeSchemaProps } from '@/lib/content/schema/basics/badge';
+import { classNames } from '@/lib/shared/classNames';
+import type { BadgeProps as BadgeSchemaProps } from '@/lib/site/content/schema/basics/badge';
 
-type BadgeProps = BadgeSchemaProps &
-	ComponentPropsWithoutRef<'span'> & {
-		children?: ReactNode;
-	};
+type BadgeProps = BadgeSchemaProps;
 
-// Static status/label chip — the non-interactive sibling of Pill. A plain <span>; wrap it in
-// Interactive if it ever needs to be clickable. Colour comes entirely from the variant tokens.
 const Badge = ({
 	variant = 'neutral',
 	icon,
 	dot = false,
 	className,
-	children,
-	ref,
-	...rest
-}: BadgeProps & { ref?: Ref<HTMLSpanElement> }) => {
+	value,
+}: BadgeProps) => {
 	return (
-		<span ref={ref} className={classNames('badge', `is-${variant}`, className)} {...rest}>
+		<span className={classNames('badge', `is-${variant}`, className)}>
 			{dot && <span className="badge-dot" aria-hidden="true" />}
-			{icon && <Icon name={icon} className='badge-icon' />}
-			{children}
+			{icon && <Icon name={icon} className="badge-icon" />}
+			{value}
 		</span>
 	);
 };

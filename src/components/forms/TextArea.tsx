@@ -1,12 +1,11 @@
 'use client';
 
 import { Field } from '@base-ui/react/field';
-import type { ComponentPropsWithoutRef, Ref } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { TextAreaProps as TextAreaSchemaProps } from '@/lib/content/schema/forms/textArea';
+import { classNames } from '@/lib/shared/classNames';
+import type { TextAreaProps as TextAreaSchemaProps } from '@/lib/site/content/schema/forms/textArea';
 
-type TextAreaProps = TextAreaSchemaProps & Omit<ComponentPropsWithoutRef<'textarea'>, keyof TextAreaSchemaProps>;
+type TextAreaProps = TextAreaSchemaProps;
 
 // A multi-line text control. There is no Base UI Textarea primitive, so we render Field.Control as
 // a <textarea> via its `render` prop: that keeps the id/name/aria-describedby/aria-invalid wiring
@@ -16,7 +15,7 @@ const TextArea = ({
 	className,
 	ref,
 	...rest
-}: TextAreaProps & { ref?: Ref<HTMLTextAreaElement> }) => {
+}: TextAreaProps) => {
 	// The textarea-specific attributes ride on the rendered <textarea>, not on Field.Control (whose
 	// own props are typed for an <input>). Field.Control still merges in the id/name/aria wiring.
 	return (

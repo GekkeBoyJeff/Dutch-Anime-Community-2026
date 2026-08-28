@@ -2,27 +2,23 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-interface CountUpProps {
-	/** The value the counter animates towards */
-	value: number;
-	/** Text rendered before the number */
-	prefix?: string;
-	/** Text rendered after the number */
-	suffix?: string;
-	/** Number of decimals shown */
-	decimals?: number;
-	/** Animation duration in milliseconds */
-	duration?: number;
-}
+import type { CountUpProps as CountUpSchemaProps } from '@/lib/site/content/schema/basics/countUp';
+
+type CountUpProps = CountUpSchemaProps;
 
 const formatValue = (value: number, decimals: number, prefix: string, suffix: string) => {
 	return `${prefix}${value.toLocaleString('nl-NL', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${suffix}`;
 };
 
-// Counts up to `value` once the number scrolls into view. Server-rendered at its FINAL value, so
-// crawlers and no-JS visitors read real data; the client resets to 0 on mount and animates with an
-// easeOutExpo curve (https://easings.net/#easeOutExpo). Reduced motion keeps the final value untouched.
-const CountUp = ({ value, prefix = '', suffix = '', decimals = 0, duration = 1800 }: CountUpProps) => {
+// The initial state is the final value on purpose: it is what the server renders, so crawlers and
+// no-JS visitors read real data. Only the client resets to 0 to animate.
+const CountUp = ({
+	value,
+	prefix = '',
+	suffix = '',
+	decimals = 0,
+	duration = 1800,
+}: CountUpProps) => {
 	const ref = useRef<HTMLSpanElement | null>(null);
 	const [display, setDisplay] = useState(() => formatValue(value, decimals, prefix, suffix));
 

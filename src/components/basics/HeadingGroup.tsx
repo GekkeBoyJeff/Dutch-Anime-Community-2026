@@ -1,34 +1,28 @@
-import type { ElementType, Ref } from 'react';
-
 import Content from '@/components/basics/Content';
 import Title from '@/components/basics/Title';
-import { classNames } from '@/lib/classNames';
-import type { HeadingGroupProps } from '@/lib/content/schema/basics/headingGroup';
+import { classNames } from '@/lib/shared/classNames';
+import type { HeadingGroupProps as HeadingGroupSchemaProps } from '@/lib/site/content/schema/basics/headingGroup';
 
-type HeadingGroupComponentProps = HeadingGroupProps & {
-	element?: ElementType;
-};
+type HeadingGroupProps = HeadingGroupSchemaProps;
 
-// Tagline + Title + intro cluster — the section-heading composite blocks open with. Renders nothing
-// when empty, so a block can pass its optional fields straight through.
 const HeadingGroup = ({
+	element = 'div',
 	title,
 	size = 2,
 	tagline,
 	intro,
 	orientation = 'normal',
 	align = 'start',
-	element: Tag = 'div',
 	className,
-	ref,
-}: HeadingGroupComponentProps & { ref?: Ref<HTMLElement> }) => {
+}: HeadingGroupProps) => {
 	if (!title && !tagline && !intro) {
 		return null;
 	}
 
+	const Tag = element as React.ElementType;
+
 	return (
 		<Tag
-			ref={ref}
 			className={classNames(
 				'heading-group',
 				orientation === 'reversed' && 'is-reversed',

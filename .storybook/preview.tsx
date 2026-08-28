@@ -12,16 +12,13 @@ import { withJsonSchema, withJsonSchemaArgTypes } from './addons/json-schema/pre
 import { light, dark } from './theme';
 import '@/styles';
 
-// Global autodocs: every component story automatically gets a "Docs" tab with a props table
-// (fed by the component prop types + TSDoc) and all its stories.
 export const tags = ['autodocs'];
 
 export const parameters = {
-	// App Router context for stories: without it usePathname() returns null in the Storybook canvas and
-	// app-router components (e.g. Navigation's active-route check) crash. Mocks the pathname to '/'.
+	// Without it usePathname() returns null in the canvas and app-router components (e.g. Navigation's
+	// active-route check) crash.
 	nextjs: { appDirectory: true },
 	options: {
-		// A fixed, readable sidebar order instead of alphabetical.
 		storySort: {
 			order: [
 				'Start here',
@@ -36,21 +33,13 @@ export const parameters = {
 		},
 	},
 	docs: {
-		// Make the docs pages follow the light/dark toggle too (not just the manager chrome).
 		container: DarkModeDocsContainer,
-		// Right-hand "On this page" index. headingSelector must include h2 (the default is h3 only,
-		// which left section-only pages with an empty or partial TOC). ignoreSelector drops headings
-		// rendered inside a story preview (e.g. a Hero's own <h1>) so only the doc's own headings show.
 		toc: {
 			headingSelector: 'h2, h3',
 			ignoreSelector: '.docs-story *',
 			title: 'On this page',
 		},
 	},
-	// One light/dark switch for the whole workshop. The sun/moon toggle (top toolbar) is the single
-	// source of truth: it themes the Storybook chrome + docs here, and the decorator below mirrors it
-	// onto the preview's [data-colorset] so the rendered components flip in lockstep. (A specific story
-	// can still pin its own colorset by rendering inside a <Section colorset="…">.)
 	darkMode: {
 		current: 'light',
 		light,
@@ -58,11 +47,6 @@ export const parameters = {
 	},
 };
 
-// DRY actions: every event-handler prop (onClick, onChange, onValueChange, …) is auto-logged to the
-// Actions panel, library-wide, with no per-story boilerplate. We stamp `action` onto each handler
-// argType here; Storybook's built-in args enhancer (addActionsFromArgTypes) then injects a spy that
-// logs — but only when a story hasn't supplied its own handler, so explicit `fn()` args still win.
-//
 // Match the `onX` NAME only — NOT every function-typed prop. Data-transform functions (itemToStringLabel,
 // filter, renderItem, comparators, …) are not events; spying them would replace them with a no-op that
 // returns undefined, breaking any component that relies on their return value (e.g. Combobox labels).
@@ -82,8 +66,6 @@ export const argTypesEnhancers: ArgTypesEnhancer[] = [
 	withJsonSchemaArgTypes,
 ];
 
-// Toolbar switch for text direction so any story can be checked in LTR or RTL without a second story.
-// (Light/dark is the sun/moon toggle above; the brand theme is the addon-themes toolbar below.)
 export const globalTypes = {
 	direction: {
 		description: 'Text direction',
@@ -103,12 +85,7 @@ export const initialGlobals = {
 	direction: 'ltr',
 };
 
-// Mirror the single light/dark toggle onto the preview <body> (exactly as the app does with
-// <body data-colorset>), and apply the chosen text direction. The whole canvas reflects them, and any
-// component without its own colorset inherits; a component that sets its own colorset still wins.
 const withPreviewContext: Decorator = (Story, context) => {
-	// Storybook's dark-mode + preview-api hooks, valid inside a decorator. The react-hooks rule can't
-	// tell them apart from React's, so disable it for this idiomatic pattern.
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const isDark = useDarkMode();
 	const { direction } = context.globals;
@@ -122,14 +99,10 @@ const withPreviewContext: Decorator = (Story, context) => {
 	return <Story />;
 };
 
-// Dashboard-tier stories are the admin work-surface: the same DAC palette as the site, on the page
-// background instead of a white canvas. No theme override — the toolbar's data-theme on <html> and
-// data-colorset on <body> already resolve the semantic tokens correctly.
 const withDashboardSurface: Decorator = (Story, context) => {
 	if (!context.title?.startsWith('Dashboard/')) return <Story />;
 
-	// Mirrors what AdminShell mounts around every management route: the toast provider and its outlet.
-	// Screens that report success or failure call useToastManager, which throws without it.
+	// Screens that report success or failure call useToastManager, which throws without this provider.
 	return (
 		<div style={{ background: 'var(--page)', color: 'var(--color)', padding: '2rem', borderRadius: '1rem' }}>
 			<NotificationProvider>
@@ -144,10 +117,6 @@ export const decorators = [
 	withDashboardSurface,
 	withPreviewContext,
 	withJsonSchema,
-	// Brand-theme toolbar (a separate axis from light/dark): sets data-theme on <html>. 'dac' and
-	// 'sepia' are the themes in the THEME section of src/styles/base.scss — add more there and here.
-	// The default is 'dac' because the site itself renders under data-theme="dac" (src/app/layout.tsx);
-	// reviewing stories under any other palette would not represent what ships.
 	withThemeByDataAttribute({
 		themes: { default: 'default', dac: 'dac', sepia: 'sepia' },
 		defaultTheme: 'dac',

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import ToggleGroup from '@/components/components/ToggleGroup';
-import { ToggleGroupProps } from '@/lib/content/schema/components/toggleGroup';
+import { ToggleGroupProps } from '@/lib/site/content/schema/components/toggleGroup';
 
 const meta: Meta<typeof ToggleGroup> = {
 	title: 'Components/ToggleGroup',
@@ -31,7 +31,7 @@ type Story = StoryObj<typeof ToggleGroup>;
 
 export const Default: Story = {
 	args: {
-		'aria-label': 'View density',
+		ariaLabel: 'View density',
 		items: [
 			{ value: 'list', label: 'List' },
 			{ value: 'grid', label: 'Grid' },
@@ -50,7 +50,7 @@ export const Multiple: Story = {
 	...Default,
 	args: {
 		...Default.args,
-		'aria-label': 'Text formatting',
+		ariaLabel: 'Text formatting',
 		multiple: true,
 		defaultValue: ['bold'],
 		items: [
@@ -65,7 +65,7 @@ export const FilterChips: Story = {
 	...Default,
 	args: {
 		...Default.args,
-		'aria-label': 'Filter by genre',
+		ariaLabel: 'Filter by genre',
 		multiple: true,
 		defaultValue: ['shonen'],
 		items: [
@@ -81,7 +81,7 @@ export const WithIcons: Story = {
 	...Default,
 	args: {
 		...Default.args,
-		'aria-label': 'Alignment',
+		ariaLabel: 'Alignment',
 		segmented: true,
 		required: true,
 		defaultValue: ['left'],

@@ -1,29 +1,32 @@
 import parse from 'html-react-parser';
-import type { ReactNode, Ref } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { TitleProps as TitleSchemaProps } from '@/lib/content/schema/basics/title';
+import Interactive from '@/components/basics/Interactive';
+import { classNames } from '@/lib/shared/classNames';
+import type { TitleProps as TitleSchemaProps } from '@/lib/site/content/schema/basics/title';
 
-type TitleProps = TitleSchemaProps & {
-	/** Child content; takes precedence over value */
-	children?: ReactNode;
-};
+type TitleProps = TitleSchemaProps;
 
-// Picks the semantic tag (h1–h6 when `element` is omitted) and the responsive type role via the
-// .title.is-N class. Because the class — not the tag — drives the type, size and level decouple.
 const Title = ({
 	element,
 	size = 2,
 	className,
 	value,
-	children,
-	ref,
-}: TitleProps & { ref?: Ref<HTMLElement> }) => {
+	href,
+	linkClassName,
+	id,
+}: TitleProps) => {
 	const Element = (element || `h${size}`) as React.ElementType;
+	const content = value && parse(value);
 
 	return (
-		<Element ref={ref} className={classNames('title', `is-${size}`, className)}>
-			{children ? children : value && parse(value)}
+		<Element className={classNames('title', `is-${size}`, className)} id={id}>
+			{href ? (
+				<Interactive url={href} className={linkClassName}>
+					{content}
+				</Interactive>
+			) : (
+				content
+			)}
 		</Element>
 	);
 };

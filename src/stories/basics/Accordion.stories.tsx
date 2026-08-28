@@ -1,14 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Accordion from '@/components/basics/Accordion';
-import AccordionItem from '@/components/basics/AccordionItem';
-import { AccordionProps } from '@/lib/content/schema/basics/accordion';
+import { AccordionProps } from '@/lib/site/content/schema/basics/accordion';
 
-const items = [
-	{ value: 'shipping', title: 'How long does shipping take?', content: 'Most orders arrive within three to five working days.' },
-	{ value: 'returns', title: 'What is the return policy?', content: 'Unworn items can be returned within thirty days for a full refund.' },
-	{ value: 'support', title: 'How do I contact support?', content: 'Reach the team any day of the week through the in-app chat.' },
-];
+const shipping = { id: 'shipping', title: 'How long does shipping take?', value: 'Most orders arrive within three to five working days.' };
+const returns = { id: 'returns', title: 'What is the return policy?', value: 'Unworn items can be returned within thirty days for a full refund.' };
+const support = { id: 'support', title: 'How do I contact support?', value: 'Reach the team any day of the week through the in-app chat.' };
+
+const items = [shipping, returns, support];
 
 const meta: Meta<typeof Accordion> = {
 	title: 'Basics/Accordion',
@@ -17,7 +16,7 @@ const meta: Meta<typeof Accordion> = {
 		docs: {
 			description: {
 				component:
-					'A collapsible disclosure group built from AccordionItem. Pass `items` for the data-driven case (a Server page can render from validated content) or compose <AccordionItem> children by hand. Wraps Base UI Accordion for the keyboard, ARIA and height-measurement wiring.',
+					'A collapsible disclosure group built from AccordionItem rows. Wraps Base UI Accordion for the keyboard, ARIA and height-measurement wiring.',
 			},
 		},
 		jsonSchema: { schema: AccordionProps },
@@ -35,42 +34,21 @@ export const Default: Story = {
 	args: {
 		items,
 		multiple: false,
-		defaultValue: ['shipping'],
+		defaultOpen: ['shipping'],
 	},
 };
 
 export const Multiple: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		multiple: true,
-		defaultValue: ['shipping', 'returns'],
+		defaultOpen: ['shipping', 'returns'],
 	},
 };
 
 export const WithDisabledItem: Story = {
-	...Default,
 	args: {
 		...Default.args,
-		items: [items[0]!, { ...items[1]!, disabled: true }, items[2]!],
+		items: [shipping, { ...returns, disabled: true }, support],
 	},
-};
-
-// Composed from AccordionItem children instead of the `items` array — for full control over content.
-export const Composed: Story = {
-	...Default,
-	args: {
-		...Default.args,
-		items: undefined,
-	},
-	render: (args) => (
-		<Accordion {...args} defaultValue={['a']}>
-			<AccordionItem value="a" title="Composed item one">
-				Built from AccordionItem children directly, so the panel can hold any JSX.
-			</AccordionItem>
-			<AccordionItem value="b" title="Composed item two">
-				Each item takes its own title and children.
-			</AccordionItem>
-		</Accordion>
-	),
 };

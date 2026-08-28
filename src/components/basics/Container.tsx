@@ -1,26 +1,22 @@
-import type { ElementType, ReactNode, Ref } from 'react';
+import type { ComponentPropsWithoutRef } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { ContainerProps as ContainerSchemaProps } from '@/lib/content/schema/basics/container';
+import { classNames } from '@/lib/shared/classNames';
+import type { ContainerProps as ContainerSchemaProps } from '@/lib/site/content/schema/basics/container';
 
-type ContainerProps = ContainerSchemaProps & {
-	element?: ElementType;
-	children?: ReactNode;
-};
+type ContainerProps = ContainerSchemaProps;
 
-// Centres content at a readable max-width with a responsive horizontal gutter. `full` removes the
-// max-width for full-bleed sections; `gutter` overrides the inherited section gutter; `element` makes
-// it polymorphic (defaults to a plain <div>, pass e.g. 'section' or 'main' to change the tag).
 const Container = ({
+	element = 'div',
 	full = false,
 	gutter,
-	element: Tag = 'div',
 	className,
 	children,
-	ref,
-}: ContainerProps & { ref?: Ref<HTMLElement> }) => {
+	...rest
+}: ContainerProps) => {
+	const Tag = element as React.ElementType;
+
 	return (
-		<Tag ref={ref} className={classNames('container', full && 'is-full', gutter && `has-gutter-${gutter}`, className)}>
+		<Tag className={classNames('container', full && 'is-full', gutter && `has-gutter-${gutter}`, className)} {...rest}>
 			{children}
 		</Tag>
 	);

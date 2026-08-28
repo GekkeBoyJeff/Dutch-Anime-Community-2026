@@ -1,13 +1,10 @@
-import type { Ref } from 'react';
-
 import Badge from '@/components/basics/Badge';
 import Content from '@/components/basics/Content';
-import Interactive from '@/components/basics/Interactive';
 import Media from '@/components/basics/Media';
 import Title from '@/components/basics/Title';
-import { classNames } from '@/lib/classNames';
-import type { EventCardProps, EventCardTranslations } from '@/lib/content';
-import { formatDate } from '@/lib/formatDate';
+import { classNames } from '@/lib/shared/classNames';
+import { formatDate } from '@/lib/shared/formatDate';
+import type { EventCardProps as EventCardSchemaProps, EventCardTranslations } from '@/lib/site/content/schema/components/eventCard';
 
 export type { EventCardTranslations };
 
@@ -16,12 +13,11 @@ const DEFAULT_TRANSLATIONS: Required<EventCardTranslations> = {
 	locationLabel: 'Location',
 };
 
-// Event card: a standout date chip, title, summary, time range and location, plus an optional
-// status badge and lead media. A Server Component; whole-card-clickable via a stretched link on the
-// title. Dates are formatted SSR-safe so hydration never mismatches.
+type EventCardProps = EventCardSchemaProps;
+
 const EventCard = ({
 	title,
-	summary,
+	value,
 	startDate,
 	endDate,
 	location,
@@ -31,8 +27,7 @@ const EventCard = ({
 	href,
 	translations,
 	className,
-	ref,
-}: EventCardProps & { ref?: Ref<HTMLElement> }) => {
+}: EventCardProps) => {
 	const t = { ...DEFAULT_TRANSLATIONS, ...translations };
 	const day = startDate ? formatDate(startDate, { day: 'numeric' }) : undefined;
 	const month = startDate ? formatDate(startDate, { month: 'short' }) : undefined;
@@ -42,7 +37,6 @@ const EventCard = ({
 
 	return (
 		<article
-			ref={ref}
 			className={classNames('card', 'event-card',href && 'is-clickable', media && 'has-media', className)}
 		>
 			{media && (
@@ -61,22 +55,19 @@ const EventCard = ({
 
 				<div className="event-card-detail">
 					{status && (
-						<Badge variant={statusVariant} className="event-card-status">
-							{status}
-						</Badge>
+						<Badge variant={statusVariant} value={status} className="event-card-status" />
 					)}
 
-					{href ? (
-						<Title element="h3" size={4} className="event-card-title">
-							<Interactive url={href} className="event-card-link">
-								{title}
-							</Interactive>
-						</Title>
-					) : (
-						<Title element="h3" size={4} value={title} className="event-card-title" />
-					)}
+					<Title
+						element="h3"
+						size={4}
+						className="event-card-title"
+						value={title}
+						href={href}
+						linkClassName="event-card-link"
+					/>
 
-					{summary && <Content size="small" className="event-card-summary" value={summary} />}
+					{value && <Content size="small" className="event-card-summary" value={value} />}
 
 					{(startTime || location) && (
 						<dl className="event-card-meta">

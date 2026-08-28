@@ -1,25 +1,21 @@
-import type { ComponentPropsWithoutRef, ElementType, Ref } from 'react';
+import type { ComponentPropsWithoutRef, ElementType } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { SectionProps as SectionSchemaProps } from '@/lib/content/schema/basics/section';
+import { classNames } from '@/lib/shared/classNames';
+import type { SectionProps as SectionSchemaProps } from '@/lib/site/content/schema/basics/section';
 
-type SectionProps = SectionSchemaProps & ComponentPropsWithoutRef<'section'>;
+type SectionProps = SectionSchemaProps;
 
-// Carries the colorset attribute, so everything beneath it adapts without a colour prop. An
-// omitted colorset is left off the element, so it inherits from an ancestor instead.
 const Section = ({
 	element = 'section',
 	colorset,
 	className,
 	children,
-	ref,
 	...rest
-}: SectionProps & { ref?: Ref<HTMLElement> }) => {
+}: SectionProps) => {
 	const Tag = element as ElementType;
 
 	return (
 		<Tag
-			ref={ref}
 			className={classNames('section', className)}
 			data-colorset={colorset}
 			{...rest}

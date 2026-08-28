@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Hero from '@/components/contentBlocks/Hero';
-import { HeroProps } from '@/lib/content/schema/blocks/hero';
+import { HeroProps } from '@/lib/site/content/schema/blocks/hero';
 
 const meta: Meta<typeof Hero> = {
 	title: 'ContentBlocks/Hero',
@@ -25,11 +25,11 @@ type Story = StoryObj<typeof Hero>;
 export const Default: Story = {
 	args: {
 		title: 'Vind je crew. Kijk samen. Voel je thuis.',
-		text: 'De grootste Nederlandstalige anime- en mangacommunity — voor en door fans. Bij ons is er altijd iemand online en altijd een plek voor jou.',
+		value: 'De grootste Nederlandstalige anime- en mangacommunity — voor en door fans. Bij ons is er altijd iemand online en altijd een plek voor jou.',
 		actions: [
-			{ label: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
-			{ label: 'Bekijk evenementen', variant: 'secondary', url: '/evenementen' },
-			{ label: 'Hoe werkt het?', variant: 'ghost', url: '/word-lid' },
+			{ value: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
+			{ value: 'Bekijk evenementen', variant: 'secondary', url: '/evenementen' },
+			{ value: 'Hoe werkt het?', variant: 'ghost', url: '/word-lid' },
 		],
 	},
 };
@@ -53,9 +53,9 @@ export const Cover: Story = {
 		...MediaPanel.args,
 		variant: 'cover',
 		socials: [
-			{ label: 'Discord', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
-			{ label: 'Instagram', url: 'https://www.instagram.com/dutchanimecommunity/', target: '_blank' },
-			{ label: 'TikTok', url: 'https://www.tiktok.com/@dutchanimecommunity', target: '_blank' },
+			{ value: 'Discord', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
+			{ value: 'Instagram', url: 'https://www.instagram.com/dutchanimecommunity/', target: '_blank' },
+			{ value: 'TikTok', url: 'https://www.tiktok.com/@dutchanimecommunity', target: '_blank' },
 		],
 	},
 	parameters: { layout: 'fullscreen' },

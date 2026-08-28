@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 
 import NumberField from '@/components/forms/NumberField';
-import { NumberFieldProps } from '@/lib/content/schema/forms/numberField';
+import { NumberFieldProps } from '@/lib/site/content/schema/forms/numberField';
 
 const meta: Meta<typeof NumberField> = {
 	title: 'Forms/NumberField',
@@ -54,7 +54,7 @@ export const Currency: Story = {
 		step: 5,
 		min: 0,
 		locale: 'nl-NL',
-		format: { style: 'currency', currency: 'EUR' },
+		format: { format: 'currency', currency: 'EUR' },
 	},
 };
 
@@ -67,7 +67,7 @@ export const Percent: Story = {
 		step: 0.05,
 		min: 0,
 		max: 1,
-		format: { style: 'percent' },
+		format: { format: 'percent' },
 	},
 };
 

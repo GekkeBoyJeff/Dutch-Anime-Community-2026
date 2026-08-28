@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import EventTeaser from '@/components/contentBlocks/EventTeaser';
-import { EventTeaserProps } from '@/lib/content/schema/blocks/eventTeaser';
+import { EventTeaserProps } from '@/lib/site/content/schema/blocks/eventTeaser';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof EventTeaser> = {
@@ -28,15 +28,15 @@ type Story = StoryObj<typeof EventTeaser>;
 
 export const Default: Story = {
 	args: {
-		heading: { value: 'Upcoming events', tagline: 'Save the date', intro: 'A few things happening soon.' },
-		description: 'Tickets go fast — grab yours early.',
+		heading: { title: 'Upcoming events', tagline: 'Save the date', intro: 'A few things happening soon.' },
+		value: 'Tickets go fast — grab yours early.',
 		viewAllUrl: '/events',
 		viewAllLabel: 'View all events',
 		events: [
 			{
 				id: 'e1',
 				title: 'Spring meetup',
-				summary: 'An evening of talks and snacks.',
+				value: 'An evening of talks and snacks.',
 				media: demoImage,
 				href: '#',
 				startDate: '2026-04-12T18:00:00Z',
@@ -48,7 +48,7 @@ export const Default: Story = {
 			{
 				id: 'e2',
 				title: 'Summer screening',
-				summary: 'Outdoor showing under the stars.',
+				value: 'Outdoor showing under the stars.',
 				media: demoImage,
 				href: '#',
 				startDate: '2026-06-20T20:30:00Z',
@@ -59,7 +59,7 @@ export const Default: Story = {
 			{
 				id: 'e3',
 				title: 'Autumn workshop',
-				summary: 'Hands-on session for all levels.',
+				value: 'Hands-on session for all levels.',
 				media: demoImage,
 				href: '#',
 				startDate: '2026-09-05T13:00:00Z',

@@ -26,18 +26,20 @@ import StickyShowcase from '@/components/contentBlocks/StickyShowcase';
 import SubscribeToNewsletter from '@/components/contentBlocks/SubscribeToNewsletter';
 import TextMedia from '@/components/contentBlocks/TextMedia';
 import TitleText from '@/components/contentBlocks/TitleText';
-import type { Block } from '@/lib/content';
+import type { Block } from '@/lib/site/content/schema/blocks';
 
-interface BlocksProps {
-	/** The block list: each item has a `type` (see REGISTRY) plus its own props */
+type BlocksProps = {
 	blocks?: Block[];
-}
+};
 
-// Maps each block type to its renderer. The mapped type ties every key to that block's exact props,
-// so a mis-wired entry (e.g. hero → Reviews) is a compile error. One place to wire up a new block.
-// `eager` rides along for every block; one with no image to prioritise simply doesn't declare it.
+type BlockRenderProps = {
+	eager?: boolean;
+};
+
+type BlockRenderer<BlockData> = React.ComponentType<BlockData & BlockRenderProps>;
+
 type BlockRenderers = {
-	[B in Block as B['type']]: React.ComponentType<Omit<B, 'type' | 'id'> & { eager?: boolean }>;
+	[B in Block as B['type']]: BlockRenderer<Omit<B, 'type' | 'id'>>;
 };
 
 export const REGISTRY: BlockRenderers = {
@@ -71,13 +73,10 @@ export const REGISTRY: BlockRenderers = {
 	proofTicker: ProofTicker,
 };
 
-// Renders a page's block list. Every type resolves — REGISTRY covers the same union the content is
-// validated against — so the cast only ties the indexed access to the matching union member.
 const Blocks = ({ blocks = [] }: BlocksProps) => {
 	return blocks.map(({ type, id, ...props }, index) => {
-		const Renderer = REGISTRY[type] as React.ComponentType<typeof props & { eager?: boolean }>;
+		const Renderer = REGISTRY[type] as BlockRenderer<typeof props>;
 
-		// Only the leading block can hold the largest contentful paint, and only here is that known.
 		return <Renderer key={id ?? `${type}-${index}`} {...props} eager={index === 0} />;
 	});
 };

@@ -1,13 +1,12 @@
 import { pages } from '@/content/pages';
 import { notFoundPage } from '@/content/pages/notFound';
 import { structures } from '@/content/structures';
-import { Page, SiteStructures } from '@/lib/content/schema';
+import { Page, SiteStructures } from '@/lib/site/content/schema';
 
 // One-off migration of the current TS content into Supabase. Run with the service-role env loaded:
 //   set -a && . ./.env.local && set +a && npm run seed
 // Uses plain fetch against PostgREST (no supabase-js) so it works on any Node without a WebSocket
-// polyfill. Idempotent: `Prefer: resolution=merge-duplicates` upserts on the primary key. Each row is
-// validated first, so a malformed source can never land in the DB.
+// polyfill.
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!url || !key) {

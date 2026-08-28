@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Field from '@/components/forms/Field';
 import TextArea from '@/components/forms/TextArea';
-import { TextAreaProps } from '@/lib/content/schema/forms/textArea';
+import { TextAreaProps } from '@/lib/site/content/schema/forms/textArea';
 
 const meta: Meta<typeof TextArea> = {
 	title: 'Forms/TextArea',

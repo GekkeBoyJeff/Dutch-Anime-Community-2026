@@ -1,31 +1,16 @@
 'use client';
 
 import { useId, useRef, useState } from 'react';
-import type { ChangeEvent, DragEvent, ReactNode, Ref } from 'react';
+import type { ChangeEvent, DragEvent } from 'react';
 
 import Content from '@/components/basics/Content';
 import Icon from '@/components/basics/Icon';
 import Spinner from '@/components/basics/Spinner';
 import useHaptics from '@/hooks/useHaptics';
-import { classNames } from '@/lib/classNames';
-import type { FileUploadProps as FileUploadSchemaProps } from '@/lib/content/schema/forms/fileUpload';
+import { classNames } from '@/lib/shared/classNames';
+import type { FileUploadProps as FileUploadSchemaProps } from '@/lib/site/content/schema/forms/fileUpload';
 
-export type FileUploadProps = FileUploadSchemaProps & {
-	/** Prompt shown inside the dropzone */
-	label?: ReactNode;
-	/** Helper text under the prompt (formats, size limits) */
-	hint?: ReactNode;
-	/** Reject files larger than this many bytes (enforced on both the picker and drag-drop) */
-	maxSize?: number;
-	/** Caps how many files are kept from a multi-select or drop; extras are rejected */
-	maxFiles?: number;
-	/** A submit/processing is in flight — dims the dropzone and blocks new drops */
-	busy?: boolean;
-	/** Show the picked-file list under the dropzone; off when the caller renders its own result list */
-	showFileList?: boolean;
-	/** Fires with the accepted files whenever the selection changes */
-	onFiles?: (files: File[]) => void;
-};
+type FileUploadProps = FileUploadSchemaProps;
 
 // A drag-and-drop file picker over a real <input type="file">, so files still participate in native
 // forms and the keyboard/screen-reader path is the input itself. A small client island: it tracks the
@@ -42,10 +27,10 @@ const FileUpload = ({
 	hint,
 	showFileList = true,
 	onFiles,
+	ariaLabel,
 	className,
 	ref,
-	...rest
-}: FileUploadProps & { ref?: Ref<HTMLInputElement> }) => {
+}: FileUploadProps) => {
 	const { haptic } = useHaptics();
 	const inputId = useId();
 	const localRef = useRef<HTMLInputElement>(null);
@@ -105,9 +90,9 @@ const FileUpload = ({
 				onDrop={handleDrop}
 				onDragOver={handleDragOver}
 			>
-				{busy ? <Spinner size="s" label="Bezig" className="file-upload-glyph-spinner" /> : <Icon name="upload" className="file-upload-glyph" />}
-				<Content element="span" className="file-upload-prompt">{label}</Content>
-				{hint && <Content element="span" className="file-upload-hint">{hint}</Content>}
+				{busy ? <Spinner size="s" ariaLabel="Bezig" className="file-upload-glyph-spinner" /> : <Icon name="upload" className="file-upload-glyph" />}
+				<span className="content file-upload-prompt">{label}</span>
+				{hint && <span className="content file-upload-hint">{hint}</span>}
 				<input
 					ref={inputRef}
 					id={inputId}
@@ -118,7 +103,7 @@ const FileUpload = ({
 					multiple={multiple}
 					disabled={isBlocked}
 					onChange={handleChange}
-					{...rest}
+					aria-label={ariaLabel}
 				/>
 			</label>
 

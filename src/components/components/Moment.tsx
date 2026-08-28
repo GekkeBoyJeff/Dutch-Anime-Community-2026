@@ -1,43 +1,23 @@
-import type { ReactNode, Ref } from 'react';
-
 import Interactive from '@/components/basics/Interactive';
 import Skeleton from '@/components/basics/Skeleton';
-import { classNames } from '@/lib/classNames';
+import { classNames } from '@/lib/shared/classNames';
+import type { MomentProps as MomentSchemaProps, MomentsProps as MomentsSchemaProps } from '@/lib/site/content/schema/components/moment';
 
-import type { Tone } from './tone';
+type MomentProps = MomentSchemaProps;
 
-export interface MomentProps {
-	/** The time marker on the rail — a short date or clock time */
-	marker: string;
-	title: ReactNode;
-	/** Supporting line: a time range, a place */
-	meta?: ReactNode;
-	/** Where this moment sits relative to now; dims what has passed and rings what is current */
-	state?: 'past' | 'now' | 'upcoming';
-	tone?: Tone;
-	href?: string;
-	trailing?: ReactNode;
-	loading?: boolean;
-	className?: string;
-}
+type MomentListProps = MomentsSchemaProps;
 
-interface MomentListProps {
-	children?: ReactNode;
-	className?: string;
-	ref?: Ref<HTMLOListElement>;
-}
-
-// Draws the vertical rail; each Moment paints its own segment of it.
-const MomentList = ({ children, className, ref }: MomentListProps) => (
-	<ol ref={ref} className={classNames('moment-list', className)}>
-		{children}
-	</ol>
-);
-
-// Something happening at a point in time: a marker on a rail, a title, and supporting meta. Stacked
-// inside Moment.List the markers and their connecting segments become a real timeline, so a reader
-// sees order and the gaps between entries instead of comparing dates.
-const Moment = ({ marker, title, meta, state = 'upcoming', tone = 'neutral', href, trailing, loading = false, className, ref }: MomentProps & { ref?: Ref<HTMLLIElement> }) => {
+const Moment = ({
+	marker,
+	title,
+	meta,
+	state = 'upcoming',
+	tone = 'neutral',
+	href,
+	trailing,
+	loading = false,
+	className,
+}: MomentProps) => {
 	const body = (
 		<>
 			<span className="moment-body">
@@ -49,7 +29,7 @@ const Moment = ({ marker, title, meta, state = 'upcoming', tone = 'neutral', hre
 	);
 
 	return (
-		<li ref={ref} className={classNames('moment', `is-${state}`, `is-${tone}`, loading && 'is-loading', className)} aria-hidden={loading || undefined}>
+		<li className={classNames('moment', `is-${state}`, `is-${tone}`, loading && 'is-loading', className)} aria-hidden={loading || undefined}>
 			<span className="moment-rail" aria-hidden="true">
 				<span className="moment-dot" />
 			</span>
@@ -64,6 +44,17 @@ const Moment = ({ marker, title, meta, state = 'upcoming', tone = 'neutral', hre
 		</li>
 	);
 };
+
+const MomentList = ({
+	items,
+	className,
+}: MomentListProps) => (
+	<ol className={classNames('moment-list', className)}>
+		{items.map((item, index) => (
+			<Moment key={index} {...item} />
+		))}
+	</ol>
+);
 
 Moment.List = MomentList;
 

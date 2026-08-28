@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import Button from '@/components/basics/Button';
 import Drawer from '@/components/components/Drawer';
-import { DrawerProps } from '@/lib/content/schema/components/drawer';
+import { DrawerProps } from '@/lib/site/content/schema/components/drawer';
 
 const meta: Meta<typeof Drawer> = {
 	title: 'Components/Drawer',
@@ -38,19 +38,15 @@ export const Default: Story = {
 
 		return (
 			<>
-				<Button onClick={() => setOpen(true)}>Open drawer</Button>
+				<Button onClick={() => setOpen(true)} value="Open drawer" />
 				<Drawer
 					{...args}
 					open={open}
 					onOpenChange={setOpen}
 					footer={
 						<>
-							<Button variant="ghost" onClick={() => setOpen(false)}>
-								Reset
-							</Button>
-							<Button variant="primary" onClick={() => setOpen(false)}>
-								Apply
-							</Button>
+							<Button variant="ghost" onClick={() => setOpen(false)} value="Reset" />
+							<Button variant="primary" onClick={() => setOpen(false)} value="Apply" />
 						</>
 					}
 				>
@@ -63,10 +59,10 @@ export const Default: Story = {
 
 export const Left: Story = {
 	args: { position: 'left', title: 'Navigation' },
-	render: (args) => <Drawer {...args} trigger={<Button>Open left</Button>}>Menu items go here.</Drawer>,
+	render: (args) => <Drawer {...args} trigger={<Button value="Open left" />}>Menu items go here.</Drawer>,
 };
 
 export const Bottom: Story = {
 	args: { position: 'bottom', size: '50dvh', title: 'Details' },
-	render: (args) => <Drawer {...args} trigger={<Button>Open bottom sheet</Button>}>A bottom sheet on small screens.</Drawer>,
+	render: (args) => <Drawer {...args} trigger={<Button value="Open bottom sheet" />}>A bottom sheet on small screens.</Drawer>,
 };

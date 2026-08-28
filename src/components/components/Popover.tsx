@@ -1,26 +1,13 @@
 'use client';
 
 import { Popover as BasePopover } from '@base-ui/react/popover';
-import type { ReactNode, Ref, RefObject } from 'react';
 
 import Title from '@/components/basics/Title';
-import { classNames } from '@/lib/classNames';
-import type { PopoverProps as PopoverSchemaProps } from '@/lib/content/schema/components/popover';
+import { classNames } from '@/lib/shared/classNames';
+import type { PopoverProps as PopoverSchemaProps } from '@/lib/site/content/schema/components/popover';
 
-type PopoverProps = PopoverSchemaProps & {
-	/** The floating content (passed to the popup) */
-	children?: ReactNode;
-	/** Element that opens it; rendered as the Base UI trigger. Omit when using `anchor`. */
-	trigger?: ReactNode;
-	/** Fires on every open/close */
-	onOpenChange?: (open: boolean) => void;
-	/** Position against a custom element instead of the trigger (Combobox/Select hook-point) */
-	anchor?: Element | RefObject<Element | null> | null;
-};
+type PopoverProps = PopoverSchemaProps;
 
-// The foundational anchored, dismissable floating panel that Menu/Combobox/Select build on. A single
-// flattened wrapper over Base UI Root > Trigger > Portal > Positioner > Popup — collision-aware
-// positioning, focus management and the Dialog ARIA pattern come free. Style only via data-attributes.
 const Popover = ({
 	children,
 	trigger,
@@ -28,7 +15,7 @@ const Popover = ({
 	defaultOpen,
 	onOpenChange,
 	title,
-	label,
+	ariaLabel,
 	side = 'bottom',
 	align = 'center',
 	sideOffset = 8,
@@ -38,8 +25,7 @@ const Popover = ({
 	modal = false,
 	showArrow = false,
 	className,
-	ref,
-}: PopoverProps & { ref?: Ref<HTMLDivElement> }) => {
+}: PopoverProps) => {
 	return (
 		<BasePopover.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange} modal={modal}>
 			{trigger && <BasePopover.Trigger render={trigger as React.ReactElement} />}
@@ -54,7 +40,7 @@ const Popover = ({
 					collisionPadding={collisionPadding}
 					anchor={anchor ?? undefined}
 				>
-					<BasePopover.Popup ref={ref} className={classNames('popover', className)} aria-label={!title ? label : undefined}>
+					<BasePopover.Popup className={classNames('popover', className)} aria-label={!title ? ariaLabel : undefined}>
 						{showArrow && (
 							<BasePopover.Arrow className="popover-arrow">
 								<span className="popover-arrow-glyph" aria-hidden="true" />
@@ -62,7 +48,7 @@ const Popover = ({
 						)}
 
 						{title && (
-							<BasePopover.Title render={<Title size={5} className="popover-title" />}>{title}</BasePopover.Title>
+							<BasePopover.Title render={<Title size={5} className="popover-title" value={title} />} />
 						)}
 
 						{children}

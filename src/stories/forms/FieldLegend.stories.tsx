@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import Checkbox from '@/components/forms/Checkbox';
 import FieldLegend from '@/components/forms/FieldLegend';
 import FieldSet from '@/components/forms/FieldSet';
-import { FieldLegendProps } from '@/lib/content/schema/forms/fieldLegend';
+import { FieldLegendProps } from '@/lib/site/content/schema/forms/fieldLegend';
 
 const meta: Meta<typeof FieldLegend> = {
 	title: 'Forms/FieldLegend',

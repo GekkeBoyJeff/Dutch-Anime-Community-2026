@@ -60,8 +60,6 @@ const JsonEditor = ({
 		valueRef.current = value;
 	});
 
-	// Mount CodeMirror once; the doc lives in the EditorView, not React state. The update listener
-	// debounces user edits and applies them through the current onApply.
 	useEffect(() => {
 		const themeCompartment = new Compartment();
 		themeCompartmentRef.current = themeCompartment;
@@ -92,7 +90,6 @@ const JsonEditor = ({
 		};
 	}, []);
 
-	// Light mode uses default CM styling ([]); dark mode swaps in oneDark via the compartment.
 	useEffect(() => {
 		const view = viewRef.current;
 		const compartment = themeCompartmentRef.current;
@@ -100,9 +97,8 @@ const JsonEditor = ({
 		view.dispatch({ effects: compartment.reconfigure(theme.base === 'dark' ? oneDark : []) });
 	}, [theme.base]);
 
-	// External arg changes re-sync the doc only when that is lossless: never while the user is typing
-	// (focused) and never when the doc is semantically equal already (a resync would only reformat
-	// under the cursor).
+	// Never re-sync while the user is typing (focused) or when the doc already parses to the same
+	// object — either would only reformat under the cursor.
 	useEffect(() => {
 		const view = viewRef.current;
 		if (!view) return;
@@ -116,7 +112,6 @@ const JsonEditor = ({
 		}
 	}, [value]);
 
-	// The refresh button force-resyncs, discarding the draft.
 	useEffect(() => {
 		const view = viewRef.current;
 		if (refreshSignal > 0 && view) {

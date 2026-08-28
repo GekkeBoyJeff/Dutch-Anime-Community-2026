@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Pill from '@/components/basics/Pill';
-import { PillProps } from '@/lib/content/schema/basics/pill';
+import { PillProps } from '@/lib/site/content/schema/basics/pill';
 
 const meta: Meta<typeof Pill> = {
 	title: 'Basics/Pill',
@@ -18,16 +18,23 @@ type Story = StoryObj<typeof Pill>;
 
 export const Default: Story = {
 	args: {
-		children: 'Series',
+		value: 'Series',
 		active: false,
 	},
 };
 
 export const Active: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		active: true,
-		children: 'All',
+		value: 'All',
+	},
+};
+
+export const WithCount: Story = {
+	args: {
+		...Default.args,
+		value: 'Movies',
+		count: 12,
 	},
 };

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import MarqueeTicker from '@/components/components/MarqueeTicker';
-import { MarqueeTickerProps } from '@/lib/content/schema/components/marqueeTicker';
+import { MarqueeTickerProps } from '@/lib/site/content/schema/components/marqueeTicker';
 
 const meta: Meta<typeof MarqueeTicker> = {
 	title: 'Components/MarqueeTicker',

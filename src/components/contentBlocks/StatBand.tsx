@@ -1,27 +1,20 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import CountUp from '@/components/basics/CountUp';
 import HeadingGroup from '@/components/basics/HeadingGroup';
 import Section from '@/components/basics/Section';
-import type { StatBandProps } from '@/lib/content';
+import type { StatBandProps as StatBandSchemaProps } from '@/lib/site/content/schema/blocks/statBand';
 
-// A band of key figures that count up when scrolled into view. The band renders as an inset
-// rounded panel, so it reads as a warm accent between white sections.
-const StatBand = ({ heading, items = [], colorset, ref }: StatBandProps & { ref?: Ref<HTMLElement> }) => {
+type StatBandProps = StatBandSchemaProps;
+
+const StatBand = ({
+	heading,
+	items = [],
+	colorset,
+}: StatBandProps) => {
 	return (
-		<Section ref={ref} colorset={colorset} className="stat-band is-band">
+		<Section colorset={colorset} className="stat-band is-band">
 			<Container>
-				{heading && (
-					<HeadingGroup
-						tagline={heading.tagline}
-						title={heading.value}
-						size={heading.size}
-						intro={heading.intro}
-						element="header"
-						className="stat-band-header"
-					/>
-				)}
+				{heading && <HeadingGroup {...heading} element="header" className="stat-band-header" />}
 
 				<dl className="stat-band-stats">
 					{items.map((item) => {

@@ -11,8 +11,6 @@ export const metadata: Metadata = {
 	robots: { index: false, follow: false },
 };
 
-// The visual builder ships in the static export now; access is gated client-side by the `pages.edit`
-// permission (PuckEditor) with RLS as the real boundary.
 const BuilderPage = () => <PuckEditor />;
 
 export default BuilderPage;

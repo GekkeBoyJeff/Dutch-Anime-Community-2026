@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Badge from '@/components/basics/Badge';
-import { BadgeProps } from '@/lib/content/schema/basics/badge';
+import { BadgeProps } from '@/lib/site/content/schema/basics/badge';
 
 const meta: Meta<typeof Badge> = {
 	title: 'Basics/Badge',
@@ -24,13 +24,12 @@ type Story = StoryObj<typeof Badge>;
 
 export const Default: Story = {
 	args: {
-		children: 'New',
+		value: 'New',
 		variant: 'neutral',
 	},
 };
 
 export const Primary: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		variant: 'primary',
@@ -38,26 +37,23 @@ export const Primary: Story = {
 };
 
 export const Success: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		variant: 'success',
-		children: 'Active',
+		value: 'Active',
 	},
 };
 
 export const WithDot: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		variant: 'success',
 		dot: true,
-		children: 'Online',
+		value: 'Online',
 	},
 };
 
 export const Outline: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		variant: 'outline',

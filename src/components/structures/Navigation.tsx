@@ -3,7 +3,7 @@
 import { NavigationMenu } from '@base-ui/react/navigation-menu';
 import NextLink from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type Ref } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import Avatar from '@/components/basics/Avatar';
 import Badge from '@/components/basics/Badge';
@@ -14,71 +14,30 @@ import Interactive from '@/components/basics/Interactive';
 import Media from '@/components/basics/Media';
 import Menu from '@/components/components/Menu';
 import useOverlay from '@/hooks/useOverlay';
-import { signOut } from '@/lib/auth/permissions';
-import { classNames } from '@/lib/classNames';
-import type { NavCta as NavCtaSchema, NavigationProps as NavigationSchemaProps, NavItem as NavItemSchema } from '@/lib/content/schema/structures/navigation';
+import { signOut } from '@/lib/shared/auth/permissions';
+import { classNames } from '@/lib/shared/classNames';
+import type {
+	DashboardNavigationProps as DashboardNavigationSchemaProps,
+	MegaMenuGroup as MegaMenuGroupSchema,
+	MegaMenuLink as MegaMenuLinkSchema,
+	MegaMenuUser as MegaMenuUserSchema,
+	NavCta as NavCtaSchema,
+	NavigationProps as NavigationSchemaProps,
+	NavItem as NavItemSchema,
+} from '@/lib/site/content/schema/structures/navigation';
 
 export type NavItem = NavItemSchema;
 
 export type NavCta = NavCtaSchema;
 
-// Dashboard-mode shapes: a domain group whose panel lists links plus an optional right-hand highlight,
-// and the signed-in user chip. The staff DashboardNav fills these from permissions + the Discord session.
-export interface MegaMenuLink {
-	key: string;
-	label: string;
-	description: string;
-	href: string;
-	icon: string;
-	/** Extra routes that should count as active for this link (e.g. a detail route reached from it). */
-	activeHrefs?: string[];
-}
+export type MegaMenuLink = MegaMenuLinkSchema;
 
-export interface MegaMenuGroup {
-	key: string;
-	label: string;
-	description: string;
-	links: MegaMenuLink[];
-	/** Optional highlight column rendered on the panel's right; nothing shows when omitted. */
-	highlight?: ReactNode;
-	/** When set, the group is a single destination: rendered as a direct link, not a trigger + panel. */
-	directHref?: string;
-	/** De-emphasised group (admin's Systeem): the trigger renders dimmed. */
-	muted?: boolean;
-	/** A live count pill on the trigger (managers' pending-reviews); 0/undefined shows nothing. */
-	badge?: number;
-	/** A bare attention dot on the trigger (a convention nears, shifts unfilled) when there's no count. */
-	dot?: boolean;
-}
+export type MegaMenuGroup = MegaMenuGroupSchema;
 
-export interface MegaMenuUser {
-	name: string;
-	roleLabel?: string;
-	avatarUrl?: string;
-	initials?: string;
-}
+export type MegaMenuUser = MegaMenuUserSchema;
 
-// Passing `groups` switches the header into the staff dashboard mega-menu; without it, it is the public
-// site header. The two modes share the pill/tracker/roundel styling; only the pill's contents differ.
-type NavigationProps = NavigationSchemaProps & {
-	/** The dashboard hub link shown before the group triggers; active on its exact route. */
-	home?: { label: string; href: string };
-	/** Dashboard mode: the domain groups whose triggers open full-width mega-panels. */
-	groups?: MegaMenuGroup[];
-	/** Dashboard mode: the signed-in user chip. */
-	user?: MegaMenuUser;
-	/** Dashboard mode: the "Terug naar de website" affordance. */
-	backLink?: { label: string; href: string };
-	/** Dashboard mode: an extra trigger in the right cluster (the ⌘K search pill). */
-	searchSlot?: ReactNode;
-	/** Dashboard mode: controls the mobile overlay from outside (e.g. a "Meer" tab). */
-	open?: boolean;
-	onOpenChange?: (open: boolean) => void;
-};
+type NavigationProps = DashboardNavigationSchemaProps;
 
-// A nav item is active on its exact route and on any route nested below it (so /blog stays lit on
-// /blog/post). Home ('/') matches only its exact path; external and anchor links never light up.
-// Exported so other nav surfaces (BottomTabBar) apply the identical active-route logic.
 export const isActivePath = (pathname: string, url: string, exact = false): boolean => {
 	if (!url.startsWith('/')) {
 		return false;
@@ -89,14 +48,16 @@ export const isActivePath = (pathname: string, url: string, exact = false): bool
 	return pathname === url || pathname.startsWith(`${url}/`);
 };
 
-// A dashboard link is also active on any of its `activeHrefs` — detail routes reached from it that don't
-// nest under its own href (e.g. the event editor doesn't live under /dashboard/inventory).
 const isLinkActive = (pathname: string, link: MegaMenuLink): boolean =>
 	isActivePath(pathname, link.href) || (link.activeHrefs ?? []).some((href) => isActivePath(pathname, href));
 
-// The live indicator on a group trigger: a count pill when there's a number to show (pending reviews),
-// otherwise a bare attention dot (something waits but has no count). Nothing renders when neither is set.
-const GroupIndicator = ({ group }: { group: MegaMenuGroup }) => {
+type GroupIndicatorProps = {
+	group: MegaMenuGroup;
+};
+
+const GroupIndicator = ({
+	group,
+}: GroupIndicatorProps) => {
 	if (group.badge && group.badge > 0) {
 		return (
 			<span className="mega-menu-badge" aria-label={`${group.badge} openstaand`}>
@@ -108,8 +69,15 @@ const GroupIndicator = ({ group }: { group: MegaMenuGroup }) => {
 	return null;
 };
 
-// One mega-panel link: icon + label + description, routed through next/link and closing the panel on click.
-const PanelLink = ({ link, active }: { link: MegaMenuLink; active: boolean }) => (
+type PanelLinkProps = {
+	link: MegaMenuLink;
+	active: boolean;
+};
+
+const PanelLink = ({
+	link,
+	active,
+}: PanelLinkProps) => (
 	<NavigationMenu.Link className={classNames('mega-menu-link', active && 'is-active')} active={active} closeOnClick render={<NextLink href={link.href} />}>
 		<span className="mega-menu-link-icon" aria-hidden="true">
 			<Icon name={link.icon} />
@@ -121,9 +89,15 @@ const PanelLink = ({ link, active }: { link: MegaMenuLink; active: boolean }) =>
 	</NavigationMenu.Link>
 );
 
-// The swappable half of one group's panel: the link rows (middle) and the group's highlight (right). The
-// left group-switcher rail lives once in the popup, outside the viewport, so it never cross-fades on swap.
-const MegaPanelBody = ({ group, pathname }: { group: MegaMenuGroup; pathname: string }) => (
+type MegaPanelBodyProps = {
+	group: MegaMenuGroup;
+	pathname: string;
+};
+
+const MegaPanelBody = ({
+	group,
+	pathname,
+}: MegaPanelBodyProps) => (
 	<div className="mega-menu-panel">
 		<ul className="mega-menu-link-list">
 			{group.links.map((link) => (
@@ -136,7 +110,6 @@ const MegaPanelBody = ({ group, pathname }: { group: MegaMenuGroup; pathname: st
 	</div>
 );
 
-// The sliding tracker used by both modes: a dark pill measured onto the active/open trigger, inverting it.
 const useTracker = (deps: unknown[]) => {
 	const listRef = useRef<HTMLElement | null>(null);
 	const [tracker, setTracker] = useState<{ x: number; width: number } | null>(null);
@@ -168,11 +141,14 @@ const useTracker = (deps: unknown[]) => {
 	return { listRef, tracker };
 };
 
-// The public site header: a floating pill nav with a sliding tracker that marks the active link by
-// inverting whatever sits beneath it, a brand roundel, and a CTA tab carved into the page frame's
-// top-right corner with concave corner cutouts. On small screens the pill holds a menu toggle that opens
-// a full-screen overlay. Drive items/cta/brand from structures.ts — nothing is hardcoded.
-const PublicHeader = ({ items = [], cta, brand, className, ref }: NavigationSchemaProps & { ref?: Ref<HTMLElement> }) => {
+type PublicHeaderProps = NavigationSchemaProps;
+
+const PublicHeader = ({
+	items = [],
+	cta,
+	brand,
+	className,
+}: PublicHeaderProps) => {
 	const [open, setOpen] = useState(false);
 	const pathname = usePathname();
 	const [seenPath, setSeenPath] = useState(pathname);
@@ -196,10 +172,6 @@ const PublicHeader = ({ items = [], cta, brand, className, ref }: NavigationSche
 		(frame ?? window).scrollTo({ top: 0, left: 0, behavior: 'instant' });
 	}, [pathname]);
 
-	// While the full-screen overlay is open, keep keyboard focus inside the header (toggle, CTA tab
-	// and overlay links are all visible above it); restore focus to the trigger on close. The page
-	// behind the overlay stays in the DOM but is unreachable by Tab, matching what the eye sees.
-	// Focus-trap pattern: https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
 	useEffect(() => {
 		const root = rootRef.current;
 		if (!open || !root) {
@@ -239,8 +211,6 @@ const PublicHeader = ({ items = [], cta, brand, className, ref }: NavigationSche
 		};
 	}, [open]);
 
-	// The brand roundel links to / on the public site, but is decorative (a plain span) in the beheer
-	// nav — there "Dashboard" is home and a link to the public / would be confusing.
 	const brandContent = (
 		<>
 			{brand?.src && <Media variant="plain" type="image" src={brand.src} alt="" width={48} height={48} className="navigation-logo" />}
@@ -249,28 +219,18 @@ const PublicHeader = ({ items = [], cta, brand, className, ref }: NavigationSche
 	);
 
 	return (
-		<header
-			ref={(element) => {
-				rootRef.current = element;
-				if (typeof ref === 'function') {
-					ref(element);
-				} else if (ref) {
-					ref.current = element;
-				}
-			}}
-			className={classNames('navigation', open && 'is-open', className)}
-		>
+		<header ref={rootRef} className={classNames('navigation', open && 'is-open', className)}>
 			<div className="navigation-bar">
 				{brand?.interactive === false ? (
 					<span className="navigation-brand">{brandContent}</span>
 				) : (
-					<Interactive url="/" className="navigation-brand" aria-label={brand?.title ?? 'Home'}>
+					<Interactive url="/" className="navigation-brand" ariaLabel={brand?.title ?? 'Home'}>
 						{brandContent}
 					</Interactive>
 				)}
 
 				<nav className="navigation-pill" aria-label="Primary">
-					<Interactive className="navigation-toggle" aria-expanded={open} aria-label={open ? 'Sluit menu' : 'Open menu'} onClick={() => setOpen(!open)}>
+					<Interactive className="navigation-toggle" ariaExpanded={open} ariaLabel={open ? 'Sluit menu' : 'Open menu'} onClick={() => setOpen(!open)}>
 						<span className="navigation-bars" aria-hidden="true" />
 						<span className="navigation-toggle-label">Menu</span>
 					</Interactive>
@@ -288,7 +248,7 @@ const PublicHeader = ({ items = [], cta, brand, className, ref }: NavigationSche
 									const active = isActivePath(pathname, item.url, item.exact);
 									return (
 										<li key={item.url} className={active ? 'is-active' : undefined}>
-											<Interactive url={item.url} target={item.target} className="navigation-link" aria-current={active ? 'page' : undefined}>
+											<Interactive url={item.url} target={item.target} className="navigation-link" ariaCurrent={active ? 'page' : undefined}>
 												{item.label}
 											</Interactive>
 										</li>
@@ -303,9 +263,7 @@ const PublicHeader = ({ items = [], cta, brand, className, ref }: NavigationSche
 			{cta && (
 				<div className="navigation-cta-tab">
 					<span className="corner is-scoop-bl is-start" aria-hidden="true" />
-					<Button url={cta.url} target={cta.target ?? '_blank'} variant={cta.variant ?? 'primary'} className="navigation-cta">
-						{cta.label}
-					</Button>
+					<Button url={cta.url} target={cta.target ?? '_blank'} variant={cta.variant ?? 'primary'} value={cta.label} className="navigation-cta" />
 					<span className="corner is-scoop-bl is-end" aria-hidden="true" />
 				</div>
 			)}
@@ -325,7 +283,7 @@ const PublicHeader = ({ items = [], cta, brand, className, ref }: NavigationSche
 												target={item.target}
 												onClick={() => setOpen(false)}
 												className="navigation-overlay-link"
-												aria-current={active ? 'page' : undefined}
+												ariaCurrent={active ? 'page' : undefined}
 											>
 												{item.icon && <Icon name={item.icon} />}
 												{item.label}
@@ -336,9 +294,7 @@ const PublicHeader = ({ items = [], cta, brand, className, ref }: NavigationSche
 							</ul>
 
 							{cta && (
-								<Button url={cta.url} target={cta.target ?? '_blank'} variant={cta.variant ?? 'primary'} className="navigation-overlay-cta" onClick={() => setOpen(false)}>
-									{cta.label}
-								</Button>
+								<Button url={cta.url} target={cta.target ?? '_blank'} variant={cta.variant ?? 'primary'} value={cta.label} className="navigation-overlay-cta" onClick={() => setOpen(false)} />
 							)}
 						</nav>
 					</div>
@@ -348,10 +304,8 @@ const PublicHeader = ({ items = [], cta, brand, className, ref }: NavigationSche
 	);
 };
 
-// The staff dashboard header: the same floating pill + sliding tracker + roundel as the public nav, but
-// its triggers open full-width mega-panels (Base UI Navigation Menu, hover-intent with click/keys/touch),
-// and the right cluster carries the search pill, user chip and back link. The panel fuses to the bar. On
-// small screens the triggers collapse into a group-sectioned overlay with a focus trap.
+type DashboardHeaderProps = NavigationProps;
+
 const DashboardHeader = ({
 	groups = [],
 	brand,
@@ -360,10 +314,9 @@ const DashboardHeader = ({
 	backLink,
 	searchSlot,
 	className,
-	ref,
 	open: openProp,
 	onOpenChange,
-}: NavigationProps & { ref?: Ref<HTMLElement> }) => {
+}: DashboardHeaderProps) => {
 	const pathname = usePathname();
 	const router = useRouter();
 	const [value, setValue] = useState<string | null>(null);
@@ -372,8 +325,6 @@ const DashboardHeader = ({
 	const rootRef = useRef<HTMLElement | null>(null);
 	const { listRef, tracker } = useTracker([pathname, value]);
 
-	// Controlled/uncontrolled: an external open+onOpenChange (e.g. BottomTabBar's "Meer" tab) drives the
-	// same overlay; otherwise it manages its own state.
 	const open = openProp ?? internalOpen;
 	const setOpen = useCallback(
 		(next: boolean) => {
@@ -437,11 +388,9 @@ const DashboardHeader = ({
 		router.replace('/login');
 	}, [router]);
 
-	// The signed-in user sits on its own at the top-right and opens a hover dropdown (profile header +
-	// account, back-to-site and sign-out). Lightweight, non-modal — it never traps focus or locks scroll.
 	const profileMenu = user && (
 		<Menu
-			label="Profielmenu"
+			ariaLabel="Profielmenu"
 			openOnHover
 			delay={100}
 			closeDelay={200}
@@ -464,37 +413,24 @@ const DashboardHeader = ({
 				<Avatar size="m" src={user.avatarUrl} initials={user.initials} alt="" />
 				<span className="mega-menu-profile-head-text">
 					<span className="mega-menu-profile-head-name">{user.name}</span>
-					{user.roleLabel && <Badge variant="primary">{user.roleLabel}</Badge>}
+					{user.roleLabel && <Badge variant="primary" value={user.roleLabel} />}
 				</span>
 			</div>
 			<Menu.Separator />
-			<Menu.Item url="/account" icon="user" label="Mijn account">
-				Mijn account
-			</Menu.Item>
+			<Menu.Item url="/account" icon="user" label="Mijn account" />
 			{backLink && (
-				<Menu.Item url={backLink.href} target="_self" icon="external" label={backLink.label}>
-					{backLink.label}
-				</Menu.Item>
+				<Menu.Item url={backLink.href} target="_self" icon="external" label={backLink.label} />
 			)}
 			<Menu.Separator />
-			<Menu.Item icon="logout" label="Uitloggen" onClick={handleSignOut}>
-				Uitloggen
-			</Menu.Item>
+			<Menu.Item icon="logout" label="Uitloggen" onClick={handleSignOut} />
 		</Menu>
 	);
 
 	return (
-		<header
-			ref={(element) => {
-				rootRef.current = element;
-				if (typeof ref === 'function') ref(element);
-				else if (ref) ref.current = element;
-			}}
-			className={classNames('mega-menu', open && 'is-open', className)}
-		>
+		<header ref={rootRef} className={classNames('mega-menu', open && 'is-open', className)}>
 			<div className="mega-menu-bar">
 				{brand && (
-					<Interactive url={home?.href ?? '/dashboard'} className="mega-menu-brand" aria-label={brand.title}>
+					<Interactive url={home?.href ?? '/dashboard'} className="mega-menu-brand" ariaLabel={brand.title}>
 						{brand.src && <Media variant="plain" type="image" src={brand.src} alt="" width={40} height={40} className="mega-menu-logo" />}
 						<span className="mega-menu-wordmark">{brand.title}</span>
 					</Interactive>
@@ -505,8 +441,6 @@ const DashboardHeader = ({
 					aria-label="Beheer"
 					value={value}
 					onValueChange={setValue}
-					// Hover-intent: a short dwell before opening on a horizontal sweep, forgiving the hop down into
-					// the panel. Click/keys/touch stay instant (Base UI zeroes the delay once a group is open).
 					delay={100}
 					closeDelay={200}
 				>
@@ -519,22 +453,20 @@ const DashboardHeader = ({
 						/>
 						{home && (
 							<li className="mega-menu-home">
-								<Interactive url={home.href} className={classNames('mega-menu-home-link', homeActive && 'is-active')} aria-current={homeActive ? 'page' : undefined}>
+								<Interactive url={home.href} className={classNames('mega-menu-home-link', homeActive && 'is-active')} ariaCurrent={homeActive ? 'page' : undefined}>
 									{home.label}
 								</Interactive>
 							</li>
 						)}
 						{groups.map((group) => {
 							const active = group.links.some((link) => isLinkActive(pathname, link));
-							// A single-destination group (directHref) is a plain link, not a trigger — a mega-panel for one
-							// link is noise (blueprint §1c: the user's "Mijn DAC" is one ingang, not a megamenu).
 							if (group.directHref) {
 								return (
 									<li key={group.key} className="mega-menu-item is-direct">
 										<Interactive
 											url={group.directHref}
 											className={classNames('mega-menu-trigger', 'is-direct', group.muted && 'is-muted', active && 'is-active')}
-											aria-current={active ? 'page' : undefined}
+											ariaCurrent={active ? 'page' : undefined}
 										>
 											{group.label}
 											<GroupIndicator group={group} />
@@ -558,10 +490,6 @@ const DashboardHeader = ({
 					</NavigationMenu.List>
 
 					<NavigationMenu.Portal>
-						{/* Anchored to the open trigger, a notch below the bar: the bar keeps its pill and the panel
-						    floats free, so opening a group shifts nothing. The trigger row is the group switcher.
-						    The offset clears the bar, not the trigger — the trigger sits ~11px inside the bar's
-						    padding, so the gap the reader sees is roughly sideOffset minus that. */}
 						<NavigationMenu.Positioner className="mega-menu-positioner" positionMethod="fixed" side="bottom" align="start" sideOffset={24}>
 							<NavigationMenu.Popup className="mega-menu-popup">
 								<NavigationMenu.Viewport className="mega-menu-viewport" />
@@ -573,7 +501,7 @@ const DashboardHeader = ({
 				<div className="mega-menu-side">
 					{searchSlot}
 					{profileMenu}
-					<Interactive className="mega-menu-toggle" aria-expanded={open} aria-label={open ? 'Sluit menu' : 'Open menu'} onClick={() => setOpen(!open)}>
+					<Interactive className="mega-menu-toggle" ariaExpanded={open} ariaLabel={open ? 'Sluit menu' : 'Open menu'} onClick={() => setOpen(!open)}>
 						<Icon name={open ? 'close' : 'menu'} />
 					</Interactive>
 				</div>
@@ -593,7 +521,7 @@ const DashboardHeader = ({
 					) : (
 						<span className="mega-menu-overlay-title">Menu</span>
 					)}
-					<Interactive className="mega-menu-overlay-close" aria-label="Sluit menu" onClick={() => setOpen(false)}>
+					<Interactive className="mega-menu-overlay-close" ariaLabel="Sluit menu" onClick={() => setOpen(false)}>
 						<Icon name="close" />
 					</Interactive>
 				</div>
@@ -603,7 +531,7 @@ const DashboardHeader = ({
 							url={home.href}
 							onClick={() => setOpen(false)}
 							className={classNames('mega-menu-overlay-home', homeActive && 'is-active')}
-							aria-current={homeActive ? 'page' : undefined}
+							ariaCurrent={homeActive ? 'page' : undefined}
 						>
 							{home.label}
 						</Interactive>
@@ -633,7 +561,7 @@ const DashboardHeader = ({
 												url={link.href}
 												onClick={() => setOpen(false)}
 												className={classNames('mega-menu-overlay-link', active && 'is-active')}
-												aria-current={active ? 'page' : undefined}
+												ariaCurrent={active ? 'page' : undefined}
 											>
 												<Icon name={link.icon} />
 												{link.label}
@@ -674,13 +602,18 @@ const DashboardHeader = ({
 	);
 };
 
-// One header component, two modes: pass `groups` for the staff dashboard mega-menu, or `items`/`cta` for
-// the public site. Both share the pill/tracker/roundel; SiteChrome uses the public mode, DashboardNav the
-// dashboard mode. The dashboard mega-menu is hung on this shared component.
-const Navigation = ({ ref, groups, home, user, backLink, searchSlot, open, onOpenChange, ...publicProps }: NavigationProps & { ref?: Ref<HTMLElement> }) =>
+const Navigation = ({
+	groups,
+	home,
+	user,
+	backLink,
+	searchSlot,
+	open,
+	onOpenChange,
+	...publicProps
+}: NavigationProps) =>
 	groups && groups.length > 0 ? (
 		<DashboardHeader
-			ref={ref}
 			groups={groups}
 			brand={publicProps.brand}
 			home={home}
@@ -692,7 +625,7 @@ const Navigation = ({ ref, groups, home, user, backLink, searchSlot, open, onOpe
 			onOpenChange={onOpenChange}
 		/>
 	) : (
-		<PublicHeader ref={ref} items={publicProps.items} cta={publicProps.cta} brand={publicProps.brand} className={publicProps.className} />
+		<PublicHeader items={publicProps.items} cta={publicProps.cta} brand={publicProps.brand} className={publicProps.className} />
 	);
 
 export default Navigation;

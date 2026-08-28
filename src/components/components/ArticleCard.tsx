@@ -1,21 +1,17 @@
-import type { Ref } from 'react';
-
 import Avatar from '@/components/basics/Avatar';
 import Badge from '@/components/basics/Badge';
 import Content from '@/components/basics/Content';
-import Interactive from '@/components/basics/Interactive';
 import Media from '@/components/basics/Media';
 import Title from '@/components/basics/Title';
-import { classNames } from '@/lib/classNames';
-import type { ArticleCardProps } from '@/lib/content';
-import { formatDate } from '@/lib/formatDate';
+import { classNames } from '@/lib/shared/classNames';
+import { formatDate } from '@/lib/shared/formatDate';
+import type { ArticleCardProps as ArticleCardSchemaProps } from '@/lib/site/content/schema/components/articleCard';
 
-// Editorial card for blog/news: lead media, a topic tag, headline, excerpt and a byline with
-// avatar, date and read time. A Server Component; whole-card-clickable via a stretched link, like
-// Card. The 'N min' read-time label is left locale-neutral on purpose.
+type ArticleCardProps = ArticleCardSchemaProps;
+
 const ArticleCard = ({
 	title,
-	excerpt,
+	value,
 	media,
 	tag,
 	author,
@@ -24,14 +20,12 @@ const ArticleCard = ({
 	href,
 	layout = 'vertical',
 	className,
-	ref,
-}: ArticleCardProps & { ref?: Ref<HTMLElement> }) => {
+}: ArticleCardProps) => {
 	const published = publishedAt ? formatDate(publishedAt, { day: 'numeric', month: 'long', year: 'numeric' }) : undefined;
 	const titleSize = layout === 'feature' ? 3 : 4;
 
 	return (
 		<article
-			ref={ref}
 			className={classNames('card', 'article-card', `is-${layout}`, href && 'is-clickable', className)}
 		>
 			{media && (
@@ -41,19 +35,18 @@ const ArticleCard = ({
 			)}
 
 			<div className="article-card-body">
-				{tag && <Badge variant="primary">{tag}</Badge>}
+				{tag && <Badge variant="primary" value={tag} />}
 
-				{href ? (
-					<Title element="h3" size={titleSize} className="article-card-headline">
-						<Interactive url={href} className="article-card-link">
-							{title}
-						</Interactive>
-					</Title>
-				) : (
-					<Title element="h3" size={titleSize} value={title} className="article-card-headline" />
-				)}
+				<Title
+					element="h3"
+					size={titleSize}
+					className="article-card-headline"
+					value={title}
+					href={href}
+					linkClassName="article-card-link"
+				/>
 
-				{excerpt && <Content size="small" className="article-card-excerpt" value={excerpt} />}
+				{value && <Content size="small" className="article-card-excerpt" value={value} />}
 
 				{(author || published || readTime) && (
 					<div className="article-card-byline">
@@ -69,11 +62,11 @@ const ArticleCard = ({
 						<div className="article-card-byline-text">
 							{author && <Content element="span" className="article-card-author" value={author.name} />}
 
-							<Content element="span" className="article-card-meta">
+							<span className="content article-card-meta">
 								{published && <time dateTime={publishedAt}>{published}</time>}
 								{published && readTime ? <span aria-hidden="true"> · </span> : null}
-								{readTime ? <Content element="span">{readTime} min</Content> : null}
-							</Content>
+								{readTime ? <span className="content">{readTime} min</span> : null}
+							</span>
 						</div>
 					</div>
 				)}

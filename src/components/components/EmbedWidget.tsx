@@ -1,19 +1,11 @@
-import type { ReactNode, Ref } from 'react';
-
 import Content from '@/components/basics/Content';
 import Media from '@/components/basics/Media';
 import Title from '@/components/basics/Title';
-import { classNames } from '@/lib/classNames';
-import type { EmbedWidgetProps as EmbedWidgetSchemaProps } from '@/lib/content/schema/components/embedWidget';
+import { classNames } from '@/lib/shared/classNames';
+import type { EmbedWidgetProps as EmbedWidgetSchemaProps } from '@/lib/site/content/schema/components/embedWidget';
 
-type EmbedWidgetProps = EmbedWidgetSchemaProps & {
-	/** Custom content rendered in place of an iframe (a script-based widget, …) */
-	children?: ReactNode;
-};
+type EmbedWidgetProps = EmbedWidgetSchemaProps;
 
-// A self-contained, responsive third-party embed: a provider id (reusing Media's embed map) or a
-// raw iframe URL, framed at a fixed aspect ratio with an optional heading and caption. A Server
-// Component — no client JS; the iframe lazy-loads. Pass `children` for a non-iframe widget instead.
 const EmbedWidget = ({
 	provider,
 	embedId,
@@ -24,10 +16,9 @@ const EmbedWidget = ({
 	children,
 	iframeLabel = 'Embedded media',
 	className,
-	ref,
-}: EmbedWidgetProps & { ref?: Ref<HTMLElement> }) => {
+}: EmbedWidgetProps) => {
 	return (
-		<section ref={ref} className={classNames('embed-widget', className)}>
+		<section className={classNames('embed-widget', className)}>
 			{title && <Title element="h3" size={5} value={title} className="embed-widget-title" />}
 
 			{children ? (

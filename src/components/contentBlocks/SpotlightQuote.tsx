@@ -1,16 +1,20 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
-import type { SpotlightQuoteProps } from '@/lib/content';
+import type { SpotlightQuoteProps as SpotlightQuoteSchemaProps } from '@/lib/site/content/schema/blocks/spotlightQuote';
 
-// One oversized quote on a tinted band, with an optional mascot that pops in at the edge as the
-// band scrolls into view — the page's single playful reward moment.
-const SpotlightQuote = ({ quote, author, role, mascot, colorset, ref }: SpotlightQuoteProps & { ref?: Ref<HTMLElement> }) => {
+type SpotlightQuoteProps = SpotlightQuoteSchemaProps;
+
+const SpotlightQuote = ({
+	quote,
+	author,
+	role,
+	mascot,
+	colorset,
+}: SpotlightQuoteProps) => {
 	return (
-		<Section ref={ref} colorset={colorset ?? 'dark'} className="spotlight-quote is-band">
+		<Section colorset={colorset ?? 'dark'} className="spotlight-quote is-band">
 			<Container className="spotlight-quote-inner">
 				<figure className="spotlight-quote-spotlight">
 					<blockquote className="spotlight-quote-body">

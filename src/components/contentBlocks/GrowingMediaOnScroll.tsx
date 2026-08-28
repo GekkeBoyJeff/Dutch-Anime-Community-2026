@@ -1,28 +1,23 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 import HeadingGroup from '@/components/basics/HeadingGroup';
 import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
-import type { GrowingMediaOnScrollProps } from '@/lib/content';
+import type { GrowingMediaOnScrollProps as GrowingMediaOnScrollSchemaProps } from '@/lib/site/content/schema/blocks/growingMediaOnScroll';
 
-// A media panel that grows to full-bleed while scrolling. The section carries a named
-// view-timeline; the sticky stage's frame animates its scale/radius along it — pure CSS,
-// no JavaScript (see GrowingMediaOnScroll.scss).
-const GrowingMediaOnScroll = ({ heading, media, caption, colorset, ref }: GrowingMediaOnScrollProps & { ref?: Ref<HTMLElement> }) => {
+type GrowingMediaOnScrollProps = GrowingMediaOnScrollSchemaProps;
+
+const GrowingMediaOnScroll = ({
+	heading,
+	media,
+	caption,
+	colorset,
+}: GrowingMediaOnScrollProps) => {
 	return (
-		<Section ref={ref} colorset={colorset} className="growing-media-on-scroll">
+		<Section colorset={colorset} className="growing-media-on-scroll">
 			{heading && (
 				<Container>
-					<HeadingGroup
-						tagline={heading.tagline}
-						title={heading.value}
-						size={heading.size}
-						intro={heading.intro}
-						element="header"
-						className="growing-media-on-scroll-header"
-					/>
+					<HeadingGroup {...heading} element="header" className="growing-media-on-scroll-header" />
 				</Container>
 			)}
 

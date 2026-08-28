@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Footer from '@/components/structures/Footer';
-import { FooterProps } from '@/lib/content/schema/structures/footer';
+import { FooterProps } from '@/lib/site/content/schema/structures/footer';
 
 const meta: Meta<typeof Footer> = {
 	title: 'Structures/Footer',
@@ -25,18 +25,18 @@ export const Default: Story = {
 		brand: { title: 'Dutch Anime Community', tagline: 'De gezelligste anime-community van Nederland en België.' },
 		navColumns: [
 			{
-				heading: 'Community',
+				title: 'Community',
 				links: [
-					{ label: 'Wat we doen', url: '/community' },
-					{ label: 'Evenementen', url: '/evenementen' },
-					{ label: 'Word lid', url: '/word-lid' },
+					{ value: 'Wat we doen', url: '/community' },
+					{ value: 'Evenementen', url: '/evenementen' },
+					{ value: 'Word lid', url: '/word-lid' },
 				],
 			},
 			{
-				heading: 'Ontdek',
+				title: 'Ontdek',
 				links: [
-					{ label: 'Home', url: '/' },
-					{ label: 'Join de Discord', url: 'https://discord.gg/dutchanimecommunity' },
+					{ value: 'Home', url: '/' },
+					{ value: 'Join de Discord', url: 'https://discord.gg/dutchanimecommunity' },
 				],
 			},
 		],
@@ -46,8 +46,8 @@ export const Default: Story = {
 			{ label: 'TikTok', url: 'https://www.tiktok.com/@dutchanimecommunity' },
 		],
 		legalLinks: [
-			{ label: 'Privacy', url: '/privacy' },
-			{ label: 'Voorwaarden', url: '/voorwaarden' },
+			{ value: 'Privacy', url: '/privacy' },
+			{ value: 'Voorwaarden', url: '/voorwaarden' },
 		],
 		credit: 'Gemaakt door de DAC-community',
 	},
@@ -68,7 +68,7 @@ export const Minimal: Story = {
 		brand: { title: 'Dutch Anime Community' },
 		navColumns: [],
 		socialLinks: [],
-		legalLinks: [{ label: 'Privacy', url: '/privacy' }],
+		legalLinks: [{ value: 'Privacy', url: '/privacy' }],
 		credit: undefined,
 	},
 };

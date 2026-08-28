@@ -2,8 +2,23 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Column from '@/components/basics/Column';
 import Columns from '@/components/basics/Columns';
-import { ColumnsProps } from '@/lib/content/schema/basics/columns';
+import { ColumnsProps } from '@/lib/site/content/schema/basics/columns';
 import { cell } from '@/stories/basics/gridCell';
+
+const thirds = (
+	<>
+		<Column spanM={4}>{cell('1 / 3')}</Column>
+		<Column spanM={4}>{cell('2 / 3')}</Column>
+		<Column spanM={4}>{cell('3 / 3')}</Column>
+	</>
+);
+
+const mainAndSidebar = (
+	<>
+		<Column spanM={8}>{cell('main (8)')}</Column>
+		<Column spanM={4}>{cell('aside (4)')}</Column>
+	</>
+);
 
 const meta: Meta<typeof Columns> = {
 	title: 'Basics/Columns',
@@ -22,23 +37,17 @@ export default meta;
 
 type Story = StoryObj<typeof Columns>;
 
-// Three equal thirds from the m breakpoint up; full width and stacked below it.
 export const Thirds: Story = {
-	render: (args) => (
-		<Columns {...args}>
-			<Column spanM={4}>{cell('1 / 3')}</Column>
-			<Column spanM={4}>{cell('2 / 3')}</Column>
-			<Column spanM={4}>{cell('3 / 3')}</Column>
-		</Columns>
-	),
+	parameters: {
+		docs: { description: { story: 'Three equal thirds from the m breakpoint up; full width and stacked below it.' } },
+	},
+	args: {
+		children: thirds,
+	},
 };
 
-// An asymmetric main + sidebar split.
 export const MainAndSidebar: Story = {
-	render: (args) => (
-		<Columns {...args}>
-			<Column spanM={8}>{cell('main (8)')}</Column>
-			<Column spanM={4}>{cell('aside (4)')}</Column>
-		</Columns>
-	),
+	args: {
+		children: mainAndSidebar,
+	},
 };

@@ -1,39 +1,25 @@
 'use client';
 
 import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
-import type { ReactNode, Ref } from 'react';
+import type { CSSProperties } from 'react';
 
+import Icon from '@/components/basics/Icon';
+import VisuallyHidden from '@/components/basics/VisuallyHidden';
 import Radio from '@/components/forms/Radio';
 import useHaptics from '@/hooks/useHaptics';
-import { classNames } from '@/lib/classNames';
-import type { RadioGroupProps as RadioGroupSchemaProps } from '@/lib/content/schema/forms/radioGroup';
+import { classNames } from '@/lib/shared/classNames';
+import type { RadioGroupProps as RadioGroupSchemaProps } from '@/lib/site/content/schema/forms/radioGroup';
 
-export interface RadioOption {
-	/** Unique value selected when this radio is chosen */
-	value: string;
-	/** Visible label */
-	label?: ReactNode;
-	/** Disable just this option */
-	disabled?: boolean;
-}
+export type { RadioGroupOption as RadioOption } from '@/lib/site/content/schema/forms/radioGroup';
 
-// `options` keeps its local shape (ReactNode label) since the schema's RadioGroupOption models
-// label as a string for JSON-serializability, but the component also accepts arbitrary nodes.
-export type RadioGroupProps = Omit<RadioGroupSchemaProps, 'options'> & {
-	/** The options to render */
-	options?: RadioOption[];
-	/** Fires with the newly selected value */
-	onValueChange?: (value: string) => void;
-	/** Lay the choices out in a row instead of a column */
-	horizontal?: boolean;
-	/** Custom content instead of the `options` prop; takes precedence */
-	children?: ReactNode;
-};
+export type RadioGroupProps = RadioGroupSchemaProps;
 
 // A set of choices where exactly one may be selected. Wraps Base UI's RadioGroup — one tab stop,
 // arrow keys move between choices — and renders each option as the <Radio> primitive, so a choice
-// inside a group is the same dot as anywhere else: one stylesheet, one set of states. It needs an
-// accessible name (aria-label / aria-labelledby) since role="radiogroup" generates none.
+// inside a group is the same dot as anywhere else: one stylesheet, one set of states. An option
+// carrying a `share` or `picked` becomes a result row: a fill bar, the percentage and a check, laid
+// out as bare elements the consumer styles. It needs an accessible name (aria-label /
+// aria-labelledby) since role="radiogroup" generates none.
 const RadioGroup = ({
 	options = [],
 	value,
@@ -43,15 +29,16 @@ const RadioGroup = ({
 	disabled,
 	required,
 	name,
+	pickedLabel,
+	ariaLabel,
 	className,
-	children,
 	ref,
 	...rest
-}: RadioGroupProps & { ref?: Ref<HTMLDivElement> }) => {
+}: RadioGroupProps) => {
 	const { haptic } = useHaptics();
 
-	if (process.env.NODE_ENV !== 'production' && !rest['aria-label'] && !rest['aria-labelledby']) {
-		console.warn('RadioGroup: provide an accessible name via aria-label or aria-labelledby.');
+	if (process.env.NODE_ENV !== 'production' && !ariaLabel && !rest['aria-labelledby']) {
+		console.warn('RadioGroup: provide an accessible name via ariaLabel or aria-labelledby.');
 	}
 
 	return (
@@ -68,14 +55,35 @@ const RadioGroup = ({
 			required={required}
 			name={name}
 			{...rest}
+			aria-label={ariaLabel}
 		>
-			{children
-				? children
-				: options.map((option) => (
-						<Radio key={option.value} value={option.value} disabled={option.disabled}>
-							{option.label}
-						</Radio>
-					))}
+			{options.map((option) => {
+				if (option.share === undefined && !option.picked) {
+					return <Radio key={option.value} value={option.value} disabled={option.disabled} label={option.label} />;
+				}
+
+				return (
+					<Radio key={option.value} value={option.value} disabled={option.disabled}>
+						<span className="radio-group-option">
+							{option.share !== undefined && (
+								<span
+									className="radio-group-option-bar"
+									style={{ '--share': `${option.share}%` } as CSSProperties}
+									aria-hidden="true"
+								/>
+							)}
+							<span className="radio-group-option-label">{option.label}</span>
+							{option.share !== undefined && <span className="radio-group-option-share">{option.share}%</span>}
+							{option.picked && (
+								<>
+									<Icon name="check" className="radio-group-option-check" />
+									{pickedLabel && <VisuallyHidden value={pickedLabel} />}
+								</>
+							)}
+						</span>
+					</Radio>
+				);
+			})}
 		</BaseRadioGroup>
 	);
 };

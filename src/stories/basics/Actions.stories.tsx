@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Actions from '@/components/basics/Actions';
-import { ActionsProps } from '@/lib/content/schema/basics/actions';
+import { ActionsProps } from '@/lib/site/content/schema/basics/actions';
 
 const meta: Meta<typeof Actions> = {
 	title: 'Basics/Actions',
@@ -34,22 +34,19 @@ export const Default: Story = {
 	args: {
 		actions: [
 			{
-				label: 'Word lid',
-				url: '/word-lid',
+				value: 'Get started',
+				url: '/get-started',
 			},
 			{
-				label: 'Bekijk evenementen',
-				url: '/evenementen',
+				value: 'Learn more',
+				url: '/about',
 				variant: 'secondary',
 			},
 		],
 	},
 };
 
-// The hero's row: `badge` gives the primary action the circular icon-badge treatment, falling back
-// to the arrow-up-right glyph when the action doesn't name an icon itself.
 export const WithBadge: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		badge: true,
@@ -57,17 +54,16 @@ export const WithBadge: Story = {
 };
 
 export const WithIcons: Story = {
-	...Default,
 	args: {
 		actions: [
 			{
-				label: 'Bekijk agenda',
-				url: '/evenementen',
+				value: 'View the calendar',
+				url: '/calendar',
 				icon: 'calendar',
 			},
 			{
-				label: 'Ontdek de community',
-				url: '/community',
+				value: 'Read the docs',
+				url: '/docs',
 				variant: 'secondary',
 				icon: 'arrow-up-right',
 			},
@@ -76,16 +72,15 @@ export const WithIcons: Story = {
 };
 
 export const DefaultVariant: Story = {
-	...Default,
 	args: {
 		actions: [
 			{
-				label: 'Alle evenementen',
-				url: '/evenementen',
+				value: 'All articles',
+				url: '/articles',
 			},
 			{
-				label: 'Over ons',
-				url: '/community',
+				value: 'About us',
+				url: '/about',
 			},
 		],
 		defaultVariant: 'secondary',

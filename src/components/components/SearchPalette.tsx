@@ -3,36 +3,22 @@
 import { Command } from 'cmdk';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
-import type { Ref } from 'react';
 
 import Content from '@/components/basics/Content';
 import Icon from '@/components/basics/Icon';
 import Shortcut from '@/components/basics/Shortcut';
 import useHotkey from '@/hooks/useHotkey';
 import useOverlay from '@/hooks/useOverlay';
-import { classNames } from '@/lib/classNames';
+import { classNames } from '@/lib/shared/classNames';
 import type {
-	SearchPaletteItem as SearchPaletteItemSchemaProps,
-	SearchPaletteProps as SearchPaletteSchemaProps,
-} from '@/lib/content/schema/components/searchPalette';
+	SearchPaletteItem,
+	SearchPaletteOverlayProps as SearchPaletteSchemaProps,
+} from '@/lib/site/content/schema/components/searchPalette';
 
-export type SearchPaletteItem = SearchPaletteItemSchemaProps & {
-	/** Custom select handler; runs instead of navigation when set */
-	onSelect?: () => void;
-};
+type SearchPaletteProps = SearchPaletteSchemaProps;
 
-// `items` carries per-item `onSelect` callbacks, so it is omitted from the schema intersection and
-// redeclared with the local SearchPaletteItem type instead.
-interface SearchPaletteProps extends Omit<SearchPaletteSchemaProps, 'items'> {
-	/** The searchable commands, grouped by `category` */
-	items: SearchPaletteItem[];
-	/** Fires when the palette requests to close (Escape, backdrop, after a select) */
-	onClose?: () => void;
-}
-
-// Groups items by category while preserving the caller's category order, then first-seen order for
-// the rest. Items without a category fall into `fallbackCategory`. Relies on Map keeping insertion
-// order: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+// Preserves the caller's category order, then first-seen order for the rest. Relies on Map keeping
+// insertion order: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
 const groupItems = (
 	items: SearchPaletteItem[],
 	categories: string[],
@@ -58,9 +44,6 @@ const groupItems = (
 	return [...groups.entries()].filter(([, bucket]) => bucket.length > 0);
 };
 
-// Cmd/Ctrl+K command palette over cmdk: fuzzy filtering, category grouping and full keyboard nav,
-// rendered in our own overlay so it reuses useOverlay (scroll lock + Escape) and useHotkey rather
-// than cmdk's bundled dialog. Selecting an item navigates (url) or runs onSelect, then closes.
 const SearchPalette = ({
 	open,
 	items,
@@ -71,8 +54,7 @@ const SearchPalette = ({
 	selectHint = 'to select',
 	onClose,
 	className,
-	ref,
-}: SearchPaletteProps & { ref?: Ref<HTMLDivElement> }) => {
+}: SearchPaletteProps) => {
 	const router = useRouter();
 	const [internalOpen, setInternalOpen] = useState(false);
 	const isControlled = open !== undefined;
@@ -85,7 +67,6 @@ const SearchPalette = ({
 		onClose?.();
 	}, [isControlled, onClose]);
 
-	// Cmd/Ctrl+K toggles the palette when it owns its state; a controlled parent drives `open` itself.
 	useHotkey('mod+k', () => {
 		if (!isControlled) {
 			setInternalOpen((value) => !value);
@@ -95,9 +76,7 @@ const SearchPalette = ({
 	useOverlay(isOpen, close);
 
 	const handleSelect = (item: SearchPaletteItem) => {
-		if (item.onSelect) {
-			item.onSelect();
-		} else if (item.url) {
+		if (item.url) {
 			router.push(item.url);
 		}
 		close();
@@ -112,7 +91,6 @@ const SearchPalette = ({
 	return (
 		<div className="search-palette-overlay" onClick={close}>
 			<Command
-				ref={ref}
 				label={placeholder}
 				className={classNames('search-palette', className)}
 				onClick={(event) => event.stopPropagation()}
@@ -145,16 +123,16 @@ const SearchPalette = ({
 
 				<footer className="search-palette-footer">
 					<span className="search-palette-foot">
-						<Shortcut>↑</Shortcut>
-						<Shortcut>↓</Shortcut>
+						<Shortcut keys={['↑']} />
+						<Shortcut keys={['↓']} />
 						to navigate
 					</span>
 					<span className="search-palette-foot">
-						<Shortcut>↵</Shortcut>
+						<Shortcut keys={['↵']} />
 						{selectHint}
 					</span>
 					<span className="search-palette-foot">
-						<Shortcut>esc</Shortcut>
+						<Shortcut keys={['esc']} />
 						to close
 					</span>
 				</footer>

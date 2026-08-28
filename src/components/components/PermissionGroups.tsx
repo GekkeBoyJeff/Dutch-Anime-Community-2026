@@ -2,21 +2,23 @@
 
 import Title from '@/components/basics/Title';
 import Switch from '@/components/components/Switch';
-import { PERMISSION_GROUPS } from '@/lib/auth/permission-groups';
-import type { Permission } from '@/lib/auth/permissions';
+import { PERMISSION_GROUPS } from '@/lib/shared/auth/permission-groups';
+import type { Permission } from '@/lib/shared/auth/permissions';
 
 type PermissionGroupsProps = {
-	/** De volledige permissieset van de persoon (user_permissions) — bewerkbaar */
+	/** The person's complete, editable permission set (user_permissions) */
 	grants: ReadonlySet<Permission>;
-	/** Zet/haal een permissie */
+	/** Turns a single permission on or off */
 	onToggle: (permission: Permission, on: boolean) => void;
-	/** Alles alleen-lezen (eigen rij of admin-doelwit) */
+	/** Renders everything read-only (own row, or an admin target) */
 	disabled?: boolean;
 };
 
-// Toont het permissie-vocabulaire gegroepeerd per domein met een Switch per permissie — de volledige,
-// per-persoon effectieve set (er is geen additief rol-bundel meer: user_permissions IS de set).
-const PermissionGroups = ({ grants, onToggle, disabled = false }: PermissionGroupsProps) => {
+const PermissionGroups = ({
+	grants,
+	onToggle,
+	disabled = false,
+}: PermissionGroupsProps) => {
 	return (
 		<div className="permission-groups">
 			{PERMISSION_GROUPS.map((group) => (
@@ -29,7 +31,7 @@ const PermissionGroups = ({ grants, onToggle, disabled = false }: PermissionGrou
 								<Switch
 									checked={grants.has(permission)}
 									disabled={disabled}
-									aria-label={permission}
+									ariaLabel={permission}
 									onCheckedChange={(on) => onToggle(permission, on)}
 								/>
 							</li>

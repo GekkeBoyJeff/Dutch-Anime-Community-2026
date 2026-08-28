@@ -8,9 +8,8 @@ export const deepEqual = (a: unknown, b: unknown): boolean => {
 	return keysA.every((key) => deepEqual((a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key]));
 };
 
-// updateArgs merges shallowly at the top level and deletes keys whose value is undefined, so the
-// write-back sends exactly the changed keys (whole) plus removed keys as undefined. Untouched keys
-// are never sent — that is what keeps function-valued args (invisible in the editor) intact.
+// updateArgs merges shallowly and deletes keys whose value is undefined, so sending only the changed
+// keys is what keeps untouched function-valued args — invisible in the editor — intact.
 export const diffTopLevel = (
 	current: Record<string, unknown>,
 	next: Record<string, unknown>,

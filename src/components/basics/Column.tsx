@@ -1,14 +1,10 @@
-import type { ReactNode, Ref } from 'react';
+import type { ComponentPropsWithoutRef } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { ColumnProps } from '@/lib/content/schema/basics/column';
+import { classNames } from '@/lib/shared/classNames';
+import type { ColumnProps as ColumnSchemaProps } from '@/lib/site/content/schema/basics/column';
 
-type ColumnComponentProps = ColumnProps & {
-	children?: ReactNode;
-};
+type ColumnProps = ColumnSchemaProps;
 
-// A single cell of the 12-column grid. Each prop maps to a generated `is-{n}` / `is-{n}-{bp}` (span)
-// or `is-offset-{n}` / `is-offset-{n}-{bp}` (offset) class; omit `span` for an equal-width auto cell.
 const Column = ({
 	span,
 	spanM,
@@ -20,11 +16,10 @@ const Column = ({
 	offsetXl,
 	className,
 	children,
-	ref,
-}: ColumnComponentProps & { ref?: Ref<HTMLDivElement> }) => {
+	...rest
+}: ColumnProps) => {
 	return (
 		<div
-			ref={ref}
 			className={classNames(
 				'column',
 				span && `is-${span}`,
@@ -37,6 +32,7 @@ const Column = ({
 				offsetXl && `is-offset-${offsetXl}-xl`,
 				className,
 			)}
+			{...rest}
 		>
 			{children}
 		</div>

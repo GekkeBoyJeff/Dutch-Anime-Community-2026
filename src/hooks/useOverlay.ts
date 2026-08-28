@@ -2,21 +2,14 @@
 
 import { useEffect } from 'react';
 
-interface UseOverlayOptions {
-	closeOnEscape?: boolean;
-}
-
-// Central overlay lifecycle for Modal, Drawer and the video lightbox: locks page scroll while the
-// overlay is open and restores it on close, with opt-in Escape-to-close. The page scrolls inside
-// .page-frame when present (the body only scrolls in contexts without the frame, like Storybook),
-// so both get locked.
-const useOverlay = (isOpen: boolean, onClose?: () => void, { closeOnEscape = true }: UseOverlayOptions = {}) => {
+// The page scrolls inside .page-frame when present (the body only scrolls in contexts without the
+// frame, like Storybook), so both get locked.
+const useOverlay = (isOpen: boolean, onClose?: () => void) => {
 	useEffect(() => {
 		if (!isOpen) {
 			return undefined;
 		}
 
-		// Store the current values and offset the scrollbar width to avoid layout shift.
 		const frame = document.querySelector<HTMLElement>('.page-frame-scroll');
 		const previous = {
 			overflow: document.body.style.overflow,
@@ -37,7 +30,7 @@ const useOverlay = (isOpen: boolean, onClose?: () => void, { closeOnEscape = tru
 		}
 
 		const onKeydown = (event: KeyboardEvent) => {
-			if (closeOnEscape && event.key === 'Escape') {
+			if (event.key === 'Escape') {
 				onClose?.();
 			}
 		};
@@ -52,7 +45,7 @@ const useOverlay = (isOpen: boolean, onClose?: () => void, { closeOnEscape = tru
 			}
 			document.removeEventListener('keydown', onKeydown);
 		};
-	}, [isOpen, onClose, closeOnEscape]);
+	}, [isOpen, onClose]);
 };
 
 export default useOverlay;

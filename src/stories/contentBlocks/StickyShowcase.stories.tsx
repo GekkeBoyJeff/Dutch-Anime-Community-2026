@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import StickyShowcase from '@/components/contentBlocks/StickyShowcase';
-import { StickyShowcaseProps } from '@/lib/content/schema/blocks/stickyShowcase';
+import { StickyShowcaseProps } from '@/lib/site/content/schema/blocks/stickyShowcase';
 
 const meta: Meta<typeof StickyShowcase> = {
 	title: 'ContentBlocks/StickyShowcase',
@@ -24,11 +24,11 @@ type Story = StoryObj<typeof StickyShowcase>;
 
 export const Default: Story = {
 	args: {
-		heading: { tagline: 'How it works', value: 'Three steps to join' },
+		heading: { tagline: 'How it works', title: 'Three steps to join' },
 		steps: [
-			{ id: 'st1', title: 'Join the server', body: 'One click and you are in — free, no strings attached.', media: { type: 'image', src: '/media/demo.png', alt: 'Joining the server' } },
-			{ id: 'st2', title: 'Pick your roles', body: 'Choose the topics you care about and see exactly the channels that fit.', media: { type: 'image', src: '/media/demo.png', alt: 'Picking roles' } },
-			{ id: 'st3', title: 'Say hi', body: 'Introduce yourself and get your first conversation within the hour.', media: { type: 'image', src: '/media/demo.png', alt: 'Saying hi' } },
+			{ id: 'st1', title: 'Join the server', value: 'One click and you are in — free, no strings attached.', media: { type: 'image', src: '/media/demo.png', alt: 'Joining the server' } },
+			{ id: 'st2', title: 'Pick your roles', value: 'Choose the topics you care about and see exactly the channels that fit.', media: { type: 'image', src: '/media/demo.png', alt: 'Picking roles' } },
+			{ id: 'st3', title: 'Say hi', value: 'Introduce yourself and get your first conversation within the hour.', media: { type: 'image', src: '/media/demo.png', alt: 'Saying hi' } },
 		],
 	},
 };

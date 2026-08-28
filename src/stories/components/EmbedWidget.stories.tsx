@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import EmbedWidget from '@/components/components/EmbedWidget';
-import { EmbedWidgetProps } from '@/lib/content/schema/components/embedWidget';
+import { EmbedWidgetProps } from '@/lib/site/content/schema/components/embedWidget';
 
 const meta: Meta<typeof EmbedWidget> = {
 	title: 'Components/EmbedWidget',

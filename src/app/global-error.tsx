@@ -1,17 +1,10 @@
 'use client';
 
-// Catches errors thrown by the ROOT layout/template itself (the next/font call, metadataBase, the
-// global SCSS import, the layout's JSON-LD) — the one place app/error.tsx can't reach, because that
-// boundary renders *inside* the layout. global-error replaces the entire document, so it must ship its
-// own <html>/<body> and cannot rely on the site's SCSS/colorsets having loaded. Styles are inline and
-// the colours are literals on purpose: this file must stay self-contained in case the failure is in a
-// module the rest of the app shares.
-interface GlobalErrorProps {
-	/** The caught error; `digest` correlates the production error screen to a server log line */
-	error?: Error & { digest?: string };
-	/** Re-renders the root segment */
-	reset?: () => void;
-}
+// global-error replaces the entire document, so it must ship its own <html>/<body> and cannot rely
+// on the site's SCSS/colorsets having loaded. Styles are inline and the colours are literals on
+// purpose: this file must stay self-contained in case the failure is in a module the rest of the
+// app shares.
+type GlobalErrorProps = { error: Error & { digest?: string }; reset: () => void };
 
 const GlobalError = ({ error, reset }: GlobalErrorProps) => {
 	return (
@@ -35,7 +28,7 @@ const GlobalError = ({ error, reset }: GlobalErrorProps) => {
 					</p>
 					<button
 						type="button"
-						onClick={() => reset?.()}
+						onClick={() => reset()}
 						style={{
 							font: 'inherit',
 							padding: '0.5rem 1.25rem',
@@ -48,7 +41,7 @@ const GlobalError = ({ error, reset }: GlobalErrorProps) => {
 					>
 						Probeer opnieuw
 					</button>
-					{error?.digest && (
+					{error.digest && (
 						<p style={{ marginTop: '1.5rem', fontSize: '0.75rem', opacity: 0.6 }}>Foutcode: {error.digest}</p>
 					)}
 				</main>

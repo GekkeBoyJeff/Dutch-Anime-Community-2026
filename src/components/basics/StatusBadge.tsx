@@ -1,13 +1,12 @@
-import type { ReactNode, Ref } from 'react';
-
 import Badge from '@/components/basics/Badge';
-import type { StatusVariant } from '@/lib/content/schema/primitives';
+import type { StatusBadgeProps as StatusBadgeSchemaProps, StatusDomain } from '@/lib/site/content/schema/basics/statusBadge';
+import type { StatusVariant } from '@/lib/site/content/schema/primitives';
 
-// The canonical domain-status → colour + label mapping. Every beheer screen renders a status through
-// this so warning/declaratie/aanwezigheid/verzoek chips stay consistent. Values mirror the planned DB
-// enums; there is no yellow status token (warning is orange), so "geel" maps to warning and "rood" to
-// error. Unknown statuses fall back to a neutral chip showing the raw key.
-const STATUS: Record<string, Record<string, { variant: StatusVariant; label: string }>> = {
+type StatusBadgeProps = StatusBadgeSchemaProps;
+
+type StatusEntry = { variant: StatusVariant; label: string };
+
+const STATUS: Record<StatusDomain, Record<string, StatusEntry>> = {
 	warning: {
 		yellow: { variant: 'warning', label: 'Geel' },
 		red: { variant: 'error', label: 'Rood' },
@@ -41,29 +40,17 @@ const STATUS: Record<string, Record<string, { variant: StatusVariant; label: str
 	},
 };
 
-export type StatusDomain = keyof typeof STATUS;
+const StatusBadge = ({
+	domain,
+	status,
+	label,
+	dot = false,
+	className,
+}: StatusBadgeProps) => {
+	const mapped = STATUS[domain][status];
 
-type StatusBadgeProps = {
-	/** The domain namespace (warning, expense, attendance, request) */
-	domain: StatusDomain;
-	/** The status key within the domain */
-	status: string;
-	/** Override the auto-derived label */
-	label?: ReactNode;
-	/** Show a leading status dot, so meaning is not colour-only */
-	dot?: boolean;
-	className?: string;
-	ref?: Ref<HTMLSpanElement>;
-};
-
-// A read-only status chip built on Badge (never Pill — Pill is an interactive filter). Looks up the
-// domain+status in the canonical map above; a screen never hardcodes a status colour.
-const StatusBadge = ({ domain, status, label, dot = false, className, ref }: StatusBadgeProps) => {
-	const mapped = STATUS[domain]?.[status];
 	return (
-		<Badge ref={ref} variant={mapped?.variant ?? 'neutral'} dot={dot} className={className}>
-			{label ?? mapped?.label ?? status}
-		</Badge>
+		<Badge variant={mapped?.variant ?? 'neutral'} dot={dot} className={className} value={label ?? mapped?.label ?? status} />
 	);
 };
 

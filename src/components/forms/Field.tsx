@@ -1,24 +1,19 @@
 'use client';
 
 import { Field as BaseField } from '@base-ui/react/field';
-import { use, type ReactNode, type Ref } from 'react';
+import { use } from 'react';
 
 import FieldDescription from '@/components/forms/FieldDescription';
 import FieldError from '@/components/forms/FieldError';
 import FieldLabel from '@/components/forms/FieldLabel';
 import { FieldSetContext } from '@/components/forms/FieldSet';
-import { classNames } from '@/lib/classNames';
-import type { FieldProps as FieldSchemaProps } from '@/lib/content/schema/forms/field';
+import { classNames } from '@/lib/shared/classNames';
+import type { FieldProps as FieldSchemaProps } from '@/lib/site/content/schema/forms/field';
 
 /** When a field runs its validate callback; overrides the parent <Form>. */
 export type FieldValidationMode = 'onSubmit' | 'onBlur' | 'onChange';
 
-type FieldProps = FieldSchemaProps & {
-	/** Custom (a)sync validator; return message(s) when invalid or null when valid */
-	validate?: (value: unknown, formValues: Record<string, unknown>) => string | string[] | null | Promise<string | string[] | null>;
-	/** Label + Control + Description + Error */
-	children?: ReactNode;
-};
+type FieldProps = FieldSchemaProps;
 
 // The per-field wrapper that owns the gnarly a11y plumbing: it generates the control id, wires
 // label↔control via htmlFor, merges the Description and Error ids into aria-describedby, and sets
@@ -37,7 +32,7 @@ const Field = ({
 	className,
 	children,
 	ref,
-}: FieldProps & { ref?: Ref<HTMLDivElement> }) => {
+}: FieldProps) => {
 	const inheritedOrientation = use(FieldSetContext);
 	const effectiveOrientation = orientation ?? inheritedOrientation ?? 'vertical';
 

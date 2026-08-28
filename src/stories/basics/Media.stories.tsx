@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Media from '@/components/basics/Media';
-import type { Media as MediaData } from '@/lib/content';
-import { MediaProps } from '@/lib/content/schema/basics/media';
+import type { Media as MediaData } from '@/lib/site/content';
+import { MediaProps } from '@/lib/site/content/schema/basics/media';
+import { MediaProvider } from '@/lib/site/content/schema/primitives';
 
 // Media is the home for shared demo media: defined and exported here, imported by other stories as
 // `{ demoImage, demoVideo }` — spread to override alt/ratio, or read `.src` for a bare URL. They're listed
@@ -36,7 +37,7 @@ const meta: Meta<typeof Media> = {
 			control: 'text',
 			description: 'How wide the image renders, so the browser fetches the smallest fitting variant: a CSS sizes string (`"50vw"`) or a per-breakpoint map in code (`{ base: "100vw", m: "50vw" }`). Optional — responsive by default.',
 		},
-		provider: { control: 'inline-radio', options: [undefined, 'youtube', 'vimeo', 'tiktok'] },
+		provider: { control: 'inline-radio', options: [undefined, ...MediaProvider.options] },
 	},
 	// Media is fluid (it fills its parent); this only keeps the demos a comfortable size — it is not part
 	// of the component. Resize the Storybook viewport to watch the figure scale with its parent.
@@ -53,7 +54,6 @@ export default meta;
 
 type Story = StoryObj<typeof Media>;
 
-// The default state: an image cropped to fill a 16/9 frame (`mode: 'fill'` = object-fit: cover).
 export const Default: Story = {
 	args: {
 		...demoImage,
@@ -62,7 +62,6 @@ export const Default: Story = {
 	},
 };
 
-// `mode: 'fit'` = object-fit: contain — the whole image is visible, letterboxed inside the frame.
 export const Contain: Story = {
 	...Default,
 	args: {
@@ -71,7 +70,6 @@ export const Contain: Story = {
 	},
 };
 
-// A square frame. With `fill` the landscape image is cropped to its centre (the corner markers fall away).
 export const Square: Story = {
 	...Default,
 	args: {
@@ -80,7 +78,6 @@ export const Square: Story = {
 	},
 };
 
-// A portrait frame.
 export const Portrait: Story = {
 	...Default,
 	args: {
@@ -89,7 +86,6 @@ export const Portrait: Story = {
 	},
 };
 
-// An ultrawide frame.
 export const Wide: Story = {
 	...Default,
 	args: {
@@ -98,19 +94,17 @@ export const Wide: Story = {
 	},
 };
 
-// Caption and credit render in a <figcaption> below the frame.
 export const WithCaption: Story = {
 	...Default,
 	args: {
 		...Default.args,
-		caption: 'Gezellige spelletjesmiddag met de community in Utrecht',
-		credit: '© Dutch Anime Community',
+		caption: 'A wide shot of the meetup hall, taken from the balcony',
+		credit: '© Example Studio',
 	},
 };
 
-// The 'plain' variant: no frame, no ratio box, no crop — the bare asset at its natural size.
-// For logos, wordmarks and mascots; width/height hint the intrinsic size when the asset has no
-// manifest entry (SVGs), preventing layout shift.
+// The shared demoImage doesn't fit here: 'plain' is for an asset without a manifest entry (an SVG
+// logo), which is also why width/height are given by hand — without them the SVG shifts the layout.
 export const Plain: Story = {
 	args: {
 		type: 'image',
@@ -122,7 +116,6 @@ export const Plain: Story = {
 	},
 };
 
-// A video with native controls (`type: 'video'`). The src plays directly — no manifest/optimisation.
 export const Video: Story = {
 	...Default,
 	args: {
@@ -131,7 +124,6 @@ export const Video: Story = {
 	},
 };
 
-// An embedded provider (`type: 'embed'`) — the iframe src is built from `provider` + `embedId`.
 export const Embed: Story = {
 	...Default,
 	args: {
@@ -139,6 +131,6 @@ export const Embed: Story = {
 		type: 'embed',
 		provider: 'youtube',
 		embedId: 'dQw4w9WgXcQ',
-		caption: 'Een YouTube-embed',
+		caption: 'A YouTube embed',
 	},
 };

@@ -1,19 +1,24 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import Icon from '@/components/basics/Icon';
-import { IconProps } from '@/lib/content/schema/basics/icon';
+import Icon, { ICONS } from '@/components/basics/Icon';
+import { IconProps } from '@/lib/site/content/schema/basics/icon';
 
 const meta: Meta<typeof Icon> = {
 	title: 'Basics/Icon',
 	component: Icon,
 	parameters: {
-		docs: { description: { component: 'A single icon glyph by name; decorative (aria-hidden). Glyphs appear once the icon font has been added.' } },
+		docs: {
+			description: {
+				component:
+					'A single lucide-react SVG glyph, picked by name from the ICONS map. Decorative (`aria-hidden`), so the accessible label belongs on the surrounding interactive component. It inherits the text colour (`currentColor`) and is sized in `em`, so it tracks the font-size. An unknown name renders nothing.',
+			},
+		},
 		jsonSchema: { schema: IconProps },
 	},
 	argTypes: {
 		name: {
-			control: 'inline-radio',
-			options: ['search', 'close', 'menu', 'heart'],
+			control: 'select',
+			options: Object.keys(ICONS),
 		},
 	},
 };

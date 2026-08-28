@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Shortcut from '@/components/basics/Shortcut';
-import { ShortcutProps } from '@/lib/content/schema/basics/shortcut';
+import { ShortcutProps } from '@/lib/site/content/schema/basics/shortcut';
 
 const meta: Meta<typeof Shortcut> = {
 	title: 'Basics/Shortcut',
@@ -20,7 +20,6 @@ export default meta;
 
 type Story = StoryObj<typeof Shortcut>;
 
-// A combo — edit the `keys` control to add/remove keys live.
 export const Default: Story = {
 	args: {
 		keys: ['⌘', 'K'],
@@ -41,15 +40,5 @@ export const ThreeKeys: Story = {
 	args: {
 		...Default.args,
 		keys: ['Ctrl', 'Shift', 'P'],
-	},
-};
-
-// A single key passed as children instead of the `keys` array (how SearchPalette uses it).
-export const ViaChildren: Story = {
-	...Default,
-	args: {
-		...Default.args,
-		keys: undefined,
-		children: '↵',
 	},
 };

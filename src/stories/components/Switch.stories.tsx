@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 
 import Switch from '@/components/components/Switch';
-import { SwitchProps } from '@/lib/content/schema/components/switch';
+import { SwitchProps } from '@/lib/site/content/schema/components/switch';
 
 const meta: Meta<typeof Switch> = {
 	title: 'Components/Switch',
@@ -22,7 +22,7 @@ const meta: Meta<typeof Switch> = {
 		disabled: { control: 'boolean' },
 		readOnly: { control: 'boolean' },
 		required: { control: 'boolean' },
-		'aria-label': { control: 'text' },
+		ariaLabel: { control: 'text' },
 	},
 };
 
@@ -32,7 +32,7 @@ type Story = StoryObj<typeof Switch>;
 
 export const Default: Story = {
 	args: {
-		'aria-label': 'Enable notifications',
+		ariaLabel: 'Enable notifications',
 	},
 };
 
@@ -67,7 +67,7 @@ export const WithLabel: Story = {
 	render: (args) => {
 		return (
 			<label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-				<Switch {...args} aria-label={undefined} id="notify" />
+				<Switch {...args} ariaLabel={undefined} id="notify" />
 				Email notifications
 			</label>
 		);

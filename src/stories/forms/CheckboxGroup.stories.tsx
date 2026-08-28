@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 
 import CheckboxGroup from '@/components/forms/CheckboxGroup';
-import { CheckboxGroupProps } from '@/lib/content/schema/forms/checkboxGroup';
+import { CheckboxGroupProps } from '@/lib/site/content/schema/forms/checkboxGroup';
 
 const meta: Meta<typeof CheckboxGroup> = {
 	title: 'Forms/CheckboxGroup',
@@ -27,7 +27,7 @@ type Story = StoryObj<typeof CheckboxGroup>;
 
 export const Default: Story = {
 	args: {
-		'aria-label': 'Interests',
+		ariaLabel: 'Interests',
 		options: [
 			{ value: 'anime', label: 'Anime' },
 			{ value: 'manga', label: 'Manga' },

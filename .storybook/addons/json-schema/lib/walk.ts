@@ -1,9 +1,8 @@
 export type JsonSchemaNode = Record<string, any>;
 export type SchemaPath = (string | number)[];
 
-// A string segment names a property; when that property is an array we descend into its items
-// directly, so 'actions' navigates to the HeroAction object. A number segment picks an
-// anyOf/oneOf variant. Paths never reference $defs names — those churn across HMR.
+// When a property is an array we descend into its items directly, so 'actions' navigates to the
+// HeroAction object. Paths never reference $defs names — those churn across HMR.
 export const resolveNode = (root: JsonSchemaNode, path: SchemaPath): JsonSchemaNode | null => {
 	let node: JsonSchemaNode | null = root;
 	for (const segment of path) {
@@ -38,8 +37,6 @@ const plainType = (node: JsonSchemaNode): string => {
 	return String(node.type ?? 'any');
 };
 
-// A union variant's display text: consts (e.g. `columns`'s 2|3|4) show their literal value rather
-// than the useless "number" every const shares as its `type`.
 const variantLabel = (v: JsonSchemaNode): string => {
 	if (v.const !== undefined) return String(v.const);
 	if (v.title) return v.title;
@@ -50,7 +47,6 @@ const variantLabel = (v: JsonSchemaNode): string => {
 	return String(v.type ?? 'any');
 };
 
-// Same array-auto-descend as describeType's own navigable check, applied per variant.
 const variantNavigable = (v: JsonSchemaNode): boolean => {
 	const effective = v.type === 'array' && v.items ? v.items : v;
 	return effective.type === 'object' && !!effective.properties;
@@ -61,8 +57,6 @@ export const describeType = (
 ): { label: string; navigable: boolean; variants?: { label: string; index: number }[] } => {
 	const variants = node.anyOf ?? node.oneOf;
 	if (Array.isArray(variants)) {
-		// Const-only unions (columns: 2|3|4) and primitive unions (StatItem.value: string|number) have
-		// nowhere useful to navigate to, so render them as plain type text instead of dead-end links.
 		if (!variants.some((v: JsonSchemaNode) => variantNavigable(v))) {
 			return {
 				label: node.title ?? variants.map((v: JsonSchemaNode) => variantLabel(v)).join(' | '),

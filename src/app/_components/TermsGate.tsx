@@ -8,8 +8,8 @@ import Container from '@/components/basics/Container';
 import Spinner from '@/components/basics/Spinner';
 import Title from '@/components/basics/Title';
 import Checkbox from '@/components/forms/Checkbox';
-import { useSession } from '@/lib/auth/permissions';
-import { getBrowserClient } from '@/lib/supabase/client';
+import { useSession } from '@/lib/shared/auth/permissions';
+import { getBrowserClient } from '@/lib/shared/supabase/client';
 
 // Bump wanneer de voorwaarden inhoudelijk wijzigen → iedereen accepteert opnieuw.
 export const TERMS_VERSION = '2026-07-17';
@@ -21,10 +21,6 @@ type TermsGateProps = { children: ReactNode };
 // different account never reads a stale value; a sign-out leaves it (the signed-out branch ignores it).
 let acceptedCache: { userId: string; accepted: boolean } | null = null;
 
-// Client-side gate: een ingelogde user moet de (huidige versie van de) voorwaarden accepteren voordat de
-// beveiligde schermen (dashboard/account) bruikbaar zijn. Niet-ingelogd → laat downstream-guards het
-// afhandelen. De publieke site rendert deze gate niet. De self-update-policy op profiles staat het
-// wegschrijven van terms_accepted_at/terms_version toe.
 const TermsGate = ({ children }: TermsGateProps) => {
 	const { session, loading } = useSession();
 	const [accepted, setAccepted] = useState<boolean | null>(() => (session && acceptedCache?.userId === session.user.id ? acceptedCache.accepted : null));
@@ -68,9 +64,9 @@ const TermsGate = ({ children }: TermsGateProps) => {
 	};
 
 	// Niet-ingelogd → downstream-guards handelen auth af; wél ingelogd maar nog aan het ophalen → spinner.
-	if (loading) return <Container className="terms-gate"><Spinner label="Laden" /></Container>;
+	if (loading) return <Container className="terms-gate"><Spinner ariaLabel="Laden" /></Container>;
 	if (!session) return <>{children}</>;
-	if (accepted === null) return <Container className="terms-gate"><Spinner label="Laden" /></Container>;
+	if (accepted === null) return <Container className="terms-gate"><Spinner ariaLabel="Laden" /></Container>;
 	if (accepted) return <>{children}</>;
 
 	return (
@@ -92,10 +88,8 @@ const TermsGate = ({ children }: TermsGateProps) => {
 				</ul>
 				<p>Je gegevens worden niet buiten de organisatie gedeeld. Je eigen gegevens kun je inzien op je accountpagina.</p>
 				<Checkbox checked={agreed} onCheckedChange={(v) => setAgreed(v)} label="Ik ga akkoord met de voorwaarden" />
-				{error && <Alert variant="error">{error}</Alert>}
-				<Button variant="primary" disabled={!agreed || saving} onClick={accept}>
-					Accepteren
-				</Button>
+				{error && <Alert variant="error" value={error} />}
+				<Button variant="primary" disabled={!agreed || saving} onClick={accept} value="Accepteren" />
 			</div>
 		</Container>
 	);

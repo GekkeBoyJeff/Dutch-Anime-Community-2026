@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 
 import Slider from '@/components/forms/Slider';
-import { SliderProps } from '@/lib/content/schema/forms/slider';
+import { SliderProps } from '@/lib/site/content/schema/forms/slider';
 
 const meta: Meta<typeof Slider> = {
 	title: 'Forms/Slider',
@@ -32,7 +32,7 @@ type Story = StoryObj<typeof Slider>;
 
 export const Default: Story = {
 	args: {
-		'aria-label': 'Volume',
+		ariaLabel: 'Volume',
 		defaultValue: 40,
 		min: 0,
 		max: 100,
@@ -60,7 +60,7 @@ export const Stepped: Story = {
 
 export const SliderSelection: Story = {
 	...Default,
-	args: { ...Default.args, 'aria-label': 'Price range', defaultValue: [25, 75], showValue: true },
+	args: { ...Default.args, ariaLabel: 'Price range', defaultValue: [25, 75], showValue: true },
 };
 
 export const Disabled: Story = {

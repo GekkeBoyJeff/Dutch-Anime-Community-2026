@@ -1,18 +1,13 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 import Icon from '@/components/basics/Icon';
 import Interactive from '@/components/basics/Interactive';
 import Link from '@/components/basics/Link';
-import { classNames } from '@/lib/classNames';
-import type { FooterProps as FooterSchemaProps } from '@/lib/content/schema/structures/footer';
+import { classNames } from '@/lib/shared/classNames';
+import type { FooterProps as FooterSchemaProps } from '@/lib/site/content/schema/structures/footer';
 
 type FooterProps = FooterSchemaProps;
 
-// Generalised site footer: a brand block, link columns, social row, and a legal bar with the
-// copyright year (computed server-side, so it is always current without client JS). Every piece of
-// content is a prop sourced from site.ts — nothing about a specific site is baked in here.
 const Footer = ({
 	navColumns = [],
 	socialLinks = [],
@@ -21,12 +16,11 @@ const Footer = ({
 	credit,
 	decorated = false,
 	className,
-	ref,
-}: FooterProps & { ref?: Ref<HTMLElement> }) => {
+}: FooterProps) => {
 	const year = new Date().getFullYear();
 
 	return (
-		<footer ref={ref} className={classNames('footer', decorated && 'is-decorated', className)}>
+		<footer className={classNames('footer', decorated && 'is-decorated', className)}>
 			<Container className="footer-inner">
 				<div className="footer-top">
 					{brand && (
@@ -38,7 +32,7 @@ const Footer = ({
 								<ul className="footer-social">
 									{socialLinks.map((social) => (
 										<li key={social.url}>
-											<Interactive url={social.url} className="footer-social-link" aria-label={social.label}>
+											<Interactive url={social.url} className="footer-social-link" ariaLabel={social.label}>
 												{social.icon ? <Icon name={social.icon} className='footer-social-icon' /> : social.label}
 											</Interactive>
 										</li>
@@ -51,12 +45,12 @@ const Footer = ({
 					{navColumns.length > 0 && (
 						<nav className="footer-columns" aria-label="Footer">
 							{navColumns.map((column) => (
-								<div key={column.heading} className="footer-column">
-									<Content element="p" className="footer-heading" value={column.heading} />
+								<div key={column.title} className="footer-column">
+									<Content element="p" className="footer-heading" value={column.title} />
 									<ul>
 										{column.links.map((link) => (
 											<li key={link.url}>
-												<Link url={link.url}>{link.label}</Link>
+												<Link url={link.url} value={link.value} />
 											</li>
 										))}
 									</ul>
@@ -67,16 +61,16 @@ const Footer = ({
 				</div>
 
 				<div className="footer-legal">
-					<Content element="p" className="footer-copyright">
+					<p className="content footer-copyright">
 						&copy; {year} {brand?.title}
-						{credit && <Content element="span" className="footer-credit"> · {credit}</Content>}
-					</Content>
+						{credit && <span className="content footer-credit"> · {credit}</span>}
+					</p>
 
 					{legalLinks.length > 0 && (
 						<ul className="footer-legal-links">
 							{legalLinks.map((link) => (
 								<li key={link.url}>
-									<Link url={link.url}>{link.label}</Link>
+									<Link url={link.url} value={link.value} />
 								</li>
 							))}
 						</ul>

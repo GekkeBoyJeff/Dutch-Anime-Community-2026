@@ -1,22 +1,19 @@
-import type { Ref } from 'react';
-
 import Section from '@/components/basics/Section';
 import MarqueeTicker from '@/components/components/MarqueeTicker';
-import type { ProofTickerProps } from '@/lib/content';
+import type { ProofTickerProps as ProofTickerSchemaProps } from '@/lib/site/content/schema/blocks/proofTicker';
 
-// A strip of short facts, meant to sit right under a claim so the claim and its evidence are in one
-// block. Server Component — the ticker is pure CSS and pauses under prefers-reduced-motion.
+type ProofTickerProps = ProofTickerSchemaProps;
+
 const ProofTicker = ({
 	items,
 	direction,
 	variant,
-	label = 'Over de community',
+	ariaLabel = 'Over de community',
 	colorset,
-	ref,
-}: ProofTickerProps & { ref?: Ref<HTMLElement> }) => {
+}: ProofTickerProps) => {
 	return (
-		<Section ref={ref} colorset={colorset} className="proof-ticker">
-			<MarqueeTicker items={items} direction={direction} variant={variant} aria-label={label} />
+		<Section colorset={colorset} className="proof-ticker">
+			<MarqueeTicker items={items} direction={direction} variant={variant} ariaLabel={ariaLabel} />
 		</Section>
 	);
 };

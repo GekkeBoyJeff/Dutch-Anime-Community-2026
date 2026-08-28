@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Breadcrumb from '@/components/basics/Breadcrumb';
-import { BreadcrumbProps } from '@/lib/content/schema/basics/breadcrumb';
+import { BreadcrumbProps } from '@/lib/site/content/schema/basics/breadcrumb';
 
 const meta: Meta<typeof Breadcrumb> = {
 	title: 'Basics/Breadcrumb',
@@ -19,16 +19,15 @@ type Story = StoryObj<typeof Breadcrumb>;
 export const Default: Story = {
 	args: {
 		items: [
-			{ label: 'Home', url: '/' },
-			{ label: 'Events', url: '/events' },
-			{ label: 'Spring meetup' },
+			{ value: 'Home', url: '/' },
+			{ value: 'Events', url: '/events' },
+			{ value: 'Spring meetup' },
 		],
 		separator: '/',
 	},
 };
 
 export const ChevronSeparator: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		separator: '›',

@@ -31,7 +31,7 @@ type Story = StoryObj<typeof ItemCardGrid>;
 export const Default: Story = {
 	args: {
 		variant: 'article',
-		heading: { value: 'From the blog', tagline: 'Latest', intro: 'Filter, search and sort the writing.' },
+		heading: { title: 'From the blog', tagline: 'Latest', intro: 'Filter, search and sort the writing.' },
 		items: articleItems,
 		categories: [
 			{ label: 'Guides', value: 'guides', count: 2 },
@@ -71,7 +71,7 @@ export const LinkVariant: Story = {
 	args: {
 		...Default.args,
 		variant: 'link',
-		heading: { value: 'Where to next?', tagline: 'Navigate' },
+		heading: { title: 'Where to next?', tagline: 'Navigate' },
 		items: [
 			{ id: 'l1', title: 'Documentation', text: 'Guides, references and recipes.', href: '#' },
 			{ id: 'l2', title: 'Showcase', text: 'See what others built.', href: '#' },

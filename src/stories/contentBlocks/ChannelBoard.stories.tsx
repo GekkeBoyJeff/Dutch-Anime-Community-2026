@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import ChannelBoard from '@/components/contentBlocks/ChannelBoard';
-import { ChannelBoardProps } from '@/lib/content/schema/blocks/channelBoard';
+import { ChannelBoardProps } from '@/lib/site/content/schema/blocks/channelBoard';
 
 const meta: Meta<typeof ChannelBoard> = {
 	title: 'ContentBlocks/ChannelBoard',
@@ -23,7 +23,7 @@ type Story = StoryObj<typeof ChannelBoard>;
 
 export const Default: Story = {
 	args: {
-		heading: { tagline: 'De server', value: 'Waar je terechtkomt', intro: 'Vijf kanalen waar het meeste gebeurt.' },
+		heading: { tagline: 'De server', title: 'Waar je terechtkomt', intro: 'Vijf kanalen waar het meeste gebeurt.' },
 		items: [
 			{ id: 'ch1', name: 'welkom', topic: 'hier zeg je hoi', rhythm: 'elke dag' },
 			{ id: 'ch2', name: 'shounen', topic: 'one piece, jjk, en alles ernaast', rhythm: 'elke dag' },

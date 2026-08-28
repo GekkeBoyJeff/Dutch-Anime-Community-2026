@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import TextMedia from '@/components/contentBlocks/TextMedia';
-import { TextMediaProps } from '@/lib/content/schema/blocks/textMedia';
+import { TextMediaProps } from '@/lib/site/content/schema/blocks/textMedia';
 
 const meta: Meta<typeof TextMedia> = {
 	title: 'ContentBlocks/TextMedia',
@@ -26,7 +26,7 @@ export const Default: Story = {
 	args: {
 		reverse: false,
 		title: 'Featured',
-		text: 'Text next to media; stacked on mobile, two columns from the m breakpoint up.',
+		value: 'Text next to media; stacked on mobile, two columns from the m breakpoint up.',
 		media: {
 			type: 'embed',
 			provider: 'youtube',

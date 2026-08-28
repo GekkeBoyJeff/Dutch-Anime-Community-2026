@@ -1,4 +1,4 @@
-import type { Page } from '@/lib/content';
+import type { Page } from '@/lib/site/content';
 
 // De homepage beantwoordt drie vragen in volgorde: wat is dit, gebeurt hier nog iets, en wat kan ik
 // nu doen zonder me op te geven. Vandaar dat de agenda direct onder de hero staat en niet onderaan.
@@ -17,12 +17,12 @@ export const homePage: Page = {
 			colorset: 'dark',
 			variant: 'cover',
 			tagline: 'Op Discord, in het Nederlands',
-			title: 'Hier kennen ze je bij naam',
-			text: 'Je komt binnen in een kanaal, niet in een menigte. Je mag eerst een maand alleen meelezen. Dat doet iedereen.',
+			title: 'Hier kennen ze je bij naam!!!',
+			value: 'Je komt binnen in een kanaal, niet in een menigte. Je mag eerst een maand alleen meelezen. Dat doet iedereen.',
 			media: { type: 'image', src: '/media/spelletjesmiddag.jpg', alt: 'Leden van DAC op een spelletjesmiddag' },
 			actions: [
-				{ label: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
-				{ label: 'Hoe het werkt', variant: 'ghost', url: '/word-lid' },
+				{ value: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
+				{ value: 'Hoe het werkt', variant: 'ghost', url: '/word-lid' },
 			],
 			// Volgorde is bewust: de stats staan onder de herotekst, dus het eerste wat je na 'Dat doet
 			// iedereen' leest moet de drempel verlagen. Het ledenaantal beantwoordt 'leeft dit nog' en
@@ -34,9 +34,9 @@ export const homePage: Page = {
 				{ count: 'honderden', label: 'regelmatig online' },
 			],
 			socials: [
-				{ label: 'Discord', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
-				{ label: 'Instagram', url: 'https://www.instagram.com/dutchanimecommunity/', target: '_blank' },
-				{ label: 'TikTok', url: 'https://www.tiktok.com/@dutchanimecommunity', target: '_blank' },
+				{ value: 'Discord', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
+				{ value: 'Instagram', url: 'https://www.instagram.com/dutchanimecommunity/', target: '_blank' },
+				{ value: 'TikTok', url: 'https://www.tiktok.com/@dutchanimecommunity', target: '_blank' },
 			],
 		},
 		{
@@ -45,14 +45,14 @@ export const homePage: Page = {
 			colorset: 'light',
 			heading: {
 				tagline: 'Binnenkort',
-				value: 'Wat er de komende weken gebeurt',
+				title: 'Wat er de komende weken gebeurt',
 				intro: 'De agenda staat in Discord. Dit is wat er nu op staat.',
 			},
 			events: [
 				{
 					id: 'ev-watchparty',
 					title: 'Watch party',
-					summary: 'Samen kijken, met de chat ernaast. Aanzetten mag, meepraten hoeft niet.',
+					value: 'Samen kijken, met de chat ernaast. Aanzetten mag, meepraten hoeft niet.',
 					location: 'Online · Discord',
 					status: 'Elke vrijdag',
 					statusVariant: 'success',
@@ -61,7 +61,7 @@ export const homePage: Page = {
 				{
 					id: 'ev-gamenight',
 					title: 'Game night',
-					summary: 'Meestal Minecraft, soms een toernooitje. Instappen kan halverwege.',
+					value: 'Meestal Minecraft, soms een toernooitje. Instappen kan halverwege.',
 					location: 'Online · Discord',
 					status: 'Wekelijks',
 					statusVariant: 'success',
@@ -70,7 +70,7 @@ export const homePage: Page = {
 				{
 					id: 'ev-weerwolven',
 					title: 'Weerwolven van Wakkerdam',
-					summary: 'Ons eigen spel, verspreid over Discord. Instappen kan bij een nieuwe ronde.',
+					value: 'Ons eigen spel, verspreid over Discord. Instappen kan bij een nieuwe ronde.',
 					location: 'Online · Discord',
 					status: 'Nieuwe ronde',
 					statusVariant: 'info',
@@ -79,7 +79,7 @@ export const homePage: Page = {
 				{
 					id: 'ev-dcc',
 					title: 'Heroes Dutch Comic Con',
-					summary: 'Onze stand staat er weer. Kom hoi zeggen.',
+					value: 'Onze stand staat er weer. Kom hoi zeggen.',
 					startDate: '2026-11-21',
 					endDate: '2026-11-22',
 					location: 'Jaarbeurs, Utrecht',
@@ -99,7 +99,7 @@ export const homePage: Page = {
 			columns: 3,
 			heading: {
 				tagline: 'Wat het je oplevert',
-				value: 'Waarom mensen blijven',
+				title: 'Waarom mensen blijven',
 				intro: 'Geen van de drie vraagt dat je meteen iets zegt.',
 			},
 			items: [
@@ -108,21 +108,21 @@ export const homePage: Page = {
 					media: { type: 'image', src: '/media/dcc-2024.png', alt: 'DAC-leden samen bij de stand op Dutch Comic Con' },
 					tagline: 'Erbij horen',
 					title: 'Je hoort er sneller bij dan je denkt',
-					text: 'Niemand kent hier iedereen. Na een maand weet je wel wie er \'s avonds meestal online is.',
+					value: 'Niemand kent hier iedereen. Na een maand weet je wel wie er \'s avonds meestal online is.',
 				},
 				{
 					id: 'wiifm-samen',
 					media: { type: 'image', src: '/media/dac-meetup.png', alt: 'Groepsfoto op een DAC-meetup' },
 					tagline: 'Samen doen',
 					title: 'Er is altijd iets samen te doen',
-					text: 'Watch parties, game nights, Minecraft. Staat er niks gepland, dan begint er meestal vanzelf iets.',
+					value: 'Watch parties, game nights, Minecraft. Staat er niks gepland, dan begint er meestal vanzelf iets.',
 				},
 				{
 					id: 'wiifm-laten-zien',
 					media: { type: 'image', src: '/media/dcc-2023-highlights.png', alt: 'Cosplay en creatief werk op een con' },
 					tagline: 'Laten zien',
 					title: 'Je mag jezelf laten zien',
-					text: 'Er is een kanaal voor werk dat nog niet af is. Handig, want daar durf je wél iets te posten.',
+					value: 'Er is een kanaal voor werk dat nog niet af is. Handig, want daar durf je wél iets te posten.',
 				},
 			],
 		},
@@ -133,7 +133,7 @@ export const homePage: Page = {
 			ratio: '848 / 488',
 			heading: {
 				tagline: 'In beeld',
-				value: 'Dit zijn de mensen',
+				title: 'Dit zijn de mensen',
 				intro: 'Gemaakt door leden zelf, op meetups en cons.',
 			},
 			slides: [
@@ -151,18 +151,18 @@ export const homePage: Page = {
 			columns: 4,
 			heading: {
 				tagline: 'Binnen de server',
-				value: 'Waar het over gaat',
+				title: 'Waar het over gaat',
 				intro: 'Niet alleen anime. Dat is alleen hoe iedereen hier binnenkwam.',
 			},
 			items: [
-				{ id: 'b-weerwolven', span: 'wide', tagline: 'Ons eigen spel', title: 'Weerwolven van Wakkerdam', body: 'Eén speeldag duurt een echte dag. Je stemt wanneer het jou uitkomt, niet om acht uur \'s avonds.' },
-				{ id: 'b-dag', span: 'feature', surface: 'accent', media: { type: 'image', src: '/media/amelia.png', alt: 'Amelia, de mascotte van DAC' }, tagline: 'Buiten anime', title: 'Gewoon je dag delen', body: 'School, werk, en of je huisgenoot te ver ging met de afwas. Niet alleen anime dus.' },
-				{ id: 'b-watch', span: 'standard', tagline: 'Samen kijken', title: 'Watch parties', body: 'Samen kijken. Meepraten hoeft niet.' },
-				{ id: 'b-game', span: 'standard', tagline: 'Gamen', title: 'Game nights', body: 'Onze eigen server draait al jaren.' },
-				{ id: 'b-art', span: 'standard', surface: 'muted', tagline: 'Creatief', title: 'Art en verhalen', body: 'Ook werk dat nog niet af is.' },
-				{ id: 'b-cosplay', span: 'standard', tagline: 'Cosplay', title: 'Cosplay', body: 'Naaitips vragen, groepscosplays plannen.' },
-				{ id: 'b-media', span: 'standard', surface: 'muted', tagline: 'Luisteren', title: 'Muziek en films', body: 'Playlists delen, filmavonden plannen.' },
-				{ id: 'b-cultuur', span: 'standard', tagline: 'Cultuur', title: 'Japan en Korea', body: 'Waarom ontbijt daar soep bevat.' },
+				{ id: 'b-weerwolven', span: 'wide', tagline: 'Ons eigen spel', title: 'Weerwolven van Wakkerdam', value: 'Eén speeldag duurt een echte dag. Je stemt wanneer het jou uitkomt, niet om acht uur \'s avonds.' },
+				{ id: 'b-dag', span: 'feature', surface: 'accent', media: { type: 'image', src: '/media/amelia.png', alt: 'Amelia, de mascotte van DAC' }, tagline: 'Buiten anime', title: 'Gewoon je dag delen', value: 'School, werk, en of je huisgenoot te ver ging met de afwas. Niet alleen anime dus.' },
+				{ id: 'b-watch', span: 'standard', tagline: 'Samen kijken', title: 'Watch parties', value: 'Samen kijken. Meepraten hoeft niet.' },
+				{ id: 'b-game', span: 'standard', tagline: 'Gamen', title: 'Game nights', value: 'Onze eigen server draait al jaren.' },
+				{ id: 'b-art', span: 'standard', surface: 'muted', tagline: 'Creatief', title: 'Art en verhalen', value: 'Ook werk dat nog niet af is.' },
+				{ id: 'b-cosplay', span: 'standard', tagline: 'Cosplay', title: 'Cosplay', value: 'Naaitips vragen, groepscosplays plannen.' },
+				{ id: 'b-media', span: 'standard', surface: 'muted', tagline: 'Luisteren', title: 'Muziek en films', value: 'Playlists delen, filmavonden plannen.' },
+				{ id: 'b-cultuur', span: 'standard', tagline: 'Cultuur', title: 'Japan en Korea', value: 'Waarom ontbijt daar soep bevat.' },
 			],
 		},
 		{
@@ -180,11 +180,13 @@ export const homePage: Page = {
 			colorset: 'dark',
 			tone: 'primary',
 			align: 'center',
-			tagline: 'Klaar?',
-			headline: 'Kom binnen en kijk eerst rond',
-			subline: 'Gratis. Bevalt het niet, dan loop je zo weer naar buiten.',
-			primaryCta: { label: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
-			secondaryCta: { label: 'Wat is Discord?', variant: 'secondary', url: 'https://discord.com/safety/360044149331-What-is-Discord', target: '_blank' },
+			heading: {
+				tagline: 'Klaar?',
+				title: 'Kom binnen en kijk eerst rond',
+				intro: 'Gratis. Bevalt het niet, dan loop je zo weer naar buiten.',
+			},
+			primaryCta: { value: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
+			secondaryCta: { value: 'Wat is Discord?', variant: 'secondary', url: 'https://discord.com/safety/360044149331-What-is-Discord', target: '_blank' },
 			media: { type: 'image', src: '/media/amelia-smile.webp', alt: 'Amelia, de mascotte van DAC', mode: 'fit', ratio: '1 / 1' },
 		},
 	],

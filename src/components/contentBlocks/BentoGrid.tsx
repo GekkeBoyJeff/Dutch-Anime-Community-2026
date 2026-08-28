@@ -1,5 +1,3 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 import HeadingGroup from '@/components/basics/HeadingGroup';
@@ -8,12 +6,13 @@ import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
 import Title from '@/components/basics/Title';
 import Card from '@/components/components/Card';
-import { classNames } from '@/lib/classNames';
-import type { BentoGridProps, BentoItem } from '@/lib/content';
+import { classNames } from '@/lib/shared/classNames';
+import type { BentoGridProps as BentoGridSchemaProps, BentoItem } from '@/lib/site/content/schema/blocks/bentoGrid';
 
-// The inner content of a tile, shared by the linked and the static variants so they never drift.
+type BentoGridProps = BentoGridSchemaProps;
+
 const TileBody = ({ item }: { item: BentoItem }) => {
-	const hasCta = !!item.cta?.label;
+	const hasCta = !!item.cta?.value;
 
 	return (
 		<>
@@ -22,11 +21,11 @@ const TileBody = ({ item }: { item: BentoItem }) => {
 			<div className="bento-grid-bento-content">
 				{item.tagline && <Content element="p" className="bento-grid-tagline" value={item.tagline} />}
 				{item.title && <Title element="h3" size={4} value={item.title} />}
-				{item.body && <Content size="small" value={item.body} />}
+				{item.value && <Content size="small" value={item.value} />}
 
 				{hasCta && (
 					<span className="bento-grid-cta">
-						{item.cta?.label}
+						{item.cta?.value}
 						{item.cta?.icon && <Icon name={item.cta.icon} />}
 					</span>
 				)}
@@ -35,32 +34,20 @@ const TileBody = ({ item }: { item: BentoItem }) => {
 	);
 };
 
-// Magazine-style asymmetric grid: each tile claims a span (feature/wide/tall/standard) and a surface
-// tint. Each tile is a Card shell — a `url` makes it one big clickable target via the stretched
-// link; otherwise it is a static card. The grid spans stay on the <li> (the grid cell).
 const BentoGrid = ({
 	heading,
-	description,
 	columns = 4,
 	items = [],
 	colorset,
-	ref,
-}: BentoGridProps & { ref?: Ref<HTMLElement> }) => {
+}: BentoGridProps) => {
 	return (
-		<Section ref={ref} colorset={colorset} className="bento-grid">
+		<Section colorset={colorset} className="bento-grid">
 			<Container>
-				<HeadingGroup
-					tagline={heading?.tagline}
-					title={heading?.value}
-					size={heading?.size}
-					intro={heading?.intro ?? description}
-					element="header"
-					className="bento-grid-header"
-				/>
+				<HeadingGroup {...heading} element="header" className="bento-grid-header" />
 
 				<ul className="bento-grid-list" style={{ '--bento-columns': columns } as React.CSSProperties}>
 					{items.map((item) => {
-						const href = item.url ?? item.cta?.url;
+						const href = item.href ?? item.cta?.url;
 						const span = item.span ?? 'standard';
 						const isOverlay = !!item.media && (span === 'feature' || span === 'tall');
 
@@ -68,7 +55,7 @@ const BentoGrid = ({
 							<li key={item.id} className={classNames('bento-grid-tile-cell', `is-${span}`)}>
 								<Card
 									href={href}
-									linkLabel={item.title ?? item.cta?.label ?? item.tagline}
+									linkLabel={item.title ?? item.cta?.value ?? item.tagline}
 									className={classNames('bento-grid-tile', `is-surface-${item.surface ?? 'default'}`, isOverlay && 'is-overlay')}
 								>
 									<TileBody item={item} />

@@ -15,7 +15,6 @@ export interface ValidationIssue {
 
 export interface SchemaResult {
 	storyId: string;
-	/** Emitted JSON Schema (draft 2020-12) of the story's zod schema; null when the story has no jsonSchema parameter. */
 	schema: Record<string, unknown> | null;
 	issues: ValidationIssue[];
 	error?: string;

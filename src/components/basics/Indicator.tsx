@@ -1,29 +1,19 @@
-import type { ReactNode, Ref } from 'react';
+import { classNames } from '@/lib/shared/classNames';
+import type { IndicatorProps as IndicatorSchemaProps } from '@/lib/site/content/schema/basics/indicator';
 
-import { classNames } from '@/lib/classNames';
-import type { IndicatorProps } from '@/lib/content/schema/basics/indicator';
+type IndicatorProps = IndicatorSchemaProps;
 
-type Props = IndicatorProps & {
-	/** The element the mark is attached to (Avatar, Icon, Button) */
-	children?: ReactNode;
-};
-
-// Positions a small dot or count badge over its child (notification badge, online status). The child
-// is the anchor; pair with a VisuallyHidden label on the host for an accessible count.
 const Indicator = ({
 	count,
 	position = 'top-end',
 	variant = 'primary',
 	showZero = false,
 	className,
-	children,
-	ref,
-}: Props & { ref?: Ref<HTMLSpanElement> }) => {
+}: IndicatorProps) => {
 	const hidden = count === 0 && !showZero;
 
 	return (
-		<span ref={ref} className={classNames('indicator-badge', `is-${position}`, `is-${variant}`, className)}>
-			{children}
+		<span className={classNames('indicator-badge', `is-${position}`, `is-${variant}`, className)}>
 			{!hidden && (
 				<span className={classNames('indicator-mark', count !== undefined && 'has-count')} aria-hidden="true">
 					{count !== undefined && count}

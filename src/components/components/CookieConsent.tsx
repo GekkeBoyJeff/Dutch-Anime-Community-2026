@@ -1,28 +1,19 @@
 'use client';
 
 import { Checkbox } from '@base-ui/react/checkbox';
-import { useEffect, useState, useSyncExternalStore } from 'react';
-import type { Ref } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 
 import Button from '@/components/basics/Button';
 import Content from '@/components/basics/Content';
 import Icon from '@/components/basics/Icon';
 import Interactive from '@/components/basics/Interactive';
-import { classNames } from '@/lib/classNames';
-import type { CookieConsentProps as CookieConsentSchemaProps } from '@/lib/content/schema/components/cookieConsent';
+import { classNames } from '@/lib/shared/classNames';
+import type { CookieConsentProps as CookieConsentSchemaProps } from '@/lib/site/content/schema/components/cookieConsent';
 
-// The persisted shape: every non-essential category maps to a boolean. Essential cookies are always
-// on and are not listed, since the user can't opt out of them.
 type ConsentChoices = Record<string, boolean>;
 
-type CookieConsentProps = CookieConsentSchemaProps & {
-	/** Fires with the saved choices whenever the user decides (and once on mount if already decided) */
-	onConsent?: (choices: ConsentChoices) => void;
-};
+type CookieConsentProps = CookieConsentSchemaProps;
 
-// A tiny external store over the persisted consent record, read with useSyncExternalStore. This is
-// the repo's pattern for reading a mutable browser store (see useReducedMotion): no setState in an
-// effect, and the server snapshot keeps the first client render in sync, so the bar never flashes.
 const makeConsentStore = (storageKey: string) => {
 	const subscribers = new Set<() => void>();
 
@@ -57,18 +48,12 @@ const makeConsentStore = (storageKey: string) => {
 		write(choices: ConsentChoices) {
 			try {
 				window.localStorage.setItem(storageKey, JSON.stringify(choices));
-			} catch {
-				// Persistence is best-effort; the decision still applies for this session via notify().
-			}
+			} catch {}
 			notify();
 		},
 	};
 };
 
-// GDPR/EU consent bar: accept all, reject all, or open a preferences panel to toggle each category.
-// The decision (plus per-category booleans) persists in localStorage, so the bar stays hidden on
-// return visits. Distinct from AnnouncementBar — it carries consent state and a preferences panel.
-// Self-contained (no dependency); a small client island that reads/writes localStorage.
 const CookieConsent = ({
 	title = 'We use cookies',
 	description = 'We use cookies to keep the site working and to understand how it is used. You choose what to allow.',
@@ -78,11 +63,8 @@ const CookieConsent = ({
 	preferencesLabel = 'Preferences',
 	saveLabel = 'Save choices',
 	storageKey = 'cookie-consent',
-	onConsent,
 	className,
-	ref,
-}: CookieConsentProps & { ref?: Ref<HTMLDivElement> }) => {
-	// One store per key for this mount. The key is stable for a given placement, so this is built once.
+}: CookieConsentProps) => {
 	const [store] = useState(() => makeConsentStore(storageKey));
 	const stored = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
 
@@ -91,20 +73,8 @@ const CookieConsent = ({
 		Object.fromEntries(categories.map((category) => [category.id, category.defaultOn ?? false])),
 	);
 
-	// Replay an existing decision to the host once on mount, so listeners (analytics loaders) see it.
-	useEffect(() => {
-		const existing = store.getSnapshot();
-		if (existing) {
-			onConsent?.(JSON.parse(existing) as ConsentChoices);
-		}
-		// Mount-only: later decisions are reported from `decide`.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	// One place to persist (which re-renders via the store), notify the host, and close.
 	const decide = (choices: ConsentChoices) => {
 		store.write(choices);
-		onConsent?.(choices);
 		setShowPreferences(false);
 	};
 
@@ -114,14 +84,12 @@ const CookieConsent = ({
 
 	const toggle = (id: string) => setSelection((current) => ({ ...current, [id]: !current[id] }));
 
-	// A stored snapshot means the visitor has already decided — stay hidden.
 	if (stored) {
 		return null;
 	}
 
 	return (
 		<div
-			ref={ref}
 			role="dialog"
 			aria-modal="false"
 			aria-label={title}
@@ -142,9 +110,9 @@ const CookieConsent = ({
 										<Icon name="check" />
 									</Checkbox.Indicator>
 								</Checkbox.Root>
-								<Content element="span" className="cookie-consent-category-label">Essential</Content>
+								<Content element="span" className="cookie-consent-category-label" value="Essential" />
 							</span>
-							<Content element="span" className="cookie-consent-category-description">Required for the site to work; always on.</Content>
+							<Content element="span" className="cookie-consent-category-description" value="Required for the site to work; always on." />
 						</li>
 						{categories.map((category) => (
 							<li className="cookie-consent-category" key={category.id}>
@@ -169,20 +137,14 @@ const CookieConsent = ({
 				<div className="cookie-consent-actions">
 					{categories.length > 0 &&
 						(showPreferences ? (
-							<Button variant="secondary" onClick={saveSelection}>
-								{saveLabel}
-							</Button>
+							<Button variant="secondary" value={saveLabel} onClick={saveSelection} />
 						) : (
 							<Interactive className="cookie-consent-link" onClick={() => setShowPreferences(true)}>
 								{preferencesLabel}
 							</Interactive>
 						))}
-					<Button variant="secondary" onClick={rejectAll}>
-						{rejectLabel}
-					</Button>
-					<Button variant="secondary" onClick={acceptAll}>
-						{acceptLabel}
-					</Button>
+					<Button variant="secondary" value={rejectLabel} onClick={rejectAll} />
+					<Button variant="secondary" value={acceptLabel} onClick={acceptAll} />
 				</div>
 			</div>
 		</div>

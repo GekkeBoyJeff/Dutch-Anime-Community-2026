@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Avatar from '@/components/basics/Avatar';
-import { AvatarProps } from '@/lib/content/schema/basics/avatar';
+import { AvatarProps } from '@/lib/site/content/schema/basics/avatar';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof Avatar> = {
@@ -24,7 +24,6 @@ type Story = StoryObj<typeof Avatar>;
 
 export const Default: Story = {
 	args: {
-		// Bare URL from the shared Media fixture; alt is a distinct contextual label, so it stays local.
 		src: demoImage.src,
 		alt: 'Portrait',
 		size: 'm',
@@ -32,7 +31,6 @@ export const Default: Story = {
 };
 
 export const WithStatus: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		status: 'online',
@@ -41,7 +39,6 @@ export const WithStatus: Story = {
 };
 
 export const Fallback: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		src: undefined,

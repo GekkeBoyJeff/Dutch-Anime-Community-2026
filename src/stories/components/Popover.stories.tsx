@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Button from '@/components/basics/Button';
 import Popover from '@/components/components/Popover';
-import { PopoverProps } from '@/lib/content/schema/components/popover';
+import { PopoverProps } from '@/lib/site/content/schema/components/popover';
 
 const meta: Meta<typeof Popover> = {
 	title: 'Components/Popover',
@@ -45,7 +45,7 @@ export const Default: Story = {
 		modal: false,
 	},
 	render: (args) => (
-		<Popover {...args} trigger={<Button>Open</Button>}>
+		<Popover {...args} trigger={<Button value="Open" />}>
 			<p style={{ margin: 0 }}>A short anchored panel. Press Escape or click outside to dismiss.</p>
 		</Popover>
 	),
@@ -54,7 +54,7 @@ export const Default: Story = {
 export const Placements: Story = {
 	...Default,
 	render: (args) => (
-		<Popover {...args} trigger={<Button variant="secondary">Placement</Button>}>
+		<Popover {...args} trigger={<Button variant="secondary" value="Placement" />}>
 			<p style={{ margin: 0 }}>Use the controls to eyeball every side and alignment.</p>
 		</Popover>
 	),
@@ -64,7 +64,7 @@ export const WithArrow: Story = {
 	...Default,
 	args: { ...Default.args, showArrow: true },
 	render: (args) => (
-		<Popover {...args} trigger={<Button variant="ghost">With arrow</Button>}>
+		<Popover {...args} trigger={<Button variant="ghost" value="With arrow" />}>
 			<p style={{ margin: 0 }}>The pointer arrow is opt-in.</p>
 		</Popover>
 	),

@@ -1,22 +1,20 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 import HeadingGroup from '@/components/basics/HeadingGroup';
 import Interactive from '@/components/basics/Interactive';
 import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
-import type { LogoCloudProps, LogoItem } from '@/lib/content';
+import type { LogoCloudProps as LogoCloudSchemaProps, LogoItem } from '@/lib/site/content/schema/blocks/logoCloud';
 
-// One logo image, wrapped in a link when the item has an href. The name is the alt text (and the
-// link label), so the strip stays accessible. Media 'plain' renders the bare asset at natural size.
+type LogoCloudProps = LogoCloudSchemaProps;
+
 const Logo = ({ item }: { item: LogoItem }) => {
 	const image = (
 		<Media variant="plain" type="image" src={item.logo} alt={item.name} width={160} height={48} className="logo-cloud-logo-media" />
 	);
 
 	return item.href ? (
-		<Interactive className="logo-cloud-link" url={item.href} aria-label={item.name}>
+		<Interactive className="logo-cloud-link" url={item.href} ariaLabel={item.name}>
 			{image}
 		</Interactive>
 	) : (
@@ -24,17 +22,13 @@ const Logo = ({ item }: { item: LogoItem }) => {
 	);
 };
 
-// A customer/partner logo strip. `grid` wraps the logos in a row; `marquee` scrolls them in a
-// continuous CSS loop (the list is rendered twice so the loop is seamless). Server Component — no
-// JS; the scroll and the grayscale-on-rest hover are pure CSS.
 const LogoCloud = ({
 	heading,
-	description,
+	value,
 	items = [],
 	variant = 'grid',
 	colorset,
-	ref,
-}: LogoCloudProps & { ref?: Ref<HTMLElement> }) => {
+}: LogoCloudProps) => {
 	const logoItems = items.map((item) => (
 		<li key={item.id} className="logo-cloud-logo">
 			<Logo item={item} />
@@ -42,20 +36,11 @@ const LogoCloud = ({
 	));
 
 	return (
-		<Section ref={ref} colorset={colorset} className="logo-cloud">
+		<Section colorset={colorset} className="logo-cloud">
 			<Container>
-				{heading && (
-					<HeadingGroup
-						tagline={heading.tagline}
-						title={heading.value}
-						size={heading.size}
-						intro={heading.intro}
-						align="center"
-						className="logo-cloud-heading"
-					/>
-				)}
+				{heading && <HeadingGroup {...heading} align="center" className="logo-cloud-heading" />}
 
-				{description && <Content className="logo-cloud-description" value={description} />}
+				{value && <Content className="logo-cloud-description" value={value} />}
 
 				{variant === 'marquee' ? (
 					<div className="logo-cloud-marquee">

@@ -88,7 +88,6 @@ const Panel = () => {
 		);
 	}
 
-	// A stale path (e.g. schema changed via HMR) resolves to null — fall back to the root.
 	const node = resolveNode(result.schema, path) ?? result.schema;
 	const handleRefresh = () => setRefreshSignal((n) => n + 1);
 

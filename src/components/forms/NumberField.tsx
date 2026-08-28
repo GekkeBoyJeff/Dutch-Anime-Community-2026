@@ -1,13 +1,13 @@
 'use client';
 
 import { NumberField as BaseNumberField } from '@base-ui/react/number-field';
-import { useId, type Ref } from 'react';
+import { useId } from 'react';
 
 import Content from '@/components/basics/Content';
 import Icon from '@/components/basics/Icon';
 import useHaptics from '@/hooks/useHaptics';
-import { classNames } from '@/lib/classNames';
-import type { NumberFieldProps as NumberFieldSchemaProps } from '@/lib/content/schema/forms/numberField';
+import { classNames } from '@/lib/shared/classNames';
+import type { NumberFieldProps as NumberFieldSchemaProps } from '@/lib/site/content/schema/forms/numberField';
 
 export interface NumberFieldTranslations {
 	/** Label for the decrement button @default 'Decrease' */
@@ -21,12 +21,7 @@ const DEFAULT_TRANSLATIONS: Required<NumberFieldTranslations> = {
 	incrementLabel: 'Increase',
 };
 
-export type NumberFieldProps = NumberFieldSchemaProps & {
-	/** Fires on every change with the new value (null when cleared) */
-	onValueChange?: (value: number | null) => void;
-	/** Fires once the value settles (blur after typing, pointer release) */
-	onValueCommitted?: (value: number | null) => void;
-};
+export type NumberFieldProps = NumberFieldSchemaProps;
 
 // A locale-aware stepper input for quantities, bookings and donations. Wraps Base UI's NumberField,
 // which puts role="spinbutton" + aria-value*/aria-valuetext on the inner <input>, parses and formats
@@ -60,7 +55,7 @@ const NumberField = ({
 	translations,
 	className,
 	ref,
-}: NumberFieldProps & { ref?: Ref<HTMLInputElement> }) => {
+}: NumberFieldProps) => {
 	const t = { ...DEFAULT_TRANSLATIONS, ...translations };
 	const { haptic } = useHaptics();
 	const generatedId = useId();
@@ -71,6 +66,9 @@ const NumberField = ({
 
 	const describedBy =
 		[description && descriptionId, error && errorId].filter(Boolean).join(' ') || undefined;
+
+	const { format: formatStyle, ...formatOptions } = format ?? {};
+	const intlFormat = format && { ...formatOptions, style: formatStyle };
 
 	return (
 		<BaseNumberField.Root
@@ -91,7 +89,7 @@ const NumberField = ({
 			largeStep={largeStep}
 			snapOnStep={snapOnStep}
 			allowWheelScrub={allowWheelScrub}
-			format={format}
+			format={intlFormat}
 			locale={locale}
 			disabled={disabled}
 			readOnly={readOnly}

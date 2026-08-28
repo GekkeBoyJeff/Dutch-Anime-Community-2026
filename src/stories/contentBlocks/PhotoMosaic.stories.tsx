@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import PhotoMosaic from '@/components/contentBlocks/PhotoMosaic';
-import { PhotoMosaicProps } from '@/lib/content/schema/blocks/photoMosaic';
+import { PhotoMosaicProps } from '@/lib/site/content/schema/blocks/photoMosaic';
 
 const meta: Meta<typeof PhotoMosaic> = {
 	title: 'ContentBlocks/PhotoMosaic',
@@ -28,7 +28,7 @@ type Story = StoryObj<typeof PhotoMosaic>;
 
 export const Clean: Story = {
 	args: {
-		heading: { tagline: 'In pictures', value: 'The community up close' },
+		heading: { tagline: 'In pictures', title: 'The community up close' },
 		items: [
 			{ id: 'm1', media: { type: 'image', src: '/media/demo.png', alt: 'Group photo' }, caption: 'The crew together', span: 'wide' },
 			{ id: 'm2', media: { type: 'image', src: '/media/demo.png', alt: 'Board games' }, caption: 'Game afternoon' },

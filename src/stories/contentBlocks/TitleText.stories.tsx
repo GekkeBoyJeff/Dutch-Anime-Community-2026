@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import TitleText from '@/components/contentBlocks/TitleText';
-import { TitleTextProps } from '@/lib/content/schema/blocks/titleText';
+import { TitleTextProps } from '@/lib/site/content/schema/blocks/titleText';
 
 const meta: Meta<typeof TitleText> = {
 	title: 'ContentBlocks/TitleText',
@@ -30,13 +30,13 @@ export const Default: Story = {
 	args: {
 		heading: {
 			tagline: 'About',
-			value: 'A starter built around content as data',
+			title: 'A starter built around content as data',
 			intro: 'Every page is validated data, ready for a CMS.',
 		},
-		text: '<p>Compose pages from a small set of primitives. Each block receives its data via props and never fetches on its own.</p>',
+		value: '<p>Compose pages from a small set of primitives. Each block receives its data via props and never fetches on its own.</p>',
 		actions: [
-			{ label: 'Get started', variant: 'primary' },
-			{ label: 'Learn more', variant: 'ghost', url: '/about' },
+			{ value: 'Get started', variant: 'primary' },
+			{ value: 'Learn more', variant: 'ghost', url: '/about' },
 		],
 		align: 'start',
 	},

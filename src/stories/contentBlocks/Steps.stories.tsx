@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Steps from '@/components/contentBlocks/Steps';
-import { StepsProps } from '@/lib/content/schema/blocks/steps';
+import { StepsProps } from '@/lib/site/content/schema/blocks/steps';
 
 const meta: Meta<typeof Steps> = {
 	title: 'ContentBlocks/Steps',
@@ -31,12 +31,12 @@ type Story = StoryObj<typeof Steps>;
 
 export const Default: Story = {
 	args: {
-		heading: { value: 'How it works', tagline: 'Getting started', intro: 'Three steps to your first deploy.' },
+		heading: { title: 'How it works', tagline: 'Getting started', intro: 'Three steps to your first deploy.' },
 		variant: 'process',
 		items: [
-			{ id: 'install', title: 'Install', body: 'Clone the starter and run the install script.' },
-			{ id: 'configure', title: 'Configure', body: 'Set your brand and routes in site.ts.' },
-			{ id: 'deploy', title: 'Deploy', body: 'Push to your host and you are live.' },
+			{ id: 'install', title: 'Install', value: 'Clone the starter and run the install script.' },
+			{ id: 'configure', title: 'Configure', value: 'Set your brand and routes in site.ts.' },
+			{ id: 'deploy', title: 'Deploy', value: 'Push to your host and you are live.' },
 		],
 	},
 };
@@ -45,7 +45,7 @@ export const Progress: Story = {
 	...Default,
 	args: {
 		...Default.args,
-		heading: { value: 'Checkout' },
+		heading: { title: 'Checkout' },
 		variant: 'progress',
 		current: 1,
 		items: [

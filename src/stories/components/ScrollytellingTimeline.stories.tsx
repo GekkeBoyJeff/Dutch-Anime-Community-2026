@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import ScrollytellingTimeline from '@/components/components/ScrollytellingTimeline';
-import { ScrollytellingTimelineProps } from '@/lib/content/schema/components/scrollytellingTimeline';
+import { ScrollytellingTimelineProps } from '@/lib/site/content/schema/components/scrollytellingTimeline';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof ScrollytellingTimeline> = {

@@ -1,14 +1,11 @@
 'use client';
 
 import { Field } from '@base-ui/react/field';
-import type { ReactNode, Ref } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { FieldLabelProps as FieldLabelSchemaProps } from '@/lib/content/schema/forms/fieldLabel';
+import { classNames } from '@/lib/shared/classNames';
+import type { FieldLabelProps as FieldLabelSchemaProps } from '@/lib/site/content/schema/forms/fieldLabel';
 
-type FieldLabelProps = FieldLabelSchemaProps & {
-	children?: ReactNode;
-};
+type FieldLabelProps = FieldLabelSchemaProps;
 
 // The field's <label>. Base UI auto-wires htmlFor to the control's generated id, so clicking the
 // label focuses the control without you tracking ids by hand.
@@ -18,7 +15,7 @@ const FieldLabel = ({
 	className,
 	children,
 	ref,
-}: FieldLabelProps & { ref?: Ref<HTMLLabelElement> }) => {
+}: FieldLabelProps) => {
 	return (
 		<Field.Label
 			ref={ref}

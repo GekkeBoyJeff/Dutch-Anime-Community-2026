@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Progress from '@/components/basics/Progress';
-import { ProgressProps } from '@/lib/content/schema/basics/progress';
+import { ProgressProps } from '@/lib/site/content/schema/basics/progress';
 
 const meta: Meta<typeof Progress> = {
 	title: 'Basics/Progress',
@@ -22,12 +22,11 @@ type Story = StoryObj<typeof Progress>;
 export const Default: Story = {
 	args: {
 		value: 60,
-		label: 'Upload progress',
+		ariaLabel: 'Upload progress',
 	},
 };
 
 export const Indeterminate: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		value: undefined,

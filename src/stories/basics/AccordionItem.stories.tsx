@@ -1,8 +1,8 @@
+import { Accordion as BaseAccordion } from '@base-ui/react/accordion';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import Accordion from '@/components/basics/Accordion';
 import AccordionItem from '@/components/basics/AccordionItem';
-import { AccordionItemProps } from '@/lib/content/schema/basics/accordionItem';
+import { AccordionItemProps } from '@/lib/site/content/schema/basics/accordionItem';
 
 // AccordionItem uses Base UI's per-set open context, so it must render inside an <Accordion>. The
 // decorator wraps each story in one (opened by default) so a single item can be shown on its own.
@@ -13,7 +13,7 @@ const meta: Meta<typeof AccordionItem> = {
 		docs: {
 			description: {
 				component:
-					'One collapsible row — header, trigger and panel in a single piece. Render it inside `<Accordion>` (which provides the open context), either directly as a child or via Accordion’s `items` prop.',
+					'One collapsible row — header, trigger and panel in a single piece. Rendered by Accordion from its `items` prop, which also provides the open context.',
 			},
 		},
 		jsonSchema: { schema: AccordionItemProps },
@@ -24,9 +24,9 @@ const meta: Meta<typeof AccordionItem> = {
 	},
 	decorators: [
 		(Story) => (
-			<Accordion defaultValue={['item']}>
+			<BaseAccordion.Root className="accordion" defaultValue={['item']}>
 				<Story />
-			</Accordion>
+			</BaseAccordion.Root>
 		),
 	],
 };
@@ -37,15 +37,14 @@ type Story = StoryObj<typeof AccordionItem>;
 
 export const Default: Story = {
 	args: {
-		value: 'item',
+		id: 'item',
 		title: 'How long does shipping take?',
-		content: 'Most orders arrive within three to five working days.',
+		value: 'Most orders arrive within three to five working days.',
 		headingLevel: 3,
 	},
 };
 
 export const Disabled: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		disabled: true,

@@ -1,36 +1,33 @@
-import type { Ref } from 'react';
-
 import Content from '@/components/basics/Content';
 import Interactive from '@/components/basics/Interactive';
-import { classNames } from '@/lib/classNames';
-import type { BreadcrumbProps } from '@/lib/content/schema/basics/breadcrumb';
+import { classNames } from '@/lib/shared/classNames';
+import type { BreadcrumbProps as BreadcrumbSchemaProps } from '@/lib/site/content/schema/basics/breadcrumb';
 
-// Accessible breadcrumb trail: a nav > ol that links every crumb but the last, which is marked
-// aria-current="page". Pairs with the JsonLd BreadcrumbList primitive for structured data.
+type BreadcrumbProps = BreadcrumbSchemaProps;
+
 const Breadcrumb = ({
 	items,
 	separator = '/',
 	className,
-	ref,
-}: BreadcrumbProps & { ref?: Ref<HTMLElement> }) => {
+}: BreadcrumbProps) => {
 	return (
-		<nav ref={ref} aria-label="Breadcrumb" className={classNames('breadcrumb', className)}>
+		<nav aria-label="Breadcrumb" className={classNames('breadcrumb', className)}>
 			<ol>
 				{items.map((item, index) => {
 					const isLast = index === items.length - 1;
 
 					return (
-						<li key={item.label}>
+						<li key={item.value}>
 							{item.url && !isLast ? (
 								<Interactive url={item.url} className="breadcrumb-crumb link is-subtle">
-									{item.label}
+									{item.value}
 								</Interactive>
 							) : (
 								<Content
 									element="span"
 									className="breadcrumb-crumb is-current link is-subtle"
-									aria-current={isLast ? 'page' : undefined}
-									value={item.label}
+									ariaCurrent={isLast ? 'page' : undefined}
+									value={item.value}
 								/>
 							)}
 							{!isLast && (

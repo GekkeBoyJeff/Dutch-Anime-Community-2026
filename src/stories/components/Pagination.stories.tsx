@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Pagination from '@/components/components/Pagination';
-import { PaginationProps } from '@/lib/content/schema/components/pagination';
+import { PaginationProps } from '@/lib/site/content/schema/components/pagination';
 
 const meta: Meta<typeof Pagination> = {
 	title: 'Components/Pagination',
@@ -19,7 +19,7 @@ const meta: Meta<typeof Pagination> = {
 		totalPages: { control: 'number' },
 		siblingCount: { control: 'number' },
 		boundaryCount: { control: 'number' },
-		type: { control: 'inline-radio', options: ['button', 'link'] },
+		variant: { control: 'inline-radio', options: ['button', 'link'] },
 		withControls: { control: 'boolean' },
 		withEdges: { control: 'boolean' },
 		disabled: { control: 'boolean' },
@@ -36,7 +36,7 @@ export const Default: Story = {
 		defaultPage: 1,
 		siblingCount: 1,
 		boundaryCount: 1,
-		type: 'button',
+		variant: 'button',
 		withControls: true,
 		withEdges: false,
 	},
@@ -74,7 +74,7 @@ export const AsLinks: Story = {
 	...Default,
 	args: {
 		...Default.args,
-		type: 'link',
+		variant: 'link',
 		getPageUrl: ({ page }) => `?page=${page}`,
 	},
 };

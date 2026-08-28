@@ -1,26 +1,21 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { Ref } from 'react';
 
 import Content from '@/components/basics/Content';
 import Media from '@/components/basics/Media';
 import Title from '@/components/basics/Title';
-import { classNames } from '@/lib/classNames';
-import type { ScrollytellingTimelineProps } from '@/lib/content/schema/components/scrollytellingTimeline';
+import { classNames } from '@/lib/shared/classNames';
+import type { ScrollytellingTimelineProps as ScrollytellingTimelineSchemaProps } from '@/lib/site/content/schema/components/scrollytellingTimeline';
 
-// A scroll-driven story: a sticky media frame on one side cross-fades between images as the
-// milestone cards scroll past on the other. An IntersectionObserver marks the card nearest the
-// viewport centre as active and the matching frame fades in — this works in every browser, unlike a
-// pure scroll-timeline cross-fade, and avoids pulling in a scrubbing library. With reduced motion
-// (or no JS) every frame is shown stacked, so the content is never trapped behind the animation.
+type ScrollytellingTimelineProps = ScrollytellingTimelineSchemaProps;
+
 const ScrollytellingTimeline = ({
 	milestones,
 	ariaLabel = 'Story timeline',
 	headingLevel = 3,
 	className,
-	ref,
-}: ScrollytellingTimelineProps & { ref?: Ref<HTMLDivElement> }) => {
+}: ScrollytellingTimelineProps) => {
 	const [activeIndex, setActiveIndex] = useState(0);
 	const cardsRef = useRef<Array<HTMLLIElement | null>>([]);
 
@@ -31,7 +26,6 @@ const ScrollytellingTimeline = ({
 		}
 
 		// A card counts as active while its centre sits in the middle band of the viewport.
-		// https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin
 		const observer = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries) {
@@ -50,7 +44,7 @@ const ScrollytellingTimeline = ({
 	}, [milestones.length]);
 
 	return (
-		<div ref={ref} className={classNames('scrollytelling-timeline', className)} aria-label={ariaLabel} role="group">
+		<div className={classNames('scrollytelling-timeline', className)} aria-label={ariaLabel} role="group">
 			<div className="scrollytelling-timeline-frame" aria-hidden="true">
 				{milestones.map((milestone, index) => {
 					if (!milestone.media) {

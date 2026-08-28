@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Tabs from '@/components/components/Tabs';
-import { TabsProps } from '@/lib/content/schema/components/tabs';
+import { TabsProps } from '@/lib/site/content/schema/components/tabs';
 
 const meta: Meta<typeof Tabs> = {
 	title: 'Components/Tabs',
@@ -32,7 +32,7 @@ type Story = StoryObj<typeof Tabs>;
 
 export const Default: Story = {
 	args: {
-		label: 'Account sections',
+		ariaLabel: 'Account sections',
 		orientation: 'horizontal',
 		activateOnFocus: false,
 		items: [

@@ -1,7 +1,5 @@
 import type { JsonSchemaNode } from './walk';
 
-// Value preference: const > default > examples[0] > enum[0] > per-type placeholder. Placeholders
-// mirror the reference UI: strings become '<string>', numbers 0, booleans true.
 export const buildExample = (node: JsonSchemaNode, depth = 0): unknown => {
 	if (!node || typeof node !== 'object' || depth > 12) return null;
 	if (node.const !== undefined) return node.const;

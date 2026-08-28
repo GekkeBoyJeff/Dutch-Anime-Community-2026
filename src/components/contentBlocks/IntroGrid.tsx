@@ -1,5 +1,3 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 import HeadingGroup from '@/components/basics/HeadingGroup';
@@ -7,30 +5,20 @@ import Icon from '@/components/basics/Icon';
 import Interactive from '@/components/basics/Interactive';
 import Section from '@/components/basics/Section';
 import Title from '@/components/basics/Title';
-import { classNames } from '@/lib/classNames';
-import type { IntroGridProps } from '@/lib/content';
+import { classNames } from '@/lib/shared/classNames';
+import type { IntroGridProps as IntroGridSchemaProps } from '@/lib/site/content/schema/blocks/introGrid';
 
-// A 2–4 panel intro grid of accent-tinted cards. The panel count drives the column layout
-// (is-count-{n}); a panel with an action surfaces the whole card as a link. Server Component —
-// the clickable island lives inside Interactive.
+type IntroGridProps = IntroGridSchemaProps;
+
 const IntroGrid = ({
 	heading,
 	panels = [],
 	colorset,
-	ref,
-}: IntroGridProps & { ref?: Ref<HTMLElement> }) => {
+}: IntroGridProps) => {
 	return (
-		<Section ref={ref} colorset={colorset} className="intro-grid">
+		<Section colorset={colorset} className="intro-grid">
 			<Container>
-				{heading && (
-					<HeadingGroup
-						tagline={heading.tagline}
-						title={heading.value}
-						size={heading.size}
-						intro={heading.intro}
-						className="intro-grid-heading"
-					/>
-				)}
+				{heading && <HeadingGroup {...heading} className="intro-grid-heading" />}
 
 				<ul className={classNames('intro-grid-list', `is-count-${Math.min(panels.length, 4)}`)}>
 					{panels.map((panel) => {
@@ -52,7 +40,7 @@ const IntroGrid = ({
 						return (
 							<li key={panel.id} className={classNames('intro-grid-panel', `is-${panel.accent ?? 'intro-grid-primary'}`)}>
 								{panel.action ? (
-									<Interactive className="intro-grid-link" url={panel.action.url}>
+									<Interactive className="intro-grid-link" url={panel.action.href}>
 										{inner}
 									</Interactive>
 								) : (

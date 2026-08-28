@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Interactive from '@/components/basics/Interactive';
-import { InteractiveProps } from '@/lib/content/schema/basics/interactive';
+import { InteractiveProps } from '@/lib/site/content/schema/basics/interactive';
 
 const meta: Meta<typeof Interactive> = {
 	title: 'Basics/Interactive',
@@ -10,7 +10,7 @@ const meta: Meta<typeof Interactive> = {
 		docs: {
 			description: {
 				component:
-					'The one definition of "clickable": resolves to a `<button>` when there is no url, next/link for an internal route, or an external `<a>` (with a safe rel) for an http(s)/_blank url — and fires haptic feedback on every enabled click. Button and Pill are thin wrappers over it.',
+					'The one definition of "clickable": resolves to a `<button>` when there is no url, next/link for an internal route, or an external `<a>` (with a safe rel) for an http(s)/_blank url — and fires haptic feedback on every enabled click. Button, Link and Pill are thin wrappers over it.',
 			},
 		},
 		jsonSchema: { schema: InteractiveProps },
@@ -23,31 +23,28 @@ type Story = StoryObj<typeof Interactive>;
 
 export const Default: Story = {
 	args: {
-		children: 'Word lid',
+		children: 'Join now',
 	},
 };
 
 export const InternalLink: Story = {
-	...Default,
 	args: {
 		...Default.args,
-		url: '/community',
-		children: 'Naar de community',
+		url: '/join',
+		children: 'Go to the community',
 	},
 };
 
 export const ExternalLink: Story = {
-	...Default,
 	args: {
 		...Default.args,
-		url: 'https://discord.gg/dutchanimecommunity',
+		url: 'https://example.com',
 		target: '_blank',
-		children: 'Join onze Discord',
+		children: 'Open example.com',
 	},
 };
 
 export const Disabled: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		disabled: true,

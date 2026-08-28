@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { userEvent } from 'storybook/test';
 
 import FileUpload from '@/components/forms/FileUpload';
-import { FileUploadProps } from '@/lib/content/schema/forms/fileUpload';
+import { FileUploadProps } from '@/lib/site/content/schema/forms/fileUpload';
 
 const meta: Meta<typeof FileUpload> = {
 	title: 'Forms/FileUpload',

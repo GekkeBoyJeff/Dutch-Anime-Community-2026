@@ -4,7 +4,7 @@ import { useState } from 'react';
 import FieldLegend from '@/components/forms/FieldLegend';
 import FieldSet from '@/components/forms/FieldSet';
 import RadioGroup from '@/components/forms/RadioGroup';
-import { RadioGroupProps } from '@/lib/content/schema/forms/radioGroup';
+import { RadioGroupProps } from '@/lib/site/content/schema/forms/radioGroup';
 
 const meta: Meta<typeof RadioGroup> = {
 	title: 'Forms/RadioGroup',
@@ -31,7 +31,7 @@ type Story = StoryObj<typeof RadioGroup>;
 
 export const Default: Story = {
 	args: {
-		'aria-label': 'Plan',
+		ariaLabel: 'Plan',
 		options: [
 			{ value: 'free', label: 'Free' },
 			{ value: 'pro', label: 'Pro' },

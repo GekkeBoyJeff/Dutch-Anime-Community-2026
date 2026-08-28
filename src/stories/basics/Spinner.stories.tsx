@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Spinner from '@/components/basics/Spinner';
-import { SpinnerProps } from '@/lib/content/schema/basics/spinner';
+import { SpinnerProps } from '@/lib/site/content/schema/basics/spinner';
 
 const meta: Meta<typeof Spinner> = {
 	title: 'Basics/Spinner',
@@ -22,12 +22,11 @@ type Story = StoryObj<typeof Spinner>;
 export const Default: Story = {
 	args: {
 		size: 'm',
-		label: 'Loading',
+		ariaLabel: 'Loading',
 	},
 };
 
 export const Small: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		size: 's',
@@ -35,7 +34,6 @@ export const Small: Story = {
 };
 
 export const Large: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		size: 'l',

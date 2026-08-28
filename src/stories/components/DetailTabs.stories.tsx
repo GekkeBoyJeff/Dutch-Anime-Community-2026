@@ -22,7 +22,7 @@ type Story = StoryObj<typeof DetailTabs>;
 export const Default: Story = {
 	render: () => (
 		<DetailTabs
-			label="Conventiedetail"
+			ariaLabel="Conventiedetail"
 			defaultValue={0}
 			tabs={[
 				{ label: 'Info', panel: <p>Algemene informatie over de conventie.</p> },

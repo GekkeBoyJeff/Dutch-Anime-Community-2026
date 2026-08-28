@@ -1,25 +1,17 @@
-import type { CSSProperties, ReactNode, Ref } from 'react';
-
 import Content from '@/components/basics/Content';
-import { classNames } from '@/lib/classNames';
-import type { ShinyTextProps } from '@/lib/content/schema/basics/shinyText';
+import { classNames } from '@/lib/shared/classNames';
+import type { ShinyTextProps as ShinyTextSchemaProps } from '@/lib/site/content/schema/basics/shinyText';
 
-// A sweeping highlight across text, done purely in CSS (background-clip: text + an animated gradient
-// position). The sweep is gated by prefers-reduced-motion in the stylesheet; `disabled` opts out.
+type ShinyTextProps = ShinyTextSchemaProps;
+
 const ShinyText = ({
 	value,
-	speed = 3,
+	speed = 'normal',
 	disabled = false,
 	className,
-	children,
-	ref,
-}: ShinyTextProps & { children?: ReactNode; ref?: Ref<HTMLElement> }) => {
-	const style = { '--shiny-duration': `${speed}s` } as CSSProperties;
-
+}: ShinyTextProps) => {
 	return (
-		<Content element="span" ref={ref} className={classNames('shiny-text', disabled && 'is-disabled', className)} style={style} value={value}>
-			{children}
-		</Content>
+		<Content element="span" className={classNames('shiny-text', `is-${speed}`, disabled && 'is-disabled', className)} value={value} />
 	);
 };
 

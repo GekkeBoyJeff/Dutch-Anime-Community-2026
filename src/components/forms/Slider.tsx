@@ -1,17 +1,11 @@
 'use client';
 
 import { Slider as BaseSlider } from '@base-ui/react/slider';
-import type { Ref } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { SliderProps as SliderSchemaProps } from '@/lib/content/schema/forms/slider';
+import { classNames } from '@/lib/shared/classNames';
+import type { SliderProps as SliderSchemaProps } from '@/lib/site/content/schema/forms/slider';
 
-export type SliderProps = SliderSchemaProps & {
-	/** Fires while dragging with the new value */
-	onValueChange?: (value: number | number[]) => void;
-	/** Fires once the value is committed (drag end / key release) */
-	onValueCommitted?: (value: number | number[]) => void;
-};
+export type SliderProps = SliderSchemaProps;
 
 // A draggable slider input for picking a number or a min–max range. Wraps Base UI's Slider, which
 // renders a real <input type="range"> per thumb and handles arrow/Page/Home/End keys, RTL and the
@@ -28,10 +22,11 @@ const Slider = ({
 	orientation = 'horizontal',
 	name,
 	showValue = false,
+	ariaLabel,
 	className,
 	ref,
 	...rest
-}: SliderProps & { ref?: Ref<HTMLDivElement> }) => {
+}: SliderProps) => {
 	// A two-number value means a range, so it gets two thumbs; otherwise a single thumb.
 	const thumbCount = Array.isArray(value)
 		? value.length
@@ -54,6 +49,7 @@ const Slider = ({
 			orientation={orientation}
 			name={name}
 			{...rest}
+			aria-label={ariaLabel}
 		>
 			{showValue && <BaseSlider.Value className="slider-value" />}
 			<BaseSlider.Control className="slider-control">

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import Field from '@/components/forms/Field';
 import FieldGroup from '@/components/forms/FieldGroup';
 import TextInput from '@/components/forms/TextInput';
-import { FieldProps } from '@/lib/content/schema/forms/field';
+import { FieldProps } from '@/lib/site/content/schema/forms/field';
 
 const meta: Meta<typeof Field> = {
 	title: 'Forms/Field',

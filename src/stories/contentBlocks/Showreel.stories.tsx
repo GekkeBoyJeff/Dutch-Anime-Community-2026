@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Showreel from '@/components/contentBlocks/Showreel';
-import { ShowreelProps } from '@/lib/content/schema/blocks/showreel';
+import { ShowreelProps } from '@/lib/site/content/schema/blocks/showreel';
 
 const meta: Meta<typeof Showreel> = {
 	title: 'ContentBlocks/Showreel',
@@ -21,7 +21,7 @@ type Story = StoryObj<typeof Showreel>;
 
 export const Default: Story = {
 	args: {
-		heading: { tagline: 'In pictures', value: 'The community up close' },
+		heading: { tagline: 'In pictures', title: 'The community up close' },
 		ratio: '848 / 488',
 		slides: [
 			{ image: '/media/demo.png', alt: 'First case', title: 'Meetup', description: 'The people behind the usernames.' },

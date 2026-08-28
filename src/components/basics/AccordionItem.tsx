@@ -1,36 +1,23 @@
-'use client';
-
 import { Accordion as BaseAccordion } from '@base-ui/react/accordion';
-import type { ReactNode, Ref } from 'react';
 
 import Content from '@/components/basics/Content';
 import Icon from '@/components/basics/Icon';
-import { classNames } from '@/lib/classNames';
-import type { AccordionItemProps as AccordionItemSchemaProps } from '@/lib/content/schema/basics/accordionItem';
+import { classNames } from '@/lib/shared/classNames';
+import type { AccordionItemProps as AccordionItemSchemaProps } from '@/lib/site/content/schema/basics/accordionItem';
 
-export type AccordionItemProps = AccordionItemSchemaProps & {
-	/** The panel content; may contain HTML when a string. `children` wins when both are given */
-	content?: ReactNode;
-	/** Panel content as children (alternative to `content`) */
-	children?: ReactNode;
-};
+type AccordionItemProps = AccordionItemSchemaProps;
 
-// One collapsible row — header, trigger and panel in a single piece (Base UI provides the per-item
-// open context, the aria-expanded/aria-controls wiring and the measured panel height). Render it as a
-// child of Accordion, or let Accordion build a set of these from its `items` prop.
 const AccordionItem = ({
-	value,
+	id,
 	title,
-	content,
+	value,
 	disabled,
 	headingLevel = 3,
 	icon = 'chevron-down',
 	keepMounted = false,
 	hiddenUntilFound = true,
 	className,
-	children,
-	ref,
-}: AccordionItemProps & { ref?: Ref<HTMLDivElement> }) => {
+}: AccordionItemProps) => {
 	const Heading = `h${headingLevel}` as React.ElementType;
 
 	// hiddenUntilFound (hidden="until-found") keeps the panel mounted so browser find-in-page can reveal
@@ -39,7 +26,7 @@ const AccordionItem = ({
 	const panelKeepMounted = hiddenUntilFound || keepMounted;
 
 	return (
-		<BaseAccordion.Item ref={ref} className={classNames('accordion-item', className)} value={value} disabled={disabled}>
+		<BaseAccordion.Item value={id} className={classNames('accordion-item', className)} disabled={disabled}>
 			<BaseAccordion.Header className="accordion-item-header" render={<Heading />}>
 				<BaseAccordion.Trigger className="accordion-item-trigger">
 					<Content element="span" className="accordion-item-label" value={title} />
@@ -48,7 +35,7 @@ const AccordionItem = ({
 			</BaseAccordion.Header>
 
 			<BaseAccordion.Panel className="accordion-item-panel" keepMounted={panelKeepMounted} hiddenUntilFound={hiddenUntilFound}>
-				<div className="accordion-item-body">{children ?? content}</div>
+				<div className="accordion-item-body">{value && <Content value={value} />}</div>
 			</BaseAccordion.Panel>
 		</BaseAccordion.Item>
 	);

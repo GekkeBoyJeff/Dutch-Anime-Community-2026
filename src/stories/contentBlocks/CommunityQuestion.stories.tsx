@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import CommunityQuestion from '@/components/contentBlocks/CommunityQuestion';
-import { CommunityQuestionProps } from '@/lib/content/schema/blocks/communityQuestion';
+import { CommunityQuestionProps } from '@/lib/site/content/schema/blocks/communityQuestion';
 
 const meta: Meta<typeof CommunityQuestion> = {
 	title: 'ContentBlocks/CommunityQuestion',

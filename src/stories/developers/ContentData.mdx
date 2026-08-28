@@ -65,7 +65,7 @@ export type Colorset = z.infer<typeof Colorset>;
 export const HeroProps = z.object({
 	colorset: Colorset.optional(),
 	title: z.string().optional(),
-	text: z.string().optional(),
+	value: z.string().optional(),
 	actions: z.array(HeroAction).optional(),
 });
 export type HeroProps = z.infer<typeof HeroProps>;

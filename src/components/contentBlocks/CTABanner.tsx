@@ -1,20 +1,16 @@
-import type { Ref } from 'react';
-
 import Actions from '@/components/basics/Actions';
 import Container from '@/components/basics/Container';
 import HeadingGroup from '@/components/basics/HeadingGroup';
 import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
-import { classNames } from '@/lib/classNames';
-import type { CTABannerProps } from '@/lib/content';
+import { classNames } from '@/lib/shared/classNames';
+import type { CTABannerProps as CTABannerSchemaProps } from '@/lib/site/content/schema/blocks/ctaBanner';
 
-// A conversion banner: a heading cluster with one or two call-to-action buttons, optionally beside
-// media. `tone` tints the panel, `align` decides left vs centred copy. Server Component — the
-// clickable island lives inside Button/Interactive.
+// `eager` is a render hint Blocks derives from a block's position, not content, so it stays out of the content schema.
+type CTABannerProps = CTABannerSchemaProps & { eager?: boolean };
+
 const CTABanner = ({
-	tagline,
-	headline,
-	subline,
+	heading,
 	primaryCta,
 	secondaryCta,
 	tone = 'neutral',
@@ -22,13 +18,12 @@ const CTABanner = ({
 	media,
 	colorset,
 	eager,
-	ref,
-}: CTABannerProps & { eager?: boolean; ref?: Ref<HTMLElement> }) => {
+}: CTABannerProps) => {
 	return (
-		<Section ref={ref} colorset={colorset} className="cta-banner">
+		<Section colorset={colorset} className="cta-banner">
 			<Container className={classNames('cta-banner-panel', `is-${tone}`, `is-${align}`, media && 'has-media')}>
 				<div className="cta-banner-body">
-					<HeadingGroup align={align} tagline={tagline} title={headline} intro={subline} />
+					{heading && <HeadingGroup {...heading} align={align} />}
 
 					{/* Slot defaults differ (primary vs secondary), so resolve them here before mapping. */}
 					<Actions

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import SiteChrome from '@/components/structures/SiteChrome';
 import { structures } from '@/content/structures';
-import { SiteStructures } from '@/lib/content/schema/structures/site';
+import { SiteStructures } from '@/lib/site/content/schema/structures/site';
 
 const meta: Meta<typeof SiteChrome> = {
 	title: 'Structures/SiteChrome',

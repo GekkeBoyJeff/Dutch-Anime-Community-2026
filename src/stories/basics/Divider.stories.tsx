@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Divider from '@/components/basics/Divider';
-import { DividerProps } from '@/lib/content/schema/basics/divider';
+import { DividerProps } from '@/lib/site/content/schema/basics/divider';
 
 const meta: Meta<typeof Divider> = {
 	title: 'Basics/Divider',
@@ -26,7 +26,6 @@ export const Default: Story = {
 };
 
 export const WithLabel: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		label: 'or',
@@ -34,16 +33,15 @@ export const WithLabel: Story = {
 };
 
 export const Vertical: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		orientation: 'vertical',
 	},
-	render: (args) => (
-		<div style={{ display: 'flex', gap: '1rem', height: '2rem', alignItems: 'center' }}>
-			<span>Left</span>
-			<Divider {...args} />
-			<span>Right</span>
-		</div>
-	),
+	decorators: [
+		(Story) => (
+			<div style={{ display: 'flex', blockSize: '2rem' }}>
+				<Story />
+			</div>
+		),
+	],
 };

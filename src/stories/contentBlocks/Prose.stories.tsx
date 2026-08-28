@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Prose from '@/components/contentBlocks/Prose';
-import { ProseProps } from '@/lib/content/schema/blocks/prose';
+import { ProseProps } from '@/lib/site/content/schema/blocks/prose';
 
 const meta: Meta<typeof Prose> = {
 	title: 'ContentBlocks/Prose',

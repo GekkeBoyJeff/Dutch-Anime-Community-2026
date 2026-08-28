@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Title from '@/components/basics/Title';
-import { TitleProps } from '@/lib/content/schema/basics/title';
+import { TitleProps } from '@/lib/site/content/schema/basics/title';
 
 const meta: Meta<typeof Title> = {
 	title: 'Basics/Title',
@@ -26,17 +26,14 @@ export default meta;
 
 type Story = StoryObj<typeof Title>;
 
-// Default: no `element`, so the tag follows the size (size 1 → <h1>).
 export const Default: Story = {
 	args: {
-		value: 'Dutch Anime Community',
+		value: 'Example Brand',
 		size: 1,
 	},
 };
 
-// size and tag are independent: this is an <h2> element that carries the h4 visual size.
 export const SmallerSizeThanTag: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		element: 'h2',
@@ -44,13 +41,13 @@ export const SmallerSizeThanTag: Story = {
 	},
 };
 
-// Title styling on a NON-heading tag: a <p> that looks like a size-3 title but adds no heading to the
-// document outline (use when the visual is wanted but a heading level would be semantically wrong).
 export const WithoutHeadingTag: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		element: 'p',
 		size: 3,
+	},
+	parameters: {
+		docs: { description: { story: 'Title styling on a non-heading tag: a `<p>` that looks like a size-3 title but adds no heading to the document outline — for when the visual is wanted but a heading level would be semantically wrong.' } },
 	},
 };

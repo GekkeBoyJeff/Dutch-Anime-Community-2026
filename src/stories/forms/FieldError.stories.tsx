@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import Field from '@/components/forms/Field';
 import FieldError from '@/components/forms/FieldError';
 import TextInput from '@/components/forms/TextInput';
-import { FieldErrorProps } from '@/lib/content/schema/forms/fieldError';
+import { FieldErrorProps } from '@/lib/site/content/schema/forms/fieldError';
 
 const meta: Meta<typeof FieldError> = {
 	title: 'Forms/FieldError',

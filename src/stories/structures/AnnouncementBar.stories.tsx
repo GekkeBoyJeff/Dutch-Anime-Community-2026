@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import AnnouncementBar from '@/components/structures/AnnouncementBar';
-import { AnnouncementBarProps } from '@/lib/content/schema/structures/announcementBar';
+import { AnnouncementBarProps } from '@/lib/site/content/schema/structures/announcementBar';
 
 const meta: Meta<typeof AnnouncementBar> = {
 	title: 'Structures/AnnouncementBar',
@@ -27,7 +27,7 @@ type Story = StoryObj<typeof AnnouncementBar>;
 export const Default: Story = {
 	args: {
 		message: 'We just shipped a new release — see what changed.',
-		cta: { label: 'Read more', url: '/changelog', variant: 'ghost' },
+		cta: { value: 'Read more', url: '/changelog', variant: 'ghost' },
 		variant: 'info',
 		dismissible: true,
 	},

@@ -1,24 +1,17 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import type { ReactNode, Ref } from 'react';
+import type { ReactNode } from 'react';
 
-import { classNames } from '@/lib/classNames';
-
-export interface RouteRevealProps {
-	/** The routed content */
+interface RouteRevealProps {
 	children?: ReactNode;
-	className?: string;
 }
 
-// Page-entrance fade-rise: keyed on the pathname so the App Router's remount restarts a pure-CSS
-// animation on every navigation. No View Transitions API (it blocks pointer input); nothing is
-// snapshotted, so this never blocks input and — being opacity/translate only — never shifts layout.
-// Motion is gated by prefers-reduced-motion in the mirrored stylesheet.
-const RouteReveal = ({ children, className, ref }: RouteRevealProps & { ref?: Ref<HTMLDivElement> }) => {
+// Keyed on the pathname so the App Router's remount restarts a pure-CSS animation on every navigation.
+const RouteReveal = ({ children }: RouteRevealProps) => {
 	const pathname = usePathname();
 	return (
-		<div ref={ref} key={pathname} className={classNames('route-reveal', className)}>
+		<div key={pathname} className="route-reveal">
 			{children}
 		</div>
 	);

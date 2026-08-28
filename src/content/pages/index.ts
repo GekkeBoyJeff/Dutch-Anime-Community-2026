@@ -3,7 +3,7 @@ import { evenementenPage } from '@/content/pages/evenementen';
 import { homePage } from '@/content/pages/home';
 import { supportersPage } from '@/content/pages/supporters';
 import { wordLidPage } from '@/content/pages/word-lid';
-import type { Page } from '@/lib/content';
+import type { Page } from '@/lib/site/content';
 
 // Registry: path → page data. One place that maps a route to content; the home and [...slug] routes render these.
 export const pages: Record<string, Page> = {

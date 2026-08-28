@@ -2,40 +2,15 @@
 
 import Button from '@/components/basics/Button';
 import Modal from '@/components/components/Modal';
+import type { ConfirmDialogProps as ConfirmDialogSchemaProps } from '@/lib/site/content/schema/components/confirmDialog';
 
-type ConfirmDialogProps = {
-	/** Controlled open state */
-	open: boolean;
-	/** Fires when the dialog requests to open or close (Escape, Cancel, or your own close) */
-	onOpenChange: (open: boolean) => void;
-	/** Visible heading */
-	title?: string;
-	/** Accessible name when there is no visible title; if that is omitted too, confirmLabel is used so
-	 * the alertdialog is never nameless */
-	label?: string;
-	/** Supporting line under the title */
-	description?: string;
-	confirmLabel?: string;
-	cancelLabel?: string;
-	/** Style the confirm button as destructive (red) */
-	destructive?: boolean;
-	/** Runs on confirm; the dialog does NOT auto-close — close via onOpenChange in your handler so it
-	 * can stay open on error */
-	onConfirm: () => void;
-	/** Runs when the user dismisses the dialog (Cancel button or Escape), before it closes */
-	onCancel?: () => void;
-};
+type ConfirmDialogProps = ConfirmDialogSchemaProps;
 
-// A confirm/cancel dialog on Modal variant='alert' (role=alertdialog, never light-dismisses, so a
-// destructive action cannot be lost to a stray backdrop click). Modal owns no confirm/cancel/close, so
-// this composes the footer buttons and routes every dismissal (Cancel button + Escape) through one
-// handler, so onCancel fires consistently. Confirm is consumer-driven (onConfirm), so it never counts
-// as a cancel. Button has no danger variant, so destructive styling comes from the is-danger class.
 const ConfirmDialog = ({
 	open,
 	onOpenChange,
 	title,
-	label,
+	ariaLabel,
 	description,
 	confirmLabel = 'Bevestigen',
 	cancelLabel = 'Annuleren',
@@ -57,16 +32,12 @@ const ConfirmDialog = ({
 			// parent after confirm does not, so onCancel never double-fires on a successful confirm.
 			onOpenChange={(next) => (next ? onOpenChange(true) : dismiss())}
 			title={title}
-			label={label ?? (title ? undefined : confirmLabel)}
+			ariaLabel={ariaLabel ?? (title ? undefined : confirmLabel)}
 			description={description}
 			footer={
 				<>
-					<Button variant="secondary" onClick={dismiss}>
-						{cancelLabel}
-					</Button>
-					<Button variant="primary" className={destructive ? 'is-danger' : undefined} onClick={onConfirm}>
-						{confirmLabel}
-					</Button>
+					<Button variant="secondary" value={cancelLabel} onClick={dismiss} />
+					<Button variant="primary" value={confirmLabel} className={destructive ? 'is-danger' : undefined} onClick={onConfirm} />
 				</>
 			}
 		/>

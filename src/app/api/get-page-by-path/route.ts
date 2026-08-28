@@ -1,11 +1,8 @@
 import { draftMode } from 'next/headers';
 
-import { getPageByPath } from '@/lib/content';
-import { env } from '@/lib/env';
+import { env } from '@/lib/shared/env';
+import { getPageByPath } from '@/lib/site/content';
 
-// Dev/preview-only content inspector: resolves a path to its raw page content as JSON. 404s in
-// production unless draft mode is on or the x-debug-secret header matches DEBUG_SECRET, so production
-// never leaks content. Safe to delete this route if you don't need it.
 export const dynamic = 'force-dynamic'; // never cache a debug endpoint
 
 export const GET = async (request: Request) => {
@@ -28,7 +25,5 @@ export const GET = async (request: Request) => {
 		return new Response('Not found', { status: 404 });
 	}
 
-	// Content here is already validated by the lib/content accessors. When this fetches from a CMS,
-	// validate at that boundary with Page.safeParse(...) and return the prettified error — see Validation.mdx.
 	return Response.json(data);
 };

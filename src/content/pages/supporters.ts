@@ -1,4 +1,4 @@
-import type { Page } from '@/lib/content';
+import type { Page } from '@/lib/site/content';
 
 // De supporterspagina legt uit waar het geld heen gaat en wat er met je naam gebeurt. Namen van
 // supporters staan hier bewust niet: die leven alleen in de CMS-rij, want deze map is getrackt in een
@@ -17,9 +17,11 @@ export const supportersPage: Page = {
 			type: 'ctaBanner',
 			id: 'header',
 			colorset: 'dark',
-			tagline: 'Supporters',
-			headline: 'Wie dit overeind houdt',
-			subline: 'DAC draait op vrijwilligers en op een paar mensen die meebetalen.',
+			heading: {
+				tagline: 'Supporters',
+				title: 'Wie dit overeind houdt',
+				intro: 'DAC draait op vrijwilligers en op een paar mensen die meebetalen.',
+			},
 			media: { type: 'image', src: '/media/dac-stand.jpg', alt: 'De DAC-stand op een conventie' },
 		},
 		{
@@ -29,9 +31,9 @@ export const supportersPage: Page = {
 			align: 'start',
 			heading: {
 				tagline: 'Waar het heen gaat',
-				value: 'Wat het kost',
+				title: 'Wat het kost',
 			},
-			text: '<p>Een stand op een con kost standhuur. Daarnaast is er de banner, het drukwerk, art prints om weg te geven, en bordspellen voor op tafel. De Minecraft-server kost hosting. Bij een meetup gaat er weleens iets heen aan een zaaltje. Dat is het hele lijstje. Er is geen kantoor, niemand krijgt salaris, en er is geen doelbedrag waar we naartoe werken.</p>',
+			value: '<p>Een stand op een con kost standhuur. Daarnaast is er de banner, het drukwerk, art prints om weg te geven, en bordspellen voor op tafel. De Minecraft-server kost hosting. Bij een meetup gaat er weleens iets heen aan een zaaltje. Dat is het hele lijstje. Er is geen kantoor, niemand krijgt salaris, en er is geen doelbedrag waar we naartoe werken.</p>',
 		},
 		{
 			type: 'profileCards',
@@ -39,7 +41,7 @@ export const supportersPage: Page = {
 			colorset: 'dark',
 			heading: {
 				tagline: 'Supporters',
-				value: 'De mensen die meebetalen',
+				title: 'De mensen die meebetalen',
 				intro: 'Niemand staat hier zonder het zelf gezegd te hebben. Anoniem is de standaard, niet de uitzondering.',
 			},
 			// Leeg tot iemand toestemming heeft gegeven; anonymousLabel levert dan de enige kaart. Dat is

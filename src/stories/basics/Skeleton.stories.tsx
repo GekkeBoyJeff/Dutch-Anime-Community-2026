@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Skeleton from '@/components/basics/Skeleton';
-import { SkeletonProps } from '@/lib/content/schema/basics/skeleton';
+import { SkeletonProps } from '@/lib/site/content/schema/basics/skeleton';
 
 const meta: Meta<typeof Skeleton> = {
 	title: 'Basics/Skeleton',
@@ -28,22 +28,10 @@ export const Default: Story = {
 };
 
 export const Circle: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		circle: true,
 		width: '3rem',
 		height: '3rem',
 	},
-};
-
-// A typical card placeholder: a thumbnail above two text lines.
-export const CardPlaceholder: Story = {
-	render: () => (
-		<div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '16rem' }}>
-			<Skeleton height="9rem" radius="l" />
-			<Skeleton height="1rem" />
-			<Skeleton height="1rem" width="70%" />
-		</div>
-	),
 };

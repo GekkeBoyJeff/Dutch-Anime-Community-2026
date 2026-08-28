@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import EventCard from '@/components/components/EventCard';
-import { EventCardProps } from '@/lib/content/schema/components/eventCard';
+import { EventCardProps } from '@/lib/site/content/schema/components/eventCard';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const meta: Meta<typeof EventCard> = {
@@ -31,7 +31,7 @@ type Story = StoryObj<typeof EventCard>;
 export const Default: Story = {
 	args: {
 		title: 'Spelletjesmiddag Utrecht',
-		summary: 'Een middag vol bordspellen, kaartspellen en vooral veel gezelligheid met andere leden.',
+		value: 'Een middag vol bordspellen, kaartspellen en vooral veel gezelligheid met andere leden.',
 		startDate: '2026-09-12T13:00:00Z',
 		endDate: '2026-09-12T17:00:00Z',
 		location: 'Utrecht',
@@ -76,7 +76,7 @@ export const Online: Story = {
 	args: {
 		...Default.args,
 		title: 'Watch party: seizoensfinale',
-		summary: 'Kijk samen met de community de seizoensfinale, live in de Discord.',
+		value: 'Kijk samen met de community de seizoensfinale, live in de Discord.',
 		startDate: '2026-09-18T19:00:00Z',
 		endDate: '2026-09-18T21:30:00Z',
 		location: 'Online (Discord)',

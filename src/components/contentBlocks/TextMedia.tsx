@@ -1,28 +1,26 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
 import Title from '@/components/basics/Title';
-import { classNames } from '@/lib/classNames';
-import type { TextMediaProps } from '@/lib/content';
+import { classNames } from '@/lib/shared/classNames';
+import type { TextMediaProps as TextMediaSchemaProps } from '@/lib/site/content/schema/blocks/textMedia';
 
-// Text beside media in two columns (stacked on mobile). `reverse` swaps the order.
+type TextMediaProps = TextMediaSchemaProps;
+
 const TextMedia = ({
 	title,
-	text,
+	value,
 	media,
 	reverse = false,
 	colorset,
-	ref,
-}: TextMediaProps & { ref?: Ref<HTMLElement> }) => {
+}: TextMediaProps) => {
 	return (
-		<Section ref={ref} colorset={colorset}>
+		<Section colorset={colorset}>
 			<Container className={classNames('text-media', reverse && 'is-reverse')}>
 				<div className="text-media-body">
 					{title && <Title size={2} value={title} />}
-					{text && <Content value={text} />}
+					{value && <Content value={value} />}
 				</div>
 
 				{media && <Media {...media} className="text-media-figure" />}

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import HeadingGroup from '@/components/basics/HeadingGroup';
-import { HeadingGroupProps } from '@/lib/content/schema/basics/headingGroup';
+import { HeadingGroupProps } from '@/lib/site/content/schema/basics/headingGroup';
 
 const meta: Meta<typeof HeadingGroup> = {
 	title: 'Basics/HeadingGroup',
@@ -31,7 +31,6 @@ export const Default: Story = {
 };
 
 export const Reversed: Story = {
-	...Default,
 	args: {
 		...Default.args,
 		orientation: 'reversed',

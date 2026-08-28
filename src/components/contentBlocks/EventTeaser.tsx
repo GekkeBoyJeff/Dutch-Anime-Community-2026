@@ -1,36 +1,28 @@
-import type { Ref } from 'react';
-
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 import HeadingGroup from '@/components/basics/HeadingGroup';
 import Interactive from '@/components/basics/Interactive';
 import Section from '@/components/basics/Section';
 import EventCard from '@/components/components/EventCard';
-import type { EventTeaserProps } from '@/lib/content';
+import type { EventTeaserProps as EventTeaserSchemaProps } from '@/lib/site/content/schema/blocks/eventTeaser';
 
-// A single-column teaser list: a heading cluster, an optional intro, a dense stack of compact event
-// cards and an optional "view all" link. A presentational section — every event arrives via props.
+type EventTeaserProps = EventTeaserSchemaProps;
+
 const EventTeaser = ({
 	heading,
-	description,
+	value,
 	events = [],
 	viewAllUrl,
 	viewAllLabel = 'View all',
 	colorset,
-	ref,
-}: EventTeaserProps & { ref?: Ref<HTMLElement> }) => {
+}: EventTeaserProps) => {
 	return (
-		<Section ref={ref} colorset={colorset} className="event-teaser">
+		<Section colorset={colorset} className="event-teaser">
 			<Container className="event-teaser-inner">
-				{(heading || description) && (
+				{(heading || value) && (
 					<header className="event-teaser-header">
-						<HeadingGroup
-							tagline={heading?.tagline}
-							title={heading?.value}
-							size={heading?.size}
-							intro={heading?.intro}
-						/>
-						{description && <Content className="event-teaser-description" value={description} />}
+						<HeadingGroup {...heading} />
+						{value && <Content className="event-teaser-description" value={value} />}
 					</header>
 				)}
 
@@ -44,9 +36,7 @@ const EventTeaser = ({
 
 				{viewAllUrl && (
 					<footer className="event-teaser-footer">
-						<Interactive url={viewAllUrl} className="event-teaser-view-all">
-							{viewAllLabel}
-						</Interactive>
+						<Interactive url={viewAllUrl} className="event-teaser-view-all" value={viewAllLabel} />
 					</footer>
 				)}
 			</Container>

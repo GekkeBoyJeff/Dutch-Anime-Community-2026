@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import LogoCloud from '@/components/contentBlocks/LogoCloud';
-import { LogoCloudProps } from '@/lib/content/schema/blocks/logoCloud';
+import { LogoCloudProps } from '@/lib/site/content/schema/blocks/logoCloud';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const logos = [
@@ -36,7 +36,7 @@ type Story = StoryObj<typeof LogoCloud>;
 
 export const Default: Story = {
 	args: {
-		heading: { value: 'Je vindt ons op deze events' },
+		heading: { title: 'Je vindt ons op deze events' },
 		items: logos,
 		variant: 'grid',
 	},

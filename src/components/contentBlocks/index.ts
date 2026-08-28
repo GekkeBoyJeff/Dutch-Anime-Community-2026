@@ -22,6 +22,8 @@ export { default as Showreel } from '@/components/contentBlocks/Showreel';
 export { default as SpotlightQuote } from '@/components/contentBlocks/SpotlightQuote';
 export { default as EventTeaser } from '@/components/contentBlocks/EventTeaser';
 export { default as SubscribeToNewsletter } from '@/components/contentBlocks/SubscribeToNewsletter';
-
-// Library-only: standalone blocks used directly (or as Storybook fixtures), NOT wired into the
-// content block union or the Blocks renderer registry — so they never appear in page `blocks` data.
+export { default as CommunityQuestion } from '@/components/contentBlocks/CommunityQuestion';
+export { default as ChatPreview } from '@/components/contentBlocks/ChatPreview';
+export { default as ChannelBoard } from '@/components/contentBlocks/ChannelBoard';
+export { default as MomentList } from '@/components/contentBlocks/MomentList';
+export { default as ProofTicker } from '@/components/contentBlocks/ProofTicker';

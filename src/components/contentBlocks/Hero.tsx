@@ -1,5 +1,3 @@
-import type { Ref } from 'react';
-
 import Actions from '@/components/basics/Actions';
 import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
@@ -8,24 +6,23 @@ import Interactive from '@/components/basics/Interactive';
 import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
 import Title from '@/components/basics/Title';
-import type { HeroProps } from '@/lib/content';
+import type { HeroProps as HeroSchemaProps } from '@/lib/site/content/schema/blocks/hero';
 
-// A page's lead section: tagline, heading, intro and call-to-action buttons — rendered plain, inside
-// a rounded media panel, or as a full-bleed cover with a glass stats bar and a link tab carved into
-// the bottom-left corner of the page frame.
+// `eager` is a render hint Blocks derives from a block's position, not content, so it stays out of the content schema.
+type HeroProps = HeroSchemaProps & { eager?: boolean };
+
 const Hero = ({
 	variant = 'panel',
 	tagline,
 	title,
-	text,
+	value,
 	actions = [],
 	stats = [],
 	socials = [],
 	media,
 	colorset,
 	eager,
-	ref,
-}: HeroProps & { eager?: boolean; ref?: Ref<HTMLElement> }) => {
+}: HeroProps) => {
 	const isCover = variant === 'cover' && !!media;
 
 	const body = (
@@ -33,7 +30,7 @@ const Hero = ({
 			{tagline && <Content element="span" className="hero-tagline" value={tagline} />}
 			{title && <Title size={1} value={title} />}
 			{isCover && <span className="hero-divider" aria-hidden="true" />}
-			{text && <Content value={text} />}
+			{value && <Content value={value} />}
 
 			<Actions actions={actions} defaultVariant="primary" badge />
 		</div>
@@ -54,7 +51,7 @@ const Hero = ({
 
 	if (isCover) {
 		return (
-			<Section ref={ref} colorset={colorset} className="hero is-cover">
+			<Section colorset={colorset} className="hero is-cover">
 				<Media {...media} eager={eager} className="hero-backdrop" />
 
 				<Container className="hero-inner">
@@ -67,9 +64,9 @@ const Hero = ({
 						<span className="corner is-scoop-tr is-start" aria-hidden="true" />
 						{socials.map((social, index) => {
 							return (
-								<Interactive key={`${social.label}-${index}`} url={social.url} target={social.target} className="hero-tab-link">
+								<Interactive key={`${social.value}-${index}`} url={social.url} target={social.target} className="hero-tab-link">
 									{social.icon && <Icon name={social.icon} />}
-									{social.label}
+									{social.value}
 								</Interactive>
 							);
 						})}
@@ -81,7 +78,7 @@ const Hero = ({
 	}
 
 	return (
-		<Section ref={ref} colorset={colorset} className="hero">
+		<Section colorset={colorset} className="hero">
 			<Container>
 				{media ? (
 					<div className="hero-panel" data-colorset="dark">

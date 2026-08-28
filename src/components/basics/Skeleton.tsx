@@ -1,27 +1,21 @@
-import type { CSSProperties, Ref } from 'react';
+import type { CSSProperties } from 'react';
 
-import { classNames } from '@/lib/classNames';
-import type { SkeletonProps } from '@/lib/content/schema/basics/skeleton';
+import { classNames } from '@/lib/shared/classNames';
+import type { SkeletonProps as SkeletonSchemaProps } from '@/lib/site/content/schema/basics/skeleton';
 
-type SkeletonComponentProps = SkeletonProps;
+type SkeletonProps = SkeletonSchemaProps;
 
-// Token-driven loading placeholder with a CSS-only shimmer (gated by prefers-reduced-motion).
-// aria-hidden, because the surrounding region carries the loading semantics.
 const Skeleton = ({
 	width,
 	height,
 	radius = 'm',
 	circle = false,
 	className,
-	ref,
-}: SkeletonComponentProps & { ref?: Ref<HTMLSpanElement> }) => {
-	const style: CSSProperties = {};
-	if (width) style.inlineSize = width;
-	if (height) style.blockSize = height;
+}: SkeletonProps) => {
+	const style: CSSProperties = { inlineSize: width, blockSize: height };
 
 	return (
 		<span
-			ref={ref}
 			aria-hidden="true"
 			className={classNames('skeleton', `is-rounded-${radius}`, circle && 'is-circle', className)}
 			style={style}

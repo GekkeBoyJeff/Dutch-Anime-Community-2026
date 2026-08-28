@@ -1,6 +1,8 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+
 import * as sass from 'sass-embedded';
+
 import { SCSS_LOAD_PATHS, SCSS_PRELUDE } from '../styles.config.mjs';
 
 function scssFiles(dir) {

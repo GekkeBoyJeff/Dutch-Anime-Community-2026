@@ -11,19 +11,15 @@ import BottomTabBar from '@/components/dashboard/structures/BottomTabBar';
 import CommandPalette, { type PaletteResult } from '@/components/dashboard/structures/CommandPalette';
 import Navigation, { type MegaMenuUser } from '@/components/structures/Navigation';
 import useHotkey from '@/hooks/useHotkey';
-import { buildNavGroups, buildPaletteActions, buildPalettePages, buildTabBarItems, palettePersonSearchHref } from '@/lib/auth/dashboard-sections';
-import { emphasisRole, usePermissions, ROLE_LABELS, highestRole, type AppRole, type Permission } from '@/lib/auth/permissions';
-import { getBrowserClient } from '@/lib/supabase/client';
+import { buildNavGroups, buildPaletteActions, buildPalettePages, buildTabBarItems, palettePersonSearchHref } from '@/lib/shared/auth/dashboard-sections';
+import { emphasisRole, usePermissions, ROLE_LABELS, highestRole, type AppRole, type Permission } from '@/lib/shared/auth/permissions';
+import { getBrowserClient } from '@/lib/shared/supabase/client';
 
 interface NavIndicator {
 	dot?: boolean;
 	badge?: number;
 }
 
-// Live per-group nav indicators (blueprint §2 C1/C5/C6): a count pill or an attention dot on a group's
-// trigger when something waits, so a manager sees it without opening the panel. Deliberately cheap — one
-// eager pass of head/limited count queries on mount. Each query is gated on the same permission that
-// guards its data; RLS stays the real boundary.
 const useNavIndicators = (permissions: ReadonlySet<Permission>): Record<string, NavIndicator> => {
 	const [indicators, setIndicators] = useState<Record<string, NavIndicator>>({});
 	const canOps = permissions.has('events.manage');
@@ -38,7 +34,6 @@ const useNavIndicators = (permissions: ReadonlySet<Permission>): Record<string, 
 			const in14 = new Date(Date.now() + 14 * 86_400_000).toISOString().slice(0, 10);
 
 			if (canOps) {
-				// C1: a convention within 14 days. If none, C6: any unfilled shift on an upcoming convention.
 				const { data: soon } = await db.from('events').select('id').is('archived_at', null).gte('starts_on', today).lte('starts_on', in14).limit(1);
 				let dot = (soon?.length ?? 0) > 0;
 				if (!dot) {
@@ -53,7 +48,6 @@ const useNavIndicators = (permissions: ReadonlySet<Permission>): Record<string, 
 			}
 
 			if (canFin) {
-				// C5: declaraties awaiting review → a count pill on Financiën.
 				const { count } = await db.from('expenses').select('id', { count: 'exact', head: true }).eq('status', 'submitted').is('archived_at', null);
 				if ((count ?? 0) > 0) next.financien = { badge: count ?? 0 };
 			}
@@ -68,17 +62,12 @@ const useNavIndicators = (permissions: ReadonlySet<Permission>): Record<string, 
 	return indicators;
 };
 
-// The ⌘K hint glyph, read via useSyncExternalStore so the server/hydration render stays '⌘' and only the
-// client corrects to 'Ctrl' off-Mac — no setState-in-effect, no hydration mismatch. The platform never
-// changes within a session, so the subscription is a no-op.
+// useSyncExternalStore, not setState-in-effect: the server/hydration render stays '⌘' and only the client
+// corrects to 'Ctrl' off-Mac. The platform never changes within a session, so the subscription is a no-op.
 const noopSubscribe = () => () => {};
 const readModKey = () => (/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'Ctrl');
 const serverModKey = () => '⌘';
 
-// Cold-load nav: the mega-menu bar shell (brand + wordmark, trigger-pill placeholders, search + avatar
-// slots) rendered while permissions resolve, so a slow load reads as the app arriving. Without it the
-// generic Navigation falls back to its bare public-header mode (groups is empty pre-permissions). Same
-// fixed bar box as the live nav → no shift when it swaps in.
 const NAV_PILL_WIDTHS = ['5rem', '6.5rem', '5.5rem', '7rem'];
 
 const DashboardNavSkeleton = () => (
@@ -103,10 +92,6 @@ const DashboardNavSkeleton = () => (
 	</header>
 );
 
-// Wires the generic MegaMenu to the live session: groups derive from DASHBOARD_GROUPS filtered by the
-// caller's permissions (UX only — RLS is the real boundary), and the chip reads name/avatar from the
-// Discord session metadata plus the highest role. A client island because all of that is runtime state.
-// The mobile BottomTabBar's "Meer" tab shares the MegaMenu overlay's open state, lifted here.
 const DashboardNavReady = () => {
 	const { permissions, session } = usePermissions();
 	const [role, setRole] = useState<AppRole | null>(null);
@@ -116,14 +101,12 @@ const DashboardNavReady = () => {
 	const pathname = usePathname();
 	const [seenPath, setSeenPath] = useState(pathname);
 
-	// ⌘K (Cmd/Ctrl+K) toggles the palette from anywhere.
 	useHotkey(
 		'mod+k',
 		useCallback(() => setPaletteOpen((open) => !open), []),
 	);
 
-	// Close the overlay on navigation (reset-on-prop-change, no extra effect). `menuOpen` is owned here,
-	// so this stays a same-component render-time update — MegaMenu only ever resets its own local state.
+	// Reset-on-prop-change: `menuOpen` is owned here, so this stays a same-component render-time update.
 	if (pathname !== seenPath) {
 		setSeenPath(pathname);
 		setMenuOpen(false);
@@ -147,8 +130,6 @@ const DashboardNavReady = () => {
 
 	const indicators = useNavIndicators(permissions);
 
-	// Groups are ordered for the emphasis role (blueprint §1c). The cheap per-group indicator (dot/badge)
-	// rides along so a manager sees it without opening anything.
 	const groups = useMemo(
 		() =>
 			buildNavGroups(permissions, emphasisRole(permissions)).map((group) => ({
@@ -163,8 +144,6 @@ const DashboardNavReady = () => {
 	const paletteActions = useMemo(() => buildPaletteActions(permissions), [permissions]);
 	const personSearchHref = useMemo(() => palettePersonSearchHref(permissions), [permissions]);
 
-	// Live palette search over real records: conventions (open the editor) and members (open their moderation
-	// profile), each gated on the same permission that guards its destination. RLS stays the real boundary.
 	const canSearchEvents = permissions.has('events.view');
 	const canSearchPeople = permissions.has('moderation.view');
 	const searchEntities = useCallback(
@@ -243,8 +222,6 @@ const DashboardNavReady = () => {
 	);
 };
 
-// On a warm session cache `loading` is already false (no flash); only a cold/slow load shows the skeleton
-// bar. The live nav mounts fresh once permissions resolve — the skeleton holds none of its own state.
 const DashboardNav = () => {
 	const { loading } = usePermissions();
 	return loading ? <DashboardNavSkeleton /> : <DashboardNavReady />;

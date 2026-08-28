@@ -1,30 +1,53 @@
-import type { Ref } from 'react';
-
 import Interactive from '@/components/basics/Interactive';
-import type { InteractiveProps, InteractiveRef } from '@/components/basics/Interactive';
-import { classNames } from '@/lib/classNames';
-import type { PillProps as PillSchemaProps } from '@/lib/content/schema/basics/pill';
+import { classNames } from '@/lib/shared/classNames';
+import type { PillProps as PillSchemaProps } from '@/lib/site/content/schema/basics/pill';
 
-// Intersect with Interactive's TS type so the non-serializable extras (onClick, children, HTML
-// passthrough) keep flowing through the ...rest spread; the schema owns only the data props.
-type PillProps = PillSchemaProps & InteractiveProps;
+type PillProps = PillSchemaProps;
 
-// Compact, rounded variant of a clickable element (tags, filters), built on Interactive.
 const Pill = ({
 	active = false,
+	url,
+	target,
+	rel,
+	download,
+	type,
+	disabled,
+	icon,
 	className,
-	children,
-	ref,
-	...rest
-}: PillProps & { ref?: Ref<InteractiveRef> }) => {
-	// Selected state belongs in the a11y tree, not only the colour. aria-pressed is valid only on a
-	// button, so emit it only when this pill is a button (no url); a link pill conveys "current" via the
-	// caller's own aria-current. The caller can still override by passing aria-pressed/aria-current.
-	const ariaPressed = rest.url ? undefined : active;
+	value,
+	count,
+	ariaLabel,
+	ariaExpanded,
+	ariaCurrent,
+	ariaPressed,
+	onClick,
+}: PillProps) => {
+	// aria-pressed is valid only on a button, so a pill with a url must not get it.
+	const resolvedAriaPressed = ariaPressed ?? (url ? undefined : active);
 
 	return (
-		<Interactive ref={ref} className={classNames('pill', active && 'is-active', className)} aria-pressed={ariaPressed} {...rest}>
-			{children}
+		<Interactive
+			url={url}
+			target={target}
+			rel={rel}
+			download={download}
+			type={type}
+			disabled={disabled}
+			icon={icon}
+			className={classNames('pill', active && 'is-active', className)}
+			ariaLabel={ariaLabel}
+			ariaExpanded={ariaExpanded}
+			ariaCurrent={ariaCurrent}
+			ariaPressed={resolvedAriaPressed}
+			onClick={onClick}
+		>
+			{value}
+			{typeof count === 'number' && (
+				<span className="pill-count">
+					{' '}
+					{count}
+				</span>
+			)}
 		</Interactive>
 	);
 };

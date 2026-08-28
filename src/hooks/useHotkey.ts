@@ -9,7 +9,6 @@ type HotkeyHandler = (event: KeyboardEvent) => void;
 const handlers = new Map<string, HotkeyHandler>();
 let listening = false;
 
-// Normalises a key press into a chord string, e.g. "mod+k" (mod = ⌘ or Ctrl).
 const chordFromEvent = (event: KeyboardEvent): string => {
 	const parts: string[] = [];
 

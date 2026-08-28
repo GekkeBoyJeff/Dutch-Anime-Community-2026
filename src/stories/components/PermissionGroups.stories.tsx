@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 
 import PermissionGroups from '@/components/components/PermissionGroups';
-import type { Permission } from '@/lib/auth/permissions';
+import type { Permission } from '@/lib/shared/auth/permissions';
 
 const meta: Meta<typeof PermissionGroups> = {
 	title: 'Components/PermissionGroups',
