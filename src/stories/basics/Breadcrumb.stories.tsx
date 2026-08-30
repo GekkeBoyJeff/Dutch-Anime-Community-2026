@@ -1,0 +1,35 @@
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
+import Breadcrumb from '@/components/basics/Breadcrumb';
+import { BreadcrumbProps } from '@/lib/site/content/schema/basics/breadcrumb';
+
+const meta: Meta<typeof Breadcrumb> = {
+	title: 'Basics/Breadcrumb',
+	component: Breadcrumb,
+	parameters: {
+		docs: { description: { component: 'Accessible trail (nav > ol) that links every crumb but the last, which is marked aria-current="page".' } },
+		jsonSchema: { schema: BreadcrumbProps },
+	},
+};
+
+export default meta;
+
+type Story = StoryObj<typeof Breadcrumb>;
+
+export const Default: Story = {
+	args: {
+		items: [
+			{ value: 'Home', url: '/' },
+			{ value: 'Events', url: '/events' },
+			{ value: 'Spring meetup' },
+		],
+		separator: '/',
+	},
+};
+
+export const ChevronSeparator: Story = {
+	args: {
+		...Default.args,
+		separator: '›',
+	},
+};

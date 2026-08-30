@@ -1,0 +1,21 @@
+.pill {
+	padding-block: spacing(xs);
+	padding-inline: spacing(m);
+	border-radius: $rounded-full;
+	background-color: $background-color;
+	color: $color;
+	box-shadow: inset 0 0 0 0.0625rem var(--color-secondary);
+	font-weight: $weight-medium;
+
+	&:not(.is-active) {
+		@include interactive {
+			background-color: $background-hover;
+		}
+	}
+
+	&.is-active {
+		background-color: $accent;
+		color: $accent-contrast;
+		box-shadow: none;
+	}
+}

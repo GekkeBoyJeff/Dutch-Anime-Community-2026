@@ -1,0 +1,635 @@
+.mega-menu {
+	position: fixed;
+	inset-block-start: spacing(m);
+	inset-inline: spacing(m);
+	max-inline-size: 105rem;
+	margin-inline: auto;
+	z-index: $z-sticky;
+	pointer-events: none;
+
+	.mega-menu-bar {
+		pointer-events: auto;
+		display: flex;
+		align-items: center;
+		gap: spacing(m);
+		padding-block: spacing(s);
+		padding-inline: spacing(m);
+		background-color: $page;
+		border: 0.0625rem solid $border-color;
+		border-radius: $rounded-full;
+		margin-block-start: spacing(m);
+		margin-inline: spacing(m);
+		box-shadow: $shadow-card;
+
+		@include bp(l) {
+			padding-inline: spacing(l);
+		}
+	}
+
+	.mega-menu-brand {
+		display: inline-flex;
+		align-items: center;
+		gap: spacing(s);
+		flex: none;
+		font-weight: $weight-bold;
+		letter-spacing: $tracking-tight;
+		color: $color;
+		border-radius: $rounded-full;
+		transition: transform $speed $ease-snappy;
+
+		@include interactive {
+			transform: scale(1.06);
+		}
+
+		.mega-menu-logo {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			inline-size: 2.75rem;
+			block-size: 2.75rem;
+			background-color: $page;
+			border-radius: $rounded-full;
+			box-shadow: $shadow-card;
+
+			.media-asset {
+				inline-size: 2.25rem;
+				block-size: 2.25rem;
+				object-fit: contain;
+				border-radius: $rounded-full;
+				animation: mega-menu-wiggle 10s linear infinite;
+			}
+		}
+	}
+
+	&.is-open {
+		.mega-menu-scrim {
+			opacity: 1;
+			visibility: visible;
+			pointer-events: auto;
+		}
+
+		.mega-menu-overlay {
+			transform: translateX(0);
+			visibility: visible;
+			pointer-events: auto;
+		}
+	}
+
+	.mega-menu-nav {
+		display: none;
+		flex: 1;
+		min-inline-size: 0;
+		@include bp(l) {
+			display: block;
+		}
+		.mega-menu-triggers {
+			position: relative;
+			display: flex;
+			align-items: center;
+			gap: spacing(xs);
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+	}
+
+	.mega-menu-nav-skeleton {
+		display: flex;
+		align-items: center;
+		gap: spacing(xs);
+	}
+
+	.mega-menu-home-link,
+	.mega-menu-trigger {
+		position: relative;
+		z-index: 1;
+		display: inline-flex;
+		align-items: center;
+		gap: spacing(xs);
+		padding-block: spacing(xs);
+		padding-inline: spacing(l);
+		min-block-size: 2.25rem;
+		border: 0;
+		border-radius: $rounded-full;
+		background: transparent;
+		color: $grey-darkest;
+		font-weight: $weight-medium;
+		cursor: pointer;
+		transition: color $speed-fast $ease, background-color $speed-fast $ease;
+		&:not(.is-active):not([data-popup-open]) {
+			@include interactive {
+				background-color: $surface-muted;
+				color: $color;
+			}
+		}
+		&.is-active,
+		&[data-popup-open] {
+			color: $white;
+			font-weight: $weight-bold;
+		}
+		.mega-menu-chevron {
+			inline-size: 1rem;
+			block-size: 1rem;
+			transition: transform $speed-fast $ease;
+		}
+		&[data-popup-open] .mega-menu-chevron {
+			transform: rotate(180deg);
+		}
+		&.is-direct {
+			text-decoration: none;
+		}
+		&.is-muted:not(.is-active):not([data-popup-open]) {
+			color: $grey-dark;
+			@include interactive {
+				color: $color;
+			}
+		}
+	}
+
+	.mega-menu-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-inline-size: 1.15rem;
+		padding-inline: 0.35rem;
+		block-size: 1.15rem;
+		font-size: 0.7rem;
+		font-weight: $weight-bold;
+		line-height: 1;
+		color: $white;
+		background-color: $accent-active;
+		border-radius: $rounded-full;
+	}
+
+	.mega-menu-dot {
+		inline-size: 0.5rem;
+		block-size: 0.5rem;
+		border-radius: $rounded-full;
+		background-color: $accent-active;
+	}
+
+	.is-active .mega-menu-badge,
+	[data-popup-open] .mega-menu-badge {
+		color: $accent-active;
+		background-color: $white;
+	}
+
+	.is-active .mega-menu-dot,
+	[data-popup-open] .mega-menu-dot {
+		background-color: $white;
+	}
+
+	.mega-menu-tracker {
+		position: absolute;
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		z-index: 0;
+		block-size: 100%;
+		border-radius: $rounded-full;
+		opacity: 0;
+		background-color: $grey-darkest;
+		transition:
+			transform $speed $ease-snappy,
+			width $speed $ease-snappy,
+			opacity $speed-fast $ease;
+		&[data-visible] {
+			opacity: 1;
+		}
+	}
+
+	.mega-menu-profile {
+		display: none;
+		align-items: center;
+		gap: spacing(s);
+		padding-block: spacing(xs);
+		padding-inline: spacing(s);
+		padding-inline-end: spacing(m);
+		min-block-size: 2.5rem;
+		border: 0.0625rem solid $border-color;
+		border-radius: $rounded-full;
+		background-color: $surface-muted;
+		color: $color;
+		cursor: pointer;
+		transition: background-color $speed-fast $ease, border-color $speed-fast $ease;
+		@include bp(l) {
+			display: inline-flex;
+		}
+		@include interactive {
+			background-color: $surface-muted-strong;
+			border-color: $grey;
+		}
+		&[data-popup-open] {
+			background-color: $surface-muted-strong;
+			border-color: $grey;
+			.mega-menu-profile-chevron {
+				transform: rotate(180deg);
+			}
+		}
+		.mega-menu-profile-text {
+			display: flex;
+			flex-direction: column;
+			gap: 0.05rem;
+			line-height: 1.15;
+			text-align: start;
+		}
+		.mega-menu-profile-name {
+			font-weight: $weight-semibold;
+			font-size: 0.875rem;
+			color: $color;
+		}
+		.mega-menu-profile-role {
+			font-size: 0.75rem;
+			color: $color-secondary;
+		}
+		.mega-menu-profile-chevron {
+			inline-size: 1rem;
+			block-size: 1rem;
+			color: $color-secondary;
+			transition: transform $speed-fast $ease;
+		}
+	}
+
+	.mega-menu-scrim {
+		position: fixed;
+		inset: 0;
+		z-index: $z-overlay;
+		background-color: $scrim;
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transition: opacity $speed $ease, visibility $speed $ease;
+	}
+
+	.mega-menu-overlay {
+		position: fixed;
+		inset-block-start: 0;
+		inset-inline-end: 0;
+		z-index: calc(#{$z-overlay} + 1);
+		display: flex;
+		flex-direction: column;
+		gap: spacing(l);
+		inline-size: min(22rem, 100vw);
+		max-block-size: 100dvh;
+		overflow-y: auto;
+		padding: spacing(l);
+		padding-block-start: calc(#{spacing(l)} + env(safe-area-inset-top));
+		background-color: $page;
+		box-shadow: $shadow-card;
+		transform: translateX(100%);
+		visibility: hidden;
+		pointer-events: none;
+		transition: transform $speed $ease-snappy, visibility $speed $ease-snappy;
+		@include bp(l) {
+			display: none;
+		}
+		.mega-menu-overlay-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: spacing(s);
+			padding-block-end: spacing(m);
+			border-block-end: 0.0625rem solid $border-color;
+		}
+		.mega-menu-overlay-user {
+			display: inline-flex;
+			align-items: center;
+			gap: spacing(s);
+			min-inline-size: 0;
+		}
+		.mega-menu-overlay-user-text {
+			display: flex;
+			flex-direction: column;
+			gap: 0.05rem;
+			line-height: 1.15;
+			min-inline-size: 0;
+		}
+		.mega-menu-overlay-user-name {
+			font-weight: $weight-semibold;
+			font-size: 0.9375rem;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.mega-menu-overlay-user-role {
+			font-size: 0.75rem;
+			color: $color-secondary;
+		}
+		.mega-menu-overlay-title {
+			font-weight: $weight-bold;
+			font-size: 1rem;
+		}
+		.mega-menu-overlay-close {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex: none;
+			inline-size: 2.5rem;
+			block-size: 2.5rem;
+			border: 0;
+			border-radius: $rounded-full;
+			background-color: $surface-muted;
+			color: $color;
+			cursor: pointer;
+			transition: background-color $speed-fast $ease;
+			@include interactive {
+				background-color: $surface-muted-strong;
+			}
+			.icon {
+				inline-size: 1.25rem;
+				block-size: 1.25rem;
+			}
+		}
+		nav {
+			display: flex;
+			flex-direction: column;
+			gap: spacing(l);
+		}
+		.mega-menu-overlay-account {
+			display: flex;
+			flex-direction: column;
+			gap: 0.125rem;
+			margin-block-start: spacing(xs);
+			padding-block-start: spacing(l);
+			border-block-start: 0.0625rem solid $border-color;
+		}
+		.mega-menu-overlay-home {
+			display: block;
+			padding: spacing(s) spacing(m);
+			border-radius: $rounded-m;
+			font-weight: $weight-semibold;
+			color: $color;
+			&.is-active {
+				color: $accent-text;
+				background-color: $tint-accent;
+			}
+		}
+		.mega-menu-overlay-group {
+			display: flex;
+			flex-direction: column;
+			gap: spacing(xs);
+			.mega-menu-overlay-heading {
+				display: flex;
+				align-items: center;
+				gap: spacing(xs);
+				margin: 0;
+				padding-inline: spacing(m);
+				font-size: 0.75rem;
+				font-weight: $weight-semibold;
+				letter-spacing: $tracking-wide;
+				text-transform: uppercase;
+				color: $color-secondary;
+			}
+			ul {
+				display: flex;
+				flex-direction: column;
+				gap: 0.125rem;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+		}
+		.mega-menu-overlay-link {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			gap: spacing(s);
+			padding: spacing(s) spacing(m);
+			border-radius: $rounded-m;
+			color: $color;
+			@include interactive {
+				background-color: $surface-muted;
+			}
+			&.is-active {
+				color: $accent-text;
+				background-color: $tint-accent;
+			}
+			.icon {
+				inline-size: 1.1rem;
+				block-size: 1.1rem;
+				flex: none;
+			}
+		}
+		.mega-menu-overlay-back {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			gap: spacing(s);
+			padding: spacing(s) spacing(m);
+			border-radius: $rounded-m;
+			color: $color-secondary;
+			font-weight: $weight-medium;
+			@include interactive {
+				color: $color;
+				background-color: $surface-muted;
+			}
+			.icon {
+				inline-size: 1.1rem;
+				block-size: 1.1rem;
+				flex: none;
+			}
+		}
+	}
+}
+
+@keyframes mega-menu-wiggle {
+	0%,
+	50%,
+	100% {
+		transform: rotate(0deg);
+	}
+
+	25% {
+		transform: rotate(8deg);
+	}
+
+	75% {
+		transform: rotate(-8deg);
+	}
+}
+
+.mega-menu-positioner {
+	z-index: $z-popover;
+	pointer-events: none;
+}
+
+.mega-menu-popup {
+	pointer-events: auto;
+	max-inline-size: min(40rem, calc(100vw - #{spacing(4xl)}));
+	padding: $admin-gap;
+	border-radius: $admin-radius-panel;
+	background-color: $background-color;
+	box-shadow: $admin-ring, $admin-shadow-3;
+	overflow: hidden;
+	transition:
+		transform $speed-fast $ease-out,
+		opacity $speed-fast $ease-out;
+
+	&[data-starting-style],
+	&[data-ending-style] {
+		opacity: 0;
+		transform: translateY(-0.25rem);
+	}
+
+	&[data-closed] {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.mega-menu-viewport {
+		position: relative;
+		display: grid;
+	}
+
+	.mega-menu-content {
+		inline-size: 100%;
+		transition: opacity $speed-fast $ease;
+		&[data-starting-style],
+		&[data-ending-style] {
+			opacity: 0;
+		}
+	}
+
+	.mega-menu-panel {
+		display: grid;
+		gap: $admin-gap;
+		block-size: 100%;
+		.mega-menu-link-list {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+			grid-auto-rows: min-content;
+			gap: spacing(xs);
+			align-content: start;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+	}
+
+	.mega-menu-link {
+		display: flex;
+		align-items: flex-start;
+		gap: spacing(m);
+		padding: spacing(m);
+		border-radius: $rounded-m;
+		color: $color;
+		text-decoration: none;
+		transition: background-color $speed-fast $ease;
+		@include interactive {
+			background-color: $surface-muted;
+		}
+		&.is-active {
+			background-color: $tint-accent;
+			.mega-menu-link-icon {
+				background-color: $accent;
+				color: $accent-contrast;
+			}
+			.mega-menu-link-label {
+				color: $accent-text;
+			}
+		}
+		.mega-menu-link-icon {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex: none;
+			inline-size: 2.25rem;
+			block-size: 2.25rem;
+			border-radius: $rounded-m;
+			background-color: $surface-muted;
+			color: $color-secondary;
+			transition: background-color $speed-fast $ease, color $speed-fast $ease;
+			.icon {
+				inline-size: 1.15rem;
+				block-size: 1.15rem;
+			}
+		}
+		.mega-menu-link-text {
+			display: flex;
+			flex-direction: column;
+			gap: 0.1rem;
+			min-inline-size: 0;
+		}
+		.mega-menu-link-label {
+			font-weight: $weight-medium;
+			color: $color;
+		}
+		.mega-menu-link-description {
+			font-size: 0.8125rem;
+			line-height: 1.4;
+			color: $color-secondary;
+		}
+	}
+
+	.mega-menu-side {
+		display: flex;
+		align-items: center;
+		gap: spacing(s);
+		margin-inline-start: auto;
+		flex: none;
+		.mega-menu-toggle {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			inline-size: 2.5rem;
+			block-size: 2.5rem;
+			border: 0;
+			border-radius: $rounded-full;
+			background: transparent;
+			color: $color;
+			cursor: pointer;
+			transition: background-color $speed-fast $ease;
+			@include interactive {
+				background-color: $surface-muted;
+			}
+			@include bp(l) {
+				display: none;
+			}
+		}
+	}
+}
+
+.mega-menu-profile-menu {
+	--menu-min-width: 15rem;
+
+	.mega-menu-profile-head {
+		display: flex;
+		align-items: center;
+		gap: spacing(s);
+		padding: spacing(s) spacing(m) spacing(m);
+
+		.mega-menu-profile-head-text {
+			display: flex;
+			flex-direction: column;
+			gap: 0.2rem;
+			min-inline-size: 0;
+		}
+
+		.mega-menu-profile-head-name {
+			font-weight: $weight-semibold;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mega-menu-popup,
+	.mega-menu-content,
+	.mega-menu-scrim,
+	.mega-menu-overlay,
+	.mega-menu-brand,
+	.mega-menu-tracker,
+	.mega-menu-home-link,
+	.mega-menu-trigger,
+	.mega-menu-trigger .mega-menu-chevron,
+	.mega-menu-profile,
+	.mega-menu-profile-chevron {
+		transition: none;
+	}
+
+	.mega-menu-brand .mega-menu-logo .media-asset {
+		animation: none;
+	}
+
+}

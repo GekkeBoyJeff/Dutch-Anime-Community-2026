@@ -1,0 +1,125 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="For developers/7. Hooks" />
+
+# Hooks
+
+Step 7, the last of the guide: the client-side utilities in `src/hooks` that components reach for in the browser.
+
+Five small client-side utilities in `src/hooks`. They run only in the browser, so import each one
+**directly** from a `'use client'` component — `@/hooks/useHaptics`, never a barrel, which would pull
+the whole folder into the client bundle. Each is a default export.
+
+## useHaptics
+
+Fires a short device vibration **and a synthetic click sound** on an interaction, for feedback on touch
+devices. It's powered by the [`web-haptics`](https://haptics.lochie.me) package: the haptic is the
+[Web Vibration API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate) on Android and
+Safari's toggle-switch tap on iPhones. It exposes `haptic()` as a shorthand plus `trigger`, `cancel` and
+`isSupported`.
+
+```tsx
+const { haptic } = useHaptics();
+haptic();             // the default 'selection'
+haptic('success');    // any preset name
+```
+
+`haptic()` uses `'selection'` by default; `trigger` takes any preset name below, a duration in
+milliseconds, an array, or a custom pattern.
+
+| Preset | Feels like | Use for |
+|---|---|---|
+| `selection` | a light crisp tick (the default) | a tap on a button or link |
+| `light` | a gentle tap | a subtle confirmation |
+| `medium` | a firmer tap | a standard confirmation |
+| `heavy` | a strong tap | a weighty action |
+| `soft` | a soft, rounded tap | a gentle acknowledgement |
+| `rigid` | a short sharp tap | a precise toggle |
+| `success` | two rising taps | a completed action |
+| `warning` | two spaced taps | a reversible caution |
+| `error` | three sharp taps | a blocked or failed action |
+| `nudge` | a two-part attention buzz | drawing attention |
+| `buzz` | a long sustained buzz | an alarm or long alert |
+
+> **Haptic vs sound.** The vibration is felt on Android and on iPhones running iOS 17.4–26.4 (Apple
+> closed that tap in 26.5, so newer iPhones feel nothing, and desktops have no haptic hardware). The
+> click **sound** plays anywhere audio is allowed, so it's the feedback that survives where the
+> vibration can't — though an iPhone stays silent when its ringer switch is off. The call is always safe:
+> it does nothing where there's no support. Sound is on by default; set `SOUND` to `false` in
+> `src/hooks/useHaptics.ts` to mute it.
+
+> **You usually don't call this directly.** `Interactive` already fires `haptic()` on every enabled
+> click, so `Button`, `Pill` and links get feedback for free. Reach for the hook only for gestures
+> that aren't an `Interactive` click — a swipe or a long-press.
+
+## useHotkey
+
+Binds a global keyboard shortcut. One shared
+[`keydown`](https://developer.mozilla.org/en-US/docs/Web/API/Element/keydown_event) listener at module
+level serves every registration, so binding the same chord in several components never stacks
+listeners.
+
+```tsx
+useHotkey('mod+k', () => openSearch()); // mod = ⌘ on macOS, Ctrl elsewhere
+```
+
+A chord is `modifiers+key`, lower-case: `mod`, `shift`, `alt`, then the key (e.g. `mod+shift+p`). The
+handler runs after `preventDefault`, so it suppresses the browser's own shortcut for that chord.
+
+> **Why one shared listener?** Each component registering its own `keydown` handler would add a
+> listener per mount. The module-level singleton keeps it to exactly one, no matter how many
+> components bind chords.
+
+## useOverlay
+
+Manages the lifecycle shared by overlay UI — a modal, drawer or lightbox. It locks body scroll while
+the overlay is open (offsetting the scrollbar width so the page doesn't shift) and restores everything
+on close, with opt-in Escape-to-close.
+
+```tsx
+useOverlay(isOpen, onClose);                          // Escape closes by default
+useOverlay(isOpen, onClose, { closeOnEscape: false }); // handle Escape yourself
+```
+
+Build it into any overlay you add to the `components` layer, so scroll-lock and Escape behave the same
+across all of them.
+
+> **Why offset the scrollbar?** Setting `overflow: hidden` on `<body>` removes the scrollbar, which
+> would otherwise widen the page and cause a visible jump. The hook adds matching padding so the
+> layout stays put.
+
+## useReducedMotion
+
+Reads the user's [reduced-motion preference](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
+for **JS-driven** motion — a `requestAnimationFrame` loop or a spring island — that CSS can't gate on its
+own. Built on [`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore), so it reads
+the live media query without a setState-in-effect and stays in sync during SSR (it returns `false` on the server).
+
+```tsx
+const reduced = useReducedMotion();
+// skip the animation, or jump straight to the end state
+```
+
+> **CSS motion is already handled.** `base.scss` ships a global `@media (prefers-reduced-motion: reduce)`
+> reset that near-instantly collapses every animation and transition. Reach for this hook only for motion
+> that lives in JavaScript, where that media query can't reach — UX before motion.
+
+## usePagination
+
+Holds the state for a paginated list — either controlled (pass `page` + `onPageChange`) or uncontrolled
+(pass `defaultPage`) — and builds the visible page-number range with ellipses, collapsing wide gaps to a
+`'dots'` sentinel. It hands back the `pages` list, the `active` page and the navigation actions
+(`setPage`, `next`, `previous`, `first`, `last`). Used by the `Pagination` component.
+
+```tsx
+const { pages, active, setPage, next, previous } = usePagination({ totalPages: 20, page, onPageChange });
+```
+
+> **No DOM, just state.** The page-range computation is pure, so `Pagination` stays a thin renderer over
+> the list this hook returns.
+
+---
+
+That's the end of the developer guide. From here, browse the **Basics / ContentBlocks** stories to see
+the components, or head to **[Look & feel](?path=/docs/look-feel-colors--docs)** for the visual system.
+Back to the **[overview](?path=/docs/start-here--docs)**.

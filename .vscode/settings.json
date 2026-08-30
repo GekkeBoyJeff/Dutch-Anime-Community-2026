@@ -1,0 +1,8 @@
+{
+  // Use the project's own TypeScript (node_modules/typescript, 5.9.x) instead of the
+  // version VS Code ships with. The project relies on moduleResolution: "bundler",
+  // and a mismatched bundled TS can flag valid imports (e.g. ts(2882) on side-effect
+  // imports like `import '@/styles/index'`) that the CLI `tsc` accepts.
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}

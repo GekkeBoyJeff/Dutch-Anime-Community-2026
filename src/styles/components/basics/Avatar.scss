@@ -1,0 +1,55 @@
+.avatar {
+	--avatar-size: 2.5rem;
+	position: relative;
+	display: inline-flex;
+	inline-size: var(--avatar-size);
+
+	&.is-s {
+		--avatar-size: 1.75rem;
+	}
+
+	&.is-l {
+		--avatar-size: 3.5rem;
+	}
+
+	.avatar-image {
+		inline-size: 100%;
+		--media-radius: #{$rounded-full};
+	}
+
+	.avatar-fallback {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: var(--avatar-size);
+		block-size: var(--avatar-size);
+		border-radius: $rounded-full;
+		background-color: $surface-muted-strong;
+		color: $color;
+		font-size: calc(var(--avatar-size) * 0.4);
+		font-weight: $weight-medium;
+		text-transform: uppercase;
+	}
+
+	.avatar-status {
+		position: absolute;
+		inset-block-end: 0;
+		inset-inline-end: 0;
+		inline-size: 28%;
+		block-size: 28%;
+		border-radius: $rounded-full;
+		box-shadow: 0 0 0 0.125rem $background-color;
+	}
+
+	.avatar-status.is-online {
+		background-color: $status-success;
+	}
+
+	.avatar-status.is-offline {
+		background-color: $color-secondary;
+	}
+
+	.avatar-status.is-busy {
+		background-color: $status-error;
+	}
+}

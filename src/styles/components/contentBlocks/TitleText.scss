@@ -1,0 +1,27 @@
+.title-text {
+	.title-text-body {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(l);
+
+		&.is-center {
+			align-items: center;
+			text-align: center;
+			margin-inline: auto;
+		}
+
+		.title-text-body {
+			color: $color-secondary;
+		}
+
+		.actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: spacing(m);
+		}
+
+		&.is-center .actions {
+			justify-content: center;
+		}
+	}
+}

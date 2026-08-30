@@ -1,0 +1,194 @@
+.filter-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: spacing(m);
+
+	.filter-bar-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: spacing(xs);
+	}
+
+	.filter-bar-tools {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: spacing(s);
+
+		.filter-bar-search {
+			display: inline-flex;
+			align-items: center;
+			gap: spacing(xs);
+			padding-inline: spacing(s);
+			block-size: spacing(xl);
+			box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+			border-radius: $rounded-m;
+			color: $color-secondary;
+
+			transition: box-shadow $speed-fast $ease;
+
+			&:focus-within {
+				outline: none;
+				box-shadow: inset 0 0 0 0.0625rem var(--accent), $shadow-focus;
+			}
+
+			.filter-bar-search-icon {
+				font-size: 1.1em;
+			}
+
+			.filter-bar-search-input {
+				border: 0;
+				background: none;
+				color: $color;
+				font: inherit;
+
+				&::placeholder {
+					color: $color-secondary;
+				}
+
+				&:focus {
+					outline: none;
+				}
+			}
+		}
+
+		.filter-bar-sort {
+			position: relative;
+			display: inline-flex;
+			align-items: center;
+
+			.filter-bar-sort-select {
+				appearance: none;
+				padding-block: 0;
+				padding-inline: spacing(s) spacing(xl);
+				block-size: spacing(xl);
+				box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+				border-radius: $rounded-m;
+				background: $background-color;
+				color: $color;
+				font: inherit;
+				cursor: pointer;
+
+				transition: box-shadow $speed-fast $ease;
+				@include interactive {
+					box-shadow: inset 0 0 0 0.0625rem var(--border-strong);
+				}
+			}
+
+			.filter-bar-sort-icon {
+				position: absolute;
+				inset-inline-end: spacing(s);
+				color: $color-secondary;
+				pointer-events: none;
+			}
+		}
+
+		.filter-bar-reset {
+			display: inline-flex;
+			align-items: center;
+			padding-inline: spacing(s);
+			block-size: spacing(xl);
+			border-radius: $rounded-m;
+			color: $color-secondary;
+			font-weight: $weight-medium;
+			cursor: pointer;
+
+			@include interactive {
+				color: $color;
+			}
+
+		}
+	}
+
+	.is-admin & {
+		.filter-bar-chips {
+			align-items: center;
+			gap: spacing(xs);
+
+			.filter-bar-chips-lead {
+				margin-inline-end: spacing(xs);
+				color: $color-tertiary;
+				font-size: 1.05em;
+			}
+
+			.filter-bar-chip {
+				display: inline-flex;
+				align-items: center;
+				gap: spacing(xs);
+				min-block-size: 2rem;
+				padding-block: spacing(xs);
+				padding-inline: spacing(m);
+				border-radius: $rounded-full;
+				background-color: $background-color;
+				box-shadow: $admin-ring;
+				color: $color-secondary;
+				font-weight: $weight-medium;
+				font-size: 0.875rem;
+				transition: color $motion-micro, background-color $motion-micro, box-shadow $motion-micro;
+
+				@include interactive {
+					&:not(.is-active) {
+						background-color: $background-color;
+						color: $color;
+						box-shadow: inset 0 0 0 0.0625rem $border-strong;
+					}
+				}
+
+				&:focus-visible {
+					outline: none;
+					box-shadow: $admin-focus;
+				}
+
+				&.is-active {
+					background-color: $tint-accent;
+					box-shadow: inset 0 0 0 0.0625rem color-mix(in srgb, #{$accent} 50%, transparent);
+					color: $accent-text;
+					font-weight: $weight-semibold;
+				}
+
+				.pill-count {
+					min-inline-size: 1.15rem;
+					padding-inline: 0.35rem;
+					border-radius: $rounded-full;
+					background-color: $surface-muted;
+					color: $color-secondary;
+					font-size: 0.72rem;
+					font-weight: $weight-semibold;
+					font-variant-numeric: tabular-nums;
+					line-height: 1.4;
+					text-align: center;
+
+					.filter-bar-chip.is-active & {
+						background-color: color-mix(in srgb, #{$accent} 30%, transparent);
+						color: $accent-text;
+					}
+				}
+			}
+		}
+
+		.filter-bar-tools {
+			.filter-bar-search {
+				min-block-size: 2.25rem;
+				border-radius: $admin-radius-control;
+				background-color: $background-color;
+				box-shadow: $admin-ring;
+				color: $color-tertiary;
+				transition: box-shadow $motion-micro;
+
+				&:focus-within {
+					box-shadow: inset 0 0 0 0.0625rem $accent, $admin-focus;
+				}
+
+				.filter-bar-search-input {
+					color: $color;
+
+					&::placeholder {
+						color: $color-tertiary;
+					}
+				}
+			}
+		}
+	}
+}

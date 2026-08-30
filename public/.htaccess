@@ -1,0 +1,37 @@
+<IfModule mod_headers.c>
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://qwzvjgqdamsruyaaqubg.supabase.co; font-src 'self'; connect-src 'self' https://qwzvjgqdamsruyaaqubg.supabase.co wss://qwzvjgqdamsruyaaqubg.supabase.co; frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com https://www.tiktok.com https://fast.wistia.net https://fast.wistia.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  # HSTS only over HTTPS (RFC 6797) — never forces HTTP-only/no-cert hosts (e.g. the test subdomain) to https.
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+</IfModule>
+
+# ── Caching ──────────────────────────────────────────────────────────────────────────────────────
+# A static export has no Node server, so Apache is the only thing that can send Cache-Control.
+# One question decides the rule: can this URL's content change while the URL stays the same?
+# If not, cache forever. If so, revalidate — a browser cache can't be purged, only out-waited.
+<IfModule mod_headers.c>
+
+  # Content hash in every filename, so a new build writes new URLs.
+  <If "%{REQUEST_URI} =~ m#^/_next/static/#">
+    Header always set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+
+  # Same name after a replacement, so a week rather than forever. Raise to immutable once these
+  # filenames carry the content hash that optimize-images.mjs already computes.
+  <ElseIf "%{REQUEST_URI} =~ m#\.(webp|png|jpe?g|svg|ico|woff2?)$#">
+    Header always set Cache-Control "public, max-age=604800"
+  </ElseIf>
+
+  # HTML, the .txt RSC payloads, the manifest and sw.js — same URLs every deploy. A stale service
+  # worker is the worst case here, so nothing in this branch may be cached without revalidating.
+  <Else>
+    Header always set Cache-Control "public, max-age=0, must-revalidate"
+  </Else>
+
+</IfModule>
+
+# Custom 404 (Next static export emits /404.html). Routes resolve via DirectoryIndex thanks to
+# trailingSlash — no rewrite rules needed.
+ErrorDocument 404 /404.html

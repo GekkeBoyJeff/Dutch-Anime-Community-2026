@@ -1,0 +1,115 @@
+@use "initial" as *;
+
+.moment-list {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.moment {
+	--moment-dot-inset: calc(#{$admin-gap-tight} + 0.6rem);
+
+	display: grid;
+	grid-template-columns: 3rem 1.25rem 1fr auto;
+	grid-template-areas: "marker rail body trailing";
+	align-items: start;
+	column-gap: $admin-gap-tight;
+	padding-block: $admin-gap-tight;
+
+	&.is-past {
+		color: $color-tertiary;
+	}
+
+	.moment-rail {
+		position: relative;
+		grid-area: rail;
+		justify-self: center;
+		inline-size: 0.0625rem;
+		block-size: calc(100% + #{$admin-gap-tight} + #{$admin-gap-tight});
+		margin-block: calc(0rem - #{$admin-gap-tight});
+		background-color: $border-color;
+	}
+
+	&:first-child .moment-rail {
+		background: linear-gradient(to bottom, transparent 0 var(--moment-dot-inset), $border-color var(--moment-dot-inset));
+	}
+
+	&:last-child .moment-rail {
+		background: linear-gradient(to bottom, $border-color 0 var(--moment-dot-inset), transparent var(--moment-dot-inset));
+	}
+
+	&:only-child .moment-rail {
+		background: none;
+	}
+
+	.moment-dot {
+		position: absolute;
+		inset-block-start: calc(var(--moment-dot-inset) - 0.25rem);
+		inset-inline-start: 50%;
+		inline-size: 0.5rem;
+		block-size: 0.5rem;
+		border-radius: $rounded-full;
+		background-color: $surface-strong;
+		translate: -50% 0;
+	}
+
+	&.is-now .moment-dot {
+		background-color: $accent;
+		box-shadow: 0 0 0 0.1875rem $tint-accent;
+	}
+
+	&.is-positive .moment-dot { background-color: $status-success; }
+	&.is-warning .moment-dot { background-color: $status-warning; }
+	&.is-negative .moment-dot { background-color: $status-error; }
+
+	.moment-marker {
+		grid-area: marker;
+		padding-block-start: 0.1rem;
+		color: $color-secondary;
+		font-size: $admin-type-micro;
+		font-variant-numeric: tabular-nums;
+		text-align: end;
+	}
+
+	.moment-link {
+		display: contents;
+		color: inherit;
+		text-decoration: none;
+
+		&:focus-visible .moment-body {
+			outline: none;
+			border-radius: $admin-radius-control;
+			box-shadow: $admin-focus;
+		}
+	}
+
+	.moment-body {
+		display: flex;
+		grid-area: body;
+		flex-direction: column;
+		min-inline-size: 0;
+	}
+
+	.moment-title {
+		color: $color;
+		font-size: 0.875rem;
+		font-weight: $weight-medium;
+	}
+
+	&.is-past .moment-title {
+		color: inherit;
+	}
+
+	.moment-meta {
+		color: $color-tertiary;
+		font-size: $admin-type-micro;
+	}
+
+	.moment-trailing {
+		grid-area: trailing;
+		color: $color-secondary;
+		font-size: $admin-label-size;
+	}
+}

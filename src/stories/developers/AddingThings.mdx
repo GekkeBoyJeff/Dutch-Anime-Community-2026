@@ -1,0 +1,108 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="For developers/3. Adding things" />
+
+# Adding things
+
+Step 3: the recipes — how to actually add a basic, component, structure, or content block, based on our project architecture and strict global rules.
+
+Before adding anything, remember how the layers are structured:
+```
+page
+└─ content blocks   — the only thing a page is made of
+   └─ components     — reusable, often interactive pieces, built from basics
+      └─ basics      — the smallest primitives
+```
+**(Structures form the separate "shell" like headers and footers, and stand outside this content hierarchy.)**
+
+## The 4 Golden Rules for *every* component
+
+Every new UI element (Basic, Component, Structure, or Content Block) is always made up of four files:
+
+1. **The React Component (`.tsx`)**: Use single quotes (`'`) exclusively, ensure the HTML structure is as flat as possible without unnecessary wrappers, and use our basics (like `<Title>` for all h1-h6 headings instead of native tags). Only use `forwardRef` when functionally necessary.
+2. **The SCSS Stylesheet (`.scss`)**: NEVER use Tailwind and NEVER use BEM notation (`&__`).
+    - Use `spacing()` for margins and paddings (e.g., `padding: spacing(m);`). Hardcoded rems or pixels are strictly forbidden.
+    - Use `@include bp(l) { }` for media queries instead of `@include desktop`.
+    - Handle states with our interaction mixins from `src/styles/_interactions.scss`: use `@include interactive-feedback { }` for the hover and press surface, and `@include focus-ring` (or `@include focus-ring-soft` for filled form controls) for focus.
+3. **The JSON Schema (`.ts`)**: Every prop that is potentially dynamic or managed by a CMS must be in a Zod schema in `src/lib/content/schema/`. **Exception**: Pure UI-state components that manage internal status (like a progress percentage not from a CMS) do not need a schema. Ensure your `properties` object is always written across multiple lines for readability.
+4. **The Story (`.stories.ts`)**: Create a Storybook for every component without asking. Pass your newly created schema directly via the parameter `jsonSchema: { schema: ComponentSchema }`. The `Default` story contains all props (including `false` booleans); further variants only override specific props using spread (`...Default.args`).
+
+## Recipe 1: Adding a basic, component, or structure
+
+These three types are built exactly the same way. The only difference is where they are saved (`basics`, `components`, or `structures`).
+
+**Step 1: The Component**
+Place it in `src/components/<folder>/<Name>.tsx`.
+If the component has internal interactivity (like a click handler, state, or the `useOverlay` hook), add `'use client'` directly at the top.
+
+**Step 2: The Schema**
+Define the props in `src/lib/content/schema/<folder>/<name>.ts`. (For basics, these are often bundled in `primitives.ts`; for components, use the `components/` folder).
+
+**Step 3: The Stylesheet**
+Create `src/styles/components/<folder>/<Name>.scss`. Do not use `@use`; you have direct access to variables. Neatly scope all styling under one main class. Ensure interactions are configured smartly, preferably with the `:has()` selector where it saves logic in React.
+
+**Step 4: Exporting and Importing (The Barrels)**
+This is a crucial step:
+- **Styling**: Add exactly one import line in `src/styles/index.ts` under the correct section.
+- **Component**: Export the component from `src/components/<folder>/index.ts`.
+  > [!WARNING]
+  > **Watch out for circular dependencies in `index.ts`!** If Component A depends on Component B, ensure B is exported/imported *above* A. Otherwise, you will run into "Cannot read properties of undefined" errors.
+
+**Step 5: The Storybook Story**
+Create `src/stories/<folder>/<Name>.stories.ts` (or `.tsx`). Test all your states here.
+
+## Recipe 2: Adding a content block
+
+A content block is special: it's the only type that belongs in a page's blocks list. Because of this, it requires a bit more "wiring" to connect it to the render engine and the schema.
+
+Here is a 5-step plan to add a `Cta` (Call to Action) block, for example:
+
+**1. Define the Contract (Schema)**
+Create a file `src/lib/content/schema/blocks/cta.ts`. Here you define what the CMS is allowed to send.
+```ts
+import { z } from 'zod';
+import { HeroAction } from '@/lib/content/schema/blocks/hero'; 
+import { Colorset, Id } from '@/lib/content/schema/primitives';
+
+export const CtaBlock = z.object({
+	type: z.literal('cta'),
+	id: Id.optional(),
+	colorset: Colorset.optional(),
+	title: z.string().min(1),
+	action: HeroAction,
+});
+export type CtaBlock = z.infer<typeof CtaBlock>;
+export type CtaProps = Omit<CtaBlock, 'type' | 'id'>;
+```
+
+**2. Connect it in the Block Union**
+Add your new block to the `Block` union in `src/lib/content/schema/blocks/index.ts`. Add it to the array and export it at the end of the file.
+
+**3. Build the Component**
+Create `src/components/contentBlocks/Cta.tsx`. Use `import type { CtaProps } from '@/lib/content'` for your typing. Make sure to use `<Title>`, `<Interactive>`, and `<Section>` basics as much as possible instead of loose h-tags and divs.
+
+**4. Styling & Registry**
+- Create the stylesheet (`src/styles/components/contentBlocks/Cta.scss`) and import it into `src/styles/index.ts`.
+- Export the component via the barrel `src/components/contentBlocks/index.ts`.
+- **Important**: Add the reference to the render engine registry in `src/components/contentBlocks/Blocks.tsx`:
+```tsx
+const REGISTRY: BlockRenderers = {
+	// ... other blocks ...
+	cta: Cta, // ← Add your new block here
+};
+```
+
+**5. (Optional) SEO and Structured Data**
+Does the block need structured data to appear as a "Rich Result" in Google? If so, add a JSON-LD builder in `src/lib/seo.ts`.
+
+## Recipe 3: Third-party dependencies (Islands & Config)
+
+If a component loads external code (e.g., a video player, a map API, etc.), keep the Next.js security headers and client rendering in mind:
+
+1. Always use `'use client'` for such components and keep the "island" as small as possible.
+2. ALWAYS load scripts via the `next/script` component.
+3. You must configure external domains for your third-party resources in **`next.config.mjs`**. Otherwise, the Content Security Policy (CSP) headers will block it. Add domains to directives like `script-src`, `frame-src`, `img-src`, etc. Also, add CDN image hostnames to `images.remotePatterns`.
+4. Put API keys (if not secret and browser-safe) in `src/lib/env.ts` as `NEXT_PUBLIC_` or under `server` if they are secrets (which may only be called via a route handler).
+
+---
+By following these steps closely, you keep the architecture clean and error-free. Should you encounter unexpected undefined components, always check the import order in your `index.ts` files first!

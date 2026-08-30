@@ -1,0 +1,28 @@
+@use "initial" as *;
+
+$accent-hover: var(--accent-hover);
+$accent-active: var(--accent-active);
+
+$surface-faint: var(--surface-faint);
+$surface-muted: var(--surface-muted);
+$surface-muted-strong: var(--surface-muted-strong);
+$surface-track: var(--surface-track);
+$surface-strong: var(--surface-strong);
+$border-strong: var(--border-strong);
+
+$scrim: var(--scrim);
+$scrim-strong: var(--scrim-strong);
+
+$tint-accent: var(--tint-accent);
+$tint-info: var(--tint-info);
+$tint-success: var(--tint-success);
+$tint-warning: var(--tint-warning);
+$tint-error: var(--tint-error);
+
+$ring-info: var(--ring-info);
+$ring-success: var(--ring-success);
+$ring-warning: var(--ring-warning);
+$ring-error: var(--ring-error);
+
+$shadow-focus: var(--shadow-focus);
+$shadow-focus-error: var(--shadow-focus-error);

@@ -1,0 +1,9 @@
+.rating {
+	display: inline-flex;
+	gap: 0.125em;
+	color: $accent;
+
+	.icon.is-filled {
+		fill: currentColor;
+	}
+}

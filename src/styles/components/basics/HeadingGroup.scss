@@ -1,0 +1,28 @@
+.heading-group {
+	display: flex;
+	flex-direction: column;
+	gap: spacing(s);
+
+	&.is-reversed {
+		.heading-group-tagline {
+			order: 1;
+		}
+	}
+
+	&.is-center {
+		align-items: center;
+	}
+
+	.heading-group-tagline {
+		--font-size: 0.875rem;
+		font-weight: $weight-medium;
+		text-transform: uppercase;
+		letter-spacing: $tracking-wider;
+		color: $accent-text;
+	}
+
+	.heading-group-intro {
+		color: $color-secondary;
+		max-inline-size: $measure;
+	}
+}

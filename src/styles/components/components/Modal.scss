@@ -1,0 +1,86 @@
+.modal-backdrop {
+	@include overlay-backdrop;
+}
+
+.modal {
+	--modal-width: 32rem;
+
+	position: fixed;
+	z-index: $z-modal;
+	inset-inline: 0;
+	inset-block-start: 50%;
+	margin-inline: auto;
+	inline-size: calc(100% - #{spacing(4xl)});
+	max-inline-size: var(--modal-width);
+	max-block-size: calc(100dvh - #{spacing(5xl)});
+	overflow-y: auto;
+	transform: translateY(-50%);
+	display: flex;
+	flex-direction: column;
+	gap: spacing(l);
+	padding: spacing(xl);
+	border-radius: $rounded-l;
+	background-color: $white;
+	color: $grey-darkest;
+	box-shadow: $shadow-medium;
+
+	&.is-s {
+		--modal-width: 24rem;
+	}
+
+	&.is-m {
+		--modal-width: 32rem;
+	}
+
+	&.is-l {
+		--modal-width: 44rem;
+	}
+
+	&.is-xl {
+		--modal-width: 60rem;
+	}
+
+	.modal-head {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(xs);
+
+		.modal-title {
+			margin: 0;
+			--font-size: 1.1875rem;
+			font-weight: $weight-bold;
+		}
+
+		.modal-description {
+			margin: 0;
+			color: $color-secondary;
+			--font-size: 0.875rem;
+		}
+	}
+
+	.modal-body {
+		min-block-size: 0;
+		--font-size: 0.875rem;
+	}
+
+	.modal-footer {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: spacing(s);
+	}
+
+	&[data-starting-style],
+	&[data-ending-style] {
+		opacity: 0;
+	}
+
+	transition:
+		opacity $speed $ease-out,
+		transform $speed $ease-out;
+
+	&[data-starting-style],
+	&[data-ending-style] {
+		transform: translateY(-46%) scale(0.98);
+	}
+}

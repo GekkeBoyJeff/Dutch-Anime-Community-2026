@@ -1,0 +1,36 @@
+.text-area {
+	inline-size: 100%;
+	min-inline-size: 0;
+	min-block-size: spacing(5xl);
+	appearance: none;
+	border: none;
+	padding-block: spacing(s);
+	padding-inline: spacing(m);
+	box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+	border-radius: $rounded-m;
+	background-color: $background-color;
+	color: $color;
+	font: inherit;
+	line-height: 1.5;
+	resize: vertical;
+
+	transition: box-shadow $speed-fast $ease;
+
+	&::placeholder {
+		color: $color-secondary;
+	}
+
+	@include interactive {
+		&:not(:disabled, :read-only) {
+			box-shadow: inset 0 0 0 0.0625rem var(--border-strong);
+		}
+	}
+	&:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	&[data-invalid] {
+		box-shadow: inset 0 0 0 0.0625rem var(--status-error);
+	}
+}

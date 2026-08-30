@@ -1,0 +1,6 @@
+.field-group {
+	container: field-group / inline-size;
+	display: flex;
+	flex-direction: column;
+	gap: spacing(l);
+}

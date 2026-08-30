@@ -1,0 +1,14 @@
+.field-set {
+	container: field-group / inline-size;
+	display: flex;
+	flex-direction: column;
+	gap: spacing(l);
+	min-inline-size: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+
+	&:disabled {
+		opacity: 0.6;
+	}
+}

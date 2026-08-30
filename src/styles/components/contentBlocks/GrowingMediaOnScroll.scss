@@ -1,0 +1,64 @@
+.growing-media-on-scroll {
+	overflow: clip;
+
+	.growing-media-on-scroll-header {
+		margin-block-end: spacing(3xl);
+	}
+
+	.growing-media-on-scroll-scene {
+		padding-inline: var(--section-gutter);
+
+		.growing-media-on-scroll-stage {
+			inline-size: min(100%, 90rem);
+			margin-inline: auto;
+
+			.growing-media-on-scroll-frame-wrap {
+				position: relative;
+				aspect-ratio: 16 / 9;
+				border-radius: 2rem;
+				overflow: hidden;
+				background-color: $surface-muted;
+
+				@supports (animation-timeline: view()) {
+					animation: growing-media-on-scroll-in linear both;
+					animation-timeline: view();
+					animation-range: cover 0% cover 45%;
+				}
+
+				.growing-media-on-scroll-stage-media {
+					position: absolute;
+					inset: 0;
+					--media-block-size: 100%;
+					--media-radius: 0;
+
+					.media-frame {
+						block-size: 100%;
+						aspect-ratio: auto;
+					}
+				}
+			}
+		}
+	}
+
+	.growing-media-on-scroll-stage-caption {
+		margin-block-start: spacing(l);
+		text-align: center;
+		color: $color-secondary;
+	}
+}
+
+@keyframes growing-media-on-scroll-in {
+	from {
+		scale: 0.5;
+	}
+
+	to {
+		scale: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.growing-media-on-scroll .growing-media-on-scroll-scene .growing-media-on-scroll-stage .growing-media-on-scroll-frame-wrap {
+		animation: none;
+	}
+}

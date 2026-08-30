@@ -1,0 +1,12 @@
+.link {
+	@include link-underline;
+
+	&.is-subtle {
+		color: $color-secondary;
+		background: none;
+
+		@include interactive {
+			color: $color;
+		}
+	}
+}

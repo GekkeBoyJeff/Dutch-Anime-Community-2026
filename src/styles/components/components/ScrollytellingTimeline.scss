@@ -1,0 +1,93 @@
+.scrollytelling-timeline {
+	--scrolly-frame-offset: #{spacing(2xl)};
+
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: spacing(2xl);
+
+	@include bp(l) {
+		grid-template-columns: 1fr 1fr;
+		gap: spacing(4xl);
+		align-items: start;
+	}
+
+	.scrollytelling-timeline-frame {
+		position: relative;
+		border-radius: $rounded-l;
+		overflow: hidden;
+		aspect-ratio: 4 / 3;
+
+		@include bp(l) {
+			position: sticky;
+			inset-block-start: var(--scrolly-frame-offset);
+		}
+
+		.scrollytelling-timeline-frame-media {
+			position: absolute;
+			inset: 0;
+			opacity: 0;
+			--media-block-size: 100%;
+
+			transition: opacity $speed $ease;
+
+			&.is-active {
+				opacity: 1;
+			}
+		}
+	}
+
+	.scrollytelling-timeline-cards {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+
+		.scrollytelling-timeline-scrollytelling-card {
+			display: flex;
+			flex-direction: column;
+			gap: spacing(s);
+			padding-block: spacing(4xl);
+
+			opacity: 0.45;
+
+			transition: opacity $speed $ease;
+
+			&.is-active {
+				opacity: 1;
+			}
+
+			.scrollytelling-timeline-tagline {
+				margin: 0;
+				font-weight: $weight-medium;
+				color: $color-secondary;
+				text-transform: uppercase;
+				letter-spacing: $tracking-wide;
+				--font-size: 0.8125rem;
+			}
+
+			.scrollytelling-timeline-year {
+				margin: 0;
+				font-weight: $weight-bold;
+				color: $accent-text;
+			}
+
+			.scrollytelling-timeline-date {
+				margin: 0;
+				color: $color-secondary;
+				--font-size: 0.875rem;
+			}
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.scrollytelling-timeline-scrollytelling-card {
+			opacity: 1;
+		}
+
+		.scrollytelling-timeline-frame-media {
+			position: relative;
+			opacity: 1;
+		}
+	}
+}

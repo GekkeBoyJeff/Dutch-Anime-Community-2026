@@ -1,0 +1,7 @@
+.dashboard-chrome-dashboard-main {
+	padding-block: 6rem spacing(12);
+
+	@media (max-width: breakpoint(l)) {
+		padding-block-end: calc(#{spacing(12)} + 4.5rem + env(safe-area-inset-bottom));
+	}
+}
