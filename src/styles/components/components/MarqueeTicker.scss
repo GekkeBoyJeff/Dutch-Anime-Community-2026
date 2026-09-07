@@ -34,8 +34,8 @@
 	}
 
 	&.is-primary {
-		background-color: $accent;
-		color: $accent-contrast;
+		background-color: $primary;
+		color: $white;
 	}
 
 	&.is-dark {
@@ -44,8 +44,12 @@
 	}
 
 	&.is-light {
-		background-color: $surface-muted;
+		background-color: $grey-lightest;
 		color: $color;
+
+		@include on-colorset(dark) {
+			background-color: $grey-dark;
+		}
 	}
 
 	@media (prefers-reduced-motion: no-preference) {

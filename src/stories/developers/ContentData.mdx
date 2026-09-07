@@ -2,171 +2,328 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="For developers/4. Content & data" />
 
-# Content & data
+# 4. Content & data
 
-Step 4: you've built the pieces; here is the data you fill them with. Content is data, kept separate
-from the components that render it — this page is the data model: the shape of a page, the contract
-that guards it, and how one contract derives everything that uses it.
+The public pages of this site are not written as markup. They are written as data: a TypeScript
+object per page, listing which sections appear and what text goes in them. This page covers what that
+object looks like, where its shape is defined, and where the site reads it from when it builds.
 
-## The shape
+## A page is one object
 
-A page is a single object with two parts — `meta` and an ordered list of `blocks`:
+This is `src/content/pages/word-lid.ts`, with the middle cut out.
 
-```ts
-export const homePage: Page = {
+```typescript
+import type { Page } from '@/lib/site/content';
+
+export const wordLidPage: Page = {
 	meta: {
-		title: 'Next Starter',
-		description: 'A modern, scalable website starter built with Next.js.',
+		title: 'Word lid',
+		description:
+			'In één minuut binnen, gratis, zonder apart account. Alle leeftijden, en je mag eerst een tijdje alleen meelezen.',
 	},
 	blocks: [
-		{ type: 'hero', id: 'intro', colorset: 'dark', title: 'Build faster, scale further', /* … */ },
-		{ type: 'featureCards', id: 'features', colorset: 'light', title: 'What you get', items: [/* … */] },
-		{ type: 'featureCards', id: 'partners', colorset: 'dark', title: 'Same block, different data', items: [/* … */] },
-		{ type: 'reviews', id: 'reviews', colorset: 'light', subject: 'Next Starter', items: [/* … */] },
+		{
+			type: 'hero',
+			id: 'intro',
+			colorset: 'dark',
+			variant: 'panel',
+			tagline: 'Twijfel je nog?',
+			title: 'In één minuut binnen, gratis',
+			value: 'Geen apart account, geen verplichtingen. Je klikt, je bent binnen.',
+			media: { type: 'image', src: '/media/dac-meetup.png', alt: 'DAC-leden samen op een meetup' },
+			actions: [{ value: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' }],
+			stats: [
+				{ count: 'Gratis', label: 'altijd' },
+				{ count: 'Alle', label: 'leeftijden' },
+			],
+		},
+		{
+			type: 'steps',
+			id: 'zo-werkt-het',
+			colorset: 'light',
+			variant: 'process',
+			heading: { tagline: 'De eerste vijf minuten', title: 'Zo gaat het' },
+			items: [
+				{ id: 'stap-1', title: 'Join de Discord', value: 'Eén klik op Word lid.' },
+				{ id: 'stap-2', title: 'Kies je rollen', value: 'Vink aan wat je leuk vindt.' },
+			],
+		},
+		// … six more blocks
 	],
 };
 ```
 
-- **`meta`** is the page data (`title`, `description`, optional `image` and `structuredData`) that
-  feeds the metadata and SEO.
-- **`blocks`** is an ordered list. Each block's `type` picks the component; the rest of the block is
-  that component's props. Notice `features` and `partners` above: the **same block type, twice**, with
-  different data and a different colorset. That's how you compose a page — reorder the array, reorder
-  the page.
+Every part of that has a job.
 
-The site chrome is content too: `src/content/structures.ts` holds one validated `SiteStructures`
-document (announcement bar, navigation, footer) that the `(website)` layout renders around every page.
-Both pages and structures can be composed visually in the builder (`/builder`, development only) and
-exported as these files.
+| Part | What it is |
+| --- | --- |
+| `meta.title`, `meta.description` | The `<title>` and meta description of the page. Both are required and may not be empty. |
+| `meta.image`, `meta.structuredData` | Optional. A bespoke share image, and extra schema.org nodes. See [6. SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs). |
+| `blocks` | The sections of the page, top to bottom. Reorder the array, and the page reorders. |
+| `type` | Which section this is. It decides which React component renders it. |
+| `id` | Optional on a block. It is the React key `Blocks.tsx` renders it with, and the handle `/builder` keeps a block identified by. |
+| everything else | The props of that one block. Different per `type`. |
 
-> **Why one content type?** A blog post, a landing page, an about page — they're all just a `Page`.
-> There's no separate post type to keep in sync.
+The page is registered in `src/content/pages/index.ts`, which maps a route to a page object:
 
-## The contract
+```typescript
+export const pages: Record<string, Page> = {
+	'/': homePage,
+	'/community': communityPage,
+	'/evenementen': evenementenPage,
+	'/supporters': supportersPage,
+	'/word-lid': wordLidPage,
+};
+```
 
-What counts as a valid block lives in the [Zod](https://zod.dev/) schemas under
-`src/lib/content/schema/`, organized by content concept — not by component tier:
+There is no route file per page. `src/app/(website)/[...slug]/page.tsx` is a catch-all: it asks for
+every known path, then renders whichever page object belongs to the path being visited.
 
-- `primitives.ts` — shared value objects (`Colorset`, `Id`, `Media`, `OgImage`).
-- `blocks/<type>.ts` — one file per block type (its schema, inferred type, and derived `*Props`).
-- `blocks/index.ts` — the `Block` [discriminated union](https://zod.dev/api?id=discriminated-unions) on
-  `type` + re-exports. This list *is* the visible inventory of every block type a page can contain.
-- `document.ts` — the page envelope (`PageMeta`, `Page`).
+## The shape lives in `src/lib/site/content/schema/`
 
-Every TypeScript type is inferred from its schema with `z.infer`, so the schema and the type can't
-drift:
+Every block has a schema — a description of its fields, written with [Zod](https://zod.dev). Zod is a
+library for describing the shape of data in code, so the shape can be checked while the program runs.
 
-> **Strict Rule on Schema Scope**: Include ONLY props in the JSON schema that come from the backend (CMS). Props with a fixed value in the code (e.g., `maxStars=5`) or pure UI-state components that only manage internal frontend state (like a progress bar inside a slider) do NOT need a schema. Also, the `properties` object in JSON schemas must always be written out across multiple lines, never on a single line.
+The folder has three layers.
 
-```ts
-export const Colorset = z.enum(['light', 'dark']);
+| Path | Holds |
+| --- | --- |
+| `schema/primitives.ts` | Pieces shared by many blocks: `Colorset`, `Id`, `Media`, `Action`, `Heading`, `OgImage`. |
+| `schema/blocks/<name>.ts` | One file per block type. |
+| `schema/blocks/index.ts` | The union of all block types. |
+| `schema/document.ts` | `PageMeta` and `Page` — the object at the top of a content file. |
+
+`schema/basics/`, `schema/components/`, `schema/forms/` and `schema/structures/` sit alongside
+them; `schema/index.ts` re-exports the lot.
+
+### A shared primitive
+
+`Colorset` is defined once and reused by nearly every block:
+
+```typescript
+export const Colorset = z.enum(['light', 'dark']).meta({ title: 'Colorset' });
 export type Colorset = z.infer<typeof Colorset>;
+```
 
-export const HeroProps = z.object({
-	colorset: Colorset.optional(),
-	title: z.string().optional(),
-	value: z.string().optional(),
-	actions: z.array(HeroAction).optional(),
-});
-export type HeroProps = z.infer<typeof HeroProps>;
+That pattern — a `const` holding the schema, and a `type` of the same name derived from it with
+`z.infer` — is used everywhere in this folder. Importing the name gives you whichever of the two the
+position needs.
 
-export const HeroBlock = HeroProps.extend({ type: z.literal('hero'), id: Id.optional() });
-export type HeroBlock = z.infer<typeof HeroBlock>;
+### A block file
 
-// … FeatureCardsBlock, TextMediaBlock, ProseBlock, ReviewsBlock …
+Every block file exports three things. `src/lib/site/content/schema/blocks/reviews.ts` in full:
 
+```typescript
+export const ReviewItem = z
+	.object({
+		id: Id,
+		author: z.string().min(1).describe('Name of the reviewer, shown below the review text'),
+		rating: z.number().int().min(1).max(5).describe('Star rating given by the reviewer, rendered as filled stars out of 5'),
+		value: z.string().min(1).describe('Review text/testimonial content'),
+	})
+	.meta({ title: 'ReviewItem' });
+
+export const ReviewsProps = z
+	.object({
+		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		title: z.string().optional().describe('Main heading of the reviews section'),
+		intro: z.string().optional().describe('Supporting introductory text rendered below the title'),
+		subject: z.string().optional().describe('Name of the reviewed entity for the JSON-LD rich snippet; defaults to the site name when omitted'),
+		items: z.array(ReviewItem).min(1).describe('List of reviews rendered as cards in the grid'),
+	})
+	.meta({ title: 'Reviews' });
+
+export const ReviewsBlock = ReviewsProps.extend({ type: z.literal('reviews'), id: Id.optional() });
+```
+
+- `ReviewItem` — one row of a list. Its `id` is **required**, unlike the block's own `id`.
+- `ReviewsProps` — the props of the React component, without `type` and `id`.
+- `ReviewsBlock` — the same props plus `type: 'reviews'` and an optional `id`. This is the form that
+  appears in a content file.
+
+> **Why is a list item's `id` required when the block's is not?** A block has an index in the array to
+> fall back on, so `Blocks.tsx` keys it as `${type}-${index}` when `id` is absent. A list item is
+> reordered and edited in the visual builder, where an index is not a stable identity.
+
+### The union
+
+`schema/blocks/index.ts` collects every block into one schema:
+
+```typescript
 export const Block = z.discriminatedUnion('type', [
 	HeroBlock,
+	CardGridBlock,
 	FeatureCardsBlock,
-	TextMediaBlock,
-	ProseBlock,
-	ReviewsBlock,
+	// … 28 in total
 ]);
 export type Block = z.infer<typeof Block>;
 ```
 
-Content files are typed against it (`export const homePage: Page = …`), and the `lib/content`
-accessors validate it. So if something is off — a missing required field, an unknown `type`, a wrong
-field type, or a wrong *value* like a rating of 9 — it fails at **build time and runtime**, with a
-message that points at the exact path.
+A discriminated union is a list of alternatives where one field decides which alternative applies —
+here, `type`. Read `type: 'reviews'` and every other field must match `ReviewsBlock`; nothing else in
+the list is considered.
 
-> **Why split the schema by concept (not by component tier)?** A schema describes valid *data*, which
-> is a different axis than the component tree (`basics`/`components` are presentational and have no
-> content schema at all). Mirroring the tiers would create empty, confusing folders; organizing by
-> concept means the `blocks/` folder is the literal inventory of block types.
+That is what makes the error messages precise. An unknown `type` is reported once, against `type`,
+with the valid names listed — not as 28 separate "this does not match" complaints.
 
-> **Why validate at runtime, not just at compile time?** You know content is correct *before* it goes
-> live — not just its shape, but its values (a rating really is 1–5, a colorset really is `light` or
-> `dark`). And because the schema is still there at runtime, content from an untrusted source like a
-> CMS is checked at the boundary by default, not as an afterthought. How it runs and what an error
-> looks like is the next page, [Validation](?path=/docs/for-developers-5-validation--docs).
+`schema/document.ts` puts the last lid on it:
 
-## One contract, derived everywhere
-
-The props schema is defined once, and everything else derives from it — so there's nothing
-to keep in sync:
-
-| What | Where | How it derives |
-|---|---|---|
-| The block schema | the block's schema file | `HeroBlock = HeroProps.extend({ type, id })` — the props schema plus the two keys the registry uses |
-| The render registry | `components/contentBlocks/Blocks.tsx` | a [mapped type](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html) over the `Block` union |
-| JSON-LD builders | `lib/seo.ts` | a mapped type keyed on `type` |
-
-`type` is the single string that ties them together. `HeroProps` is the source schema for the
-component; the block adds the two keys the registry strips before rendering (`type` selects the
-component, `id` becomes the React key):
-
-```ts
-export const HeroBlock = HeroProps.extend({ type: z.literal('hero'), id: Id.optional() });
+```typescript
+export const Page = z.object({
+	meta: PageMeta,
+	blocks: z.array(Block),
+});
+export type Page = z.infer<typeof Page>;
 ```
 
-The registry and the JSON-LD builders both key on that same `type`, so a mis-wire is a *compile*
-error, not a runtime surprise:
+## One schema, four consumers
 
-```ts
-// components/contentBlocks/Blocks.tsx — the renderer must match the block's exact props
+The point of writing the shape down once is that four unrelated parts of the codebase read it.
+
+| Consumer | Reads | Where |
+| --- | --- | --- |
+| TypeScript types | `z.infer` | every schema file, and `Blocks.tsx` |
+| The runtime check | `Page` | `src/lib/site/content/pages.ts` |
+| The Storybook props panel | the story's `jsonSchema` parameter | `.storybook/addons/json-schema/` |
+| The `/builder` visual editor ([9. The visual editor](?path=/docs/for-developers-9-the-visual-editor--docs)) | `Block.options` | `src/lib/admin/puck/config.tsx` |
+
+**Types.** No block type is hand-written. `type ReviewsProps = z.infer<typeof ReviewsProps>` derives
+it, and `Reviews.tsx` imports that type for its props. The render registry in
+`src/components/contentBlocks/Blocks.tsx` is typed by mapping over the union:
+
+```typescript
 type BlockRenderers = {
-	[B in Block as B['type']]: React.ComponentType<Omit<B, 'type' | 'id'>>;
+	[B in Block as B['type']]: BlockRenderer<Omit<B, 'type' | 'id'>>;
 };
 
-// lib/seo.ts — each builder receives only its own block variant
-const BLOCK_BUILDERS: {
-	[B in Block as B['type']]?: (block: Extract<Block, { type: B['type'] }>) => unknown;
-} = { /* … */ };
+export const REGISTRY: BlockRenderers = {
+	hero: Hero,
+	cardGrid: CardGrid,
+	// … one entry per member of the union
+};
 ```
 
-> **Why derive instead of redeclare?** Add a field to the `HeroBlock` schema and the `Hero` component's
-> props gain it automatically, the registry stays correctly typed, and the props table in this Storybook
-> updates — all from editing one schema. Wire a block to the wrong renderer and TypeScript stops the
-> build.
+Add a block to the union and forget the registry entry, and `npm run typecheck` fails on the missing
+key. The two cannot drift.
 
-## Reading content
+**The runtime check.** Content is parsed against `Page` before anything renders it. That is
+[5. Validation](?path=/docs/for-developers-5-validation--docs).
 
-`lib/content` is the only layer that knows where content comes from. Routes call these accessors,
-never the registries directly:
+**Storybook.** A block story names its schema in a parameter:
 
-```ts
-getPageByPath(path: string): Promise<Page | null>   // a page, by route path ('/', '/about')
-getAllPagePaths(): Promise<string[]>                 // every registered page path (the catch-all route + sitemap use this)
-getNotFoundPage(): Promise<Page>                     // the 404 content (not-found.tsx); kept out of the registry so it's not a route or sitemap entry
+```tsx
+parameters: {
+	jsonSchema: { schema: ReviewsProps },
+},
 ```
 
-The accessors are **async** (the bodies are trivially synchronous today). That keeps the public API
-stable for the future swap: point them at a CMS — a database — and only the bodies change to an
-`await fetch(...)`; the routes already `await` them, so nothing downstream moves, as long as the
-returned shape still satisfies the contract.
+Two things follow from that line. The addon converts the schema to JSON Schema and copies each
+`.describe()` text into the matching control's description in the **Controls** panel, marking
+required props required — docgen alone cannot do this, because a prop type that is `z.infer<…>`
+reaches it as a blank alias. It also validates the story's current args on every render and reports
+the result in the **JSON Schema** panel next to Controls. Fiddle a control into an invalid state and
+the panel says which field and why. See [ContentBlocks → Reviews](?path=/docs/contentblocks-reviews--docs).
 
-## Extending
+**The builder.** `/builder` declares no components of its own. It walks the union:
 
-- **Add a field to a block** → add it to that block's schema file under
-  `src/lib/content/schema/blocks/` (this is a Zod schema, not a hand-written type — the inferred type
-  and the component's props follow automatically).
-- **Add a whole new block type** → see the step-by-step in
-  [Adding things](?path=/docs/for-developers-3-adding-things--docs).
-- **Give a block structured data** (reviews, FAQs, events) → see
-  [SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs).
+```tsx
+Block.options.map((blockSchema) => {
+	const type = blockSchema.shape.type.value as keyof typeof REGISTRY;
+	const Renderer = REGISTRY[type];
+	// `type` is the discriminator and `id` is Puck's own instance key — neither is a field.
+	const shape = Object.entries(blockSchema.shape).filter(([key]) => key !== 'type' && key !== 'id');
+	// …
+});
+```
 
----
+Each remaining property becomes an editor field, chosen by `fieldFor` in
+`src/lib/admin/puck/fields.tsx`: a string becomes a text input, a number a number input (with the
+`min`/`max` from the schema), an enum a dropdown, an array of objects a repeatable list. A property
+whose schema `fieldFor` has no widget for returns `undefined` and simply does not appear in the
+editor.
 
-**Next:** [Validation](?path=/docs/for-developers-5-validation--docs) — how content is checked, where
-that runs, and what an error looks like.
+`.meta({ editor: '…' })` on a string overrides the default text input:
+
+| `editor` | Widget |
+| --- | --- |
+| `textarea` | Multi-line text |
+| `richtext` | Rich-text editor |
+| `icon` | Dropdown of the project's icon names |
+| `file` | Media picker |
+
+## Where content comes from
+
+There are two sources, and the site reads exactly one of them per build.
+
+- **The registry** — the typed files in `src/content/`, shown above.
+- **Supabase** — a `pages` table, edited through `/builder` by staff.
+
+`src/lib/site/content/pages.ts` decides:
+
+```typescript
+export const dbEnabled = () =>
+	env.CONTENT_SOURCE ? env.CONTENT_SOURCE === 'supabase' : Boolean(env.SUPABASE_SERVICE_ROLE_KEY);
+```
+
+| `CONTENT_SOURCE` | `SUPABASE_SERVICE_ROLE_KEY` | Source |
+| --- | --- | --- |
+| `supabase` | any | Supabase |
+| `registry` | any | `src/content/` |
+| unset | set | Supabase |
+| unset | unset | `src/content/` |
+
+Anyone who can deploy has that key in their `.env.local`, so **the default on a normal machine is
+Supabase.** Editing a file in `src/content/pages/` then changes nothing you can see. To work on those
+files, force the source:
+
+```bash
+npm run dev:local                                   # CONTENT_SOURCE=registry next dev
+SUPABASE_SERVICE_ROLE_KEY= npm run build:plain      # for a build
+```
+
+When Supabase is the source, one more variable picks the column:
+
+```typescript
+// The live build reads `published_data` (CONTENT_CHANNEL=published); staging and local read `data`.
+export const contentColumn = () => (env.CONTENT_CHANNEL === 'published' ? 'published_data' : 'data');
+```
+
+So a row carries two versions of the same page: `data` is the working copy an editor is changing, and
+`published_data` is what the live build takes. A page whose chosen column is empty is treated as a
+genuine 404 rather than an error.
+
+The site-wide chrome — navigation, footer — works the same way, through
+`src/lib/site/content/structures.ts` and `src/content/structures.ts`.
+
+> `npm run seed` writes the files in `src/content/` **over** the database's `data` column, discarding
+> anything edited through the builder. It is a one-off migration script, not a sync.
+
+## Adding a field to an existing block
+
+Say a review should be able to carry the date it was written.
+
+1. **Add it to the schema.** In `src/lib/site/content/schema/blocks/reviews.ts`, inside `ReviewItem`:
+
+   ```typescript
+   date: z.string().optional().describe('Date the review was written'),
+   ```
+
+   Optional, because every review already in the content files and in the database lacks it. A
+   required field would invalidate all of them at once.
+   → verify: `npm run typecheck` passes.
+2. **Render it.** `src/components/contentBlocks/Reviews.tsx` already types its props as
+   `ReviewsSchemaProps`, so `review.date` is available with no further wiring. Use it in the JSX.
+   → verify: `npm run typecheck` passes.
+3. **Style it,** if it needs styling, in `src/styles/components/contentBlocks/Reviews.scss`.
+   → verify: it looks right in Storybook.
+4. **Show it in the story.** Add `date` to one item in the `args` of
+   `src/stories/contentBlocks/Reviews.stories.tsx`.
+   → verify: the control appears in **Controls**, carrying your `.describe()` text.
+5. **Use it in content,** in `src/content/pages/*.ts` — or leave it out; it is optional.
+   → verify: `SUPABASE_SERVICE_ROLE_KEY= npm run build:plain` succeeds and renders the new field.
+
+Nothing needs to be done for `/builder`. The field appears there on its own, because the editor is
+built from the same schema you just edited.
+
+To add a whole new block rather than a field, see
+[3. Adding things](?path=/docs/for-developers-3-adding-things--docs).

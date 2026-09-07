@@ -1,0 +1,171 @@
+@use "sass:map";
+@use "sass:meta";
+@use "breakpoints" as *;
+
+// Everything a stylesheet may read. This file is prepended to every stylesheet by the build, so no
+// component ever writes `@use` for it. Two kinds of value live here: fixed ones, written out below,
+// and aliases for the custom properties that theme.scss defines — so a component writes $color
+// rather than var(--color), and gets whatever the current theme and colorset resolved it to.
+
+$white: #ffffff;
+$grey-lightest: #f6f6f7;
+$grey-light: #e3e3e6;
+$grey: #a0a0a8;
+$grey-dark: #5c5c66;
+$grey-darkest: #202024;
+$black: #111112;
+
+$info: #1c7ed6;
+$success: #2f9e44;
+$warning: #e8590c;
+$error: #e03131;
+
+// Flips with the colorset.
+$background: var(--background);
+$color: var(--color);
+$color-secondary: var(--color-secondary);
+$color-tertiary: var(--color-tertiary);
+$border: var(--border);
+$primary-text: var(--primary-text);
+$shadow-focus: var(--shadow-focus);
+
+// Set by the theme, the same in every colorset.
+$primary: var(--primary);
+$primary-hover: var(--primary-hover);
+$primary-active: var(--primary-active);
+$tint-primary: var(--tint-primary);
+$page: var(--page);
+$overlay: var(--overlay);
+$overlay-strong: var(--overlay-strong);
+
+$status-info: var(--status-info);
+$status-success: var(--status-success);
+$status-warning: var(--status-warning);
+$status-error: var(--status-error);
+
+$tint-info: var(--tint-info);
+$tint-success: var(--tint-success);
+$tint-warning: var(--tint-warning);
+$tint-error: var(--tint-error);
+
+$ring-success: var(--ring-success);
+$ring-warning: var(--ring-warning);
+$ring-error: var(--ring-error);
+
+$shadow-focus-error: var(--shadow-focus-error);
+
+$weight-regular: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+
+$tracking-tight: -0.02em;
+$tracking-wide: 0.04em;
+$tracking-wider: 0.08em;
+
+$font-size: var(--font-size);
+$measure: 60ch;
+
+$rounded-s: 0.25rem;
+$rounded-m: 0.5rem;
+$rounded-l: 1rem;
+$rounded-full: 62.5rem;
+
+$tap-target: 2.75rem;
+$control-size: 2.25rem;
+$section-gutter: var(--section-gutter);
+
+$speed: 300ms;
+$speed-fast: 150ms;
+$speed-slow: 600ms;
+$ease: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-out: cubic-bezier(0, 0, 0.2, 1);
+$ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
+
+$motion-micro: $speed-fast $ease;
+$motion-standard: $speed $ease-out;
+$motion-entrance: 220ms $ease-entrance;
+
+$shadow-small: 0 0.0625rem 0.125rem rgba($black, 0.08);
+$shadow-medium: 0 0.25rem 1rem rgba($black, 0.12);
+$shadow-card: 0 0.0625rem 0.125rem rgba($black, 0.04), 0 0.5rem 1.5rem -0.5rem rgba($black, 0.1);
+
+$z-base: 1;
+$z-sticky: 100;
+$z-overlay: 200;
+$z-modal: 300;
+$z-popover: 400;
+$z-toast: 500;
+$z-cursor: 600;
+
+// The staff platform reads the colours above; what it owns is its own density and elevation.
+$admin-gap: var(--admin-gap);
+$admin-gap-tight: var(--admin-gap-tight);
+$admin-gap-loose: var(--admin-gap-loose);
+$admin-cell-padding-block: var(--admin-cell-padding-block);
+$admin-cell-padding-inline: var(--admin-cell-padding-inline);
+$admin-row-height: var(--admin-row-height);
+$admin-control-height: var(--admin-control-height);
+$admin-radius-control: var(--admin-radius-control);
+$admin-radius-card: var(--admin-radius-card);
+$admin-radius-panel: var(--admin-radius-panel);
+$admin-label-size: var(--admin-label-size);
+$admin-type-value: var(--admin-type-value);
+$admin-type-card-title: var(--admin-type-card-title);
+$admin-type-micro: var(--admin-type-micro);
+$admin-shadow-1: var(--admin-shadow-1);
+$admin-shadow-2: var(--admin-shadow-2);
+$admin-shadow-3: var(--admin-shadow-3);
+$admin-ring: var(--admin-ring);
+$admin-focus: var(--admin-focus);
+
+$spacing: (
+	xs: 0.25rem,
+	s: 0.5rem,
+	m: 0.75rem,
+	l: 1rem,
+	xl: 1.25rem,
+	2xl: 1.5rem,
+	3xl: 1.75rem,
+	4xl: 2rem,
+	5xl: 2.5rem,
+);
+
+@function spacing($step) {
+	@if map.has-key($spacing, $step) {
+		@return map.get($spacing, $step);
+	}
+
+	@if meta.type-of($step) == "number" {
+		@return $step * 0.25rem;
+	}
+
+	@error 'Unknown spacing step: #{$step}';
+}
+
+@mixin bp($name) {
+	@if not map.has-key($breakpoints, $name) {
+		@error 'Unknown breakpoint: #{$name}';
+	}
+
+	@media (min-width: map.get($breakpoints, $name)) {
+		@content;
+	}
+}
+
+@function breakpoint($name) {
+	@if not map.has-key($breakpoints, $name) {
+		@error 'Unknown breakpoint: #{$name}';
+	}
+
+	@return map.get($breakpoints, $name);
+}
+
+// Applies a rule only inside a dark section. Use it when a fixed colour — a grey, mostly — needs a
+// different value there, since fixed colours do not flip on their own.
+@mixin on-colorset($name) {
+	[data-colorset="#{$name}"] & {
+		@content;
+	}
+}

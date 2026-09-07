@@ -20,7 +20,7 @@
 			counter-increment: faq;
 			content: counter(faq) '. ';
 			margin-inline-end: spacing(xs);
-			color: $accent-text;
+			color: $primary-text;
 			font-variant-numeric: tabular-nums;
 		}
 	}

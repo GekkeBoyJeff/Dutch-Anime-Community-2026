@@ -1,0 +1,27 @@
+/* The project stylesheet is loaded into the docs iframe so stories render for real, but two of its
+   global rules also hit Storybook's own docs chrome: `:where(body *)` forces the body font-size onto
+   inline <code>, and nothing overrides the browser's `pre { font-family: monospace }`. Undo both for
+   the chrome only — .docs-story holds the real components and must keep the project styles. */
+
+.sbdocs {
+	--sb-code-font: 'SF Mono', SFMono-Regular, ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
+}
+
+.sbdocs :not(.docs-story, .docs-story *) > code {
+	font-family: var(--sb-code-font);
+	font-size: 0.875em;
+}
+
+/* tab-size: this repo indents with tabs, which render eight columns wide by default. */
+.sbdocs pre.prismjs {
+	font-family: var(--sb-code-font);
+	tab-size: 2;
+}
+
+/* Storybook's docs wrapper sets `font-size: 16px` on every div it owns. The project applies its type
+   scale through `:where(body *) { font-size: var(--font-size) }`, which is deliberately specificity
+   zero, so Storybook wins and a live type sample renders at 16px whatever class it carries. Give the
+   type classes enough specificity to win it back — inside the docs only. */
+.sbdocs :is(.h1, .h2, .h3, .h4, .h5, .h6, .title, .body-large, .body-small, .caption) {
+	font-size: var(--font-size);
+}

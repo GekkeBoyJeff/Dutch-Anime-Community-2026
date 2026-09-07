@@ -1,5 +1,3 @@
-@use "initial" as *;
-
 .entry-list {
 	display: flex;
 	flex-direction: column;
@@ -16,7 +14,7 @@
 	padding-block: spacing(xs);
 
 	& + & {
-		border-block-start: 0.0625rem solid $border-color;
+		border-block-start: 0.0625rem solid $border;
 	}
 
 	@media (max-width: #{breakpoint(l)}) {
@@ -34,7 +32,11 @@
 		text-decoration: none;
 
 		&:hover {
-			background-color: $background-hover;
+			background-color: $grey-lightest;
+
+			@include on-colorset(dark) {
+				background-color: $grey-dark;
+			}
 		}
 
 		&:focus-visible {
@@ -50,8 +52,12 @@
 		inline-size: 1.75rem;
 		block-size: 1.75rem;
 		border-radius: $admin-radius-control;
-		background-color: $surface-muted;
+		background-color: $grey-lightest;
 		color: $color-secondary;
+
+		@include on-colorset(dark) {
+			background-color: $grey-dark;
+		}
 	}
 
 	&.is-positive .entry-marker {

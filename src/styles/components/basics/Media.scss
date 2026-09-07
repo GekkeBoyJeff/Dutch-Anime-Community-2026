@@ -12,7 +12,7 @@
 		aspect-ratio: 16 / 9;
 		block-size: var(--media-block-size, auto);
 		border-radius: var(--media-radius, #{$rounded-m});
-		background-color: $background-color;
+		background-color: $background;
 
 		.media-asset {
 			position: absolute;

@@ -10,9 +10,9 @@
 	max-width: 42rem;
 	margin-inline: auto;
 	padding: 1.75rem;
-	border: 0.0625rem solid var(--border-color);
+	border: 0.0625rem solid $border;
 	border-radius: 1rem;
-	background: var(--surface, var(--background-color));
+	background: var(--surface, $background);
 }
 
 .enquete-message {
@@ -21,13 +21,13 @@
 }
 
 .enquete-description {
-	color: var(--color-secondary);
+	color: $color-secondary;
 	margin: 0;
 }
 
 .enquete-anon {
 	font-size: 0.8125rem;
-	color: var(--color-secondary);
+	color: $color-secondary;
 	margin: 0;
 }
 
@@ -46,7 +46,7 @@
 }
 
 .enquete-req {
-	color: var(--accent, #c0392b);
+	color: var(--primary, #c0392b);
 }
 
 .enquete-scale,
@@ -60,7 +60,7 @@
 .enquete-choice {
 	appearance: none;
 	cursor: pointer;
-	border: 0.0625rem solid var(--border-color);
+	border: 0.0625rem solid $border;
 	border-radius: 0.6rem;
 	background: transparent;
 	color: inherit;
@@ -72,13 +72,13 @@
 		border-color 0.15s ease;
 
 	&:hover {
-		border-color: var(--color);
+		border-color: $color;
 	}
 
 	&.is-selected {
-		background: var(--color);
-		color: var(--background-color);
-		border-color: var(--color);
+		background: $color;
+		color: $background;
+		border-color: $color;
 	}
 }
 
@@ -95,15 +95,15 @@
 }
 
 .enquete-back {
-	color: var(--color-secondary);
+	color: $color-secondary;
 	text-decoration: underline;
 }
 
 .enquete-error {
-	color: var(--accent, #c0392b);
+	color: var(--primary, #c0392b);
 	margin: 0;
 }
 
 .enquete-answer {
-	color: var(--color-secondary);
+	color: $color-secondary;
 }

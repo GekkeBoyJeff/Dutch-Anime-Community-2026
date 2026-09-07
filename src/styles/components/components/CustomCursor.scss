@@ -26,12 +26,12 @@
 
 	.custom-cursor-dot {
 		--size: var(--cursor-dot);
-		background-color: $accent;
+		background-color: $primary;
 	}
 
 	.custom-cursor-circle {
 		--size: var(--cursor-circle);
-		border: 0.09375rem solid $accent;
+		border: 0.09375rem solid $primary;
 		transition:
 			opacity $speed-fast $ease,
 			scale $speed-fast $ease,
@@ -39,7 +39,7 @@
 
 		&.is-hovering {
 			scale: 1.6;
-			background-color: $tint-accent;
+			background-color: $tint-primary;
 		}
 	}
 }

@@ -20,8 +20,8 @@
 	gap: spacing(l);
 	padding: spacing(xl);
 	border-radius: $rounded-l;
-	background-color: $white;
-	color: $grey-darkest;
+	background-color: $background;
+	color: $color;
 	box-shadow: $shadow-medium;
 
 	&.is-s {

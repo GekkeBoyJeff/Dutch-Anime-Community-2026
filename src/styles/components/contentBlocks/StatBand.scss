@@ -1,5 +1,5 @@
 .stat-band {
-	background-color: $surface-muted;
+	background-color: $grey-lightest;
 
 	.stat-band-header {
 		margin-block-end: spacing(3xl);
@@ -20,7 +20,7 @@
 		display: flex;
 		flex-direction: column-reverse;
 		gap: spacing(xs);
-		border-inline-start: 0.125rem solid $accent;
+		border-inline-start: 0.125rem solid $primary;
 		padding-inline-start: spacing(l);
 
 		.stat-band-stat-number {
@@ -30,7 +30,7 @@
 			font-weight: $weight-semibold;
 			font-variant-numeric: tabular-nums;
 			line-height: 1.05;
-			color: $accent-text;
+			color: $primary-text;
 
 			@include bp(m) {
 				--font-size: 2.5rem;
@@ -45,5 +45,9 @@
 			--font-size: 0.9375rem;
 			color: $color-secondary;
 		}
+	}
+
+	@include on-colorset(dark) {
+		background-color: $grey-dark;
 	}
 }

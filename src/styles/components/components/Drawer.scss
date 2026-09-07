@@ -11,8 +11,8 @@
 	flex-direction: column;
 	gap: spacing(l);
 	padding: spacing(xl);
-	background-color: $white;
-	color: $grey-darkest;
+	background-color: $background;
+	color: $color;
 	box-shadow: $shadow-medium;
 	overflow-y: auto;
 
@@ -107,7 +107,7 @@
 			margin-block-start: spacing(s);
 			margin-inline: calc(#{spacing(xl)} * -1);
 			padding: spacing(m) spacing(xl);
-			background-color: $white;
+			background-color: $background;
 			border-block-start: 1px solid rgba(0, 0, 0, 0.08);
 		}
 	}

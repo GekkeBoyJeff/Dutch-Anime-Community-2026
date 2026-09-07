@@ -11,9 +11,9 @@
 		gap: spacing(xs);
 		padding-block: spacing(5xl);
 		padding-inline: spacing(l);
-		border: 0.125rem dashed $border-color;
+		border: 0.125rem dashed $border;
 		border-radius: $rounded-l;
-		background-color: $surface-faint;
+		background-color: $grey-lightest;
 		color: $color;
 		text-align: center;
 		cursor: pointer;
@@ -24,7 +24,7 @@
 			box-shadow $speed-fast $ease;
 
 		&:focus-within {
-			border-color: $accent;
+			border-color: $primary;
 			box-shadow: $shadow-focus;
 		}
 
@@ -53,6 +53,10 @@
 			white-space: nowrap;
 			border: 0;
 		}
+
+		@include on-colorset(dark) {
+			background-color: $grey-dark;
+		}
 	}
 
 	&.is-invalid .file-upload-dropzone {
@@ -62,8 +66,8 @@
 
 	&:not(.is-disabled) .file-upload-dropzone {
 		@include interactive {
-			border-color: $accent;
-			background-color: $tint-accent;
+			border-color: $primary;
+			background-color: $tint-primary;
 		}
 	}
 
@@ -89,7 +93,7 @@
 		padding-block: spacing(xs);
 		padding-inline: spacing(s);
 		border-radius: $rounded-s;
-		background-color: $surface-muted;
+		background-color: $grey-lightest;
 		--font-size: 0.875rem;
 
 		.icon {
@@ -100,6 +104,10 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+		}
+
+		@include on-colorset(dark) {
+			background-color: $grey-dark;
 		}
 	}
 

@@ -2,47 +2,155 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="For developers/1. Architecture" />
 
-# Architecture
+# 1. Architecture
 
-Step 1: the foundation. The one pipeline every page runs through, where code lives, and what Next.js
-generates for you — the mental model the rest of the guide builds on.
+How the codebase is put together: what the two halves are, how a page turns into HTML, what the
+component folders mean, and what actually protects the data. The other developer pages assume this
+one.
 
-## The data pipeline
+## Two halves, one codebase
 
-A page is data, not markup. The same five steps run for every route:
+|  | Public site | Staff platform |
+| --- | --- | --- |
+| Routes | `src/app/(website)/` | `src/app/(admin)/`, plus `/login`, `/auth/callback`, `/builder`, `/enquete` |
+| Content comes from | Typed data, checked against a schema | Supabase (Postgres), read and written from the browser |
+| Who sees it | Everyone | Discord login required, with one exception: a survey whose `access_mode` is `public` |
+| When it renders | Ahead of time, into HTML | In the visitor's browser, while they use it |
+| What protects it | Nothing to protect — it is public | Postgres Row Level Security, and nothing else |
 
-```
-content object        →  lib/content (validate)  →  Blocks registry   →  page (Server Component)  →  HTML
-{ meta, blocks }         getPageByPath()             type → component     <Blocks blocks={…} />
-```
+`(website)` and `(admin)` are **route groups**: a folder wrapped in brackets groups routes so they
+can share a layout, without contributing a segment to the URL. `src/app/(website)/page.tsx` is `/`,
+not `/(website)`.
 
-1. **Content** lives in `src/content` as a plain object — `{ meta, blocks }`. Each block is
-   `{ type, id?, ...props }`. See [Content & data](?path=/docs/for-developers-4-content-data--docs).
-2. **`lib/content`** is the only code that knows where content comes from, and it
-   [validates](?path=/docs/for-developers-5-validation--docs) what it returns against the schema. Today it
-   reads the local registry (`getPageByPath`, `getAllPagePaths`); point it at a CMS later and nothing
-   downstream changes.
-3. **`Blocks`** maps each block's `type` to the component that renders it — one registry in
-   `src/components/contentBlocks/Blocks.tsx`.
-4. **The page** is a [Server Component](https://react.dev/reference/rsc/server-components). It fetches
-   its data and hands the array to `<Blocks>`.
-5. **Next** renders it to static HTML at build time.
-
-Here's the page end of that pipeline. Both route files are thin: the home route (`src/app/(website)/page.tsx`)
-and the catch-all (`src/app/(website)/[...slug]/page.tsx`) each work out a path and hand it to the shared
-`PageView` (`src/app/_components/PageView.tsx`):
+The two groups exist because they need different chrome. `(website)/layout.tsx` wraps the page in
+`SiteChrome` (announcement bar, navigation, footer) and mounts the site overlays. `(admin)/layout.tsx`
+wraps it in `AdminShell` — one line:
 
 ```tsx
-// src/app/(website)/page.tsx — the home route ('/')
+// src/app/(admin)/layout.tsx
+const AdminLayout = ({ children }: AdminLayoutProps) => <AdminShell>{children}</AdminShell>;
+```
+
+### Every route that exists
+
+| Path | File | Half |
+| --- | --- | --- |
+| `/` | `src/app/(website)/page.tsx` | public |
+| every other public page | `src/app/(website)/[...slug]/page.tsx` | public |
+| `/account` | `src/app/(admin)/account/page.tsx` | staff |
+| `/upload` | `src/app/(admin)/upload/page.tsx` | staff |
+| `/login` | `src/app/login/page.tsx` | staff sign-in |
+| `/auth/callback` | `src/app/auth/callback/page.tsx` | staff sign-in |
+| `/builder` | `src/app/builder/page.tsx` | staff — the visual page editor, see [9. The visual editor](?path=/docs/for-developers-9-the-visual-editor--docs) |
+| `/enquete` | `src/app/enquete/page.tsx` | survey form — open to anyone, or login-only, per survey |
+| `/api/og`, `/api/draft`, `/api/revalidate`, `/api/get-page-by-path` | `src/app/api/*/route.ts` | machine endpoints |
+
+`src/app/` also holds the files Next.js turns into a specific artefact by filename alone —
+`sitemap.ts`, `robots.ts`, `manifest.ts`, `opengraph-image.tsx` — plus `not-found.tsx`, `error.tsx`
+and `global-error.tsx`. None of them are wired up anywhere; the filename is the wiring.
+
+> **Most dashboard screens do not exist yet.** `src/lib/shared/auth/dashboard-sections.ts` registers
+> thirteen sections. Eleven of them point at `/dashboard/…` paths that have no route file, so a staff
+> member holding those permissions sees nav links that 404. Of the two that do resolve, `/builder` is
+> finished and `/upload` renders a heading and nothing else — as does `/account`, which the nav links
+> to separately. The database behind those screens does exist: 83 migrations in
+> `supabase/migrations/`.
+
+## From a content file to HTML
+
+A public page is **data, not markup**. Nobody writes `<section>` for a page. They write an object,
+and a fixed pipeline turns it into HTML.
+
+```
+src/content/pages/home.ts     the data: { meta, blocks }
+        │
+        ▼
+getPageByPath('/')            picks the source: Supabase, or those files
+        │
+        ▼
+parseContent(Page, …)         Zod checks it. Invalid content throws; it never renders.
+        │
+        ▼
+PageView                      the one component both public routes delegate to
+        │
+        ▼
+Blocks                        REGISTRY: block.type → React component
+        │
+        ▼
+Hero, EventTeaser, Prose, …   each composes basics and components
+        │
+        ▼
+HTML
+```
+
+Following it for real, in six steps.
+
+**1. The data.** `src/content/pages/home.ts` exports a single object. Every entry in `blocks` is
+`{ type, id, ...props }`, and `type` is the only field that decides which component renders it.
+
+```typescript
+// src/content/pages/home.ts
+export const homePage: Page = {
+	meta: {
+		title: 'Nederlandstalige anime-community op Discord',
+		description: '4.500 mensen die in het Nederlands over anime praten: …',
+	},
+	blocks: [
+		{
+			type: 'hero',
+			id: 'intro',
+			colorset: 'dark',
+			variant: 'cover',
+			title: 'Hier kennen ze je bij naam!!!',
+			// …
+		},
+		{ type: 'eventTeaser', id: 'events', colorset: 'light' /* … */ },
+	],
+};
+```
+
+**2. The route.** Both public routes do almost nothing. The home route knows its path; the catch-all
+derives it from the URL segments. Both hand it to the same component.
+
+```tsx
+// src/app/(website)/page.tsx
 const Home = () => {
 	return <PageView path="/" />;
 };
-
-export default Home;
 ```
 
-`PageView` is where the pipeline actually runs — it fetches the page for that path, renders its blocks,
-and adds any JSON-LD. The catch-all does the same, deriving the path from the URL segments instead:
+> **Why two route files?** A *required* catch-all — `[...slug]`, no inner brackets — only matches
+> paths with at least one segment, so `/` needs its own file. The comment in
+> `[...slug]/page.tsx` says exactly that, and its `generateStaticParams` filters `/` back out.
+
+**3. Fetching.** `getPageByPath` in `src/lib/site/content/pages.ts` is the only code that knows where
+content lives. It reads Supabase when a service-role key is present, and the files in `src/content/`
+otherwise:
+
+```typescript
+// src/lib/site/content/pages.ts
+export const dbEnabled = () =>
+	env.CONTENT_SOURCE ? env.CONTENT_SOURCE === 'supabase' : Boolean(env.SUPABASE_SERVICE_ROLE_KEY);
+```
+
+The file starts with `import 'server-only'`, so importing it from a client component is a build
+error. That matters: it reads with the service-role key, which bypasses every database policy.
+
+**4. Validation.** Whichever source won, the raw value is parsed before anything renders.
+`parseContent` is a thin wrapper around `safeParse` that turns a Zod failure into a readable error
+naming the page and the field:
+
+```typescript
+// src/lib/site/content/validate.ts
+const result = schema.safeParse(raw);
+if (result.success) return result.data;
+```
+
+Content that no longer matches the schema throws instead of falling back. The comment in `pages.ts`
+gives the reason: a renamed block type would otherwise 404 a route that `getAllPagePaths` still
+lists.
+
+**5. The page component.** `PageView` is the whole of both routes' rendering.
 
 ```tsx
 // src/app/_components/PageView.tsx
@@ -55,139 +163,243 @@ const PageView = async ({ path }: PageViewProps) => {
 	const graph = pageJsonLd(page.blocks, page.meta.structuredData);
 
 	return (
-		<main>
+		<main id="main" tabIndex={-1}>
 			<Blocks blocks={page.blocks} />
 			{graph && <JsonLd data={graph} />}
 		</main>
 	);
 };
-
-export default PageView;
 ```
 
-> **Why two route files, not one?** A *required* catch-all can't match the root, so home needs its own
-> file. Both delegate to `PageView` and `pageMetadata`, so the two files are identical apart from how
-> they derive the path and never drift.
-
-And the registry that turns a block's `type` into a component (`src/components/contentBlocks/Blocks.tsx`):
+**6. The block renderer.** `Blocks` maps each block's `type` to a component through one object, and
+spreads the rest of the block in as props.
 
 ```tsx
-const REGISTRY: BlockRenderers = {
+// src/components/contentBlocks/Blocks.tsx
+export const REGISTRY: BlockRenderers = {
 	hero: Hero,
+	cardGrid: CardGrid,
 	featureCards: FeatureCards,
-	textMedia: TextMedia,
-	prose: Prose,
-	reviews: Reviews,
+	// … 28 entries in total
 };
 
 const Blocks = ({ blocks = [] }: BlocksProps) => {
 	return blocks.map(({ type, id, ...props }, index) => {
-		const Renderer = REGISTRY[type] as React.ComponentType<typeof props> | undefined;
-		if (!Renderer) {
-			return null; // unknown type (e.g. from a CMS) is skipped, never crashes
-		}
-		return <Renderer key={id ?? `${type}-${index}`} {...props} />;
+		const Renderer = REGISTRY[type] as BlockRenderer<typeof props>;
+
+		return <Renderer key={id ?? `${type}-${index}`} {...props} eager={index === 0} />;
 	});
 };
 ```
 
-> **Why a registry?** It's the single place that connects data to UI. Adding a block type is one line
-> here, and the type of `REGISTRY` is a mapped type over the `Block` union — wiring `hero` to the wrong
-> component is a compile error, not a runtime surprise. The same union also drives the JSON-LD builders
-> in `lib/seo`, so a mis-wire there fails to compile too. Content is already
-> [validated](?path=/docs/for-developers-5-validation--docs) at the `lib/content` boundary, so the
-> skip-unknown line above is just a last-resort guard.
+`BlockRenderers` is derived from the schema union, not written by hand:
 
-## How the UI is layered
-
-The UI is built in layers, each composed from the one below it — and a page is made of exactly one of
-them, content blocks:
-
-```
-page
-└─ content blocks   — the only thing that goes on a page
-   └─ components     — reusable, often interactive pieces
-      └─ basics      — the smallest primitives
+```typescript
+type BlockRenderers = {
+	[B in Block as B['type']]: BlockRenderer<Omit<B, 'type' | 'id'>>;
+};
 ```
 
-| Layer | Built from | What it is | Examples |
-|---|---|---|---|
-| `basics` | — | The smallest primitives | `Button`, `Title`, `Content`, `Media`, `Section`, `Icon`, `Pill`, `Interactive` |
-| `components` | basics | Reusable, often interactive pieces | modal, drawer, tabs |
-| `contentBlocks` | components + basics | Whole page sections — a page is a list of these | `Hero`, `FeatureCards`, `TextMedia`, `Prose`, `Reviews` |
+That is why adding a block to the schema and forgetting the registry entry is a type error rather
+than a blank page. The `eager` prop is a render hint — first block on the page — which is why it is
+not part of the content schema.
 
-A content block receives all its data through props and fetches nothing itself. `contentBlocks` compose `components` and `basics` directly — `Hero`, for example, is built from `Section`, `Container`, `Title`, `Content` and `Interactive` (its call-to-action buttons are `Interactive` elements with a `button` class, not a `Button` component). Separately,
-**`structures`** is the page shell (header, footer, navigation, cookie banners) that lives in the layout, around the
-page rather than in it. The shell is data, like pages: the `(website)` layout renders `SiteChrome` from the validated
-`SiteStructures` document in `src/content/structures.ts`, so the chrome is editable (also in the visual builder at
-`/builder`) without touching the layout.
+### One schema, four consumers
 
-> **Why these four tiers?** Plain, descriptive names give a newcomer an obvious home for new code, with
-> room to grow into the empty tiers. A structure can also be block-renderable — placed in a page's
-> `blocks` array as well as the layout — without special-casing.
+`src/lib/site/content/schema/` is the single source. A block file declares its props once:
 
-## Where things live
+```typescript
+// src/lib/site/content/schema/blocks/titleText.ts
+export const TitleTextProps = z.object({
+	colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+	heading: Heading.optional().describe('Heading cluster (tagline, title and intro) shown above the body text'),
+	value: z.string().optional().describe('Rich-text body content rendered below the heading').meta({ editor: 'richtext' }),
+	// …
+}).meta({ title: 'TitleText' });
 
-| Folder | What it holds |
-|---|---|
-| `src/app` | Routes: pages, the root `layout`, `error`/`loading`/`not-found`, and generated files — `sitemap`, `robots`, OG images, `manifest`. |
-| `src/components/<layer>` | The UI, by layer (see above). |
-| `src/content` | The content: page data files in `pages/`, registered in `index.ts`. |
-| `src/lib` | Non-UI logic: `content/` (async accessors + the Zod contract in `content/schema/`), `env.ts` (the validated environment), `seo.ts`, `site.ts`, `ogImage.tsx`. |
-| `src/hooks` | Client-side utilities — see [Hooks](?path=/docs/for-developers-7-hooks--docs). |
-| `src/styles` | SCSS: `_initial.scss` (values + engine), `_derived.scss`, `_interactions.scss`, `base.scss` (the global cascade, loaded once in `layout`), and `components/<layer>/` — a per-component stylesheet mirroring the component tree, each imported by its own component. |
+export const TitleTextBlock = TitleTextProps.extend({
+	type: z.literal('titleText'),
+	id: Id.optional(),
+});
+```
 
-`env.ts` is the env counterpart of `lib/content`: it validates `process.env` once, at load, against a
-Zod schema (via [T3 Env](https://env.t3.gg/)), so a missing or malformed value fails the build the same
-way bad content does. `site.ts` reads `env.NEXT_PUBLIC_SITE_URL` from it — never `process.env` directly.
-Server values stay server-only; `NEXT_PUBLIC_` values are inlined into the browser (public by design).
+Those declarations feed, in order: the TypeScript types (`z.infer`), the runtime validation in
+`parseContent`, the type of the renderer map above, and the visual editor. The last one is worth
+seeing —
+`src/lib/admin/puck/config.tsx` builds the editor's component list by walking the schema union and
+looking each type up in the same registry:
 
-## What Next.js generates
+```tsx
+// src/lib/admin/puck/config.tsx
+Block.options.map((blockSchema) => {
+	const type = blockSchema.shape.type.value as keyof typeof REGISTRY;
+	const Renderer = REGISTRY[type];
+	// …
+});
+```
 
-You write content and components; Next builds the rest from the same data, all static by default:
+So `/builder` declares nothing of its own. It cannot drift from the site, because there is nothing
+for it to drift from.
 
-- **Routes** — the home page (`app/(website)/page.tsx`) renders `/`; a required catch-all (`app/(website)/[...slug]`)
-  statically prerenders every other registered page via
-  [`generateStaticParams`](https://nextjs.org/docs/app/api-reference/functions/generate-static-params).
-  An unregistered path 404s (`dynamicParams=false`) and renders `not-found.tsx` inside the layout.
-- **`sitemap.xml`** and **`robots.txt`** — built from the content registry
-  ([sitemap](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap),
-  [robots](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots)), so a new
-  page is listed automatically.
-- **Open Graph images** — a branded share card per route from the route handler `app/api/og/route.tsx`
-  ([`next/og`](https://nextjs.org/docs/app/api-reference/functions/image-response)), with
-  `app/opengraph-image.tsx` as the site-wide fallback and `meta.image` as a per-page override.
-- **`manifest.webmanifest`** — makes the app installable.
+## The component tiers
 
-All of this is covered in [SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs).
+`src/components/` has six folders. The tier decides what a component may do, not what it looks like.
 
-## Server first, client islands
+| Folder | Files | What belongs here | Examples |
+| --- | --- | --- | --- |
+| `basics/` | 34 | Primitives. One job each, no layout opinions of their own. | `Button`, `Title`, `Media`, `Section`, `Container` |
+| `components/` | 42 | Composites built from basics. Reusable, but bigger than a primitive. | `Card`, `Modal`, `Table`, `Tabs`, `Gallery` |
+| `contentBlocks/` | 29 | Whole page sections, one per block type, plus `Blocks.tsx` itself. | `Hero`, `FaqAccordion`, `EventTeaser` |
+| `forms/` | 18 | Form controls and the field wrappers around them. | `TextInput`, `Select`, `Field`, `FieldError` |
+| `structures/` | 5 | Site chrome — the parts around a page, not in it. | `Navigation`, `Footer`, `AnnouncementBar`, `SiteChrome` |
+| `dashboard/` | 6 | Staff-platform shell. Split into `shell/` and `structures/`. | `AdminShell`, `DashboardNav`, `CommandPalette` |
 
-Every component is a [Server Component](https://nextjs.org/docs/app/getting-started/server-and-client-components)
-unless it needs interactivity. When a part needs state, an effect, a ref or a click handler, it gets
-`'use client'` and stays small. The static shell renders on the server; only the interactive piece
-ships JavaScript.
+Two things mirror that tree. `src/styles/components/` has the same six folders, one `.scss` file per
+component — styling lives at the consumer, never inside a primitive. And
+`src/lib/site/content/schema/` has five of them (`blocks/` in place of `contentBlocks/`, and no
+`dashboard/`, because the staff platform is not content).
 
-`Interactive` is the one client island the basics rely on. It's the single definition of "clickable":
-it renders a `<button>`, a [`next/link`](https://nextjs.org/docs/app/api-reference/components/link), or
-an external `<a>` (with a safe `rel`) depending on its props, and fires haptic feedback on each click.
-`Button` and `Pill` wrap it and stay Server Components themselves.
+Composition runs downhill. A content block reaches for basics and components; a basic never reaches
+back up. `Hero` opens with exactly that:
 
-> **Why keep islands small?** The client bundle's weight is mostly the React/Next runtime, not your
-> components. Rendering the static parts on the server keeps the JavaScript you ship to the visitor low.
+```tsx
+// src/components/contentBlocks/Hero.tsx
+import Actions from '@/components/basics/Actions';
+import Container from '@/components/basics/Container';
+import Content from '@/components/basics/Content';
+// …
+import type { HeroProps as HeroSchemaProps } from '@/lib/site/content/schema/blocks/hero';
+```
 
-## The other half: the staff platform
+The five site-facing folders each have an `index.ts` — a barrel, a file whose only job is to
+re-export its neighbours — so a consumer can import several components on one line. `dashboard/` has
+none; its six files are imported by their full path.
 
-Everything above is the **public site** — `src/app/(website)/`, statically prerendered. Alongside it lives
-a **staff platform** in `src/app/(admin)/` (`/dashboard/*`, `/upload`, `/account`, `/builder`): a
-client-side SPA behind Discord login that reads and writes Supabase (Postgres) at runtime, with Postgres
-RLS as its security boundary. It reuses the same layers, tokens and conventions — `src/lib/auth/*` holds
-its roles/permissions, `src/lib/supabase/*` its clients. `next.config.mjs` switches output on `HOST_TYPE`:
-`server` (default) serves dynamic features and security headers; `static` exports the public pages and
-keeps the dashboard a runtime SPA. It has its own guide — [8. Staff
-platform](?path=/docs/for-developers-8-staff-platform--docs).
+## Server components, client islands
 
----
+React components here are server components unless the file opens with `'use client'`. Counting the
+files that do says a lot about where interactivity lives:
 
-**Next:** [2. Conventions](?path=/docs/for-developers-2-conventions--docs) — the rules you write code by:
-how a component is shaped, where styling lives, and how the project is wired.
+| Folder | With `'use client'` | Total |
+| --- | --- | --- |
+| `basics/` | 4 | 34 |
+| `components/` | 25 | 42 |
+| `contentBlocks/` | 3 | 29 |
+| `forms/` | 17 | 18 |
+| `structures/` | 2 | 5 |
+| `dashboard/` | 4 | 6 |
+
+Public page sections are almost entirely server-rendered; the browser only gets JavaScript for the
+pieces that genuinely need it. The staff platform is the opposite, and has to be: it reads live data
+from the database in the browser.
+
+## The `src/` map
+
+| Folder | What is in it |
+| --- | --- |
+| `app/` | Routes, layouts, API handlers, and Next.js's filename-driven files (`sitemap.ts`, `robots.ts`, `manifest.ts`, `opengraph-image.tsx`). |
+| `components/` | The six component tiers above. |
+| `content/` | The typed page data and site chrome — the fallback source. See the warning on [Start here](?path=/docs/start-here--docs). |
+| `hooks/` | Six shared React hooks: `useDashboardGuard`, `useHaptics`, `useHotkey`, `useOverlay`, `usePagination`, `useReducedMotion`. |
+| `lib/` | Non-React logic, split three ways — see below. |
+| `stories/` | Storybook stories, and these documentation pages. |
+| `styles/` | `theme.scss`, `base.scss`, the token and mixin partials, and `components/` mirroring the tiers. |
+| `types/` | `database.types.ts`, generated from the Supabase schema — never hand-edited — plus one ambient declaration. |
+
+`src/lib/` is split by who is allowed to import it:
+
+| Folder | What is in it |
+| --- | --- |
+| `lib/shared/` | Used by both halves: `env.ts`, `classNames.ts`, `formatDate.ts`, `sanitize.ts`, `push.ts`, `auth/`, `supabase/`. |
+| `lib/site/` | Public site only: `content/` (schema and accessors), `seo.ts`, `ogImage.tsx`, `site.ts`, `images/`. |
+| `lib/admin/` | Staff platform only: `puck/` (the visual editor's config), `expenses/`, `income/`, `moderation/`, `receipts/`, `tickets/`, `pdf/`. |
+
+Two loose files sit at the top of `src/`: `instrumentation.ts` (Next.js's server-startup hook, an
+empty no-op) and `sw.ts` (the Serwist service worker source).
+
+## The security boundary
+
+**There are no Next.js server actions in this codebase.** Not one file contains `'use server'`. Every
+runtime mutation the staff platform makes goes out of the browser, straight to Supabase, using the
+public anon key:
+
+```typescript
+// src/lib/shared/supabase/client.ts
+// The anon key is public by design (Next inlines every NEXT_PUBLIC_ var into the browser bundle) — Row
+// Level Security is the real boundary, so this client can only do what the signed-in user's JWT allows.
+```
+
+That single fact decides everything else. There is no server of ours in the middle of a write. A
+volunteer's browser sends SQL-shaped requests to Postgres directly, and anyone can send the same
+requests with `curl`. So the rules have to live in the database.
+
+They do. Every table the migrations create has row level security enabled, and 174 of the 198
+policies call the same function:
+
+```
+-- supabase/migrations/20260716090002_cms.sql
+alter table public.pages enable row level security;
+
+create policy "read pages" on public.pages for select to authenticated
+  using ((select public.authorize('pages.edit')));
+```
+
+`authorize()` is a `security definer` function that answers one question — does the calling user hold
+this permission — from two sources: the permissions their role bundles, plus any granted to them
+individually.
+
+```
+-- supabase/migrations/20260716090001_access_control.sql
+create or replace function public.authorize(requested_permission public.app_permission)
+returns boolean language sql stable security definer set search_path = '' as $$
+  select exists (
+    select 1 from public.user_roles ur
+    join public.role_permissions rp on rp.role = ur.role
+    where ur.user_id = (select auth.uid()) and rp.permission = requested_permission
+  ) or exists (
+    select 1 from public.user_permissions up
+    where up.user_id = (select auth.uid()) and up.permission = requested_permission
+  );
+$$;
+```
+
+### Then what are the React permission checks for?
+
+Drawing. Nothing else. `usePermissions` and `useDashboardGuard` decide which nav items to render and
+where to redirect someone who lands on a screen they cannot use. The hook says so itself:
+
+```tsx
+// src/hooks/useDashboardGuard.tsx
+// This is routing, not enforcement: RLS is the security boundary, so a member without permissions can
+// read nothing anyway — the redirect only keeps them off a screen that would render empty.
+```
+
+The permission list in `src/lib/shared/auth/permissions.ts` is the same kind of thing — a mirror of
+the `public.app_permission` enum, kept in TypeScript so the UI can talk about permissions. Its own
+comment: *a value added here is inert until the matching DB enum migration lands, because RLS reads
+the enum, not this list.*
+
+### The service-role key
+
+`src/lib/shared/supabase/admin.ts` creates a client with `SUPABASE_SERVICE_ROLE_KEY`, which bypasses
+RLS entirely. It is for build-time reads and the seed script only, and the first line of the file is
+the guard rail:
+
+```typescript
+// src/lib/shared/supabase/admin.ts
+import 'server-only';
+```
+
+Any import of that module from client code becomes a build error, which is what keeps the key out of
+the browser bundle.
+
+### Three rules that follow
+
+1. A permission change belongs in a new file in `supabase/migrations/`, as an RLS policy or an RPC.
+   Never in React.
+2. Adding a check in a React component secures nothing. Treat those checks as layout decisions.
+3. Never import `admin.ts` from anything that reaches the browser. The `server-only` import will stop
+   you, and that is the intended outcome, not an obstacle.
+
+[8. Staff platform](?path=/docs/for-developers-8-staff-platform--docs) covers the roles, the
+permission vocabulary and the dashboard section registry in detail.

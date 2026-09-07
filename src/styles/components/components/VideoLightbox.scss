@@ -1,5 +1,5 @@
 .video-lightbox-backdrop {
-	@include overlay-backdrop($scrim-strong);
+	@include overlay-backdrop($overlay-strong);
 }
 
 .video-lightbox {
@@ -59,11 +59,11 @@
 		font-size: 1.5rem;
 		line-height: 1;
 		color: $white;
-		background-color: $scrim;
+		background-color: $overlay;
 		cursor: pointer;
 
 		@include interactive {
-			background-color: $scrim-strong;
+			background-color: $overlay-strong;
 		}
 
 		&:focus-visible {

@@ -11,6 +11,14 @@ import NotificationProvider from '@/components/components/NotificationProvider';
 import { withJsonSchema, withJsonSchemaArgTypes } from './addons/json-schema/preview';
 import { light, dark } from './theme';
 import '@/styles';
+import './docs.css';
+
+// Decorators only run around a story, so a pure MDX page (Colors, Spacing, the developer docs)
+// would render on the default theme no matter what the toolbar says. Seed the brand theme on the
+// preview document itself; withThemeByDataAttribute still overrides it per story.
+if (typeof document !== 'undefined') {
+	document.documentElement.setAttribute('data-theme', 'dac');
+}
 
 export const tags = ['autodocs'];
 
@@ -22,7 +30,7 @@ export const parameters = {
 		storySort: {
 			order: [
 				'Start here',
-				'For developers', ['1. Architecture', '2. Conventions', '3. Adding things', '4. Content & data', '5. Validation', '6. SEO & sharing', '7. Hooks'],
+				'For developers', ['1. Architecture', '2. Conventions', '3. Adding things', '4. Content & data', '5. Validation', '6. SEO & sharing', '7. Hooks', '8. Staff platform', '9. The visual editor'],
 				'Look & feel', ['Colors', 'Typography', 'Spacing'],
 				'Basics',
 				'Components',

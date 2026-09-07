@@ -9,7 +9,7 @@ const CONFIG = {
 	optDir: 'public/media/_opt',
 	publicBase: '/media',
 	optPublicBase: '/media/_opt',
-	manifestPath: 'src/lib/images/manifest.json',
+	manifestPath: 'src/lib/site/images/manifest.json',
 	widths: [320, 480, 640, 768, 1024, 1280, 1536, 1920],
 	maxWidth: 2560,
 	quality: 80,

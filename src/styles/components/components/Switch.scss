@@ -10,23 +10,27 @@
 	padding: var(--switch-pad);
 	border: none;
 	border-radius: $rounded-full;
-	background-color: $surface-track;
+	background-color: $grey-light;
 	cursor: pointer;
 
 	transition: background-color $speed-fast $ease;
 
 	&:not([data-disabled]):not([data-readonly]) {
 		@include interactive {
-			background-color: $surface-strong;
+			background-color: $grey-light;
+
+			@include on-colorset(dark) {
+				background-color: $grey;
+			}
 		}
 	}
 
 	&[data-checked] {
-		background-color: $accent;
+		background-color: $primary;
 
 		&:not([data-disabled]):not([data-readonly]) {
 			@include interactive {
-				background-color: $accent-hover;
+				background-color: $primary-hover;
 			}
 		}
 	}
@@ -59,5 +63,9 @@
 
 	&[data-checked] .switch-thumb {
 		translate: calc(var(--switch-width) - var(--switch-height)) 0;
+	}
+
+	@include on-colorset(dark) {
+		background-color: $grey;
 	}
 }

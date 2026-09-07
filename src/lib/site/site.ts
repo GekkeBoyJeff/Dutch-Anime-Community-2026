@@ -7,13 +7,14 @@ export const site = {
 	url: env.NEXT_PUBLIC_SITE_URL,
 };
 
-// The colour tokens of src/styles/_initial.scss, duplicated for the runtime surfaces that cannot
-// read SCSS: next/og, the web manifest and the viewport theme colour. Keep both sides in lockstep.
+// The colour tokens from src/styles/theme.scss, duplicated for the runtime
+// surfaces that cannot read SCSS: next/og, the web manifest and the viewport theme colour.
+// Keep both sides in lockstep.
 export const brand = {
-	primary: '#f5c24a', // --accent
+	primary: '#f5c24a', // --primary
 	warm: '#e7b46b', // browser bar + manifest theme_color; full gold reads too loud there
 	ink: '#241a22', // --background-dark
-	page: '#f2ebd7', // --background-light
+	page: '#f2ebd7', // --page
 	subtle: '#d8c9b3', // --color-secondary-dark
 };
 

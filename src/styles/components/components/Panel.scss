@@ -1,12 +1,10 @@
-@use "initial" as *;
-
 .panel {
 	display: flex;
 	flex-direction: column;
 	gap: $admin-gap-tight;
 	padding: $admin-gap;
 	border-radius: $admin-radius-card;
-	background-color: $background-color;
+	background-color: $background;
 	box-shadow: $admin-ring, $admin-shadow-1;
 
 	.panel-head {

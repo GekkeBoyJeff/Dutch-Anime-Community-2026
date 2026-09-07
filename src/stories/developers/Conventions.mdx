@@ -4,267 +4,620 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 # Conventions
 
-Step 2: the rules you write code by — learn them once, and every file looks the same. They're short
-and consistent on purpose: once you've written one component, you've written them all. Every example
-here is real code from the repo.
+The rules this codebase is written by. Every snippet on this page was copied out of the repo
+unchanged, so a file that looks like the examples here is a file that fits in.
 
-## Writing a component
+The rules are repetitive on purpose: once one component has been read, they have all been read. The
+step-by-step recipes that apply them are on
+[3. Adding things](?path=/docs/for-developers-3-adding-things--docs).
 
-Here is a complete primitive, `src/components/basics/Title.tsx`. It shows every rule at once:
+## A component is four files
 
-```tsx
-import parse from 'html-react-parser';
-import type { ReactNode, Ref } from 'react';
+Every UI element is four files with the same base name, in four parallel folders. `Badge` is small
+enough to read whole, and it touches nearly every rule on this page.
 
-import { classNames } from '@/lib/classNames';
-import type { TitleProps } from '@/lib/content/schema/basics/title';
+| # | The file | Path for `Badge` |
+| --- | --- | --- |
+| 1 | The props | `src/lib/site/content/schema/basics/badge.ts` |
+| 2 | The markup | `src/components/basics/Badge.tsx` |
+| 3 | The styling | `src/styles/components/basics/Badge.scss` |
+| 4 | The Storybook page | `src/stories/basics/Badge.stories.tsx` |
 
-type Props = TitleProps & {
-	/** Child content; takes precedence over value */
-	children?: ReactNode;
-};
+Files 3 and 4 are skipped when there is nothing to put in them. Of the 128 components in the site
+tiers, 14 have no stylesheet — `CountUp` renders a `span` with the class `count-up` and no rules of
+its own, leaving the look of the number to whoever placed it — and 6 have no story, because they
+render nothing visible (`JsonLd`, `ServiceWorker`) or only ever appear inside another component.
 
-// Picks the semantic tag (h1–h6 when `element` is omitted) and the responsive type role via the
-// .title.is-N class. Because the class — not the tag — drives the type, size and level decouple.
-const Title = ({
-	element,
-	size = 2,
-	className,
-	value,
-	children,
-	ref,
-}: Props & { ref?: Ref<HTMLElement> }) => {
-	const Element = (element || `h${size}`) as React.ElementType;
+The casing differs per file, and it is not decorative — the imports are written by hand and will not
+resolve otherwise.
 
-	return (
-		<Element ref={ref} className={classNames('title', `is-${size}`, className)}>
-			{children ? children : value && parse(value)}
-		</Element>
-	);
-}
+| Thing | Case | Example |
+| --- | --- | --- |
+| Component, stylesheet and story file | PascalCase | `Badge.tsx`, `Badge.scss`, `Badge.stories.tsx` |
+| Schema file | camelCase | `badge.ts`, `countUp.ts`, `ctaBanner.ts` |
+| Root CSS class | kebab-case | `.badge`, `.count-up`, `.cta-banner` |
+| Story `title` | `Tier/Component` | `'Basics/Badge'`, `'ContentBlocks/StatBand'` |
 
-export default Title;
+### 1. The props — `badge.ts`
+
+```typescript
+// src/lib/site/content/schema/basics/badge.ts
+import { z } from 'zod';
+
+export const BadgeProps = z
+	.object({
+		value: z.string().min(1).describe('The badge\'s visible text'),
+		variant: z
+			.enum(['neutral', 'primary', 'info', 'success', 'warning', 'error', 'outline'])
+			.optional()
+			.describe('Visual variant; tints the chip via the colorset/status tokens; defaults to neutral'),
+		icon: z.string().optional().describe('Optional leading icon glyph name (see the ICONS map)'),
+		dot: z.boolean().optional().describe('Shows a small leading status dot; defaults to false'),
+		className: z.string().optional().describe('Additional classes on the root element'),
+	})
+	.meta({ title: 'Badge' });
+export type BadgeProps = z.infer<typeof BadgeProps>;
 ```
 
-The rules it follows, top to bottom:
+Zod is a validation library: `BadgeProps` is a runtime object that can check data, not only a type.
+The pieces:
 
-- **`ref` is a regular prop.** Take `ref` in the props and pass it to the element you render — no
-  `forwardRef`. React 19 dropped the need for it. ([React 19: ref as a prop](https://react.dev/blog/2024/12/05/react-19#ref-as-a-prop))
-- **A named arrow-const component with `export default`, one per file** — `const Title = (…) => {…}`
-  then `export default Title`. ESLint (`react/function-component-definition` set to `arrow-function`,
-  plus `func-style`) makes a `function` declaration an error, so hooks, plain helpers and inline
-  callbacks are all arrow functions too.
-  > **Why arrow consts?** One shape for the whole codebase to scan for, and a named const still shows
-  > its name in stack traces and the React DevTools. Mind ordering: a const isn't hoisted, so define a
-  > helper above its first use.
-- **Props are a Zod schema, not a hand-written `interface`.** The schema lives under
-  `src/lib/content/schema/` (here `src/lib/content/schema/basics/title.ts`), and each field carries a
-  `.describe(...)` call. The file exports the schema object and its inferred type under the same name —
-  `export const TitleProps = z.object({ … })` and `export type TitleProps = z.infer<typeof TitleProps>`
-  — and the component imports that type. The `.describe(...)` text becomes the prop's description in
-  this Storybook's props table (via the `jsonSchema` story parameter), so write it for a human:
-  ```ts
-  // src/lib/content/schema/basics/title.ts
-  export const TitleProps = z
-  	.object({
-  		element: z.string().optional().describe('The HTML tag; defaults to h{size}. Lets an h2 show the h3 role, etc'),
-  		size: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5), z.literal(6)]).optional().describe('The type role (h1–h6) that picks the responsive size; defaults to 2'),
-  		className: z.string().optional().describe('Additional classes on the root element'),
-  		value: z.string().optional().describe('The text; may contain HTML'),
-  	})
-  	.meta({ title: 'Title' });
-  export type TitleProps = z.infer<typeof TitleProps>;
-  ```
-- **Build the class list with the shared `classNames()` helper** from `@/lib/classNames`. Pass the
-  always-present classes and each conditional one as `condition && 'the-class'`; the helper filters out
-  falsy values and joins the rest: ``className={classNames('title', `is-${size}`, className)}``.
-- **HTML text comes in as `value`** and is rendered with [html-react-parser](https://github.com/remarkablemark/html-react-parser);
-  `children` wins when both are present: `children ? children : value && parse(value)`.
-- **Indent with tabs.**
+- **`z.object({ … })`** lists the props, one entry per prop. Nothing else lives in the file.
+- **`.min(1)` on `value`** rejects an empty string, not only a missing one.
+- **`.optional()`** is the whole difference between a required prop and an optional one.
+- **`.describe('…')`** is documentation that ends up on screen — see *The Storybook page* below.
+- **`.meta({ title: 'Badge' })`** names the schema in the generated JSON Schema.
+- **`export type BadgeProps = z.infer<typeof BadgeProps>;`** derives the TypeScript type from the
+  schema. The value and the type deliberately share one name, so an import site never has to pick.
 
-- **Keep the DOM flat and semantic.** Avoid unnecessary wrapper `div`s. Ensure correct semantics and ARIA attributes (e.g., `role='progressbar'` with `aria-valuenow`). Use existing basics (like `<Title>`) instead of native HTML where possible.
-- **Storybook is mandatory.** Every new component must be delivered with a `.stories.ts` file without being asked. Pass the schema to Storybook wrapped in an object under a `schema` key (`jsonSchema: { schema: ComponentSchema }`). Note: Object args must always be spread over multiple lines for readability, and show one clear variant per feature without making a separate story for every single value.
+### 2. The markup — `Badge.tsx`
 
-> **Why `value` and `children`?** Content often arrives as an HTML string from a data file or CMS
-> (`value`), but you also want to compose JSX directly in code (`children`). Supporting both, with
-> `children` winning, covers every case with one prop shape.
+```tsx
+// src/components/basics/Badge.tsx
+import Icon from '@/components/basics/Icon';
+import { classNames } from '@/lib/shared/classNames';
+import type { BadgeProps as BadgeSchemaProps } from '@/lib/site/content/schema/basics/badge';
 
-## Layer rules
+type BadgeProps = BadgeSchemaProps;
 
-The layers (basics → components → content blocks / structures) only work if they are strict. Four
-rules keep them that way:
+const Badge = ({
+	variant = 'neutral',
+	icon,
+	dot = false,
+	className,
+	value,
+}: BadgeProps) => {
+	return (
+		<span className={classNames('badge', `is-${variant}`, className)}>
+			{dot && <span className="badge-dot" aria-hidden="true" />}
+			{icon && <Icon name={icon} className="badge-icon" />}
+			{value}
+		</span>
+	);
+};
 
-1. **A layer composes only the layers beneath it — never hand-rolled lookalikes.** A content block
-   never writes `<a className="button is-primary">`, its own card markup, an inline `<svg>` or a raw
-   `next/image`: it renders `Button`, `Card`, `Icon`, `Media`. If the markup you're about to write
-   already has a system component, use it — even when reusing just the CSS class would *look* the same.
-   The class contract is an implementation detail; the component is the API.
-2. **Every capability lives in the lowest layer that can own it.** When a block needs a visual trick
-   the system component doesn't have (an animated icon badge on a primary CTA, say), the fix is to
-   extend the component — a prop, a variant, documented in its story — never to bolt private markup and
-   SCSS onto the block. Worked example: the hero's badged arrow CTA is `Button icon="arrow-up-right"
-   iconStyle="badge"`, not hero-local markup.
-3. **A component isn't done without its story.** The story is the component's contract: every variant
-   and capability visible, with site-realistic args (real copy, real `/media/*` assets) — if the site
-   renders something a story can't show, rule 2 has been broken somewhere.
-4. **Content-block stories double as builder presets.** `src/lib/puck/presets.ts` harvests
-   `src/stories/contentBlocks/*.stories.tsx`: the folder stays flat; `meta.component` must be the exact
-   component registered in the blocks `REGISTRY` (a wrapper silently drops all presets); every export
-   *with `args`* becomes an insertable preset, so args must be schema-valid and JSON-serialisable (no
-   JSX, no functions — demo-only compositions go render-only, without `args`); export names are the
-   editor-facing labels and `Default` is the insert default.
+export default Badge;
+```
 
-These rules are enforced by convention and review, not by lint — which is exactly why they're written
-down here.
+Six habits, all of them repo-wide:
+
+- **The prop type is imported and re-aliased.** `import type { BadgeProps as BadgeSchemaProps }`,
+  then `type BadgeProps = BadgeSchemaProps;`. 126 of the 128 components in the site tiers take
+  their props from a schema file this way; some of them intersect the schema type with something
+  TypeScript-only, which *What a schema cannot express* covers below.
+- **The type import points at the one schema file**, never at a barrel. That matters — see
+  *The trap* further down.
+- **Defaults live in the destructuring**, not in the schema. The schema says a prop may be absent;
+  the component says what absent means.
+- **Class names are assembled with `classNames`**, in a fixed order: the root class, then the
+  modifiers, then the caller's `className` last so a consumer can always add to it.
+- **The component is an arrow function assigned to a `const`**, and it is the default export. ESLint
+  fails the build otherwise.
+- **Decorative markup gets `aria-hidden="true"`.** The dot repeats what the text already says.
+
+`classNames` itself is four lines, at `src/lib/shared/classNames.ts`:
+
+```typescript
+export const classNames = (...classes: Array<string | false | null | undefined>): string => {
+	return classes.filter(Boolean).join(' ');
+};
+```
+
+That is why a conditional class is safe to pass. `Divider` writes `hasLabel && 'has-label'`, and
+when `hasLabel` is `false` the `false` is simply filtered out.
+
+### 3. The styling — `Badge.scss`
+
+```css
+/* src/styles/components/basics/Badge.scss */
+.badge {
+	--font-size: 0.8125rem;
+	display: inline-flex;
+	align-items: center;
+	gap: spacing(xs);
+	padding-block: spacing(xs);
+	padding-inline: spacing(s);
+	border-radius: $rounded-s;
+	font-weight: $weight-medium;
+	white-space: nowrap;
+	width: fit-content;
+
+	.badge-dot {
+		inline-size: 0.5em;
+		block-size: 0.5em;
+		border-radius: $rounded-full;
+		background-color: currentColor;
+	}
+
+	.badge-icon {
+		font-size: 1em;
+	}
+
+	&.is-neutral {
+		background-color: $grey-lightest;
+		color: $color;
+
+		@include on-colorset(dark) {
+			background-color: $grey-dark;
+		}
+	}
+
+	&.is-primary {
+		background-color: $tint-primary;
+		color: $primary-text;
+	}
+
+	/* is-info, is-success, is-warning, is-error and is-outline follow the same shape */
+}
+```
+
+No `@use` line, no import: `spacing()`, `$rounded-s` and `on-colorset()` are simply available. The
+build prepends them to every stylesheet — see *Where styling lives* below.
+
+### 4. The Storybook page — `Badge.stories.tsx`
+
+```tsx
+// src/stories/basics/Badge.stories.tsx
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
+import Badge from '@/components/basics/Badge';
+import { BadgeProps } from '@/lib/site/content/schema/basics/badge';
+
+const meta: Meta<typeof Badge> = {
+	title: 'Basics/Badge',
+	component: Badge,
+	parameters: {
+		docs: { description: { component: 'Static status/label chip — the non-interactive sibling of Pill. Variant tints come from the colorset and status tokens.' } },
+		jsonSchema: { schema: BadgeProps },
+	},
+	argTypes: {
+		variant: {
+			control: 'inline-radio',
+			options: ['neutral', 'primary', 'info', 'success', 'warning', 'error', 'outline'],
+		},
+	},
+};
+
+export default meta;
+
+type Story = StoryObj<typeof Badge>;
+
+export const Default: Story = {
+	args: {
+		value: 'New',
+		variant: 'neutral',
+	},
+};
+
+export const WithDot: Story = {
+	args: {
+		...Default.args,
+		variant: 'success',
+		dot: true,
+		value: 'Online',
+	},
+};
+```
+
+Note the two imports of the same name: the component from `@/components/basics/Badge`, and the
+**schema value** (not the type) from the schema file. `jsonSchema: { schema: BadgeProps }` hands that
+schema to a Storybook add-on that lives in this repo, at `.storybook/addons/json-schema/`. It does
+two things:
+
+- Renders the schema as JSON Schema in a panel titled **JSON Schema**, and validates the current
+  args against it on every render. Bad args show up as a listed issue instead of a broken preview.
+- Fills the args table in: `.describe('…')` becomes the description column, and anything the schema
+  marks required is marked required. Without it those columns are blank, because a prop type that is
+  `z.infer<…>` reaches Storybook's doc generator as a plain alias with no detail.
+
+Later stories spread the first one (`...Default.args`) so a story only states its own difference.
+
+## Why the props are a Zod schema
+
+> **Why?** A TypeScript interface disappears at build time. This site's content is data — a page is
+> an array of block objects, and part of it is edited in a browser and stored in a database. Data
+> that arrives at runtime has to be checked at runtime, and a type cannot do that. Writing the props
+> as a schema means the check and the type are the same declaration, so they cannot drift.
+
+One schema feeds five consumers:
+
+| Consumer | What it takes from the schema |
+| --- | --- |
+| TypeScript | `z.infer<typeof BadgeProps>` — the props type the component is written against |
+| The content loader | `parseContent` in `src/lib/site/content/validate.ts` parses every page; a mismatch throws with the failing field's path |
+| The visual editor | `fieldFor` in `src/lib/admin/puck/fields.tsx` walks the schema and picks an input per prop |
+| Storybook | the JSON Schema panel, plus descriptions and required flags in the args table |
+| Whoever reads it | `.describe()` is the prop documentation, kept next to the prop |
+
+Three concrete consequences worth knowing:
+
+- **Constraints are real.** `items: z.array(StatBandItem).min(2).max(4)` on `StatBand` is not advice.
+  A page with one figure fails to build.
+- **`.meta({ editor: '…' })` chooses the editor input.** A `z.string()` normally becomes a text box;
+  `.meta({ editor: 'textarea' })`, `'richtext'`, `'icon'` and `'file'` pick another. The mapping is
+  in `src/lib/admin/puck/fields.tsx`.
+- **A field the mapper does not recognise is silently not editable.** `fieldFor` returns `undefined`
+  for anything it cannot map, and the prop simply does not appear in the editor.
+
+### What a schema cannot express
+
+Some props are not data. A React node, a `ref` or an event handler has no JSON shape, so it is
+declared with `z.custom` — a Zod type whose only job is to carry a TypeScript type:
+
+```typescript
+// src/lib/site/content/schema/basics/section.ts
+children: z.custom<ReactNode>().optional().describe('The section content'),
+```
+
+When a component needs the full HTML attribute surface as well, the schema type is intersected in
+the component file instead — `Button` is one of the five that do this:
+
+```tsx
+// src/components/basics/Button.tsx
+type ButtonProps = ButtonSchemaProps & HTMLAttributes<HTMLElement> & { children?: never };
+```
+
+## The five tiers
+
+The public site is built out of five tiers, one folder each under `src/components/`, and
+`src/styles/components/` carries the same folder names. (A sixth folder,
+`src/components/dashboard/`, holds the staff platform's shell; it uses plain TypeScript interfaces
+and none of the content schema — see
+[8. Staff platform](?path=/docs/for-developers-8-staff-platform--docs).)
+
+| Tier | Holds | May import from |
+| --- | --- | --- |
+| `basics` | the smallest pieces: `Button`, `Icon`, `Title`, `Section`, `Media` | `basics` |
+| `forms` | themed form controls built on Base UI: `TextInput`, `Select`, `Checkbox` | `forms`, `basics` |
+| `components` | composed widgets with their own state: `Card`, `Modal`, `Tabs`, `Swiper` | `components`, `forms`, `basics` |
+| `contentBlocks` | one full-width section of a page: `Hero`, `FaqAccordion`, `StatBand` | `contentBlocks`, `components`, `forms`, `basics` |
+| `structures` | the page shell: `Navigation`, `Footer`, `AnnouncementBar`, `SiteChrome` | `structures`, `components`, `basics` |
+
+That table is not aspirational — it is what the imports actually are today, across all 128 files.
+Nothing in `basics` imports from any other tier, and nothing outside `contentBlocks` imports a
+content block.
+
+**Rule 1 — a tier composes its own tier and the tiers beneath it, never above.** If a basic needs
+something from `components`, the dependency is upside down and the fix is to move the capability
+down, not to reach up.
+
+**Rule 2 — a capability lives in the lowest tier that can own it.** The clearest example is
+`Interactive`, a basic. Whether something renders as a `<button>` or an `<a>`, what "disabled" means
+for each, what `rel` an external link gets, and the haptic tap on press — all of it is decided once,
+in that one file:
+
+```tsx
+// src/components/basics/Interactive.tsx
+const isExternal = target === '_blank' || /^https?:\/\//.test(url);
+```
+
+```tsx
+// src/components/basics/Interactive.tsx, inside the external-link branch
+// Dropping the href is what makes a disabled link inert; aria-disabled alone leaves it
+// focusable and keyboard-activatable.
+href={disabled ? undefined : url}
+target={target}
+rel={['noopener', 'noreferrer', rel].filter(Boolean).join(' ') || undefined}
+```
+
+`Button`, `Link` and `Pill` sit on top of it and mostly add a class name:
+
+```tsx
+// src/components/basics/Pill.tsx
+className={classNames('pill', active && 'is-active', className)}
+```
+
+The payoff is that a fix to link handling is one edit. The cost of getting it wrong would be three
+components that each disable themselves slightly differently.
 
 ## Where styling lives
 
-Styling is **global SCSS**, not CSS Modules. Class names are plain strings on both sides: the
-component writes them, the stylesheet targets them, and nothing is hashed.
+There are no CSS modules and no utility classes. Styling is plain SCSS in `src/styles/`, addressing
+the class names the components write.
 
-- **Stylesheets live in a separate tree that mirrors the component path.** `src/components/basics/Button.tsx`
-  is styled by `src/styles/components/basics/Button.scss`. The component itself imports no styles.
-  > **Why a mirror, not a co-located `Button/` folder?** The parallel tree keeps each render file free
-  > of style imports and gives one predictable place to look; moving everything is churn without a clear
-  > win at this size — revisit when a tier grows its own hooks or tests.
-- **You wire it up with one import line** in `src/styles/index.ts` (imported by both the app layout
-  and this Storybook):
+| File | What it is for |
+| --- | --- |
+| `src/styles/_tokens.scss` | everything a stylesheet may read: fixed colours, the aliases for the themed ones, `spacing()`, `bp()`, `breakpoint()`, `on-colorset()` |
+| `src/styles/_interactions.scss` | the interaction mixins: `interactive`, `link-underline`, `overlay-backdrop`, `popup-enter-exit` |
+| `src/styles/theme.scss` | every custom property: the `:root` palette, the `[data-theme]` overrides (`sepia`, `dac`) and the `[data-colorset]` mapping |
+| `src/styles/base.scss` | the reset and the bare HTML elements — nothing component-specific |
+| `src/styles/components/<tier>/<Name>.scss` | one file per component |
+| `src/styles/index.ts` | the single entry point |
 
-```ts
-// src/styles/index.ts — the global cascade first, then one line per component
+The two underscore files are **prepended to every stylesheet by the build**, which is why no
+component file writes `@use`. The prelude is one constant, in `styles.config.mjs`:
+
+```typescript
+export const SCSS_PRELUDE = '@use "tokens" as *;\n@use "interactions" as *;';
+```
+
+Both `next.config.mjs` and `.storybook/main.js` import that constant, so Storybook and the site
+compile SCSS identically.
+
+`src/styles/index.ts` is imported once, by `src/app/layout.tsx`, and lists every stylesheet:
+
+```typescript
+import '@/styles/theme.scss';
 import '@/styles/base.scss';
 
 // basics
-import '@/styles/components/basics/Button.scss';
-import '@/styles/components/basics/Section.scss';
-// …
+import '@/styles/components/basics/Accordion.scss';
+import '@/styles/components/basics/AccordionItem.scss';
+import '@/styles/components/basics/Alert.scss';
 ```
 
-- **In the stylesheet you use the tokens directly** — `$background-color`, `$accent`, `$rounded-m`,
-  `spacing()`, the `on-colorset()` mixin — with **no `@use`**. Three layers are prepended to every SCSS file by
-  the build — `initial` (values, functions, mixins), `derived` (the derived colours) and `interactions`
-  (the interaction mixins) — so a stylesheet is just the rules:
+A stylesheet that is not listed there is never compiled. The component renders, with no styling and
+no error.
 
-```js
-// styles.config.mjs — shared by next.config and Storybook (one source of truth)
-export const SCSS_PRELUDE = '@use "initial" as *;\n@use "derived" as *;\n@use "interactions" as *;';
+### The colour model
+
+Exactly seven values flip between a light section and a dark one:
+
+```css
+$background   $color   $color-secondary   $color-tertiary   $border   $primary-text   $shadow-focus
 ```
 
-```scss
-.button {
-	// Strict Rule: Never use hardcoded pixels/rems for spacing. Always use spacing() functions.
-	padding-block: spacing(m);
+Everything else is fixed and the component chooses it: the grey scale (`$white`, `$grey-lightest`,
+`$grey-light`, `$grey`, `$grey-dark`, `$grey-darkest`, `$black`), the status hues, `$primary` and
+its relatives. When a fixed colour needs to look different on a dark section, the component says so
+with the `on-colorset` mixin, as `Badge` does above:
 
-	// Strict Rule: Nest modifier classes on the element itself, never use BEM &__ notation.
-	&.is-primary {
-		background-color: $accent;
-	}
+```css
+&.is-neutral {
+	background-color: $grey-lightest;
 
-	// Strict Rule: Use breakpoint aliases, not @include desktop.
-	@include bp(l) {
-		padding-block: spacing(l);
+	@include on-colorset(dark) {
+		background-color: $grey-dark;
 	}
 }
 ```
 
-> **Why global, not CSS Modules?** The same class names live in the data, the components and the
-> stylesheets. Keeping them unhashed lets a `[data-colorset]` selector reach across component
-> boundaries — something hashed, locally-scoped classes can't do.
+Two attributes drive the cascade. `data-theme` sits on `<html>` and picks the palette (the default,
+`sepia`, or `dac` — the one this site ships). `data-colorset` picks the light or the dark half of
+that palette, and any `Section` can set it, so a dark band in the middle of a light page is a prop:
 
-### Scope every part under the root class
-
-Because nothing is hashed, every stylesheet must scope its parts under the component's own root
-class — `.feature-cards .card`, `.text-media .body` — never a bare `.card` or `.grid`. That keeps the
-one global namespace collision-free as you add components.
-
-The only intentionally global classes are the type-role classes (`.title`, `.content`, `.is-N`); those
-stay at the top level on purpose (see [Typography](?path=/docs/look-feel-typography--docs)).
-
-## Barrels and imports
-
-Each component folder has an `index.ts` that re-exports its components — a "barrel" — so you can pull
-several from one path:
-
-```ts
-import { Button, Title, Section } from '@/components/basics';
+```tsx
+// src/components/contentBlocks/StatBand.tsx
+<Section colorset={colorset} className="stat-band is-band">
 ```
 
-Add a component, add one export line to the barrel. The file is `index.ts`, not `_index.ts` — the
-leading underscore is a reserved Next.js routing signal.
+Full detail is on [Look & feel → Colors](?path=/docs/look-feel-colors--docs).
 
-> **Why barrels?** One import path per layer, and the layer's public surface is the barrel — internals
-> can move without touching callers.
-> **CRITICAL RULE**: To prevent "Cannot read properties of undefined" errors caused by circular dependencies, the export order in `index.ts` matters. If component A imports component B, component B MUST be exported before component A.
+### Styling lives at the consumer
 
-Three rules around imports:
+A primitive styles itself and nothing more. Layout, spacing and size come from whoever placed it.
+`StatBand` passes its own class down to a basic and styles it in `StatBand.scss`:
 
-- **Always use the `@/` alias**, never `./` or `../`. (The only exception is config files importing
-  other config files, outside the bundler.) Import a barrel by its bare directory: `@/components/basics`.
-- **In a `'use client'` file, import components and hooks directly** — `@/components/basics/Button`,
-  not the barrel. Importing the barrel would pull the whole folder into the browser bundle.
-- **Import order is enforced** by ESLint (`import/order`): external packages first, then `@/` internal,
-  alphabetized, with a blank line between the groups. Run `eslint --fix` and it sorts them for you.
+```tsx
+{heading && <HeadingGroup {...heading} element="header" className="stat-band-header" />}
+```
 
-## Server and client islands
+```css
+.stat-band {
+	.stat-band-header {
+		margin-block-end: spacing(3xl);
+	}
+}
+```
 
-A component runs on the [server](https://nextjs.org/docs/app/getting-started/server-and-client-components)
-by default. Does it need click handlers, state, an effect or a ref? Put `'use client'` at the top and
-keep the island small — leave the static markup on the server and wrap only the interactive piece.
-`Button` does exactly this: it stays a Server Component and delegates the click to `Interactive`, which
-is the `'use client'` file.
+`HeadingGroup.scss` knows nothing about stat bands. That is what keeps a primitive reusable: it has
+no opinion about the space around it.
 
-## Colour and theming
+## The class-name convention
 
-You never set colour per component. A `Section` gets a `colorset`, everything beneath it inherits, and
-in SCSS you read the runtime properties it sets (`$background-color`, `$color`, `$color-secondary`);
-reach for the `on-colorset()` mixin only when a part needs to change inside one specific colorset.
+Four rules, and they hold across every stylesheet in the repo.
 
-The full theme → colorset → component cascade, with live swatches, is in
-[Look & feel → Colors](?path=/docs/look-feel-colors--docs).
+**1. One root class per component, and every child class is prefixed with it.** `.badge` owns
+`.badge-dot` and `.badge-icon`; `.stat-band` owns `.stat-band-header`, `.stat-band-stats`,
+`.stat-band-stat`. The root class is the kebab-case component name.
 
-## Direction (LTR / RTL)
+**2. State and variant modifiers are bare `is-` / `has-` classes**, applied to the root and read as
+`&.is-…`. A modifier that carries a prop value spells the prop out: `has-gutter-m` for `gutter="m"`,
+`is-horizontal` for `orientation="horizontal"`.
 
-Write styles with [logical properties](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_logical_properties_and_values)
-— `margin-inline`, `padding-block`, `text-align: start` — never physical ones. They follow the text
-direction, so the layout mirrors automatically under `dir="rtl"` with no separate RTL stylesheet.
+```css
+/* src/styles/components/basics/Divider.scss */
+.divider {
+	&.is-horizontal { … }
+	&.is-vertical { … }
+	&.has-label { … }
+}
+```
 
-The **Direction** toolbar at the top of this Storybook flips any story between LTR and RTL so you can
-check both; see the RTL note in [Look & feel → Spacing](?path=/docs/look-feel-spacing--docs).
+**3. Never BEM.** No `__` and no `--` in a class name anywhere in `src/styles/`. `.badge-dot`, not
+`.badge__dot`; `.is-primary`, not `.badge--primary`.
 
-## Environment variables
+**4. Always nest.** A rule for `.badge-dot` is written inside `.badge`, never as a second top-level
+selector. Every stylesheet in `basics` has exactly one top-level selector. The only files with more
+are the ones whose markup is portalled out of the component's own subtree — `Menu.scss` has to style
+`.menu-positioner` separately because Base UI renders it at the end of the document.
 
-Env is a validated contract, just like content. `src/lib/env.ts` defines it with
-[T3 Env](https://env.t3.gg/) + Zod, split into `server` / `client` / `shared`; `process.env` is checked
-against that schema once, when `env` is first imported, so a missing or malformed value **fails the
-build** instead of surfacing as `undefined` at request time. Every variable is documented in
-`.env.example` at the repo root.
+## Barrels, imports, and the one real trap
 
-The one rule that matters is the prefix:
+A **barrel** is a file whose only job is to re-export its neighbours. Each tier has one, at
+`src/components/<tier>/index.ts`:
 
-- **`NEXT_PUBLIC_*`** is inlined into the browser bundle — public by design, only for values safe to
-  ship to the client.
-- **No prefix means server-only** — secrets go here and never reach the browser; T3 Env throws if a
-  Client Component reads one.
+```typescript
+export { default as Interactive } from '@/components/basics/Interactive';
+export { default as Button } from '@/components/basics/Button';
+export { default as Actions } from '@/components/basics/Actions';
+export { default as Link } from '@/components/basics/Link';
+export { default as Pill } from '@/components/basics/Pill';
+```
 
-Read values through the typed `env`, never `process.env` directly. `src/lib/site.ts` shows it:
+The barrel is the tier's public list of what it contains, and the export order encodes the
+dependency order — dependencies first. `structures/index.ts` states the rule in the file itself:
 
-```ts
-import { env } from '@/lib/env';
+```typescript
+// SiteChrome composes the other three, so it is exported last (barrel rule).
+export { default as Navigation } from '@/components/structures/Navigation';
+export { default as Footer } from '@/components/structures/Footer';
+export { default as AnnouncementBar } from '@/components/structures/AnnouncementBar';
+export { default as SiteChrome } from '@/components/structures/SiteChrome';
+```
 
-export const site = {
-	name: 'Dutch Anime Community',
-	description: 'De grootste anime community van Nederland en België. …',
-	url: env.NEXT_PUBLIC_SITE_URL, // validated as a URL, falls back to a placeholder
+The trap the ordering guards against is a cycle. A barrel imports every component in its tier; if a
+component then imported the barrel, the two would import each other and one of them would read a
+binding that is not initialised yet. So **components never import their own tier's barrel** —
+`Badge.tsx` writes `import Icon from '@/components/basics/Icon';`, the full path. Across all 128
+component files there is not one import of a tier barrel, and app code imports through one in
+exactly two places, both for `Blocks`.
+
+`forms/index.ts` records the second reason to prefer the full path:
+
+```typescript
+// One barrel like every other tier; in a 'use client' file import the component directly instead of this barrel.
+```
+
+A client component that imports a barrel drags every module the barrel names into the browser
+bundle, whether it is used or not.
+
+### The trap: `@/lib/site/content` is server-only
+
+`src/lib/site/content/index.ts` re-exports both the schema *and* the page accessors, and
+`pages.ts` begins with `import 'server-only'` — a package that throws if the module reaches a client
+bundle. So there are three import targets with the same-looking path and very different meanings:
+
+| Import from | Contains | Safe on the client |
+| --- | --- | --- |
+| `@/lib/site/content` | schema + `getPageByPath`, `getSiteStructures` | **no** |
+| `@/lib/site/content/schema` | the whole schema, nothing else | yes |
+| `@/lib/site/content/schema/basics/badge` | one component's props | yes |
+
+Components always use the third. `SiteChrome.tsx` spells out why:
+
+```tsx
+// The type import points at the schema file, not the @/lib/content barrel, so the client-side
+// editor bundle never touches the server-only accessor modules.
+```
+
+### Import order
+
+ESLint enforces the order, so this is not a matter of taste. Groups are separated by one blank line
+and alphabetised inside each group:
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
+import Badge from '@/components/basics/Badge';
+import { BadgeProps } from '@/lib/site/content/schema/basics/badge';
+```
+
+External packages first, then everything under the `@/` alias (`@/*` maps to `src/*`), then relative
+paths. `npm run lint` fails on a wrong order and tells you which line to move.
+
+## Server and client components
+
+Every component is a server component by default. It runs during the build, sends HTML, and ships no
+JavaScript. Adding `'use client'` at the top of a file opts that file — and everything it imports —
+into the browser bundle. So the directive goes on the smallest file that genuinely needs it, and the
+rest of the tree stays on the server.
+
+55 of the 134 component files carry `'use client'`. `StatBand` shows the split at its sharpest. The
+block itself is a server component:
+
+```tsx
+// src/components/contentBlocks/StatBand.tsx
+const StatBand = ({
+	heading,
+	items = [],
+	colorset,
+}: StatBandProps) => {
+	return (
+		<Section colorset={colorset} className="stat-band is-band">
+			<Container>
+				{heading && <HeadingGroup {...heading} element="header" className="stat-band-header" />}
+
+				<dl className="stat-band-stats">
+					{items.map((item) => {
+						return (
+							<div key={item.id} className="stat-band-stat">
+								<dt className="stat-band-stat-label">{item.label}</dt>
+								<dd className="stat-band-stat-number">
+									<CountUp value={item.value} prefix={item.prefix} suffix={item.suffix} decimals={item.decimals} />
+								</dd>
+							</div>
+						);
+					})}
+				</dl>
+			</Container>
+		</Section>
+	);
 };
 ```
 
-> **Why not `process.env.X ?? '…'`?** A scattered fallback is an untyped guess that can drift per
-> call-site. The contract validates the value once and gives every reader the same typed `env`, so a
-> bad URL fails the build and a typo'd key won't compile.
+The heading, the layout, the labels and the numbers are all rendered on the server. Only `CountUp`
+is a client component, and only because a number that animates needs an effect, an
+`IntersectionObserver` and `requestAnimationFrame`. It is 69 lines, and its comment explains how it
+stays useful without JavaScript:
 
-The full add-a-variable steps live in [Adding things](?path=/docs/for-developers-3-adding-things--docs).
+```tsx
+// src/components/basics/CountUp.tsx
+'use client';
+
+// The initial state is the final value on purpose: it is what the server renders, so crawlers and
+// no-JS visitors read real data. Only the client resets to 0 to animate.
+```
+
+Two things follow from this that catch people out:
+
+- **A server component cannot pass a function to a client component.** Props crossing that boundary
+  must be serialisable. This is the same constraint the schemas already describe.
+- **`'use client'` is inherited downward, not upward.** A client component's imports all become
+  client code. A server component may render a client component as a child, which is why
+  `AnnouncementBar` (server) can render `AnnouncementDismiss` (client).
+
+## Enforced or merely conventional
+
+`npm run lint` and `npm run typecheck` are the only automated checks — there is no test runner. It is
+worth knowing which of the rules above a machine will catch.
+
+| Rule | Enforced by |
+| --- | --- |
+| Components are arrow functions assigned to a `const` | ESLint (`react/function-component-definition`) |
+| No `function` declarations anywhere, helpers included | ESLint (`func-style`) |
+| Import group order, blank lines between groups, alphabetical inside a group | ESLint (`import/order`) |
+| Props match the schema; every block type has a renderer | `npm run typecheck` |
+| Content matches the schema | the build — `parseContent` throws with the failing field's path |
+| Tabs, LF, final newline | `.editorconfig` (your editor, not CI) |
+| Four files per component, and their casing | nothing — convention |
+| Tier import direction | nothing — convention |
+| Class-name shape and SCSS nesting | nothing — convention |
+| Stylesheet registered in `src/styles/index.ts` | nothing — a missing line renders unstyled, silently |
+
+Where a rule is not enforced, the repo is consistent enough that copying the nearest neighbour is a
+reliable way to get it right.
+
+## Where the names come from
+
+Nothing in `src/components/` is named after the Dutch Anime Community, and three colour themes ship
+where the site uses one. That is because this codebase started as a reusable Next.js starter written
+by Jeffrey Ullers, and the site grew out of it. The brand-specific parts are deliberately narrow:
+`src/content/`, the `[data-theme='dac']` block in `theme.scss`, `src/lib/site/site.ts` and
+`public/media/`. Everything else is meant to stay generic, which is why a component is never called
+`DacHero`.
 
 ---
 
-**Next:** [3. Adding things](?path=/docs/for-developers-3-adding-things--docs) — the recipes for a new
-basic, a content block, a page, and a third-party dependency.
+Next: [3. Adding things](?path=/docs/for-developers-3-adding-things--docs) turns these rules into
+step-by-step recipes.

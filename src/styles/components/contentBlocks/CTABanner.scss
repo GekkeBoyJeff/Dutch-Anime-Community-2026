@@ -50,11 +50,15 @@
 	}
 
 	.cta-banner-panel.is-neutral {
-		background-color: $surface-muted;
+		background-color: $grey-lightest;
+
+		@include on-colorset(dark) {
+			background-color: $grey-dark;
+		}
 	}
 
 	.cta-banner-panel.is-primary {
-		background-color: $tint-accent;
+		background-color: $tint-primary;
 	}
 
 	.cta-banner-panel.is-success {

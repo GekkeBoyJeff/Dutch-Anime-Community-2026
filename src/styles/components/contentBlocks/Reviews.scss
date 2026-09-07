@@ -21,11 +21,15 @@
 		}
 
 		.reviews-card {
-			background-color: $surface-faint;
+			background-color: $grey-lightest;
 
 			.reviews-author {
 				color: $color-secondary;
 				font-weight: $weight-medium;
+			}
+
+			@include on-colorset(dark) {
+				background-color: $grey-dark;
 			}
 		}
 	}

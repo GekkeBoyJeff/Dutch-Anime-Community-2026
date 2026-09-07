@@ -24,11 +24,15 @@
 		inline-size: var(--avatar-size);
 		block-size: var(--avatar-size);
 		border-radius: $rounded-full;
-		background-color: $surface-muted-strong;
+		background-color: $grey-light;
 		color: $color;
 		font-size: calc(var(--avatar-size) * 0.4);
 		font-weight: $weight-medium;
 		text-transform: uppercase;
+
+		@include on-colorset(dark) {
+			background-color: $grey;
+		}
 	}
 
 	.avatar-status {
@@ -38,7 +42,7 @@
 		inline-size: 28%;
 		block-size: 28%;
 		border-radius: $rounded-full;
-		box-shadow: 0 0 0 0.125rem $background-color;
+		box-shadow: 0 0 0 0.125rem $background;
 	}
 
 	.avatar-status.is-online {

@@ -8,9 +8,9 @@
 	max-inline-size: 100%;
 	min-block-size: spacing(5xl);
 	padding-inline: spacing(m);
-	box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+	box-shadow: inset 0 0 0 0.0625rem $border;
 	border-radius: $rounded-m;
-	background: $background-color;
+	background: $background;
 	color: $color-secondary;
 
 	transition: box-shadow $speed-fast $ease;
@@ -18,7 +18,7 @@
 	&[data-focused],
 	&:focus-within {
 		outline: none;
-		box-shadow: inset 0 0 0 0.0625rem var(--accent), $shadow-focus;
+		box-shadow: inset 0 0 0 0.0625rem $primary, $shadow-focus;
 	}
 
 	&[data-disabled] {
@@ -101,9 +101,9 @@
 	overflow-y: auto;
 	padding: spacing(s);
 	border-radius: $rounded-m;
-	background: $background-color;
+	background: $background;
 	color: $color;
-	box-shadow: inset 0 0 0 0.0625rem var(--border-color), $shadow-medium;
+	box-shadow: inset 0 0 0 0.0625rem $border, $shadow-medium;
 
 	@include popup-enter-exit($scale: 0.98);
 
@@ -133,15 +133,19 @@
 			transition: background-color $speed-fast $ease;
 
 			&[data-highlighted] {
-				background-color: $tint-accent;
+				background-color: $tint-primary;
 			}
 
 			&:active:not([data-disabled]) {
-				background-color: $background-active;
+				background-color: $grey-light;
+
+				@include on-colorset(dark) {
+					background-color: $grey;
+				}
 			}
 
 			&[data-selected] {
-				color: $accent-text;
+				color: $primary-text;
 				font-weight: $weight-medium;
 			}
 

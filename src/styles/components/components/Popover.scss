@@ -8,8 +8,8 @@
 	max-inline-size: min(var(--popover-width), calc(100vw - #{spacing(4xl)}));
 	padding: spacing(l);
 	border-radius: $rounded-m;
-	background-color: $white;
-	color: $grey-darkest;
+	background-color: $background;
+	color: $color;
 	box-shadow: $shadow-medium;
 	--font-size: 0.875rem;
 
@@ -25,7 +25,7 @@
 			display: block;
 			inline-size: 0.625rem;
 			block-size: 0.625rem;
-			background-color: $white;
+			background-color: $background;
 			transform: rotate(45deg);
 			box-shadow: $shadow-small;
 		}

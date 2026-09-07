@@ -3,11 +3,11 @@
 	inline-size: 100%;
 	block-size: 1em;
 	border-radius: $rounded-m;
-	background-color: $surface-muted-strong;
+	background-color: $grey-light;
 	background-image: linear-gradient(
 		90deg,
 		transparent,
-		$surface-muted,
+		$grey-lightest,
 		transparent
 	);
 	background-size: 200% 100%;
@@ -32,6 +32,16 @@
 
 	@media (prefers-reduced-motion: no-preference) {
 		animation: skeleton-shimmer 1.4s ease-in-out infinite;
+	}
+
+	@include on-colorset(dark) {
+		background-color: $grey;
+		background-image: linear-gradient(
+			90deg,
+			transparent,
+			$grey-dark,
+			transparent
+		);
 	}
 }
 

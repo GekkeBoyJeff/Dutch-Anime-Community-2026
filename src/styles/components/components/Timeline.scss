@@ -22,7 +22,7 @@
 			inset-inline-start: calc(var(--timeline-gutter) / 2);
 			inline-size: var(--timeline-rail);
 			transform: translateX(-50%);
-			background-color: $border-color;
+			background-color: $border;
 		}
 
 		&:first-child::before {
@@ -43,8 +43,8 @@
 				inline-size: var(--timeline-dot);
 				block-size: var(--timeline-dot);
 				border-radius: $rounded-full;
-				background-color: $accent;
-				box-shadow: 0 0 0 0.25rem $background-color;
+				background-color: $primary;
+				box-shadow: 0 0 0 0.25rem $background;
 			}
 		}
 
@@ -55,7 +55,7 @@
 			.timeline-year {
 				margin: 0 0 spacing(xs);
 				font-weight: $weight-bold;
-				color: $accent-text;
+				color: $primary-text;
 			}
 
 			.timeline-card {

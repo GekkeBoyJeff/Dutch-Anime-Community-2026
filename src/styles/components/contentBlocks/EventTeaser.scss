@@ -52,19 +52,19 @@
 				align-items: center;
 				gap: spacing(xs);
 				font-weight: $weight-medium;
-				color: $accent-text;
+				color: $primary-text;
 				text-decoration: none;
 				text-underline-offset: 0.15em;
 
 				transition: color $speed-fast $ease;
 
 				@include interactive {
-					color: $accent-hover;
+					color: $primary-hover;
 					text-decoration: underline;
 				}
 
 				&:active {
-					color: $accent-active;
+					color: $primary-active;
 				}
 
 			}

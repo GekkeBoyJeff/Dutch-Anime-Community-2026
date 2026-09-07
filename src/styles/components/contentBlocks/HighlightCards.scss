@@ -30,7 +30,7 @@
 
 		.highlight-cards-highlight-card {
 			.card-tagline {
-				color: $accent-text;
+				color: $primary-text;
 			}
 
 			.card-media {
@@ -44,8 +44,8 @@
 					inline-size: 2rem;
 					block-size: 2rem;
 					border-radius: $rounded-full;
-					background-color: $accent;
-					color: $accent-contrast;
+					background-color: $primary;
+					color: $white;
 					font-weight: $weight-bold;
 					font-variant-numeric: tabular-nums;
 				}

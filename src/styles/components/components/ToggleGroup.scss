@@ -12,9 +12,9 @@
 		gap: spacing(xs);
 		padding-block: spacing(s);
 		padding-inline: spacing(m);
-		box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+		box-shadow: inset 0 0 0 0.0625rem $border;
 		border-radius: $rounded-m;
-		background-color: $background-color;
+		background-color: $background;
 		color: $color;
 		font: inherit;
 		font-weight: $weight-medium;
@@ -32,19 +32,27 @@
 
 		&:not([data-disabled]):not([data-pressed]) {
 			@include interactive {
-				box-shadow: inset 0 0 0 0.0625rem var(--border-strong);
-				background-color: $background-hover;
+				box-shadow: inset 0 0 0 0.0625rem $border;
+				background-color: $grey-lightest;
+
+				@include on-colorset(dark) {
+					background-color: $grey-dark;
+				}
 			}
 
 			&:active {
-				background-color: $background-active;
+				background-color: $grey-light;
+
+				@include on-colorset(dark) {
+					background-color: $grey;
+				}
 			}
 		}
 
 		&[data-pressed] {
-			box-shadow: inset 0 0 0 0.0625rem var(--accent);
-			background-color: $accent;
-			color: $accent-contrast;
+			box-shadow: inset 0 0 0 0.0625rem $primary;
+			background-color: $primary;
+			color: $white;
 		}
 
 		&[data-disabled] {

@@ -2,97 +2,250 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="For developers/5. Validation" />
 
-# Validation
+# 5. Validation
 
-Step 5: how the data you just modelled is guarded — at build and at runtime.
+A content file is data, and data can be wrong in ways the compiler never sees: a rating of 9 out of
+5, a block with a misspelled `type`, a review with no author. This page covers what catches those,
+where the check sits, what happens when it fails, and how to read the message.
 
-The [content you write](?path=/docs/for-developers-4-content-data--docs) is validated against a schema,
-not just typed. The contract is written once under `src/lib/content/schema/` with
-[Zod](https://zod.dev/), and that one definition does two jobs: it's the runtime check, and the
-TypeScript types are inferred straight from it.
+## Types and validation are not the same check
 
-## Schema and types are one thing
+The two get talked about as if they were interchangeable. They are not.
 
-Recall from [Content & data](?path=/docs/for-developers-4-content-data--docs) that each block is a Zod
-schema with its TypeScript type inferred via `z.infer` — one definition, no second file to keep in sync.
-What matters on this page is the half TypeScript can't give you: that schema is also a *runtime* check.
+| | TypeScript | Zod |
+| --- | --- | --- |
+| Runs | while editing, and in `npm run typecheck` | while the program runs |
+| Looks at | the code in this repo | any value, wherever it came from |
+| Result | a red squiggle, a failed `tsc` | a thrown error naming the field |
+| Afterwards | gone | still there |
 
-> **Why a schema instead of just types?** TypeScript checks *shape* at compile time and then disappears
-> at runtime. It can't check a *value* — that a rating is 1–5, that an embed has a provider. A schema
-> checks both, and it's still there at runtime to guard content that didn't come from the build.
+That last row is the one that matters. **TypeScript types are erased when the code is compiled.**
+They are instructions to the compiler; none of them survives into the JavaScript that Node runs. So a
+type cannot inspect a database row, an API response, or `process.env`, because by the time those
+values exist there is no type left to do the inspecting.
 
-## Where it runs
+Zod is the other half. A Zod schema is an ordinary value that exists at runtime and can be asked
+"does this match?" of anything.
 
-`lib/content` is the only layer that knows where content comes from, so that's where validation lives.
-The accessors validate the whole registry once, when the module loads, through a shared `parseContent`
-helper (`src/lib/content/validate.ts`). On failure it throws a clean, **source-aware** error: it maps
-Zod's path back to the page route and groups every problem per file.
+Types also cannot express most of what actually goes wrong. This satisfies TypeScript completely:
 
-```ts
-// src/lib/content/pages.ts
-const pages = parseContent(z.record(z.string(), Page), rawPages, {
-	label: 'page content',
-	locate: (path) => {
-		const [route, ...rest] = path; // ['/', 'meta', 'title'] → route '/', field 'meta.title'
-		return { source: `page "${String(route)}"`, field: rest.join('.') };
+```typescript
+{ id: 'r1', author: 'Sam', rating: 9, value: 'Great' }
+```
+
+`rating` is a `number`, and that is all the type says. The schema in
+`src/lib/site/content/schema/blocks/reviews.ts` says more:
+
+```typescript
+rating: z.number().int().min(1).max(5).describe('Star rating given by the reviewer, rendered as filled stars out of 5'),
+```
+
+Whole numbers, 1 through 5. A string may be required to be non-empty (`z.string().min(1)`), a list to
+hold at least one item (`.min(1)`), a stat band to hold between two and four (`.min(2).max(4)`). None
+of that is expressible as a type.
+
+> **Why not just be careful?** Content does not only come from files a developer edits. It comes out
+> of Postgres, written through `/builder` by someone who is not a developer, weeks after the schema
+> last changed. The check has to run against the value, at the moment it arrives.
+
+## One function does the checking
+
+`src/lib/site/content/validate.ts` holds the whole boundary:
+
+```typescript
+export const parseContent = <Schema extends z.ZodType>(
+	schema: Schema,
+	raw: unknown,
+	{ label, locate }: ContentErrorOptions,
+): z.infer<Schema> => {
+	const result = schema.safeParse(raw);
+	if (result.success) return result.data;
+	// … group the issues by source, then:
+	throw new Error(`✖ Invalid ${label} — ${count} problem${count === 1 ? '' : 's'}:\n\n${report}\n`);
+};
+```
+
+Two things to take from that signature. The input is `unknown`, so nothing untyped slips past. The
+return is `z.infer<Schema>` — content is fully typed **because** it was checked, not instead of. The
+schemas it parses against are the ones described in
+[4. Content & data](?path=/docs/for-developers-4-content-data--docs).
+
+**On failure it throws.** There is no fallback, no skipped block, no partial page. The registry
+checks run at module scope, and the page accessors are awaited by Server Components that Next.js
+prerenders, so in practice the throw stops the build.
+
+| Call site | Validates |
+| --- | --- |
+| `pages.ts`, module scope | every page in `src/content/pages/` |
+| `pages.ts`, module scope | `src/content/pages/notFound.ts` |
+| `pages.ts` → `getPageByPath` | one page's row from Supabase |
+| `structures.ts`, module scope | `src/content/structures.ts` |
+| `structures.ts` → `getSiteStructures` | the `structures` row from Supabase |
+
+The module-scope checks run **unconditionally**, the moment the module is imported. They do not wait
+to find out whether the build is reading from Supabase. A broken file in `src/content/` fails
+the build even on a machine that never touches the registry — which is the point: the registry is the
+fallback, and a fallback that has quietly rotted is worse than none.
+
+For a Supabase row the rule is deliberately split. An **empty** column means the page is not
+published, which is a normal 404. A column that has content which no longer matches the schema is
+drift, and drift throws:
+
+```typescript
+// Empty channel = not published, a genuine 404. Content that IS there but no longer matches the
+// schema is drift: throw, or a renamed block type silently 404s a route getAllPagePaths still lists.
+```
+
+## Reading a failure
+
+A real error, from a page with two problems in one review:
+
+```bash
+✖ Invalid page content — 2 problems:
+
+  page "/word-lid"
+   └ blocks.6.items.0.id
+     Invalid input
+   └ blocks.6.items.0.rating
+     Too big: expected number to be <=5
+```
+
+The path is the route to the value through the object, one property or array index at a time. Read it
+left to right against the content file:
+
+| Segment | Means |
+| --- | --- |
+| `blocks` | the `blocks` array of that page |
+| `6` | the seventh block in it — arrays count from 0 |
+| `items` | that block's `items` array |
+| `0` | the first item |
+| `rating` | the field |
+
+So: open `src/content/pages/word-lid.ts`, count seven blocks down, take the first review. Both
+problems are in that one object.
+
+An empty path prints as `(root)` — the object itself is wrong, not one of its fields. `label` and the
+source line above the path say which content is at fault; for a Supabase page the source is the path
+of the page.
+
+## What the common mistakes look like
+
+Every message below is the real output, not a paraphrase.
+
+| Mistake | Where it points | Message |
+| --- | --- | --- |
+| Required field left out | `blocks.0.items` | `Invalid input: expected array, received undefined` |
+| Missing `id` on a list item | `blocks.6.items.0.id` | `Invalid input` |
+| Value outside an enum | `blocks.0.colorset` | `Invalid option: expected one of "light"\|"dark"` |
+| Misspelled block `type` | `blocks.0.type` | `Invalid discriminator value. Expected 'hero' \| 'cardGrid' \| …` |
+| Empty string where text is required | `meta.title` | `Too small: expected string to have >=1 characters` |
+| Number out of range | `blocks.6.items.0.rating` | `Too big: expected number to be <=5` |
+| Too few items in a list | `blocks.0.items` | `Too small: expected array to have >=2 items` |
+| Embed media with no `embedId` | `blocks.0.media.embedId` | `An embed requires both a provider and an embedId` |
+
+The last one is not a field rule but a cross-field rule, written with `.refine()` in
+`schema/primitives.ts`. `Media` carries two:
+
+```typescript
+export const Media = MediaShape
+	.refine((m) => m.type !== 'embed' || (!!m.provider && !!m.embedId), {
+		message: 'An embed requires both a provider and an embedId',
+		path: ['embedId'],
+	})
+	.refine((m) => m.type === 'embed' || !!m.src, {
+		message: 'Media requires a src unless it is an embed',
+		path: ['src'],
+	})
+	.meta({ title: 'Media' });
+```
+
+The `path` option is what puts the complaint on the field an author has to fix, rather than on the
+media object as a whole.
+
+Two rows of that table are caught earlier, while editing, because the shape they break is also a
+type. A misspelled `type` and a missing required field both fail `npm run typecheck`, and the
+compiler is helpful about the first:
+
+```bash
+error TS2820: Type '"heroo"' is not assignable to type '"bentoGrid" | "cardGrid" | … | "titleText"'.
+  Did you mean '"hero"'?
+```
+
+The rest — ranges, lengths, enum values reached from a plain string, anything out of the database —
+only Zod sees.
+
+## The same schemas validate forms
+
+`src/components/forms/Form.tsx` takes a Zod schema as a prop and runs it through
+`zodResolver` from `@hookform/resolvers/zod`. One schema both validates the submitted values and
+types them, so a field's error message and the shape of `onSubmit`'s argument come from the same
+place. `NewsletterSignup` in `schema/blocks/subscribeToNewsletter.ts` is a small example:
+
+```typescript
+export const NewsletterSignup = z
+	.object({
+		email: z.email('Please enter a valid email address.').describe('Email address entered into the signup field'),
+	})
+	.meta({ title: 'NewsletterSignup' });
+```
+
+The string passed to `z.email(…)` is the message the user reads under the field.
+
+## Environment variables have their own contract
+
+`src/lib/shared/env.ts` validates the environment once, at startup, with `createEnv` from
+`@t3-oss/env-nextjs`. Import `env` from there; never read `process.env` in application code.
+
+```typescript
+export const env = createEnv({
+	server: {
+		SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+		CONTENT_CHANNEL: z.enum(['draft', 'published']).optional(),
+		// …
 	},
+	shared: {
+		NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+		HOST_TYPE: z.enum(['server', 'static']).default('server'),
+	},
+	client: {
+		NEXT_PUBLIC_SITE_URL: z.url().default('https://example.com'),
+		NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
+		// …
+	},
+	runtimeEnv: { /* one line per variable */ },
+	emptyStringAsUndefined: true,
 });
 ```
 
-The accessors are **async**, so this runs **at build time** today (`next build` prerenders the pages,
-which load the accessors, which parse — broken content fails the build), and point them at a CMS later
-and the same check runs **at request time** with the route signatures unchanged.
+Three groups, and which one a variable goes in is a security decision.
 
-## What an error looks like
+| Group | Prefix | Readable from |
+| --- | --- | --- |
+| `server` | none | server and build only — reading one in the browser throws |
+| `client` | `NEXT_PUBLIC_` required | anywhere; it is compiled into the browser bundle |
+| `shared` | either | both halves, for a value both genuinely need |
 
-A `rating: 9` is a valid `number` to TypeScript but invalid content; an empty `title: ''` passes the
-`string` type but not the schema. Both fail the build, naming the **page and field** — no guessing:
+`NEXT_PUBLIC_` is not a naming convention, it is the switch: Next.js inlines a variable into the
+JavaScript sent to the browser if, and only if, it carries that prefix. So a value in `client` is
+public. `NEXT_PUBLIC_SUPABASE_ANON_KEY` is there on purpose — it is meant to be public, and Postgres
+row-level security is what actually guards the data. `SUPABASE_SERVICE_ROLE_KEY` bypasses that, which
+is why it is a `server` value and build-time only. See
+[8. Staff platform](?path=/docs/for-developers-8-staff-platform--docs).
 
-```
-✖ Invalid page content — 1 problem:
+Three details that catch people out:
 
-  page "/"
-   └ meta.title
-     Too small: expected string to have >=1 characters
-```
+- **`runtimeEnv` must list every variable by name.** Next.js strips variables that are not referenced
+  literally, so the mapping is not boilerplate — leave a line out and the value is gone.
+- **`emptyStringAsUndefined: true`.** `KEY=` counts as unset. `.env.example` ships the secrets empty,
+  so a copied file keeps the documented "empty = off" behaviour instead of failing validation.
+- **Most variables are `.optional()` or have a `.default()`,** so a fresh clone builds. An optional
+  secret that is unset leaves the feature it gates switched off, not broken.
 
-Run `npm run dev` instead of building and the same message appears in the browser error-overlay, so you
-catch it without waiting for a build.
+Document any new variable in `.env.example`.
 
-## What's enforced
+## What is not validated here
 
-Beyond shape, the schema enforces the values the types could only hint at:
-
-- **`rating`** must be a whole number 1–5 (`z.number().int().min(1).max(5)`).
-- **`colorset`, `provider`, `variant`** are real enums — a typo like `'darkk'` or `'dailymotion'` fails.
-- **required text** (`meta.title`/`description`, a CTA label, a prose body) must be non-empty (`.min(1)`).
-- **an embed** must carry both a `provider` and an `embedId` — a cross-field `.refine` rule, so a
-  half-filled embed can't render a broken `<iframe>`.
-
-## When content is invalid
-
-- **In the repo (today):** the parse throws and the **build fails** — you fix it before it ships, which
-  is the point.
-- **From a CMS (later):** validate at the fetch with `safeParse` and decide how loud to be — return the
-  prettified error, or drop the bad item. As a last line of defence, the
-  [render registry](?path=/docs/for-developers-1-architecture--docs) already skips a block whose `type`
-  it doesn't recognise, so one unknown block can never crash a page.
-
-> **What it does *not* do:** a `prose` block's `value` is raw HTML, rendered as-is. The schema checks
-> it's a non-empty string — it does **not** sanitise it. Treat prose as author-trusted; sanitising
-> untrusted HTML is a separate step. (Output escaping for JSON-LD is handled separately — see
-> [SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs).)
-
-## The same pattern guards the environment
-
-Content isn't the only thing checked this way. `src/lib/env.ts` runs `process.env` through the same
-parse-once / fail-the-build shape — via [T3 Env](https://env.t3.gg/) — so a missing or malformed
-environment value fails the build instead of surfacing as an `undefined` at request time. The env rules
-themselves (the `NEXT_PUBLIC_` prefix, server-only secrets) live in
-[Conventions](?path=/docs/for-developers-2-conventions--docs); what matters here is that the *guarantee* is
-identical — nothing the app reads, content or configuration, reaches runtime unvalidated.
-
----
-
-**Next:** [SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs) — metadata, JSON-LD, Open
-Graph images, and the installable PWA, all generated from this same content.
+Rows the staff dashboard reads at runtime do not go through `parseContent`. They are typed from
+`src/types/database.types.ts`, which is generated from the live schema by `npm run db:types`, and
+they are guarded by row-level security in Postgres. Client-side permission checks decide what to
+render; they do not decide what is allowed.

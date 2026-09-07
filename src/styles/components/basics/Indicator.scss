@@ -12,7 +12,7 @@
 		block-size: 0.625rem;
 		border-radius: $rounded-full;
 		background-color: var(--indicator-color);
-		box-shadow: 0 0 0 0.125rem $background-color;
+		box-shadow: 0 0 0 0.125rem $background;
 	}
 
 	.indicator-mark.has-count {
@@ -20,7 +20,7 @@
 		min-inline-size: 1.25rem;
 		block-size: 1.25rem;
 		padding-inline: spacing(xs);
-		color: $accent-contrast;
+		color: $white;
 		--font-size: 0.8125rem;
 		font-weight: $weight-bold;
 	}
@@ -50,7 +50,7 @@
 	}
 
 	&.is-primary {
-		--indicator-color: #{$accent};
+		--indicator-color: #{$primary};
 	}
 
 	&.is-success {

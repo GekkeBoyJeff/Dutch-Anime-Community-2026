@@ -1,4 +1,4 @@
-// A stand-in for src/lib/supabase/client.ts, aliased in for Storybook only (see .storybook/main.js).
+// A stand-in for src/lib/shared/supabase/client.ts, aliased in for Storybook only (see .storybook/main.js).
 //
 // It is a fixture, not a simulator. Filters are applied so a screen shows plausibly narrowed data
 // rather than every row, but nothing here enforces anything: in the real app Row Level Security

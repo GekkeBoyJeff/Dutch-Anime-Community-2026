@@ -23,7 +23,7 @@
 			gap: spacing(xs);
 			padding-inline: spacing(s);
 			block-size: spacing(xl);
-			box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+			box-shadow: inset 0 0 0 0.0625rem $border;
 			border-radius: $rounded-m;
 			color: $color-secondary;
 
@@ -31,7 +31,7 @@
 
 			&:focus-within {
 				outline: none;
-				box-shadow: inset 0 0 0 0.0625rem var(--accent), $shadow-focus;
+				box-shadow: inset 0 0 0 0.0625rem $primary, $shadow-focus;
 			}
 
 			.filter-bar-search-icon {
@@ -64,16 +64,16 @@
 				padding-block: 0;
 				padding-inline: spacing(s) spacing(xl);
 				block-size: spacing(xl);
-				box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+				box-shadow: inset 0 0 0 0.0625rem $border;
 				border-radius: $rounded-m;
-				background: $background-color;
+				background: $background;
 				color: $color;
 				font: inherit;
 				cursor: pointer;
 
 				transition: box-shadow $speed-fast $ease;
 				@include interactive {
-					box-shadow: inset 0 0 0 0.0625rem var(--border-strong);
+					box-shadow: inset 0 0 0 0.0625rem $border;
 				}
 			}
 
@@ -121,7 +121,7 @@
 				padding-block: spacing(xs);
 				padding-inline: spacing(m);
 				border-radius: $rounded-full;
-				background-color: $background-color;
+				background-color: $background;
 				box-shadow: $admin-ring;
 				color: $color-secondary;
 				font-weight: $weight-medium;
@@ -130,9 +130,9 @@
 
 				@include interactive {
 					&:not(.is-active) {
-						background-color: $background-color;
+						background-color: $background;
 						color: $color;
-						box-shadow: inset 0 0 0 0.0625rem $border-strong;
+						box-shadow: inset 0 0 0 0.0625rem $border;
 					}
 				}
 
@@ -142,9 +142,9 @@
 				}
 
 				&.is-active {
-					background-color: $tint-accent;
-					box-shadow: inset 0 0 0 0.0625rem color-mix(in srgb, #{$accent} 50%, transparent);
-					color: $accent-text;
+					background-color: $tint-primary;
+					box-shadow: inset 0 0 0 0.0625rem color-mix(in srgb, #{$primary} 50%, transparent);
+					color: $primary-text;
 					font-weight: $weight-semibold;
 				}
 
@@ -152,7 +152,7 @@
 					min-inline-size: 1.15rem;
 					padding-inline: 0.35rem;
 					border-radius: $rounded-full;
-					background-color: $surface-muted;
+					background-color: $grey-lightest;
 					color: $color-secondary;
 					font-size: 0.72rem;
 					font-weight: $weight-semibold;
@@ -161,8 +161,12 @@
 					text-align: center;
 
 					.filter-bar-chip.is-active & {
-						background-color: color-mix(in srgb, #{$accent} 30%, transparent);
-						color: $accent-text;
+						background-color: color-mix(in srgb, #{$primary} 30%, transparent);
+						color: $primary-text;
+					}
+
+					@include on-colorset(dark) {
+						background-color: $grey-dark;
 					}
 				}
 			}
@@ -172,13 +176,13 @@
 			.filter-bar-search {
 				min-block-size: 2.25rem;
 				border-radius: $admin-radius-control;
-				background-color: $background-color;
+				background-color: $background;
 				box-shadow: $admin-ring;
 				color: $color-tertiary;
 				transition: box-shadow $motion-micro;
 
 				&:focus-within {
-					box-shadow: inset 0 0 0 0.0625rem $accent, $admin-focus;
+					box-shadow: inset 0 0 0 0.0625rem $primary, $admin-focus;
 				}
 
 				.filter-bar-search-input {

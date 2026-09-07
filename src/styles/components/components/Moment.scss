@@ -1,5 +1,3 @@
-@use "initial" as *;
-
 .moment-list {
 	display: flex;
 	flex-direction: column;
@@ -29,15 +27,15 @@
 		inline-size: 0.0625rem;
 		block-size: calc(100% + #{$admin-gap-tight} + #{$admin-gap-tight});
 		margin-block: calc(0rem - #{$admin-gap-tight});
-		background-color: $border-color;
+		background-color: $border;
 	}
 
 	&:first-child .moment-rail {
-		background: linear-gradient(to bottom, transparent 0 var(--moment-dot-inset), $border-color var(--moment-dot-inset));
+		background: linear-gradient(to bottom, transparent 0 var(--moment-dot-inset), $border var(--moment-dot-inset));
 	}
 
 	&:last-child .moment-rail {
-		background: linear-gradient(to bottom, $border-color 0 var(--moment-dot-inset), transparent var(--moment-dot-inset));
+		background: linear-gradient(to bottom, $border 0 var(--moment-dot-inset), transparent var(--moment-dot-inset));
 	}
 
 	&:only-child .moment-rail {
@@ -51,13 +49,17 @@
 		inline-size: 0.5rem;
 		block-size: 0.5rem;
 		border-radius: $rounded-full;
-		background-color: $surface-strong;
+		background-color: $grey-light;
 		translate: -50% 0;
+
+		@include on-colorset(dark) {
+			background-color: $grey;
+		}
 	}
 
 	&.is-now .moment-dot {
-		background-color: $accent;
-		box-shadow: 0 0 0 0.1875rem $tint-accent;
+		background-color: $primary;
+		box-shadow: 0 0 0 0.1875rem $tint-primary;
 	}
 
 	&.is-positive .moment-dot { background-color: $status-success; }

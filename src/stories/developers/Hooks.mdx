@@ -4,122 +4,265 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 # Hooks
 
-Step 7, the last of the guide: the client-side utilities in `src/hooks` that components reach for in the browser.
+A React hook is a function whose name starts with `use` and which lets a component hold state or reach
+something outside React — the keyboard, the document, a media query — while React keeps track of setting
+it up and tearing it down again.
 
-Five small client-side utilities in `src/hooks`. They run only in the browser, so import each one
-**directly** from a `'use client'` component — `@/hooks/useHaptics`, never a barrel, which would pull
-the whole folder into the client bundle. Each is a default export.
+`src/hooks` holds six of them, listed in full below. Five are pure browser-side utilities; the sixth,
+`useDashboardGuard`, belongs to the staff platform and also hands back a loading element to render.
+
+| Hook | Does | Export |
+| --- | --- | --- |
+| `useHaptics` | fires a device vibration and a click sound on an interaction | default |
+| `useHotkey` | binds a global keyboard chord | default |
+| `useOverlay` | locks page scroll and wires Escape while an overlay is open | default |
+| `useReducedMotion` | reads the reduced-motion preference for JS-driven animation | default |
+| `usePagination` | holds page state and builds the page-number range | default |
+| `useDashboardGuard` | redirects away from a staff screen the caller may not see | **named** |
+
+Five are default exports, imported as `import useHaptics from '@/hooks/useHaptics'`. `useDashboardGuard`
+is a named export: `import { useDashboardGuard } from '@/hooks/useDashboardGuard'`. There is no barrel
+file in `src/hooks`, so each import points at its own file.
+
+## Hooks are client-side, and that spreads
+
+Every file in `src/hooks` starts with `'use client'`. A component that calls one becomes a client
+component, and so does everything it imports — that subtree ships to the browser as JavaScript instead of
+being rendered to HTML on the server.
+
+So keep the client part small. The pattern in this repo is a plain server component that renders one
+`'use client'` island. `src/components/structures/AnnouncementBar.tsx` has no directive and no state:
+
+```tsx
+const AnnouncementBar = ({ message, cta, dismissible = true, variant = 'info', id, className }: AnnouncementBarProps) => {
+	return (
+		<AnnouncementDismiss
+			message={message}
+			cta={cta}
+			id={id}
+			variant={variant}
+			dismissible={dismissible}
+			className={className}
+		/>
+	);
+};
+```
+
+`AnnouncementDismiss` is the island: it carries the directive, and it is the only file that calls
+`useReducedMotion`. Pulling the hook up into `AnnouncementBar` would work and would cost the whole bar.
 
 ## useHaptics
 
-Fires a short device vibration **and a synthetic click sound** on an interaction, for feedback on touch
-devices. It's powered by the [`web-haptics`](https://haptics.lochie.me) package: the haptic is the
-[Web Vibration API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate) on Android and
-Safari's toggle-switch tap on iPhones. It exposes `haptic()` as a shorthand plus `trigger`, `cancel` and
-`isSupported`.
+Fires a short device vibration **and a synthetic click sound** when something is activated, so a touch
+device confirms a tap. It wraps the `web-haptics` package.
 
 ```tsx
 const { haptic } = useHaptics();
-haptic();             // the default 'selection'
-haptic('success');    // any preset name
+
+haptic();          // the default, 'selection'
+haptic('success'); // any preset name
 ```
 
-`haptic()` uses `'selection'` by default; `trigger` takes any preset name below, a duration in
-milliseconds, an array, or a custom pattern.
+The hook returns one thing, `haptic`. Its argument is `HapticInput`: a preset name, a duration in
+milliseconds, or a pattern array. Omitted, it is `'selection'`.
 
-| Preset | Feels like | Use for |
-|---|---|---|
-| `selection` | a light crisp tick (the default) | a tap on a button or link |
-| `light` | a gentle tap | a subtle confirmation |
-| `medium` | a firmer tap | a standard confirmation |
-| `heavy` | a strong tap | a weighty action |
-| `soft` | a soft, rounded tap | a gentle acknowledgement |
-| `rigid` | a short sharp tap | a precise toggle |
+The eleven presets that ship with the package:
+
+| Preset | Pattern | Use for |
+| --- | --- | --- |
+| `selection` | one 8ms tick, the lightest (default) | a tap on a button or link |
+| `light` | one 15ms tap | a subtle confirmation |
+| `medium` | one 25ms tap | a standard confirmation |
+| `heavy` | one 35ms tap at full intensity | a weighty action |
+| `soft` | one 40ms tap at half intensity | a gentle acknowledgement |
+| `rigid` | one 10ms tap at full intensity | a precise toggle |
 | `success` | two rising taps | a completed action |
 | `warning` | two spaced taps | a reversible caution |
 | `error` | three sharp taps | a blocked or failed action |
-| `nudge` | a two-part attention buzz | drawing attention |
-| `buzz` | a long sustained buzz | an alarm or long alert |
+| `nudge` | a long tap then a short one | drawing attention |
+| `buzz` | one 1000ms buzz | an alarm or long alert |
 
-> **Haptic vs sound.** The vibration is felt on Android and on iPhones running iOS 17.4–26.4 (Apple
-> closed that tap in 26.5, so newer iPhones feel nothing, and desktops have no haptic hardware). The
-> click **sound** plays anywhere audio is allowed, so it's the feedback that survives where the
-> vibration can't — though an iPhone stays silent when its ringer switch is off. The call is always safe:
-> it does nothing where there's no support. Sound is on by default; set `SOUND` to `false` in
-> `src/hooks/useHaptics.ts` to mute it.
+**Reach for it rarely.** `Interactive` — the basic behind `Button`, `Pill` and every link
+([story](?path=/docs/basics-interactive--docs)) — already calls it on every enabled click:
 
-> **You usually don't call this directly.** `Interactive` already fires `haptic()` on every enabled
-> click, so `Button`, `Pill` and links get feedback for free. Reach for the hook only for gestures
-> that aren't an `Interactive` click — a swipe or a long-press.
+```tsx
+// src/components/basics/Interactive.tsx
+const handleClick = (event: MouseEvent<HTMLElement>) => {
+	if (disabled) {
+		event.preventDefault();
+		return;
+	}
+
+	haptic();
+	onClick?.(event);
+};
+```
+
+So a normal click is covered. The hook is for feedback that is not an `Interactive` click: a swipe, a
+long-press, a drag that snaps.
+
+> **Why one shared engine?** Browsers cap how many `AudioContext` objects a page may open. A `WebHaptics`
+> instance per component would start failing silently once enough controls had played a sound, so
+> `useHaptics` keeps a single module-level instance and hands every caller the same one.
+
+The click sound is on. It is controlled by one constant at the top of `src/hooks/useHaptics.ts`:
+
+```typescript
+const SOUND = true;
+```
+
+`web-haptics` calls that switch `debug`, which is a misleading name for it — it is the package's only
+sound feature. Set the constant to `false` to go silent.
 
 ## useHotkey
 
-Binds a global keyboard shortcut. One shared
-[`keydown`](https://developer.mozilla.org/en-US/docs/Web/API/Element/keydown_event) listener at module
-level serves every registration, so binding the same chord in several components never stacks
-listeners.
+Binds a keyboard chord globally, for as long as the component is mounted.
 
 ```tsx
-useHotkey('mod+k', () => openSearch()); // mod = ⌘ on macOS, Ctrl elsewhere
+useHotkey('mod+k', () => setPaletteOpen((open) => !open));
 ```
 
-A chord is `modifiers+key`, lower-case: `mod`, `shift`, `alt`, then the key (e.g. `mod+shift+p`). The
-handler runs after `preventDefault`, so it suppresses the browser's own shortcut for that chord.
+`mod` matches Cmd on macOS and Ctrl elsewhere — the hook treats `metaKey` and `ctrlKey` as the same
+modifier. A chord is modifiers then key, lower-case, joined by `+`, in the order `mod`, `shift`, `alt`,
+key: `mod+shift+p`. The handler runs after `preventDefault()`, so it takes the chord away from the
+browser.
 
-> **Why one shared listener?** Each component registering its own `keydown` handler would add a
-> listener per mount. The module-level singleton keeps it to exactly one, no matter how many
-> components bind chords.
+Two components use it, both for ⌘K:
+[`SearchPalette`](?path=/docs/components-searchpalette--docs) on the public site, and `DashboardNav` for
+the staff command palette.
+
+> **Why a module-level listener?** Every registration writes into one `Map` keyed by the chord, and a
+> single `keydown` listener on `window` reads from it. Ten components binding ten chords produce ten map
+> entries and still exactly one listener. The trade-off is that the map holds one handler per chord: two
+> components mounted at once and bound to `mod+k` leave the later one in charge.
 
 ## useOverlay
 
-Manages the lifecycle shared by overlay UI — a modal, drawer or lightbox. It locks body scroll while
-the overlay is open (offsetting the scrollbar width so the page doesn't shift) and restores everything
-on close, with opt-in Escape-to-close.
+Handles the two things every overlay needs while it is open: the page behind it must not scroll, and
+Escape must close it.
 
 ```tsx
-useOverlay(isOpen, onClose);                          // Escape closes by default
-useOverlay(isOpen, onClose, { closeOnEscape: false }); // handle Escape yourself
+useOverlay(isOpen, close);
 ```
 
-Build it into any overlay you add to the `components` layer, so scroll-lock and Escape behave the same
-across all of them.
+Two arguments, both positional. There is no options object — Escape always calls the second argument, and
+passing nothing there simply means Escape does nothing.
 
-> **Why offset the scrollbar?** Setting `overflow: hidden` on `<body>` removes the scrollbar, which
-> would otherwise widen the page and cause a visible jump. The hook adds matching padding so the
-> layout stays put.
+While `isOpen` is true the hook sets `overflow: hidden` on `<body>`, does the same to `.page-frame-scroll`
+when that element is present, and adds padding equal to the scrollbar width so the layout does not jump
+sideways. Everything is restored from a snapshot on close.
+
+> **Why two scroll containers?** In the app the page scrolls inside `.page-frame-scroll`, not the window,
+> so locking `<body>` alone would leave the frame scrollable. But that frame does not exist in Storybook
+> or anywhere the layout is not in play. The hook therefore always locks `<body>` and additionally locks
+> the frame when it is on the page.
+
+Used by [`SearchPalette`](?path=/docs/components-searchpalette--docs) and by both headers in
+[`Navigation`](?path=/docs/structures-navigation--docs) — `PublicHeader` for the site menu and
+`DashboardHeader` for the staff one. Anything overlay-shaped added to the `components` tier should use
+it, so scroll-lock and Escape behave identically everywhere.
 
 ## useReducedMotion
 
-Reads the user's [reduced-motion preference](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
-for **JS-driven** motion — a `requestAnimationFrame` loop or a spring island — that CSS can't gate on its
-own. Built on [`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore), so it reads
-the live media query without a setState-in-effect and stays in sync during SSR (it returns `false` on the server).
+Returns `true` when the visitor has asked their system to reduce motion.
 
 ```tsx
-const reduced = useReducedMotion();
-// skip the animation, or jump straight to the end state
+const reducedMotion = useReducedMotion();
 ```
 
-> **CSS motion is already handled.** `base.scss` ships a global `@media (prefers-reduced-motion: reduce)`
-> reset that near-instantly collapses every animation and transition. Reach for this hook only for motion
-> that lives in JavaScript, where that media query can't reach — UX before motion.
+It is built on [`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore), so it
+reads the live media query without a state-setting effect, and it returns `false` during server rendering.
+
+**Only for motion that lives in JavaScript.** `src/styles/base.scss` already ships a global reset that
+collapses every CSS animation and transition to 0.01ms under `prefers-reduced-motion: reduce`. This hook
+is for the cases that reset cannot reach — a `requestAnimationFrame` loop, or a state machine that waits
+for a transition to end. `AnnouncementDismiss` is exactly that second case:
+
+```tsx
+// src/components/structures/AnnouncementDismiss.tsx
+// With no slide-out transition there is no transitionend to wait for, so close right away.
+if (reducedMotion) {
+	setClosed(true);
+	onDismiss?.();
+	return;
+}
+
+setLeaving(true);
+```
+
+Without the check the bar would set `leaving`, wait for a `transitionend` that the CSS reset has already
+made near-instant, and behave unpredictably.
 
 ## usePagination
 
-Holds the state for a paginated list — either controlled (pass `page` + `onPageChange`) or uncontrolled
-(pass `defaultPage`) — and builds the visible page-number range with ellipses, collapsing wide gaps to a
-`'dots'` sentinel. It hands back the `pages` list, the `active` page and the navigation actions
-(`setPage`, `next`, `previous`, `first`, `last`). Used by the `Pagination` component.
+Holds the current page and works out which page numbers to show.
 
 ```tsx
-const { pages, active, setPage, next, previous } = usePagination({ totalPages: 20, page, onPageChange });
+const { pages, active, setPage, next, previous, first, last } = usePagination({
+	totalPages: 20,
+	page,
+	defaultPage,
+	siblingCount,
+	boundaryCount,
+	onPageChange: (nextPage) => onPageChange?.({ page: nextPage, pageSize }),
+});
 ```
 
-> **No DOM, just state.** The page-range computation is pure, so `Pagination` stays a thin renderer over
-> the list this hook returns.
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `totalPages` | required | how many pages there are; clamped to at least 1 |
+| `page` | — | pass it to control the hook from outside; omit it to let the hook own the state |
+| `defaultPage` | `1` | the starting page when uncontrolled |
+| `siblingCount` | `1` | page numbers shown either side of the active one |
+| `boundaryCount` | `1` | page numbers pinned at each end |
+| `onPageChange` | — | called with the clamped page number on every change |
+
+`pages` is a `(number | 'dots')[]`. A gap wider than one page collapses to the string `'dots'`; a gap of
+exactly one page stays that page, because an ellipsis hiding a single number is worse than the number.
+`setPage` clamps to the valid range, so `next()` on the last page is a no-op rather than an error.
+
+Its one consumer is [`Pagination`](?path=/docs/components-pagination--docs), which renders the list and
+nothing more:
+
+```tsx
+// src/components/components/Pagination.tsx
+if (resolvedTotalPages <= 1) {
+	return null;
+}
+```
+
+> **Why split the maths out?** The range computation is pure — numbers in, numbers out — so it can be
+> reasoned about and reused without a DOM. `Pagination` stays a renderer over whatever this returns.
+
+## useDashboardGuard
+
+Sends a visitor away from a staff screen they cannot use, and supplies something to render meanwhile.
+
+```tsx
+const { ready, fallback, session, permissions } = useDashboardGuard('expenses.view');
+
+if (!ready) {
+	return fallback;
+}
+```
+
+The first argument is a permission. With one, the caller must hold it. Without one, the caller only needs
+a session plus *any* permission that appears in `DASHBOARD_SECTIONS`. A visitor with no session goes to
+`/login?next=<current path>`; a signed-in visitor who fails the check goes to `/dashboard`, or to
+`/account` when no permission was named. `fallback` is a `Container` holding a `Spinner`, or the
+`skeleton` passed in the second argument while permissions are still loading.
+
+> **This secures nothing.** The comment on the hook says so outright: it is routing, not enforcement.
+> Postgres Row Level Security decides what the browser may actually read, so a visitor who reached the
+> screen anyway would find it empty. The redirect exists to avoid showing an empty screen, not to protect
+> the data behind it. [Staff platform](?path=/docs/for-developers-8-staff-platform--docs) explains where
+> the real boundary lives.
+
+No component calls this hook today — the staff section screens it is written for are not in the repo yet.
+The other five are all in use.
 
 ---
 
-That's the end of the developer guide. From here, browse the **Basics / ContentBlocks** stories to see
-the components, or head to **[Look & feel](?path=/docs/look-feel-colors--docs)** for the visual system.
-Back to the **[overview](?path=/docs/start-here--docs)**.
+That is the end of the developer guide. From here, the **Basics**, **Components** and **ContentBlocks**
+stories show the components themselves, and [Look & feel](?path=/docs/look-feel-colors--docs) covers the
+visual system. Back to [Start here](?path=/docs/start-here--docs).

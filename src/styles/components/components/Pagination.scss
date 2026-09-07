@@ -36,7 +36,11 @@
 
 				&:not([data-selected]) {
 					@include interactive {
-						background-color: $background-hover;
+						background-color: $grey-lightest;
+
+						@include on-colorset(dark) {
+							background-color: $grey-dark;
+						}
 					}
 				}
 
@@ -49,11 +53,11 @@
 			}
 
 			.pagination-page[data-selected] {
-				background-color: $accent;
-				color: $accent-contrast;
+				background-color: $primary;
+				color: $white;
 
 				@include interactive {
-					background-color: $accent-hover;
+					background-color: $primary-hover;
 				}
 			}
 

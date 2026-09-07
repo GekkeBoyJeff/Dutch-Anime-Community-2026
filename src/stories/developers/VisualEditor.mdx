@@ -1,0 +1,224 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="For developers/9. The visual editor" />
+
+# The visual editor
+
+The site has an editor built into it. Someone with the right permission opens a page, drags sections
+around, fills in the fields, and saves — without touching a file.
+
+The first half of this page is for whoever does that editing. The second half is for whoever
+maintains it, because the editor is not hand-built: every form in it is generated from the same
+schema that validates the site's content.
+
+The editor is [Puck](https://puckeditor.com/), wired up in `src/lib/admin/puck/` and mounted at
+`/builder`.
+
+---
+
+## For the person editing
+
+### Getting in
+
+Two things are needed, and being logged in is only the first:
+
+| Requirement | What happens without it |
+| --- | --- |
+| A Discord login | The editor sends you to `/login` |
+| The `pages.edit` permission | The editor sends you away again |
+
+Both are also enforced by the database itself, which is what actually matters. Every read and write
+on the `pages` table carries a policy:
+
+```sql
+create policy "read pages"   on public.pages for select to authenticated using (authorize('pages.edit'));
+create policy "update pages" on public.pages for update to authenticated using (authorize('pages.edit')) with check (authorize('pages.edit'));
+```
+
+`to authenticated` rules out anyone not logged in, and `authorize()` checks the permission. So even
+if someone reached the editor screen another way, Postgres would refuse to hand over or accept a
+single page.
+
+### The screen
+
+At the top left is a dropdown listing every page, plus **Nieuwe pagina** for a new one. Picking one
+loads it into the canvas.
+
+Sections are added from a drawer, grouped into five categories:
+
+| Category | Holds |
+| --- | --- |
+| Koppen & titels | hero, ctaBanner, titleText |
+| Content | prose, textMedia, steps, faqAccordion, momentList, chatPreview |
+| Grids & kaarten | bentoGrid, highlightCards, featureCards, introGrid, cardGrid, profileCards, channelBoard |
+| Marketing & social | reviews, logoCloud, eventTeaser, subscribeNewsletter, communityQuestion, proofTicker |
+| Overig | anything not listed above |
+
+Select a section and its fields appear on the right. What you get per field is not arbitrary — a
+short text becomes a single line, a longer one a text area, a fixed set of choices a dropdown, a
+picture an image picker that lists what is already uploaded.
+
+Beside the blocks there are page-level fields: the meta title and description, the share image, and
+the header, announcement bar and footer.
+
+### Ready-made shapes
+
+Most sections offer more than an empty form. Inserting one gives you a filled-in starting point, and
+several sections offer a few different shapes to choose from.
+
+Those come from the component examples in this Storybook. Each example a developer writes becomes an
+insertable shape in the editor, which is why the choices match what you see under **ContentBlocks**
+in the sidebar. It also means the editor cannot offer a shape that the site cannot render.
+
+### Saving, and what "live" means
+
+**Save** is checked before it is stored. The editor converts what is on screen back into page data
+and validates it. If something is wrong it stops, shows **Validatiefouten**, and lists what to fix —
+nothing is written. On a new page it asks for the path first (`/over-ons`, for example).
+
+**Save does not put anything on the live site.** The site is rebuilt into static files, so a change
+only appears once a build has run. That is the separate **Publiceren naar live** button, which needs
+the `site.approve` permission and reports that the site will be live in roughly one to three minutes.
+
+> **A gap worth knowing about.** The database keeps a page twice: `data` is the draft you save, and
+> `published_data` is what a live build reads. Promoting one to the other is meant to happen through
+> the `approve_page` function, which exists in the database — but nothing in the app calls it yet.
+> Today the publish button only starts the build. Accepting drafts is planned work, not a fault you
+> have hit.
+
+### What you cannot break
+
+- **A section cannot be given a shape the site cannot render.** Every save is validated against the
+  same schema the site is built from. See [5. Validation](?path=/docs/for-developers-5-validation--docs).
+- **The header, announcement bar and footer are merged, not replaced.** Parts of the site chrome the
+  editor does not show — the scroll indicator, the search palette, the cookie notice — survive a save
+  untouched.
+- **Published content is protected at the database level.** A database trigger refuses any direct
+  write to the published columns; only the approve function may touch them.
+
+---
+
+## For the person maintaining it
+
+### Nothing here is hand-written
+
+There is no list of blocks in the editor configuration. `config.tsx` walks the same union the site
+uses and builds a component entry for each member:
+
+```tsx
+Block.options.map((blockSchema) => {
+	const type = blockSchema.shape.type.value as keyof typeof REGISTRY;
+	const Renderer = REGISTRY[type];
+	// `type` is the discriminator and `id` is Puck's own instance key — neither is a field.
+	const shape = Object.entries(blockSchema.shape).filter(([key]) => key !== 'type' && key !== 'id');
+	// …
+});
+```
+
+Add a block to the union and register its component, and it appears in the editor with a working
+form. Nothing else is needed. Put it in a category in `config.tsx` if you want it grouped; otherwise
+it lands in **Overig**.
+
+### How a field is chosen
+
+`fieldFor` in `fields.tsx` maps one schema property to one editor input. Optional, nullable and
+defaulted wrappers are unwrapped first, so `z.string().optional()` behaves like `z.string()`.
+
+| Schema | Editor input |
+| --- | --- |
+| `z.string()` | single-line text |
+| `z.number()` | number, with `min`/`max` carried over when the schema sets them |
+| `z.enum([...])` | dropdown of the enum values |
+| `z.boolean()` | Ja / Nee radio |
+| a union of literals only | dropdown of those literals |
+| `z.object({...})` | a nested group of fields |
+| `z.array(z.object({...}))` | a repeatable list |
+| `z.array(z.string())` | a text area, one entry per line |
+| anything else | no field — the property is not editable |
+
+That last row is deliberate. Returning nothing is how a property stays out of the editor.
+
+Four `.meta({ editor })` hints override the default for a string:
+
+| Hint | Input |
+| --- | --- |
+| `richtext` | rich text |
+| `textarea` | multi-line |
+| `icon` | dropdown built from the `ICONS` map |
+| `file` | picker listing the `media` storage bucket, with thumbnails |
+
+```typescript
+src: z.string().optional().describe('Source URL of the image or video').meta({ editor: 'file' }),
+```
+
+### Starting values
+
+A newly inserted block needs sensible content, and there are two sources. `defaultPresetFor(type)`
+is tried first; if a block has no preset, `defaultValueFor` walks the schema and produces a skeleton
+— `'Tekst'` for a string, the first option of an enum, an empty array, a fresh `crypto.randomUUID()`
+for any `id`.
+
+### Presets come from stories
+
+`presets.ts` reads `src/stories/contentBlocks/*.stories.tsx` at build time and turns every export
+that has `args` into an insertable shape. The export name becomes the label and `Default` is what
+gets inserted by default.
+
+This is why a content-block story is not a scratchpad. The constraints it puts on a story are listed
+in [3. Adding things](?path=/docs/for-developers-3-adding-things--docs); the short version is that
+`meta.component` must be the exact component in the registry, and args must be plain JSON that
+validates.
+
+### The parts that are not derived
+
+Three things could not be generated and are worth knowing about.
+
+**`resolveFields` for `cardGrid`.** A card grid item carries the fields of every card variant, but an
+author should only see the ones their chosen card renders. The `items` field is therefore rebuilt
+whenever the variant changes:
+
+```tsx
+const resolveFields =
+	type === 'cardGrid'
+		? (data: { props: Record<string, unknown> }): Record<string, Field> => {
+				const variant = data.props.variant as keyof typeof CARD_GRID_ITEM_BY_VARIANT;
+				const items = fieldFor('items', z.array(CARD_GRID_ITEM_BY_VARIANT[variant] ?? CARD_GRID_ITEM_BY_VARIANT.article));
+				return items ? { ...fields, items } : fields;
+			}
+		: undefined;
+```
+
+**`PreviewTheme`.** Puck renders the preview in its own iframe, which has its own document — without
+the `data-theme` and `data-colorset` the real layout sets. The token cascade would break, so an
+invisible marker reaches into the iframe document and restores both attributes. It runs on every
+render on purpose, because switching viewport recreates the frame.
+
+**`transform.ts`.** The editor's data shape and the site's page shape are not the same thing, so this
+converts between them and collects validation issues on the way back. It is also where empty strings
+become `undefined`, so an untouched optional field does not get saved as `""`.
+
+**`templates.ts`** seeds a new page with a few blocks — a landing page, for instance, starts as hero,
+featureCards, textMedia, ctaBanner, each filled from its own preset.
+
+### Where the editor lives
+
+| File | Job |
+| --- | --- |
+| `src/app/builder/page.tsx` | The route. Marked `robots: noindex`. |
+| `src/app/builder/_components/PuckEditor.tsx` | The screen: permissions, loading, saving, publishing. |
+| `src/app/builder/_components/BlockDrawer.tsx` | The panel blocks are inserted from. |
+| `src/lib/admin/puck/config.tsx` | Derives the whole editor from the block union. |
+| `src/lib/admin/puck/fields.tsx` | One schema property to one editor input. |
+| `src/lib/admin/puck/presets.ts` | Harvests story args into insertable shapes. |
+| `src/lib/admin/puck/transform.ts` | Converts between editor data and page data. |
+| `src/lib/admin/puck/templates.ts` | Seeds a new page. |
+
+The route is on in development and returns a 404 in production unless
+`NEXT_PUBLIC_ENABLE_BUILDER=true`.
+
+---
+
+**See also:** [4. Content & data](?path=/docs/for-developers-4-content-data--docs) for the schema the
+editor is derived from · [5. Validation](?path=/docs/for-developers-5-validation--docs) for what
+happens to invalid content · [8. Staff platform](?path=/docs/for-developers-8-staff-platform--docs)
+for permissions and the rest of the logged-in half.

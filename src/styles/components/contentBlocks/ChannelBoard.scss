@@ -18,7 +18,7 @@
 			align-items: baseline;
 			padding: spacing(m) spacing(l);
 			border-radius: $rounded-m;
-			background-color: $surface-faint;
+			background-color: $grey-lightest;
 
 			@include bp(m) {
 				grid-template-columns: minmax(8rem, auto) 1fr auto;
@@ -27,11 +27,15 @@
 			.channel-board-name {
 				font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
 				font-weight: $weight-semibold;
-				color: $accent-text;
+				color: $primary-text;
 			}
 
 			.channel-board-topic {
 				color: $color-secondary;
+			}
+
+			@include on-colorset(dark) {
+				background-color: $grey-dark;
 			}
 		}
 	}

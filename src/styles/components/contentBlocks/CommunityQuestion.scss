@@ -7,7 +7,7 @@
 		margin-inline: auto;
 		padding: spacing(xl);
 		border-radius: $rounded-l;
-		background-color: $tint-accent;
+		background-color: $tint-primary;
 
 		@include bp(m) {
 			padding: spacing(2xl);
@@ -53,7 +53,7 @@
 				&:has(.radio-group-option-check) {
 					.radio-label {
 						.radio-group-option-bar {
-							background-color: $accent;
+							background-color: $primary;
 						}
 					}
 				}
@@ -68,12 +68,16 @@
 					min-block-size: 3rem;
 					padding-inline: spacing(l);
 					border-radius: $rounded-m;
-					background-color: $surface-faint;
+					background-color: $grey-lightest;
 
 					transition: background-color $motion-micro;
 
 					@include interactive {
-						background-color: $background-hover;
+						background-color: $grey-lightest;
+
+						@include on-colorset(dark) {
+							background-color: $grey-dark;
+						}
 					}
 
 					.radio-group-option {
@@ -87,9 +91,13 @@
 							block-size: 0.25rem;
 							border-start-end-radius: $rounded-full;
 							border-end-end-radius: $rounded-full;
-							background-color: $surface-strong;
+							background-color: $grey-light;
 
 							animation: community-question-reveal $motion-standard;
+
+							@include on-colorset(dark) {
+								background-color: $grey;
+							}
 						}
 
 						.radio-group-option-label {
@@ -109,14 +117,18 @@
 							block-size: 1.25rem;
 							flex: none;
 							border-radius: $rounded-full;
-							background-color: $accent;
-							color: $accent-contrast;
+							background-color: $primary;
+							color: $white;
 
 							.icon {
 								inline-size: 0.8rem;
 								block-size: 0.8rem;
 							}
 						}
+					}
+
+					@include on-colorset(dark) {
+						background-color: $grey-dark;
 					}
 				}
 			}

@@ -22,13 +22,17 @@
 	}
 
 	&.is-neutral {
-		background-color: $surface-muted;
+		background-color: $grey-lightest;
 		color: $color;
+
+		@include on-colorset(dark) {
+			background-color: $grey-dark;
+		}
 	}
 
 	&.is-primary {
-		background-color: $tint-accent;
-		color: $accent-text;
+		background-color: $tint-primary;
+		color: $primary-text;
 	}
 
 	&.is-info {
@@ -54,6 +58,6 @@
 	&.is-outline {
 		background-color: transparent;
 		color: $color;
-		box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+		box-shadow: inset 0 0 0 0.0625rem $border;
 	}
 }

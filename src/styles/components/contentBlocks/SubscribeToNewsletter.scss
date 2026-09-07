@@ -7,8 +7,8 @@
 		margin-inline: auto;
 		padding: spacing(xl);
 		border-radius: $rounded-l;
-		background-color: $background-color;
-		box-shadow: inset 0 0 0 0.0625rem var(--border-color), $shadow-medium;
+		background-color: $background;
+		box-shadow: inset 0 0 0 0.0625rem $border, $shadow-medium;
 		text-align: center;
 
 		.subscribe-to-newsletter-copy {

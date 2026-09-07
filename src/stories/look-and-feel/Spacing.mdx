@@ -2,72 +2,339 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="Look & feel/Spacing" />
 
-# Spacing
+export const INK = 'rgba(128, 128, 128, 0.85)';
 
-The spacing scale, drawn to size:
+export const STEPS = [
+	['xs', '0.25rem', '4px'],
+	['s', '0.5rem', '8px'],
+	['m', '0.75rem', '12px'],
+	['l', '1rem', '16px'],
+	['xl', '1.25rem', '20px'],
+	['2xl', '1.5rem', '24px'],
+	['3xl', '1.75rem', '28px'],
+	['4xl', '2rem', '32px'],
+	['5xl', '2.5rem', '40px'],
+];
 
-<div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem', marginBlock: '1.5rem' }}>
-	{[
-		['xs', '0.25rem'], ['s', '0.5rem'], ['m', '0.75rem'], ['l', '1rem'], ['xl', '1.25rem'],
-		['2xl', '1.5rem'], ['3xl', '1.75rem'], ['4xl', '2rem'], ['5xl', '2.5rem'],
-	].map(([name, value]) => (
-		<div key={name} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-			<code style={{ inlineSize: '3.5rem' }}>{name}</code>
-			<div style={{ blockSize: '1rem', inlineSize: value, background: '#2f6df6', borderRadius: '4px' }} />
-			<span style={{ color: '#6b7280' }}>{value}</span>
+export const BREAKPOINTS = [
+	['s', '24rem', '384px'],
+	['m', '48rem', '768px'],
+	['l', '64rem', '1024px'],
+	['xl', '80rem', '1280px'],
+	['2xl', '90rem', '1440px'],
+	['3xl', '120rem', '1920px'],
+];
+
+export const Bar = ({ size, label, sub }) => (
+	<div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', paddingBlock: '0.35rem' }}>
+		<code style={{ inlineSize: '3rem', flex: 'none', fontSize: '0.72rem', textAlign: 'right' }}>{label}</code>
+		<span style={{ inlineSize: size, blockSize: '1.1rem', flex: 'none', borderRadius: '0.15rem', background: INK }} />
+		<span style={{ fontSize: '0.72rem', opacity: 0.7 }}>{sub}</span>
+	</div>
+);
+
+export const Box = ({ children }) => (
+	<div
+		data-colorset="light"
+		style={{
+			padding: '1.1rem',
+			borderRadius: '0.75rem',
+			background: 'var(--background)',
+			color: 'var(--color)',
+			boxShadow: 'inset 0 0 0 0.0625rem var(--border), 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.18)',
+			marginBlock: '1.5rem',
+		}}
+	>
+		{children}
+	</div>
+);
+
+export const PadDemo = ({ pad, label }) => (
+	<div style={{ flex: '1 1 12rem' }}>
+		<code style={{ fontSize: '0.72rem', opacity: 0.7 }}>{label}</code>
+		<div style={{ marginBlockStart: '0.4rem', padding: pad, borderRadius: '0.5rem', background: 'rgba(128, 128, 128, 0.22)' }}>
+			<div style={{ padding: '0.35rem 0.5rem', borderRadius: '0.3rem', background: 'rgba(128, 128, 128, 0.5)', fontSize: '0.75rem' }}>content</div>
 		</div>
-	))}
-</div>
+	</div>
+);
 
-Every gap, padding and margin on the site comes from this one scale — never a loose pixel value. The
-steps are named `xs` through `5xl`, and you can also count in numeric steps `0`–`8`, where each step is
-`0.25rem`. So `spacing(2)` equals `spacing(s)` equals `0.5rem`.
+## The scale
 
-## How to use it
+Nine steps, at real size. Everything the site puts between two things — padding, a grid gap, a
+margin — comes from this list.
 
-You reach for the scale through the `spacing()` function in SCSS:
+<Box>
+	{STEPS.map(([name, rem, px]) => <Bar key={name} size={rem} label={name} sub={`${rem} · ${px}`} />)}
+</Box>
 
-```scss
-.card {
-	padding: spacing(xl);            // 1.25rem
-	gap: spacing(m);                 // 0.75rem
-	margin-block-end: spacing(4xl);  // 2rem
+The steps are close together at the bottom and far apart at the top, because that is where the eye
+notices a difference. Below `l` the scale is quarter-rem increments for the inside of controls; above
+it, the jumps are for the space between whole blocks.
+
+They live in one Sass map in `src/styles/_tokens.scss`:
+
+```css
+$spacing: (
+	xs: 0.25rem,
+	s: 0.5rem,
+	m: 0.75rem,
+	l: 1rem,
+	xl: 1.25rem,
+	2xl: 1.5rem,
+	3xl: 1.75rem,
+	4xl: 2rem,
+	5xl: 2.5rem,
+);
+```
+
+The same nine steps at work as padding:
+
+<Box>
+	<div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+		<PadDemo pad="0.5rem" label="spacing(s)" />
+		<PadDemo pad="1rem" label="spacing(l)" />
+		<PadDemo pad="1.5rem" label="spacing(2xl)" />
+		<PadDemo pad="2.5rem" label="spacing(5xl)" />
+	</div>
+</Box>
+
+## `spacing()`
+
+A stylesheet never writes `0.75rem`. It writes `spacing(m)`, and the function looks the name up:
+
+```css
+@function spacing($step) {
+	@if map.has-key($spacing, $step) {
+		@return map.get($spacing, $step);
+	}
+
+	@if meta.type-of($step) == "number" {
+		@return $step * 0.25rem;
+	}
+
+	@error 'Unknown spacing step: #{$step}';
 }
 ```
 
-> **Why a single scale?** When every distance is one of nine steps, the whole site shares one rhythm
-> and nothing looks slightly off. Change the scale in one place and every margin, padding and gap moves
-> with it — there are no stray `13px` values to hunt down.
+Three things happen in there.
 
-Where it lives: `src/styles/_initial.scss` (the `$spacing` map). The named steps are a map; the numeric aliases are a
-formula (`step × 0.25rem`), so they're never duplicated.
+1. **A known name returns its value.** `spacing(m)` is `0.75rem`.
+2. **A bare number is multiplied by `0.25rem`.** `spacing(12)` is `3rem`; `spacing(2)` is `0.5rem`,
+   the same as `spacing(s)`. This is the escape hatch for a value the scale does not carry — the
+   dashboard shell uses `spacing(12)` for its bottom padding, and `Swiper` uses `spacing(2)`.
+3. **Anything else is a build error.** `spacing(medium)` stops the build with
+   `Unknown spacing step: medium` rather than compiling to nothing.
 
-## Breakpoints
+> **Why a function and not a variable per step?** The `@error` line. A typo in `$spacing-mdeium`
+> compiles to an empty value in some setups and a warning nobody reads in others; a typo in
+> `spacing(mdeium)` fails the build with the name printed.
 
-Spacing and type respond at a shared set of breakpoints (used through the `bp()` mixin, all
-mobile-first min-widths):
+Prefer a name over a number. The numeric form exists so an odd value stays on the same 0.25rem grid,
+not so the scale can be bypassed.
 
-| Name | Min width |
-|---|---|
-| `s` | 24rem |
-| `m` | 48rem |
-| `l` | 64rem |
-| `xl` | 80rem |
-| `2xl` | 90rem |
-| `3xl` | 120rem |
+## Where the scale gets used
 
-```scss
-.grid {
-	gap: spacing(m);
+`Section` — the block every page is built from — is six lines, and two of them are spacing:
 
-	@include bp(l) {
-		gap: spacing(xl); // wider gap from the large breakpoint up
+```css
+.section {
+	background-color: $background;
+	color: $color;
+	padding-block: spacing(5xl);
+	padding-inline: $section-gutter;
+}
+```
+
+`$section-gutter` is not a step. It is a custom property declared in `src/styles/theme.scss`, and it
+changes at a breakpoint:
+
+```css
+:root {
+	--section-gutter: #{spacing(l)};
+}
+
+@include bp(l) {
+	:root {
+		--section-gutter: #{spacing(4xl)};
 	}
 }
 ```
 
-Where it lives: `src/styles/_initial.scss` (the `$breakpoints` map).
+16px of side padding on a phone, 32px from 1024px up, and every section on the site inherits both
+because they read one property.
 
----
+## The breakpoints
 
-**See also:** [Colors](?path=/docs/look-feel-colors--docs) · [Typography](?path=/docs/look-feel-typography--docs).
+Six widths, and every media query in the codebase uses one of them.
+
+<Box>
+	{BREAKPOINTS.map(([name, rem, px]) => (
+		<div key={name} style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', paddingBlock: '0.35rem' }}>
+			<code style={{ inlineSize: '2.5rem', flex: 'none', fontSize: '0.72rem', textAlign: 'right' }}>{name}</code>
+			<span style={{ flex: '1 1 auto', blockSize: '0.9rem', borderRadius: '0.15rem', background: 'rgba(128, 128, 128, 0.18)' }}>
+				<span style={{ display: 'block', inlineSize: `${(parseFloat(rem) / 120) * 100}%`, blockSize: '100%', borderRadius: '0.15rem', background: INK }} />
+			</span>
+			<span style={{ inlineSize: '8rem', flex: 'none', fontSize: '0.72rem', opacity: 0.7 }}>{rem} · {px}</span>
+		</div>
+	))}
+</Box>
+
+| Name | Value | Roughly | Notes |
+| --- | --- | --- | --- |
+| `s` | 24rem | 384px | A large phone. |
+| `m` | 48rem | 768px | Tablet. The busiest breakpoint in the codebase. |
+| `l` | 64rem | 1024px | Laptop. Where the type scale reaches its largest step. |
+| `xl` | 80rem | 1280px | Desktop. |
+| `2xl` | 90rem | 1440px | Wide desktop. |
+| `3xl` | 120rem | 1920px | Very wide. |
+
+They are written in **`src/styles/breakpoints.json`**, which is not a stylesheet:
+
+```json
+{
+	"s": "24rem",
+	"m": "48rem",
+	"l": "64rem",
+	"xl": "80rem",
+	"2xl": "90rem",
+	"3xl": "120rem"
+}
+```
+
+### Why JSON
+
+Two sides of the codebase need these numbers, and they cannot both read a `.scss` file.
+
+- The **SCSS** side wants a Sass map for `bp()` and `breakpoint()`.
+- The **JS** side wants the raw values. `src/lib/site/images/index.ts` builds the `sizes` attribute of
+  a responsive image out of them: `(min-width: 48rem) 50vw, 100vw`. That string has to name the same
+  widths the stylesheet does, or an image picks the wrong file at the wrong width.
+
+`styles.config.mjs` closes the gap by reading the JSON and writing a Sass partial from it:
+
+```jsx
+const breakpoints = JSON.parse(readFileSync(join(stylesDir, 'breakpoints.json'), 'utf8'));
+const breakpointMap = Object.entries(breakpoints)
+	.map(([name, value]) => `\t${name}: ${value},`)
+	.join('\n');
+```
+
+A `writeFileSync` on the next line wraps that map in `$breakpoints: ( … );` and saves it as
+`src/styles/_breakpoints.scss`, which `_tokens.scss` then `@use`s:
+
+```css
+// GENERATED from breakpoints.json by styles.config.mjs — do not edit by hand.
+$breakpoints: (
+	s: 24rem,
+	m: 48rem,
+	l: 64rem,
+	xl: 80rem,
+	2xl: 90rem,
+	3xl: 120rem,
+);
+```
+
+That code runs on import, and both `next.config.mjs` and `.storybook/main.js` import the module before
+any SCSS is compiled. The partial is therefore a build artefact and is git-ignored; editing it by hand
+is undone on the next start. To change a breakpoint, change the JSON.
+
+The same module also exports the prelude that puts every token in reach:
+
+```jsx
+export const SCSS_PRELUDE = '@use "tokens" as *;\n@use "interactions" as *;';
+```
+
+It is prepended to every stylesheet entering the bundler, which is why a component stylesheet can
+call `spacing()` without an `@use` line of its own.
+
+## `bp()`, and writing mobile-first
+
+`bp(name)` opens a `min-width` media query, and rejects a name that is not in the map:
+
+```css
+@mixin bp($name) {
+	@if not map.has-key($breakpoints, $name) {
+		@error 'Unknown breakpoint: #{$name}';
+	}
+
+	@media (min-width: map.get($breakpoints, $name)) {
+		@content;
+	}
+}
+```
+
+`min-width` means the rules outside the mixin are the phone layout, and each `bp()` block adds to it
+as the screen gets wider. Write the small layout first; never undo it.
+
+```css
+.footer-top {
+	display: grid;
+	gap: spacing(4xl);
+
+	@include bp(m) {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+	}
+}
+```
+
+From `src/styles/components/structures/Footer.scss`. One column stacked by default; from 768px up,
+two columns in a 1:2 ratio. The gap is stated once and never repeated, because nothing about it
+changes.
+
+For the rare rule that only applies *below* a width, `breakpoint()` returns the raw value so it can go
+in a hand-written query:
+
+```css
+@media (max-width: breakpoint(m)) {
+	thead {
+		position: absolute;
+	}
+}
+```
+
+From `Table.scss`, which hides the header row and re-labels each cell when a table has to become a
+list. Both helpers `@error` on an unknown name, so `bp(desktop)` fails the build instead of silently
+matching nothing.
+
+## Logical properties
+
+Stylesheets in this repo do not write `padding-left`, `margin-left` or `left`. They write
+`padding-inline-start`, `margin-inline` and `inset-inline-start`. There is not one `padding-left`,
+`margin-left` or `left` declaration anywhere in `src/styles`.
+
+| Physical | Logical | Means |
+| --- | --- | --- |
+| `padding-left` / `padding-right` | `padding-inline-start` / `padding-inline-end` | the start and end of a line of text |
+| `padding-left` **and** `padding-right` | `padding-inline` | both sides at once |
+| `padding-top` **and** `padding-bottom` | `padding-block` | above and below |
+| `width` / `height` | `inline-size` / `block-size` | along the text / across it |
+| `left` / `right` | `inset-inline-start` / `inset-inline-end` | pinned to the start / end edge |
+| `border-left` | `border-inline-start` | the edge the line starts at |
+
+"Start" is left in English and Dutch, and right in Arabic or Hebrew. The browser resolves it from the
+`dir` attribute, so one rule produces both layouts:
+
+<Box>
+	<div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+		<div style={{ flex: '1 1 14rem' }}>
+			<code style={{ fontSize: '0.72rem', opacity: 0.7 }}>dir="ltr"</code>
+			<div dir="ltr" style={{ marginBlockStart: '0.4rem', paddingInlineStart: '1.5rem', paddingBlock: '0.6rem', borderInlineStart: `0.25rem solid ${INK}`, background: 'rgba(128, 128, 128, 0.15)' }}>Nieuws uit de club</div>
+		</div>
+		<div style={{ flex: '1 1 14rem' }}>
+			<code style={{ fontSize: '0.72rem', opacity: 0.7 }}>dir="rtl"</code>
+			<div dir="rtl" style={{ marginBlockStart: '0.4rem', paddingInlineStart: '1.5rem', paddingBlock: '0.6rem', borderInlineStart: `0.25rem solid ${INK}`, background: 'rgba(128, 128, 128, 0.15)' }}>أخبار النادي</div>
+		</div>
+	</div>
+</Box>
+
+Both boxes above carry the identical `padding-inline-start` and `border-inline-start`. The bar moves
+to the other side because the text direction did. With `padding-left` it would have stayed put, and
+the bar would sit at the end of the sentence instead of the beginning.
+
+Right-to-left is not on the site's roadmap, but the payoff is not only translation: `padding-inline`
+is one declaration where `padding-left` and `padding-right` are two, and `padding-block` pairs with it
+symmetrically, which makes a rule easier to read than four physical properties in an order nobody
+remembers.
+
+Colours and type sizes are documented separately: [Colors](?path=/docs/look-feel-colors--docs) and
+[Typography](?path=/docs/look-feel-typography--docs).

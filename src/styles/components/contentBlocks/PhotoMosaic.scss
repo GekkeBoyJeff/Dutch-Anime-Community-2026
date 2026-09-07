@@ -62,7 +62,7 @@
 				inset-inline: 0;
 				padding-block: spacing(2xl) spacing(m);
 				padding-inline: spacing(l);
-				background: linear-gradient(to top, $scrim-strong, transparent);
+				background: linear-gradient(to top, $overlay-strong, transparent);
 				color: $white;
 				--font-size: 0.875rem;
 				font-weight: $weight-medium;
@@ -100,9 +100,9 @@
 			.photo-mosaic-frame {
 				block-size: auto;
 				border-radius: $rounded-s;
-				background-color: $surface-muted;
+				background-color: $grey-lightest;
 				border: 0.0625rem solid $white;
-				box-shadow: 0 0.125rem 0.9375rem rgba(#241a22, 0.22);
+				box-shadow: 0 0.125rem 0.9375rem rgba($black, 0.22);
 				padding: spacing(s) spacing(s) spacing(2xl);
 				overflow: visible;
 				transition: transform $speed $ease-snappy, box-shadow $speed $ease;
@@ -125,6 +125,10 @@
 					translate: none;
 					padding: spacing(s) spacing(xs) 0;
 				}
+
+				@include on-colorset(dark) {
+					background-color: $grey-dark;
+				}
 			}
 
 			&:nth-child(3n + 1) .photo-mosaic-frame {
@@ -143,7 +147,7 @@
 				.photo-mosaic-frame:hover {
 					transform: rotate(0deg) scale(1.03);
 					z-index: $z-base;
-					box-shadow: 0 0.5rem 1.5rem rgba(#241a22, 0.28);
+					box-shadow: 0 0.5rem 1.5rem rgba($black, 0.28);
 				}
 			}
 		}

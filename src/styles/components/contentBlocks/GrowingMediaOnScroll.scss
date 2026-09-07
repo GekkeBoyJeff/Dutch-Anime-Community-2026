@@ -6,7 +6,7 @@
 	}
 
 	.growing-media-on-scroll-scene {
-		padding-inline: var(--section-gutter);
+		padding-inline: $section-gutter;
 
 		.growing-media-on-scroll-stage {
 			inline-size: min(100%, 90rem);
@@ -17,7 +17,7 @@
 				aspect-ratio: 16 / 9;
 				border-radius: 2rem;
 				overflow: hidden;
-				background-color: $surface-muted;
+				background-color: $grey-lightest;
 
 				@supports (animation-timeline: view()) {
 					animation: growing-media-on-scroll-in linear both;
@@ -35,6 +35,10 @@
 						block-size: 100%;
 						aspect-ratio: auto;
 					}
+				}
+
+				@include on-colorset(dark) {
+					background-color: $grey-dark;
 				}
 			}
 		}

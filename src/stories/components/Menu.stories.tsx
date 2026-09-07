@@ -99,7 +99,7 @@ export const Context: Story = {
 						placeItems: 'center',
 						blockSize: '8rem',
 						borderRadius: '0.75rem',
-						boxShadow: 'inset 0 0 0 0.0625rem var(--border-color)',
+						boxShadow: 'inset 0 0 0 0.0625rem var(--border)',
 						color: 'var(--color-secondary)',
 					}}
 				>

@@ -15,11 +15,11 @@
 		position: relative;
 		display: flex;
 		gap: var(--tabs-gap);
-		border-block-end: 0.0625rem solid $border-color;
+		border-block-end: 0.0625rem solid $border;
 
 		&[data-orientation="vertical"] {
 			flex-direction: column;
-			border-inline-end: 0.0625rem solid $border-color;
+			border-inline-end: 0.0625rem solid $border;
 		}
 
 		.tabs-tab {
@@ -62,7 +62,7 @@
 			inset-block-end: 0;
 			inline-size: var(--active-tab-width);
 			block-size: var(--tabs-indicator-size);
-			background-color: $accent;
+			background-color: $primary;
 			border-radius: $rounded-full;
 
 			transition:

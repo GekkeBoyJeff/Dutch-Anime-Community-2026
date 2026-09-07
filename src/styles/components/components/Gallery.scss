@@ -12,13 +12,17 @@
 			position: relative;
 			overflow: hidden;
 			border-radius: $rounded-m;
-			background-color: $surface-muted;
+			background-color: $grey-lightest;
 			--media-radius: 0;
 			--media-block-size: 100%;
 
 			.media-asset,
 			img {
 				transition: transform $speed $ease;
+			}
+
+			@include on-colorset(dark) {
+				background-color: $grey-dark;
 			}
 		}
 

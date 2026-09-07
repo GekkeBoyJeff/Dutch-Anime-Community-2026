@@ -8,7 +8,7 @@
 			font-weight: $weight-medium;
 			text-transform: uppercase;
 			letter-spacing: $tracking-wider;
-			color: $accent-text;
+			color: $primary-text;
 		}
 
 		.hero-divider {
@@ -92,7 +92,7 @@
 		grid-template-areas: 'stacked';
 		border-radius: 1.5rem;
 		overflow: hidden;
-		background-color: $background-color;
+		background-color: $background;
 		color: $color;
 
 		@include bp(xl) {
@@ -178,7 +178,7 @@
 			}
 
 			.hero-tagline {
-				color: var(--accent-text-dark);
+				color: var(--primary-text-dark);
 			}
 		}
 
@@ -192,7 +192,7 @@
 				justify-content: space-evenly;
 				border-radius: 0;
 				border-start-start-radius: 1.75rem;
-				background-color: rgba(#241a22, 0.45);
+				background-color: color-mix(in srgb, var(--background-dark) 45%, transparent);
 				backdrop-filter: blur(0.75rem);
 				padding-block: spacing(xl);
 				padding-inline: spacing(2xl);
@@ -253,7 +253,7 @@
 				}
 
 				@include interactive {
-					background-color: var(--background-hover-light);
+					background-color: $grey-lightest;
 				}
 			}
 		}

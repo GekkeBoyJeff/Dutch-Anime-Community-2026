@@ -1,6 +1,6 @@
 .content {
 	--font-size: 1rem;
-	font-size: var(--font-size);
+	font-size: $font-size;
 
 	&.is-small {
 		--font-size: 0.875rem;

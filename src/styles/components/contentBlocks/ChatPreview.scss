@@ -4,13 +4,13 @@
 		margin-inline: auto;
 		padding: spacing(l);
 		border-radius: $rounded-l;
-		border: 0.0625rem solid $border-color;
-		background-color: $surface-faint;
+		border: 0.0625rem solid $border;
+		background-color: $grey-lightest;
 
 		.chat-preview-channel {
 			margin: 0 0 spacing(m);
 			padding-block-end: spacing(s);
-			border-block-end: 0.0625rem solid $border-color;
+			border-block-end: 0.0625rem solid $border;
 			color: $color-secondary;
 			font-size: 0.8125rem;
 			font-weight: $weight-medium;
@@ -68,6 +68,10 @@
 					}
 				}
 			}
+		}
+
+		@include on-colorset(dark) {
+			background-color: $grey-dark;
 		}
 	}
 

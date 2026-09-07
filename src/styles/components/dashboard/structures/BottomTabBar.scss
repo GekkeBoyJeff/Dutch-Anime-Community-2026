@@ -9,7 +9,7 @@
 	padding-block-start: spacing(xs);
 	padding-block-end: calc(#{spacing(xs)} + env(safe-area-inset-bottom));
 	background-color: $page;
-	border-block-start: 0.0625rem solid $border-color;
+	border-block-start: 0.0625rem solid $border;
 	box-shadow: $shadow-card;
 
 	@include bp(l) {
@@ -41,7 +41,7 @@
 			color: $color;
 		}
 		&.is-active {
-			color: $accent-text;
+			color: $primary-text;
 		}
 	}
 }

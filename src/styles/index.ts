@@ -1,7 +1,9 @@
 // The single style entry point — imported once by src/app/layout.tsx and the Storybook preview.
-// Loads the global cascade first, then every component stylesheet (mirroring src/components).
+// theme.scss defines every design token, base.scss resets and styles bare elements, then one line
+// per component stylesheet (mirroring src/components).
 // Add a component? Create src/styles/components/<layer>/Name.scss and add one import line here.
 
+import '@/styles/theme.scss';
 import '@/styles/base.scss';
 
 // basics
@@ -32,7 +34,6 @@ import '@/styles/components/basics/Shortcut.scss';
 import '@/styles/components/basics/Skeleton.scss';
 import '@/styles/components/basics/SkeletonText.scss';
 import '@/styles/components/basics/Spinner.scss';
-import '@/styles/components/basics/Title.scss';
 
 // components
 import '@/styles/components/components/ArticleCard.scss';

@@ -7,10 +7,10 @@
 
 	min-inline-size: var(--menu-min-width);
 	padding-block: spacing(xs);
-	background-color: $background-color;
+	background-color: $background;
 	color: $color;
 	border-radius: $rounded-m;
-	box-shadow: inset 0 0 0 0.0625rem var(--border-color), $shadow-medium;
+	box-shadow: inset 0 0 0 0.0625rem $border, $shadow-medium;
 	outline: none;
 
 	@include popup-enter-exit($scale: 0.96);
@@ -41,11 +41,19 @@
 		}
 
 		&[data-highlighted] {
-			background-color: $background-hover;
+			background-color: $grey-lightest;
+
+			@include on-colorset(dark) {
+				background-color: $grey-dark;
+			}
 		}
 
 		&:active:not([data-disabled]) {
-			background-color: $background-active;
+			background-color: $grey-light;
+
+			@include on-colorset(dark) {
+				background-color: $grey;
+			}
 		}
 
 		&[data-disabled] {
@@ -70,7 +78,7 @@
 			justify-content: center;
 			inline-size: 1em;
 			block-size: 1em;
-			color: $accent-text;
+			color: $primary-text;
 
 			.menu-dot {
 				inline-size: 0.45em;
@@ -92,6 +100,6 @@
 	.menu-separator {
 		block-size: 0.0625rem;
 		margin-block: spacing(xs);
-		background-color: $border-color;
+		background-color: $border;
 	}
 }

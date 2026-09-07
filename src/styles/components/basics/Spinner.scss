@@ -14,8 +14,8 @@
 		inline-size: var(--spinner-size);
 		block-size: var(--spinner-size);
 		border-radius: $rounded-full;
-		border: 0.125rem solid $border-color;
-		border-block-start-color: $accent;
+		border: 0.125rem solid $border;
+		border-block-start-color: $primary;
 	}
 
 	@media (prefers-reduced-motion: no-preference) {

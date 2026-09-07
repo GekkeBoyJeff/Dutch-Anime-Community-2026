@@ -68,8 +68,8 @@
 	}
 
 	&.is-accent {
-		background-color: $tint-accent;
-		color: $accent-text;
+		background-color: $tint-primary;
+		color: $primary-text;
 	}
 
 	@media (prefers-reduced-motion: no-preference) {

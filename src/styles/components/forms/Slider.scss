@@ -26,13 +26,13 @@
 			inline-size: 100%;
 			block-size: var(--slider-track-size);
 			border-radius: $rounded-full;
-			background-color: $surface-track;
+			background-color: $grey-light;
 
 			.slider-indicator {
 				position: absolute;
 				block-size: 100%;
 				border-radius: inherit;
-				background-color: $accent;
+				background-color: $primary;
 			}
 
 			.slider-thumb {
@@ -42,12 +42,22 @@
 				background-color: $white;
 				box-shadow:
 					$shadow-small,
-					inset 0 0 0 0.0625rem var(--surface-strong);
+					inset 0 0 0 0.0625rem $grey-light;
+
+				@include on-colorset(dark) {
+					box-shadow:
+						$shadow-small,
+						inset 0 0 0 0.0625rem $grey;
+				}
 
 				&:focus-visible {
-					outline: 0.125rem solid $accent-text;
+					outline: 0.125rem solid $primary-text;
 					outline-offset: 0.125rem;
 				}
+			}
+
+			@include on-colorset(dark) {
+				background-color: $grey;
 			}
 		}
 	}

@@ -2,7 +2,7 @@
 	position: fixed;
 	inset: 0;
 	z-index: $z-modal;
-	background-color: $scrim;
+	background-color: $overlay;
 	backdrop-filter: blur(0.125rem);
 
 	@media (prefers-reduced-motion: no-preference) {
@@ -27,7 +27,7 @@
 	block-size: min(30rem, 70vh);
 	overflow: hidden;
 	background-color: $page;
-	border: 0.0625rem solid $border-color;
+	border: 0.0625rem solid $border;
 	border-radius: $rounded-l;
 	box-shadow: $shadow-medium;
 
@@ -41,7 +41,7 @@
 		gap: spacing(s);
 		flex: none;
 		padding-inline: spacing(l);
-		border-block-end: 0.0625rem solid $border-color;
+		border-block-end: 0.0625rem solid $border;
 
 		.command-palette-field-icon {
 			inline-size: 1.15rem;
@@ -121,11 +121,11 @@
 		transition: background-color $speed-fast $ease;
 
 		&[data-selected='true'] {
-			background-color: $tint-accent;
-			color: $accent-text;
+			background-color: $tint-primary;
+			color: $primary-text;
 
 			.command-palette-item-icon {
-				color: $accent-text;
+				color: $primary-text;
 			}
 		}
 
@@ -160,7 +160,7 @@
 		}
 
 		&[data-selected='true'] .command-palette-item-sub {
-			color: $accent-text;
+			color: $primary-text;
 		}
 	}
 
@@ -168,8 +168,8 @@
 		inline-size: 1rem;
 		block-size: 1rem;
 		flex: none;
-		border: 0.125rem solid $border-color;
-		border-block-start-color: $accent;
+		border: 0.125rem solid $border;
+		border-block-start-color: $primary;
 		border-radius: $rounded-full;
 
 		@media (prefers-reduced-motion: no-preference) {
@@ -184,7 +184,7 @@
 		flex: none;
 		padding-block: spacing(s);
 		padding-inline: spacing(l);
-		border-block-start: 0.0625rem solid $border-color;
+		border-block-start: 0.0625rem solid $border;
 		color: $color-secondary;
 		font-size: 0.8125rem;
 
@@ -204,9 +204,9 @@
 	padding-block: spacing(xs);
 	padding-inline: spacing(m);
 	min-block-size: 2.25rem;
-	border: 0.0625rem solid $border-color;
+	border: 0.0625rem solid $border;
 	border-radius: $rounded-full;
-	background-color: $surface-muted;
+	background-color: $grey-lightest;
 	color: $color-secondary;
 	cursor: pointer;
 	transition: background-color $speed-fast $ease, color $speed-fast $ease, border-color $speed-fast $ease;
@@ -233,6 +233,10 @@
 
 	.command-palette-pill-hint {
 		margin-inline-start: spacing(xs);
+	}
+
+	@include on-colorset(dark) {
+		background-color: $grey-dark;
 	}
 }
 

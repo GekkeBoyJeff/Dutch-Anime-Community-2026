@@ -7,7 +7,7 @@
 	align-items: flex-start;
 	padding-block-start: 12vh;
 	padding-inline: spacing(m);
-	background-color: $scrim;
+	background-color: $overlay;
 	backdrop-filter: blur(0.125rem);
 
 	@media (prefers-reduced-motion: no-preference) {
@@ -24,10 +24,10 @@
 		max-block-size: min(28rem, 70vh);
 		overflow: hidden;
 		border-radius: $rounded-l;
-		background-color: $background-color;
+		background-color: $background;
 		color: $color;
 		box-shadow: $shadow-medium;
-		outline: 0.0625rem solid $border-color;
+		outline: 0.0625rem solid $border;
 
 		@media (prefers-reduced-motion: no-preference) {
 			animation: search-palette-rise $speed-fast ease-out;
@@ -38,7 +38,7 @@
 			align-items: center;
 			gap: spacing(s);
 			padding-inline: spacing(l);
-			border-block-end: 0.0625rem solid $border-color;
+			border-block-end: 0.0625rem solid $border;
 
 			.search-palette-search-icon {
 				color: $color-secondary;
@@ -97,8 +97,8 @@
 					transition: background-color $speed-fast;
 
 					&[data-selected='true'] {
-						background-color: $tint-accent;
-						color: $accent-text;
+						background-color: $tint-primary;
+						color: $primary-text;
 					}
 
 					&[data-disabled='true'] {
@@ -137,7 +137,7 @@
 			gap: spacing(m);
 			padding-block: spacing(s);
 			padding-inline: spacing(l);
-			border-block-start: 0.0625rem solid $border-color;
+			border-block-start: 0.0625rem solid $border;
 			color: $color-secondary;
 			--font-size: 0.875rem;
 

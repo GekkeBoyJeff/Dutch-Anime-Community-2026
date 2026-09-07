@@ -7,7 +7,7 @@
 		.text-input,
 		.text-area,
 		.select {
-			box-shadow: inset 0 0 0 0.0625rem var(--status-error);
+			box-shadow: inset 0 0 0 0.0625rem $status-error;
 		}
 
 		.field-label {

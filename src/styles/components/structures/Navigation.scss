@@ -249,7 +249,7 @@
 		position: fixed;
 		inset: 0;
 		z-index: calc(#{$z-overlay} - 1);
-		background-color: rgba(#241a22, 0.55);
+		background-color: $overlay;
 		opacity: 0;
 		pointer-events: none;
 		transition: opacity $speed $ease;
@@ -268,8 +268,8 @@
 		z-index: $z-overlay;
 		padding-block: 6rem spacing(2xl);
 		padding-inline: spacing(l);
-		background-color: $white;
-		color: $grey-darkest;
+		background-color: $background;
+		color: $color;
 		border-end-start-radius: 1.5rem;
 		border-end-end-radius: 1.5rem;
 		box-shadow: $shadow-medium;
@@ -306,11 +306,15 @@
 
 				.icon {
 					font-size: 1.25rem;
-					color: $accent-text;
+					color: $primary-text;
 				}
 
 				@include interactive {
-					background-color: rgba(#3b2938, 0.06);
+					background-color: $grey-lightest;
+
+					@include on-colorset(dark) {
+						background-color: $grey-dark;
+					}
 				}
 			}
 
@@ -319,7 +323,7 @@
 				color: $white;
 
 				.icon {
-					color: $accent;
+					color: $primary;
 				}
 
 				@include interactive {

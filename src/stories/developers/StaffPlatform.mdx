@@ -4,186 +4,320 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 # Staff platform
 
-Everything so far describes the **public site** — content as data, statically prerendered, no auth. This
-repo has a second half: a **staff platform** at `/dashboard`, `/upload`, `/account` and `/builder`. It is
-a client-side SPA that talks to Supabase (Postgres) at runtime, behind Discord login. Same components,
-same tokens, same conventions — a different data model and a different security story.
+Everything else in this guide describes the public site: content as typed data, validated at build time,
+prerendered to static HTML, no login. This repo contains a second half. The staff platform is where the
+people who run the Dutch Anime Community do their work — editing pages, uploading media, tracking stock
+for a convention stand, reviewing expense claims, handling moderation cases, sending notifications.
+
+It is not a separate app. Same repo, same components, same tokens, same conventions. What differs is
+where the data comes from and what protects it.
 
 | | Public site | Staff platform |
-|---|---|---|
-| Routes | `src/app/(website)/` | `src/app/(admin)/` — `/dashboard/*`, `/upload`, `/account`, `/login`, `/builder` |
-| Data | Typed, Zod-validated content in `src/content/` | Supabase via the browser client, guarded by RLS |
-| Auth | none (public) | Discord OAuth → Supabase Auth |
-| Rendering | statically prerendered | client-side SPA, reads/writes Supabase at runtime |
+| --- | --- | --- |
+| Routes | `src/app/(website)/` | `src/app/(admin)/`, plus `/login`, `/auth/callback` and `/builder` |
+| Data | typed content in `src/content/`, or Supabase read at build time | Supabase, read and written in the browser at runtime |
+| Auth | none | Discord OAuth into Supabase Auth |
+| Rendering | prerendered HTML | a client-side app that talks to Postgres directly |
+| Protected by | nothing to protect | Postgres Row Level Security |
 
-## The one thing to get right: the security boundary
+## What exists in the repo today
 
-**There are no Next.js server actions.** Every runtime mutation goes through the Supabase *browser*
-client (`src/lib/supabase/client.ts`) with the public anon key. So the only real boundary is in the
-database:
+The platform is being built section by section, and the route files lag behind the registry that lists
+the sections. These are all the staff-side route files under `src/app`:
 
-- **Postgres RLS policies + `SECURITY DEFINER` RPCs are the security boundary.** RLS is on for every
-  table; a privileged read or write passes `authorize('<permission>')` inside the policy.
-- The app-layer checks — `usePermissions`, `useDashboardGuard`, `src/lib/auth/*` — are **UX only**. They
-  decide what to *render*, never what is *allowed*. A hidden section is also genuinely inaccessible
-  because the same permission guards its rows in RLS.
-- The service-role client (`src/lib/supabase/admin.ts`) **bypasses RLS** and is build-time / seed only —
-  it never ships to the browser.
+| Route file | Path | State |
+| --- | --- | --- |
+| `src/app/login/page.tsx` | `/login` | the Discord sign-in button |
+| `src/app/auth/callback/page.tsx` | `/auth/callback` | exchanges the OAuth code, then redirects |
+| `src/app/(admin)/account/page.tsx` | `/account` | a heading only — placeholder |
+| `src/app/(admin)/upload/page.tsx` | `/upload` | a heading only — placeholder |
+| `src/app/builder/page.tsx` | `/builder` | the full Puck page editor — [9. The visual editor](?path=/docs/for-developers-9-the-visual-editor--docs) |
+| `src/app/enquete/page.tsx` | `/enquete` | fills in one survey; public, opened by link |
 
-> **Why put the boundary in the database?** With no server tier between the browser and Postgres, a guard
-> in React is a suggestion the client can skip. RLS runs inside the database on every query, so it holds
-> regardless of what the UI does — which is the only place a guarantee can live here.
+There is **no `/dashboard` route file**, and none of the `/dashboard/*` sections listed further down have
+one either. The shell, the navigation, the command palette, the permission model and the whole database
+are in place; most of the screens they lead to are not written yet. Read every `/dashboard/…` path on
+this page as a destination the platform already knows about, not a page that renders.
 
-## Auth and permissions
+`src/app/(admin)/layout.tsx` wraps that group in `AdminShell`, which supplies the frame every staff
+screen shares: the notification provider, `DashboardNav` and its command palette, `RouteReveal`, and
+`TermsGate` — a gate that blocks the whole subtree until the signed-in user has accepted the current
+terms version, recorded per user in `profiles.terms_accepted_at`.
 
-Sign-in is **Discord OAuth (PKCE)** — `signInWithDiscord` requests the `identify email guilds
-guilds.members.read` scopes and returns through `/auth/callback`. Two enums model access, each mirrored
-by a runtime array in `src/lib/auth/permissions.ts` (the single source for the `Permission` / `AppRole`
-types and the access UI):
+## Signing in
 
-- **`app_role`** — `user`, `author`, `yakuza`, `stand-staff`, `admin`, ordered least → most privileged.
-- **`app_permission`** — the fine-grained verbs (`pages.edit`, `moderation.view`, `expenses.review`,
-  `staff.manage`, …).
+One provider, one button. `src/app/login/_components/LoginForm.tsx` calls `signInWithDiscord` from
+`src/lib/shared/auth/permissions.ts`:
 
-`user_permissions` is the single source of truth for what a person can do — `role_permissions` is only
-a preset template. Picking a role calls `set_user_role()`, which copies that role's preset into
-`user_permissions`, replacing the person's entire set (a role switch is not additive); rights can then be
-toggled individually per person. The client reads the effective set once through the `my_permissions()`
-RPC (`usePermissions`); RLS re-derives it per request on the server. Roles are display-only in the UI —
-the role chip shows the highest one, but nothing gates on a role, only on a permission.
+```typescript
+export const signInWithDiscord = async (next = '/dashboard'): Promise<void> => {
+	const redirectTo = `${window.location.origin}${env.NEXT_PUBLIC_BASE_PATH}/auth/callback?next=${encodeURIComponent(safeNext(next))}`;
+	await getBrowserClient().auth.signInWithOAuth({ provider: 'discord', options: { redirectTo, scopes: 'identify email guilds guilds.members.read' } });
+};
+```
 
-> **Forced logout on access change.** RLS already cuts data access the moment a grant changes (policies
-> read the tables per request — no cached JWT claims). A trigger on `user_roles` and `user_permissions`
-> (`revoke_sessions_on_access_change`) additionally deletes the *target's* `auth.sessions`, which cascades
-> to their refresh tokens — so a demoted user can't renew their JWT and linger. It acts on the target,
-> never the admin, since `roles.manage` RLS forbids self-edits.
+Step by step:
 
-## The shell and navigation
+1. Supabase redirects the browser to Discord with those scopes and a PKCE challenge. PKCE is the OAuth
+   variant for clients that cannot keep a secret — the browser generates a one-time verifier instead, so
+   an intercepted authorisation code is useless on its own. `src/lib/shared/supabase/client.ts` asks for
+   it explicitly: `flowType: 'pkce'`.
+2. Discord sends the visitor back to `/auth/callback?code=…&next=…`.
+3. `CallbackInner` lets supabase-js exchange the code for a session (`detectSessionInUrl` is on by
+   default), then redirects to `next`.
+4. On that same event it fires the `discord-sync` Edge Function once, passing only the short-lived
+   `provider_token`. That call is best-effort; the login has already succeeded either way.
 
-`DashboardNav` (a client island) wires the live session into two structures:
+A trigger on `auth.users` (`handle_new_user`) creates a `profiles` row and a `user_roles` row with role
+`user` for every new account, so a first-time visitor exists in the database before the redirect
+finishes.
 
-- **`MegaMenu`** (`structures/`, built on **Base UI Navigation Menu**) — the desktop top bar. Domain
-  triggers open **click-to-open** panels (hover opens are dropped, so it reads like a tool, not a
-  marketing header), with a user + role chip and a "Terug naar de website" link on the right. Below the
-  `l` breakpoint the triggers collapse into a group-sectioned overlay with a focus trap.
-- **`BottomTabBar`** (`structures/`) — the mobile "field" tabs, shown only below `l`. Its **"Meer"** tab
-  reuses the MegaMenu overlay (open state lifted into `DashboardNav`) rather than duplicating it.
+> **Why `safeNext`?** `next` comes from the URL, and an open redirect is a real phishing vector. The
+> guard accepts only same-site relative paths and rejects the two shapes a plain `startsWith('/')` check
+> lets through — protocol-relative `//evil.example` and the backslash trick `/\evil.example` — falling
+> back to `/dashboard`.
 
-Detail routes carry a **breadcrumb** (the `Breadcrumb` basic) — e.g. Dashboard → Conventies & events →
-*this convention* in the event editor, Dashboard → Moderatie → *this profile* in a moderation detail.
+Signing out is `signOut` in the same file. It deletes the device's push subscription *first*, while the
+session still exists, because that `DELETE` is scoped by Row Level Security to the caller's own rows. In
+the other order it would run anonymously, match nothing, and leave a shared device receiving the previous
+user's notifications.
 
-The dashboard **home is role-aware**. Instead of one flat card grid, `DashboardShell` composes widgets
-from a registry (`_components/home/registry.ts`): each `WidgetDef` carries a permission gate and a zone,
-and `visibleWidgets(permissions)` returns the set the user may see — **personal** "what's next" widgets on
-top, **org/management** widgets below. A user whose permissions unlock no gated widget still gets plain
-links to their sections, so the page is never a dead end.
+## The security model
 
-### Sections and domain groups
+**Read this section before changing anything in the staff platform.**
 
-Two flat registries in `src/lib/auth/dashboard-sections.ts` drive the whole nav:
+There are no Next.js server actions in this repo, and no API layer in front of the database. Every
+runtime read and write goes through the Supabase *browser* client with the public anon key:
 
-- **`DASHBOARD_SECTIONS`** — one entry per section: a `permission`, an `href`, and labels. The dashboard
-  renders a section only when the user holds its permission.
-- **`DASHBOARD_GROUPS`** — a domain grouping laid over the flat sections; the top bar shows one panel per
-  group. An entry either *references* a section key (label/href/permission come from there, so nothing
-  drifts) or *inlines* a standalone link every member holds — `Profiel` (`/account`) has no permission
-  gate. The groups are **Mijn**, **Operaties**, **Financiën**, **Content** and **Systeem**.
+```typescript
+// src/lib/shared/supabase/client.ts
+// The anon key is public by design (Next inlines every NEXT_PUBLIC_ var into the browser bundle) — Row
+// Level Security is the real boundary, so this client can only do what the signed-in user's JWT allows.
+cached = createClient<Database>(url, anonKey, {
+	auth: { persistSession: true, autoRefreshToken: true, flowType: 'pkce', detectSessionInUrl: true },
+});
+```
 
-`buildNavGroups(permissions)` resolves the groups against the caller's permissions: section entries drop
-when the permission is missing, standalone entries always show, and a group left with zero links is
-omitted so the bar never opens an empty panel. `buildTabBarItems` does the same for the mobile tabs.
-`DASHBOARD_ROUTE_OWNERSHIP` maps detail routes that don't nest under their section's `href` back to it so
-the group still lights up — it's currently empty (every detail route nests under its section), and it's
-extended as such routes appear.
+Every `NEXT_PUBLIC_` variable is inlined into the browser bundle, so that key is public. Anyone can read
+it, open a console, and issue any query they like against the project. Which means:
 
-> **Why two registries, not one nested tree?** The flat section list is what RLS and the home widgets
-> also key off; the group metadata is a thin presentation layer on top. Reorder the bar, move a section
-> between domains, or add a group by editing `DASHBOARD_GROUPS` alone — the section's permission, href and
-> data guard stay put.
+- **Postgres Row Level Security is the only thing protecting the data.** RLS is a Postgres feature: a
+  policy attached to a table that Postgres evaluates on every single query, adding its condition to the
+  `WHERE` clause. A row that fails the policy is not hidden by the app; it is not returned by the
+  database. RLS is enabled on every table here, and a privileged read or write passes
+  `authorize('<permission>')` inside the policy.
+- **A permission check in React decides what to render. It never decides what is allowed.**
+  `usePermissions`, `useDashboardGuard` and everything under `src/lib/shared/auth/` choose which
+  navigation links appear and which screens redirect. They are UX. A hidden section is genuinely
+  unreachable only because the same permission also guards its rows in RLS.
+- **The service-role client bypasses RLS entirely.** `src/lib/shared/supabase/admin.ts` is for build-time
+  page reads and the seed script. Its first line is `import 'server-only'`, which turns any import from
+  client code into a build error, so the key cannot reach the browser.
 
-## The domains, in brief
+> **Why the database and not the app?** With no server tier between the browser and Postgres, a guard in
+> React is a suggestion the client is free to skip — deleting a component, editing the bundle, or just
+> calling the REST endpoint directly. A policy runs inside Postgres on every query no matter who asks, so
+> it is the only place a guarantee can live here.
 
-- **Mijn** — the member's own view: **Profiel** (`/account` in the admin shell: Discord block, profile
-  fields on the `avatars` bucket, own signals/surveys/notifications/donations), **Mijn spullen** (own
-  inventory + packing) and **Declaraties** (submit expenses; a "Beheer" tab appears with `expenses.review`).
-- **Operaties** — **Conventies & events** (a landing with stats + an 8-tab editor: Info, Aanwezigheid,
-  Agenda, Activiteiten, Kosten, Evaluatie, Items & tickets, Post), **Inventaris** (pure stock, split from
-  events), **Team** (`staff.view` — the roster from `staff_overview()`) and **Moderatie** (a person
-  detail with Overzicht / Signalen / Verbindingen / Acties tabs, plus a **Tickets** tab: a Ticket-Tool
-  transcript is uploaded, parsed client-side into tickets/messages/participants with Discord-ID matching,
-  and shown in the `ChatTranscript` viewer).
-- **Financiën** (`finance.view`) — the org-wide money view: the `finance_rollup()` expense rollup plus
-  `org_income` for real income and balance.
-- **Content** — **Pagina's** (the Puck builder), **Media** and **Enquêtes**.
-- **Systeem** — **Toegang** (roles/permissions), **Meldingen** and **Logs**.
+**The consequence for day-to-day work.** A change to who may see or do something is a SQL file in
+`supabase/migrations/`, not a change in React. Adding a check in a component is fine for tidying the UI
+and worth nothing as protection. If the SQL is not there, the data is not protected — however careful the
+React looks.
 
-## `SECURITY DEFINER` RPCs
+Where a read has to cross RLS — joining tables the caller cannot see, or aggregating rows they may not
+read individually — the pattern is a `SECURITY DEFINER` function that gates itself:
 
-Where a read needs to cross RLS — join tables the caller can't see directly, or aggregate — the pattern is
-a `SECURITY DEFINER` function with an `authorize(...)` gate in its `WHERE` (and `set search_path = ''`, so
-every name is fully qualified). Without the permission, the function returns an **empty set**, not an
-error. Examples:
+```sql
+create function public.authorize(requested_permission public.app_permission)
+returns boolean language sql stable security definer set search_path = '' as $$
+  select exists (
+    select 1 from public.user_permissions up
+    where up.user_id = (select auth.uid()) and up.permission = requested_permission
+  );
+$$;
+```
 
-- **`finance_rollup(from, to, event_id)`** — the filterable expense rollup, gated on `finance.view`;
-  omits PII (no IBAN / account holder).
-- **`staff_overview()`** — the convention team (stand-staff ∪ yakuza) with next shift and open warnings in
-  one round-trip, gated on `staff.view`.
-- **`media_is_used(name)` / `media_usage(paths)`** — is a bucket image referenced by any page? A substring
-  test of the object name against `pages.data`. `media_is_used` self-gates on `media.delete` and
-  `media_usage` on `media.upload` (a `SECURITY DEFINER` function in `public` is callable by every role, so
-  each must check itself), and `media_is_used` is wired into the **storage delete policy** so a used image
-  can't be deleted even by a direct storage API call:
-  ```sql
-  create policy "media editors delete" on storage.objects for delete to authenticated
-  using (bucket_id = 'media' and (select public.authorize('media.delete')) and not public.media_is_used(name));
-  ```
-  Known limitation: the scan only covers `pages.data`, so a bucket image referenced solely from code would read as unused and could be deleted.
+`SECURITY DEFINER` means the function runs with its author's rights rather than the caller's, so it can
+read tables the caller cannot. That makes every such function a hole unless it checks the caller itself —
+which is why each one calls `authorize(...)` in its own body or `WHERE`, and why they set
+`search_path = ''` and fully qualify every name, so a caller cannot shadow `public` with their own
+schema. Where the gate is in a `WHERE` clause, a caller without the permission gets an empty set rather
+than an error. `finance_rollup` (gated on `finance.view`), `staff_overview` (`staff.view`) and
+`media_usage` (`media.upload`) are three of many following that shape.
 
-## Notifications infra
+## Roles and per-user permissions
 
-Meldingen is data plus a scheduler:
+Two Postgres enums model access, each mirrored by a runtime array in
+`src/lib/shared/auth/permissions.ts` so TypeScript can name them:
 
-- **`notification_types`** — admin-configurable types with an `enabled` toggle; read and managed through
-  `notifications.manage`.
-- **`notification_history`** — every sent notification. Inserts come only from the service role (the
-  `send-push` Edge Function) or from `SECURITY DEFINER` functions; reads go through `notifications.send`.
-- **`run_shift_reminders()`** — a `pg_cron` job (every 5 min) that finds shifts starting in the ~30- and
-  ~5-minute windows, writes history + the in-app bell, and fires web push through the **`send-push`** Edge
-  Function via `pg_net`. `send-push` has two auth paths (`auth: ['user', 'secret']`): a **user** path for
-  a signed-in admin composing a message, and a **secret** path (push-only, service key) for system/cron
-  sends — never a public unauthenticated push endpoint. The function URL and service key live in **Vault**,
-  not in the migration; without them, history and the bell still fire and only web push is skipped.
+```typescript
+export const APP_PERMISSIONS = [
+	'pages.create',
+	'pages.edit',
+	'pages.delete',
+	'structures.edit',
+	'media.upload',
+	// … 28 entries in the real file
+] as const;
+export type Permission = (typeof APP_PERMISSIONS)[number];
 
-## Shared components are tiers, like everything else
+export const APP_ROLES = ['user', 'author', 'yakuza', 'stand-staff', 'admin'] as const;
+export type AppRole = (typeof APP_ROLES)[number];
+```
 
-The admin shell didn't get its own private markup — each shared piece is a normal tier member with a
-mirrored stylesheet and a Storybook story, exactly like a public-site component:
+That array is a mirror, not a source. The comment above it says so: a value added there is inert until
+the matching `app_permission` enum migration lands, because RLS reads the database enum.
 
-- `MegaMenu`, `BottomTabBar` → `structures/` (the shell tier), styled by
-  `src/styles/components/structures/*.scss`, with stories under `src/stories/structures/`.
-- `ChatTranscript` → `components/`, styled by `src/styles/components/components/ChatTranscript.scss`, with
-  a story under `src/stories/components/`. It renders **untrusted** transcript text only — no
-  `dangerouslySetInnerHTML` — and falls back gracefully when expired Discord CDN URLs 404.
+**How the two relate.** `user_permissions` — one row per person per permission — is the single source of
+truth. `authorize()` reads that table and nothing else. A role is a *preset pointer*: `role_permissions`
+holds a fixed template per role, and picking a role copies that template over the person's entire
+permission set.
 
-## Admin density tokens
+```sql
+-- public.set_user_role, abridged
+delete from public.user_permissions where user_id = p_user;
+insert into public.user_permissions (user_id, permission, granted_by)
+  select p_user, rp.permission, (select auth.uid())
+  from public.role_permissions rp where rp.role = p_role;
+```
 
-Tool surfaces want a tighter rhythm than the marketing site, but not a different palette: the dashboard
-runs under the same `dac` theme as the site. The `--admin-*` tokens (on `:root` in `src/styles/base.scss`)
-therefore carry measure and elevation only — `--admin-gap`, `--admin-row-height`, `--admin-radius-card`,
-the shadow scale — and the route-local dashboard SCSS reads those instead of hardcoding spacing, so the
-whole platform's density moves from one place. The admin frame carries `.is-admin`, the scope hook that
-switches components onto their denser work-surface skin.
+So a role switch **replaces**, it does not add. After it, individual permissions are granted or revoked
+per person on top. A trigger (`apply_role_preset`) runs the same re-materialisation whenever a
+`user_roles` row changes through any route — the RPC, the SQL editor, the Supabase table editor — so a
+direct table edit cannot leave the label and the permission set disagreeing.
 
-## Two build targets
+Nothing gates on a role. The role appears in the interface as a chip and as a hint for ordering
+(`highestRole`, `emphasisRole`), and every actual check is a permission.
 
-`next.config.mjs` switches output on `HOST_TYPE`: **`server`** (default) serves the dynamic features and
-security headers; **`static`** (`output: 'export'`) bakes the public page data read from Supabase at build
-time and ships the dashboard as a runtime SPA, with `trailingSlash: true` so a static host resolves
-`<route>/index.html`. The three Edge Functions (`supabase/functions/`) — `deploy` (GitHub dispatch on
-publish), `discord-sync` (guild enrichment on login) and `send-push` — round out the platform.
+| Role | `ROLE_LABELS` | Preset covers |
+| --- | --- | --- |
+| `user` | Lid | nothing |
+| `author` | Auteur | pages, structures, media upload, staging publish, surveys |
+| `stand-staff` | Standteam | viewing inventory, events, own expenses, the team roster |
+| `yakuza` | Yakuza | moderation, events, inventory, expense review, finance, staff, surveys, notifications, badges |
+| `admin` | Beheerder | every permission in the enum |
+
+> **Admins are made in the database.** `pages.delete`, `media.delete` and `site.approve` are admin-only
+> by design, and the RLS policies on `user_roles` and `user_permissions` refuse three things outright:
+> editing your own row, touching a row belonging to an admin, and setting any role to `admin`. Promoting
+> someone to admin is a SQL statement run against the project, never an action in the interface.
+
+> **Losing access logs you out.** Revoking a permission or changing a role fires
+> `revoke_sessions_on_access_change`, which deletes the target's `auth.sessions` rows so their refresh
+> token cannot be used again. *Granting* a permission deliberately does not — enforcement is already live
+> through `authorize()`, and a forced re-login for good news is just annoying.
+
+The browser reads its own effective set once, through the `my_permissions()` RPC, in `usePermissions`:
+
+```typescript
+getBrowserClient()
+	.rpc('my_permissions')
+	.then(({ data }) => { /* … cache and set state … */ });
+```
+
+That set drives rendering. RLS re-derives the same answer inside the database on every query.
+
+## Sections and the permission behind each
+
+`src/lib/shared/auth/dashboard-sections.ts` is the registry the whole navigation is built from. One entry
+per section, each with exactly one permission:
+
+| Section | Path | Permission | Route file exists |
+| --- | --- | --- | --- |
+| Pagina-editor | `/builder` | `pages.edit` | yes |
+| Media | `/upload` | `media.upload` | yes, placeholder |
+| Toegangsbeheer | `/dashboard/access` | `roles.manage` | no |
+| Conventies & events | `/dashboard/events` | `events.view` | no |
+| Inventaris | `/dashboard/inventory` | `inventory.manage` | no |
+| Mijn inventory & conventies | `/dashboard/my-inventory` | `inventory.view` | no |
+| Declaraties | `/dashboard/expenses` | `expenses.view` | no |
+| Financiën | `/dashboard/finance` | `finance.view` | no |
+| Team | `/dashboard/team` | `staff.view` | no |
+| Moderatie | `/dashboard/moderation` | `moderation.view` | no |
+| Meldingen | `/dashboard/notifications` | `notifications.send` | no |
+| Enquêtes & polls | `/dashboard/surveys` | `surveys.manage` | no |
+| Logs | `/dashboard/logs` | `logs.view` | no |
+
+A second registry in the same file, `DASHBOARD_GROUPS`, lays five domains over that flat list — **Mijn**,
+**Operaties**, **Financiën**, **Content**, **Systeem** — for the navigation panels. An entry either
+*references* a section key, taking its label, path and permission from the section so nothing can drift,
+or *inlines* a standalone link with no permission at all. `Profiel` (`/account`) is the one standalone
+entry: every signed-in member has a profile.
+
+`buildNavGroups(permissions)` resolves the groups against the caller's set. Section entries drop when the
+permission is missing, standalone entries always survive, and a group left with no links is omitted
+entirely so the bar never opens an empty panel. `buildTabBarItems`, `buildPalettePages` and
+`buildPaletteActions` filter the same way for the mobile tab bar and the ⌘K palette.
+
+> **Why two registries instead of one nested tree?** The flat section list is what the permission model
+> keys off; the groups are presentation. Moving a section between domains, reordering the bar, or adding
+> a domain means editing `DASHBOARD_GROUPS` alone — the section's permission, path and data guard stay
+> where they are.
+
+The header itself is `DashboardNav` (`src/components/dashboard/shell/DashboardNav.tsx`), a client
+component that renders three things: the shared `Navigation` structure under the wordmark "Beheer", a
+`CommandPalette` bound to ⌘K through `useHotkey`, and a `BottomTabBar` that hides itself at the `l`
+breakpoint and up, so it is the phone navigation. It also queries the database for two live nav
+indicators: a dot on **Operaties** when an event starts within 14 days or has an unassigned shift, and a
+count badge on **Financiën** for expenses still in `submitted`. Both queries are permission-gated on the
+client and RLS-gated in the database.
+
+## Edge Functions
+
+Three, in `supabase/functions/`. They exist for the jobs the browser must not do: the ones needing a
+secret, or a service-role write.
+
+| Function | Called by | What it does |
+| --- | --- | --- |
+| `deploy` | the builder's "Publiceren naar live" button | verifies the caller holds `site.approve` via `my_permissions()`, then fires a GitHub `repository_dispatch` that starts the DirectAdmin deploy workflow |
+| `discord-sync` | `/auth/callback`, once per sign-in | fetches the user's Discord profile and guild membership from Discord itself, then writes `global_name`, `guild_nick`, `guild_roles` and `guild_joined_at` into `profiles` using the service role |
+| `send-push` | an admin composing a message, and `pg_cron` | writes the in-app notification rows and delivers web push to each recipient's subscribed devices, deleting any subscription the browser's push service reports as gone (404 or 410) |
+
+Three details worth carrying:
+
+- **`deploy` re-checks the permission server-side.** The builder hides its publish button behind
+  `permissions.has('site.approve')`, and the function checks again under the caller's own RLS context
+  before doing anything. The GitHub token is a function secret and never reaches the browser.
+- **`discord-sync` never trusts what the client sends.** The browser passes only the short-lived
+  `provider_token`; every value written comes from Discord's own API response.
+- **`send-push` has two auth paths** (`auth: ['user', 'secret']`). The *user* path is a signed-in admin
+  sending a message. The *secret* path is for `run_shift_reminders()`, a `pg_cron` job running every five
+  minutes that finds shifts starting in the next 30 or 5 minutes, writes the history rows itself, and
+  calls the function through `pg_net` purely to deliver the push. Neither path is open to an anonymous
+  caller. The VAPID private key lives only as a function secret.
+
+## The database
+
+Most of what the staff platform does lives in Postgres rather than in React. As generated in
+`src/types/database.types.ts` the schema currently holds **52 tables, 41 functions and one view**, covering
+access control, the CMS, moderation, inventory, conventions and shifts, expenses and org income, badges,
+surveys, notifications and push, plus audit and activity logging.
+
+That file is generated by `npm run db:types` and is never edited by hand. Both Supabase clients are typed
+`SupabaseClient<Database>` from it, so a renamed column is a TypeScript error rather than a runtime
+surprise. After any schema change, run `npm run db:push` (which pushes and regenerates) or at least
+`npm run db:types`.
+
+`docs/codebase-report.md` §9 carries the full schema.
+
+## Where a change belongs
+
+| Change | Where it goes |
+| --- | --- |
+| Who may read or write a row | a policy in a new `supabase/migrations/*.sql` file |
+| A new permission | the `app_permission` enum migration **and** `APP_PERMISSIONS` **and** a group in `permission-groups.ts` |
+| Which sections a role starts with | the `role_permissions` preset, in a migration |
+| A new dashboard section | an entry in `DASHBOARD_SECTIONS`, a route file, **and** the RLS policies for its tables |
+| Hiding a menu item | `dashboard-sections.ts` — presentation only, never a substitute for the policy |
+| A cross-table read the caller cannot do directly | a `SECURITY DEFINER` function that calls `authorize()` on itself |
+
+A permission added to `APP_PERMISSIONS` but not to the database enum does nothing, because RLS reads the
+enum. A permission missing from `PERMISSION_GROUPS` cannot be handed out at all, because
+`PermissionGroups` — the component that renders one toggle per permission in the Toegang screen — walks
+those groups and nothing else. Every new permission needs all three.
 
 ---
 
-**Back to the start:** [Start here](?path=/docs/start-here--docs) · the boundary rules also touch
-[Conventions](?path=/docs/for-developers-2-conventions--docs) and the admin palette sits alongside the
-brand themes in [Look & feel → Colors](?path=/docs/look-feel-colors--docs).
+Back to [Start here](?path=/docs/start-here--docs). The boundary rules also touch
+[Conventions](?path=/docs/for-developers-2-conventions--docs), and the hooks this page mentions are
+catalogued in [Hooks](?path=/docs/for-developers-7-hooks--docs).

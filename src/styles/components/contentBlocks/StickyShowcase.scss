@@ -24,7 +24,11 @@
 			block-size: min(70vh, 34rem);
 			border-radius: 1.5rem;
 			overflow: hidden;
-			background-color: $surface-muted;
+			background-color: $grey-lightest;
+
+			@include on-colorset(dark) {
+				background-color: $grey-dark;
+			}
 		}
 
 		.sticky-showcase-stage-media {
@@ -86,8 +90,8 @@
 				padding-block: spacing(xs);
 				padding-inline: spacing(m);
 				border-radius: $rounded-full;
-				background-color: $tint-accent;
-				color: $accent-text;
+				background-color: $tint-primary;
+				color: $primary-text;
 				font-weight: $weight-semibold;
 				font-variant-numeric: tabular-nums;
 			}

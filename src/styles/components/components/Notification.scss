@@ -50,11 +50,11 @@
 		padding-block: spacing(s);
 		padding-inline: spacing(m);
 		border-radius: $rounded-m;
-		background-color: $background-color;
+		background-color: $background;
 		color: $color;
 		box-shadow:
 			$shadow-medium,
-			inset 0 0 0 0.0625rem var(--border-color);
+			inset 0 0 0 0.0625rem $border;
 
 		.notification-body {
 			display: flex;
@@ -89,8 +89,12 @@
 			cursor: pointer;
 
 			@include interactive {
-				background-color: $background-hover;
+				background-color: $grey-lightest;
 				color: $color;
+
+				@include on-colorset(dark) {
+					background-color: $grey-dark;
+				}
 			}
 		}
 	}

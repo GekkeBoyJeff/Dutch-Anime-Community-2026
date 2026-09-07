@@ -15,7 +15,7 @@
 		padding-block: spacing(s);
 		padding-inline: spacing(m);
 		background-color: $page;
-		border: 0.0625rem solid $border-color;
+		border: 0.0625rem solid $border;
 		border-radius: $rounded-full;
 		margin-block-start: spacing(m);
 		margin-inline: spacing(m);
@@ -118,8 +118,12 @@
 		transition: color $speed-fast $ease, background-color $speed-fast $ease;
 		&:not(.is-active):not([data-popup-open]) {
 			@include interactive {
-				background-color: $surface-muted;
+				background-color: $grey-lightest;
 				color: $color;
+
+				@include on-colorset(dark) {
+					background-color: $grey-dark;
+				}
 			}
 		}
 		&.is-active,
@@ -157,7 +161,7 @@
 		font-weight: $weight-bold;
 		line-height: 1;
 		color: $white;
-		background-color: $accent-active;
+		background-color: $primary-active;
 		border-radius: $rounded-full;
 	}
 
@@ -165,12 +169,12 @@
 		inline-size: 0.5rem;
 		block-size: 0.5rem;
 		border-radius: $rounded-full;
-		background-color: $accent-active;
+		background-color: $primary-active;
 	}
 
 	.is-active .mega-menu-badge,
 	[data-popup-open] .mega-menu-badge {
-		color: $accent-active;
+		color: $primary-active;
 		background-color: $white;
 	}
 
@@ -205,9 +209,9 @@
 		padding-inline: spacing(s);
 		padding-inline-end: spacing(m);
 		min-block-size: 2.5rem;
-		border: 0.0625rem solid $border-color;
+		border: 0.0625rem solid $border;
 		border-radius: $rounded-full;
-		background-color: $surface-muted;
+		background-color: $grey-lightest;
 		color: $color;
 		cursor: pointer;
 		transition: background-color $speed-fast $ease, border-color $speed-fast $ease;
@@ -215,14 +219,22 @@
 			display: inline-flex;
 		}
 		@include interactive {
-			background-color: $surface-muted-strong;
+			background-color: $grey-light;
 			border-color: $grey;
+
+			@include on-colorset(dark) {
+				background-color: $grey;
+			}
 		}
 		&[data-popup-open] {
-			background-color: $surface-muted-strong;
+			background-color: $grey-light;
 			border-color: $grey;
 			.mega-menu-profile-chevron {
 				transform: rotate(180deg);
+			}
+
+			@include on-colorset(dark) {
+				background-color: $grey;
 			}
 		}
 		.mega-menu-profile-text {
@@ -247,13 +259,17 @@
 			color: $color-secondary;
 			transition: transform $speed-fast $ease;
 		}
+
+		@include on-colorset(dark) {
+			background-color: $grey-dark;
+		}
 	}
 
 	.mega-menu-scrim {
 		position: fixed;
 		inset: 0;
 		z-index: $z-overlay;
-		background-color: $scrim;
+		background-color: $overlay;
 		opacity: 0;
 		visibility: hidden;
 		pointer-events: none;
@@ -288,7 +304,7 @@
 			justify-content: space-between;
 			gap: spacing(s);
 			padding-block-end: spacing(m);
-			border-block-end: 0.0625rem solid $border-color;
+			border-block-end: 0.0625rem solid $border;
 		}
 		.mega-menu-overlay-user {
 			display: inline-flex;
@@ -327,16 +343,24 @@
 			block-size: 2.5rem;
 			border: 0;
 			border-radius: $rounded-full;
-			background-color: $surface-muted;
+			background-color: $grey-lightest;
 			color: $color;
 			cursor: pointer;
 			transition: background-color $speed-fast $ease;
 			@include interactive {
-				background-color: $surface-muted-strong;
+				background-color: $grey-light;
+
+				@include on-colorset(dark) {
+					background-color: $grey;
+				}
 			}
 			.icon {
 				inline-size: 1.25rem;
 				block-size: 1.25rem;
+			}
+
+			@include on-colorset(dark) {
+				background-color: $grey-dark;
 			}
 		}
 		nav {
@@ -350,7 +374,7 @@
 			gap: 0.125rem;
 			margin-block-start: spacing(xs);
 			padding-block-start: spacing(l);
-			border-block-start: 0.0625rem solid $border-color;
+			border-block-start: 0.0625rem solid $border;
 		}
 		.mega-menu-overlay-home {
 			display: block;
@@ -359,8 +383,8 @@
 			font-weight: $weight-semibold;
 			color: $color;
 			&.is-active {
-				color: $accent-text;
-				background-color: $tint-accent;
+				color: $primary-text;
+				background-color: $tint-primary;
 			}
 		}
 		.mega-menu-overlay-group {
@@ -397,11 +421,15 @@
 			border-radius: $rounded-m;
 			color: $color;
 			@include interactive {
-				background-color: $surface-muted;
+				background-color: $grey-lightest;
+
+				@include on-colorset(dark) {
+					background-color: $grey-dark;
+				}
 			}
 			&.is-active {
-				color: $accent-text;
-				background-color: $tint-accent;
+				color: $primary-text;
+				background-color: $tint-primary;
 			}
 			.icon {
 				inline-size: 1.1rem;
@@ -420,7 +448,11 @@
 			font-weight: $weight-medium;
 			@include interactive {
 				color: $color;
-				background-color: $surface-muted;
+				background-color: $grey-lightest;
+
+				@include on-colorset(dark) {
+					background-color: $grey-dark;
+				}
 			}
 			.icon {
 				inline-size: 1.1rem;
@@ -457,7 +489,7 @@
 	max-inline-size: min(40rem, calc(100vw - #{spacing(4xl)}));
 	padding: $admin-gap;
 	border-radius: $admin-radius-panel;
-	background-color: $background-color;
+	background-color: $background;
 	box-shadow: $admin-ring, $admin-shadow-3;
 	overflow: hidden;
 	transition:
@@ -515,16 +547,20 @@
 		text-decoration: none;
 		transition: background-color $speed-fast $ease;
 		@include interactive {
-			background-color: $surface-muted;
+			background-color: $grey-lightest;
+
+			@include on-colorset(dark) {
+				background-color: $grey-dark;
+			}
 		}
 		&.is-active {
-			background-color: $tint-accent;
+			background-color: $tint-primary;
 			.mega-menu-link-icon {
-				background-color: $accent;
-				color: $accent-contrast;
+				background-color: $primary;
+				color: $white;
 			}
 			.mega-menu-link-label {
-				color: $accent-text;
+				color: $primary-text;
 			}
 		}
 		.mega-menu-link-icon {
@@ -535,12 +571,16 @@
 			inline-size: 2.25rem;
 			block-size: 2.25rem;
 			border-radius: $rounded-m;
-			background-color: $surface-muted;
+			background-color: $grey-lightest;
 			color: $color-secondary;
 			transition: background-color $speed-fast $ease, color $speed-fast $ease;
 			.icon {
 				inline-size: 1.15rem;
 				block-size: 1.15rem;
+			}
+
+			@include on-colorset(dark) {
+				background-color: $grey-dark;
 			}
 		}
 		.mega-menu-link-text {
@@ -579,7 +619,11 @@
 			cursor: pointer;
 			transition: background-color $speed-fast $ease;
 			@include interactive {
-				background-color: $surface-muted;
+				background-color: $grey-lightest;
+
+				@include on-colorset(dark) {
+					background-color: $grey-dark;
+				}
 			}
 			@include bp(l) {
 				display: none;

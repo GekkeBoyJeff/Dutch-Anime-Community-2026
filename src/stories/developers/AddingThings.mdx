@@ -4,105 +4,572 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 # Adding things
 
-Step 3: the recipes — how to actually add a basic, component, structure, or content block, based on our project architecture and strict global rules.
+The recipes. Each one lists every file and every wiring step in order, with the exact path, and says
+what happens if a step is skipped.
 
-Before adding anything, remember how the layers are structured:
-```
-page
-└─ content blocks   — the only thing a page is made of
-   └─ components     — reusable, often interactive pieces, built from basics
-      └─ basics      — the smallest primitives
-```
-**(Structures form the separate "shell" like headers and footers, and stand outside this content hierarchy.)**
+The reasoning behind the rules — why props are a Zod schema, what a tier may import, how class names
+are shaped — is on [2. Conventions](?path=/docs/for-developers-2-conventions--docs).
 
-## The 4 Golden Rules for *every* component
+## Which folder?
 
-Every new UI element (Basic, Component, Structure, or Content Block) is always made up of four files:
+| What is being added | Where it goes |
+| --- | --- |
+| A visual primitive with no state of its own — a chip, a title, a divider | `src/components/basics/` |
+| A form control | `src/components/forms/` |
+| A composed widget that holds state or handles interaction — a card, a dialog, a carousel | `src/components/components/` |
+| A full-width section of a page — a hero, an FAQ, a band of figures | `src/components/contentBlocks/` |
+| Part of the page shell — navigation, footer, announcement bar | `src/components/structures/` |
+| Staff-platform shell UI | `src/components/dashboard/` |
+| A reusable React hook | `src/hooks/` |
+| A helper both halves of the app use | `src/lib/shared/` |
+| A helper only the public site uses | `src/lib/site/` |
+| A helper only the staff platform uses | `src/lib/admin/` |
+| A page of the public site | `src/content/pages/<name>.ts`, then registered in `src/content/pages/index.ts` |
+| Navigation, footer or announcement-bar data | `src/content/structures.ts` |
+| An icon | the `ICONS` map in `src/components/basics/Icon.tsx` |
+| An environment variable | `src/lib/shared/env.ts`, and documented in `.env.example` |
+| A runtime API endpoint | `src/app/api/<name>/route.ts` — the four that exist are dynamic, so they only work on the `server` build target |
 
-1. **The React Component (`.tsx`)**: Use single quotes (`'`) exclusively, ensure the HTML structure is as flat as possible without unnecessary wrappers, and use our basics (like `<Title>` for all h1-h6 headings instead of native tags). Only use `forwardRef` when functionally necessary.
-2. **The SCSS Stylesheet (`.scss`)**: NEVER use Tailwind and NEVER use BEM notation (`&__`).
-    - Use `spacing()` for margins and paddings (e.g., `padding: spacing(m);`). Hardcoded rems or pixels are strictly forbidden.
-    - Use `@include bp(l) { }` for media queries instead of `@include desktop`.
-    - Handle states with our interaction mixins from `src/styles/_interactions.scss`: use `@include interactive-feedback { }` for the hover and press surface, and `@include focus-ring` (or `@include focus-ring-soft` for filled form controls) for focus.
-3. **The JSON Schema (`.ts`)**: Every prop that is potentially dynamic or managed by a CMS must be in a Zod schema in `src/lib/content/schema/`. **Exception**: Pure UI-state components that manage internal status (like a progress percentage not from a CMS) do not need a schema. Ensure your `properties` object is always written across multiple lines for readability.
-4. **The Story (`.stories.ts`)**: Create a Storybook for every component without asking. Pass your newly created schema directly via the parameter `jsonSchema: { schema: ComponentSchema }`. The `Default` story contains all props (including `false` booleans); further variants only override specific props using spread (`...Default.args`).
+Two of those rows behave differently from the rest and are worth stating plainly:
 
-## Recipe 1: Adding a basic, component, or structure
+- **`src/components/dashboard/`** takes plain TypeScript interfaces, not schemas. Its data comes from
+  Supabase at runtime, not from the content layer.
+- **`src/content/pages/`** is data, not code. Adding a page there needs no new component; see
+  [4. Content & data](?path=/docs/for-developers-4-content-data--docs).
 
-These three types are built exactly the same way. The only difference is where they are saved (`basics`, `components`, or `structures`).
+If a thing could plausibly go in two tiers, put it in the lower one. A basic can be used by
+everything above it; a component cannot be used by a basic.
 
-**Step 1: The Component**
-Place it in `src/components/<folder>/<Name>.tsx`.
-If the component has internal interactivity (like a click handler, state, or the `useOverlay` hook), add `'use client'` directly at the top.
+## Recipe: a basic, a component, a form field or a structure
 
-**Step 2: The Schema**
-Define the props in `src/lib/content/schema/<folder>/<name>.ts`. (For basics, these are often bundled in `primitives.ts`; for components, use the `components/` folder).
+The worked example is `Ribbon`, a basic that does not exist in this repo: a small angled label that
+sits in the corner of a card and says something like "Nieuw". Substitute the tier folder from the
+table above and the recipe is identical for all four tiers.
 
-**Step 3: The Stylesheet**
-Create `src/styles/components/<folder>/<Name>.scss`. Do not use `@use`; you have direct access to variables. Neatly scope all styling under one main class. Ensure interactions are configured smartly, preferably with the `:has()` selector where it saves logic in React.
+Seven steps. The rightmost column is what goes wrong if the step is missed.
 
-**Step 4: Exporting and Importing (The Barrels)**
-This is a crucial step:
-- **Styling**: Add exactly one import line in `src/styles/index.ts` under the correct section.
-- **Component**: Export the component from `src/components/<folder>/index.ts`.
-  > [!WARNING]
-  > **Watch out for circular dependencies in `index.ts`!** If Component A depends on Component B, ensure B is exported/imported *above* A. Otherwise, you will run into "Cannot read properties of undefined" errors.
+| # | Step | If skipped |
+| --- | --- | --- |
+| 1 | Write the schema: `src/lib/site/content/schema/basics/ribbon.ts` | There is no props type to write the component against |
+| 2 | Re-export it from `src/lib/site/content/schema/basics/index.ts` | Nothing breaks today; the type is just missing from the schema barrel |
+| 3 | Write the component: `src/components/basics/Ribbon.tsx` | — |
+| 4 | Add a line to `src/components/basics/index.ts` | Nothing breaks today; the tier's list is incomplete |
+| 5 | Write the stylesheet: `src/styles/components/basics/Ribbon.scss` | The component renders unstyled |
+| 6 | Add an import line to `src/styles/index.ts` | The stylesheet is never compiled. The component renders unstyled, with **no error** |
+| 7 | Write the story: `src/stories/basics/Ribbon.stories.tsx` | The component is invisible in Storybook and cannot be reviewed |
 
-**Step 5: The Storybook Story**
-Create `src/stories/<folder>/<Name>.stories.ts` (or `.tsx`). Test all your states here.
+Steps 2 and 4 are the only ones the build does not care about. They are still expected: the barrels
+are how a tier lists what it contains. Step 6 is the one that costs an afternoon, because it fails
+silently.
 
-## Recipe 2: Adding a content block
+### 1. The schema
 
-A content block is special: it's the only type that belongs in a page's blocks list. Because of this, it requires a bit more "wiring" to connect it to the render engine and the schema.
-
-Here is a 5-step plan to add a `Cta` (Call to Action) block, for example:
-
-**1. Define the Contract (Schema)**
-Create a file `src/lib/content/schema/blocks/cta.ts`. Here you define what the CMS is allowed to send.
-```ts
+```typescript
+// src/lib/site/content/schema/basics/ribbon.ts
 import { z } from 'zod';
-import { HeroAction } from '@/lib/content/schema/blocks/hero'; 
-import { Colorset, Id } from '@/lib/content/schema/primitives';
 
-export const CtaBlock = z.object({
-	type: z.literal('cta'),
-	id: Id.optional(),
-	colorset: Colorset.optional(),
-	title: z.string().min(1),
-	action: HeroAction,
-});
-export type CtaBlock = z.infer<typeof CtaBlock>;
-export type CtaProps = Omit<CtaBlock, 'type' | 'id'>;
+export const RibbonProps = z
+	.object({
+		value: z.string().min(1).describe('The ribbon\'s visible text'),
+		corner: z
+			.enum(['start', 'end'])
+			.optional()
+			.describe('Which top corner the ribbon sits in; defaults to end'),
+		className: z.string().optional().describe('Additional classes on the root element'),
+	})
+	.meta({ title: 'Ribbon' });
+export type RibbonProps = z.infer<typeof RibbonProps>;
 ```
 
-**2. Connect it in the Block Union**
-Add your new block to the `Block` union in `src/lib/content/schema/blocks/index.ts`. Add it to the array and export it at the end of the file.
+Every prop gets a `.describe()` — that text is what shows up in Storybook's args table. `.optional()`
+marks the props the component supplies a default for.
 
-**3. Build the Component**
-Create `src/components/contentBlocks/Cta.tsx`. Use `import type { CtaProps } from '@/lib/content'` for your typing. Make sure to use `<Title>`, `<Interactive>`, and `<Section>` basics as much as possible instead of loose h-tags and divs.
+### 2. The schema barrel
 
-**4. Styling & Registry**
-- Create the stylesheet (`src/styles/components/contentBlocks/Cta.scss`) and import it into `src/styles/index.ts`.
-- Export the component via the barrel `src/components/contentBlocks/index.ts`.
-- **Important**: Add the reference to the render engine registry in `src/components/contentBlocks/Blocks.tsx`:
+`src/lib/site/content/schema/basics/index.ts` is one alphabetical list of `export *` lines. Add one:
+
+```typescript
+export * from '@/lib/site/content/schema/basics/ribbon';
+```
+
+### 3. The component
+
 ```tsx
-const REGISTRY: BlockRenderers = {
-	// ... other blocks ...
-	cta: Cta, // ← Add your new block here
+// src/components/basics/Ribbon.tsx
+import { classNames } from '@/lib/shared/classNames';
+import type { RibbonProps as RibbonSchemaProps } from '@/lib/site/content/schema/basics/ribbon';
+
+type RibbonProps = RibbonSchemaProps;
+
+const Ribbon = ({
+	corner = 'end',
+	className,
+	value,
+}: RibbonProps) => {
+	return (
+		<span className={classNames('ribbon', `is-${corner}`, className)}>
+			{value}
+		</span>
+	);
+};
+
+export default Ribbon;
+```
+
+Four things that are not optional:
+
+- The type import points at **the schema file**, never at `@/lib/site/content` — that barrel is
+  server-only and will fail the build if it reaches the browser.
+- The component is an arrow function assigned to a `const`, and it is the **default** export. ESLint
+  rejects a `function` declaration.
+- `classNames` takes the root class first, the modifiers next, and the caller's `className` last.
+- Imports: external packages, blank line, then `@/` paths in alphabetical order. `npm run lint`
+  checks this.
+
+A form field additionally needs `'use client'` on the first line, because the form tier wraps Base
+UI, whose components use state and effects. Every file in `src/components/forms/` carries it except
+`FieldGroup.tsx`, which is a plain wrapper element.
+
+### 4. The component barrel
+
+```typescript
+export { default as Ribbon } from '@/components/basics/Ribbon';
+```
+
+Order matters here: a component that composes others is exported after them. `structures/index.ts`
+says so in the file — "SiteChrome composes the other three, so it is exported last (barrel rule)".
+
+### 5. The stylesheet
+
+```css
+/* src/styles/components/basics/Ribbon.scss */
+.ribbon {
+	--font-size: 0.75rem;
+	position: absolute;
+	inset-block-start: spacing(l);
+	padding-block: spacing(xs);
+	padding-inline: spacing(s);
+	background-color: $primary;
+	color: $white;
+	font-weight: $weight-semibold;
+
+	&.is-start {
+		inset-inline-start: 0;
+	}
+
+	&.is-end {
+		inset-inline-end: 0;
+	}
+}
+```
+
+No `@use` and no import line: `spacing()`, `$primary` and `$white` are prepended to every stylesheet
+by the build. One top-level selector, every child class prefixed with the root class, modifiers as
+bare `&.is-…`, everything nested. Never BEM.
+
+### 6. The style entry point
+
+`src/styles/index.ts` lists every stylesheet, grouped by tier behind a `// basics` style comment and
+alphabetical inside the group. Add one line:
+
+```typescript
+import '@/styles/components/basics/Ribbon.scss';
+```
+
+The file says the same thing at the top:
+
+```typescript
+// Add a component? Create src/styles/components/<layer>/Name.scss and add one import line here.
+```
+
+### 7. The story
+
+```tsx
+// src/stories/basics/Ribbon.stories.tsx
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
+import Ribbon from '@/components/basics/Ribbon';
+import { RibbonProps } from '@/lib/site/content/schema/basics/ribbon';
+
+const meta: Meta<typeof Ribbon> = {
+	title: 'Basics/Ribbon',
+	component: Ribbon,
+	parameters: {
+		docs: { description: { component: 'A small angled label pinned to the corner of a card.' } },
+		jsonSchema: { schema: RibbonProps },
+	},
+	argTypes: {
+		corner: {
+			control: 'inline-radio',
+			options: ['start', 'end'],
+		},
+	},
+};
+
+export default meta;
+
+type Story = StoryObj<typeof Ribbon>;
+
+export const Default: Story = {
+	args: {
+		value: 'Nieuw',
+	},
+};
+
+export const StartCorner: Story = {
+	args: {
+		...Default.args,
+		corner: 'start',
+	},
 };
 ```
 
-**5. (Optional) SEO and Structured Data**
-Does the block need structured data to appear as a "Rich Result" in Google? If so, add a JSON-LD builder in `src/lib/seo.ts`.
+`title` is `Tier/Component`. The **schema value** is imported alongside the component and passed as
+`jsonSchema: { schema: RibbonProps }`; that gives the story a JSON Schema panel and validates the
+args on every render, so a bad arg is reported instead of silently rendering wrong.
 
-## Recipe 3: Third-party dependencies (Islands & Config)
+### Then
 
-If a component loads external code (e.g., a video player, a map API, etc.), keep the Next.js security headers and client rendering in mind:
+```bash
+npm run typecheck
+npm run lint
+npm run storybook
+```
 
-1. Always use `'use client'` for such components and keep the "island" as small as possible.
-2. ALWAYS load scripts via the `next/script` component.
-3. You must configure external domains for your third-party resources in **`next.config.mjs`**. Otherwise, the Content Security Policy (CSP) headers will block it. Add domains to directives like `script-src`, `frame-src`, `img-src`, etc. Also, add CDN image hostnames to `images.remotePatterns`.
-4. Put API keys (if not secret and browser-safe) in `src/lib/env.ts` as `NEXT_PUBLIC_` or under `server` if they are secrets (which may only be called via a route handler).
+There is no test runner. Those three commands plus looking at the story are the whole verification
+loop.
+
+## Recipe: a content block
+
+A content block is a component in `src/components/contentBlocks/` — so the seven steps above all
+apply, unchanged, with `basics` swapped for `contentBlocks` in every path. What follows is
+everything that is *extra*.
+
+The worked example is `PosterWall`, a block that does not exist in this repo: a grid of poster images
+with a heading above it.
+
+| # | Extra step | If skipped |
+| --- | --- | --- |
+| A | The schema also exports a `…Block` variant with a `type` literal | The block cannot appear in a page's `blocks` array |
+| B | Register that variant in the union in `src/lib/site/content/schema/blocks/index.ts` | Content using the block fails validation, and the editor never offers it |
+| C | Add the component to `REGISTRY` in `src/components/contentBlocks/Blocks.tsx` | `npm run typecheck` fails |
+| D | List the block in a category in `src/lib/admin/puck/config.tsx` | The block still appears in the editor, but under "Overig" |
+| E | Give the story a `Default` export with `args` | The editor inserts placeholder values like "Tekst" |
+
+### A. The schema has two exports
+
+A block schema exports the props *and* a block variant. The block variant is the props plus a `type`
+discriminator and an optional `id`. `StatBand` is the pattern to copy:
+
+```typescript
+// src/lib/site/content/schema/blocks/statBand.ts
+export const StatBandProps = z
+	.object({
+		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) shown above the figures'),
+		items: z.array(StatBandItem).min(2).max(4).describe('The key figures rendered in the band'),
+	})
+	.meta({ title: 'StatBand' });
+export type StatBandProps = z.infer<typeof StatBandProps>;
+
+export const StatBandBlock = StatBandProps.extend({ type: z.literal('statBand'), id: Id.optional() });
+export type StatBandBlock = z.infer<typeof StatBandBlock>;
+```
+
+The `type` literal is camelCase and is the block's identity everywhere else: in the union, in the
+render registry, and in the JSON stored for a page. `Colorset`, `Heading` and `Id` come from
+`src/lib/site/content/schema/primitives.ts`, which holds the shapes several blocks share — reuse
+them rather than re-declaring a heading.
+
+So `posterWall.ts` would end with:
+
+```typescript
+export const PosterWallBlock = PosterWallProps.extend({ type: z.literal('posterWall'), id: Id.optional() });
+export type PosterWallBlock = z.infer<typeof PosterWallBlock>;
+```
+
+### B. The block union
+
+`src/lib/site/content/schema/blocks/index.ts` needs **two** edits, not one. First an import and a
+line in the union:
+
+```typescript
+import { PosterWallBlock } from '@/lib/site/content/schema/blocks/posterWall';
+
+export const Block = z.discriminatedUnion('type', [
+	HeroBlock,
+	CardGridBlock,
+	// …
+	PosterWallBlock,
+]);
+```
+
+Then the `export *` line at the bottom of the same file:
+
+```typescript
+export * from '@/lib/site/content/schema/blocks/posterWall';
+```
+
+The imports at the top are alphabetical by path — ESLint enforces that. The union array and the
+`export *` list below it are not, and do not need to be.
+
+`Block` is the single union every other part of the system reads. A `Page` is a `meta` object plus an
+array of `Block`, the content loader validates against it, and the editor builds its component list
+from `Block.options`.
+
+### C. The render registry
+
+`src/components/contentBlocks/Blocks.tsx` maps each `type` to the component that draws it:
+
+```tsx
+export const REGISTRY: BlockRenderers = {
+	hero: Hero,
+	cardGrid: CardGrid,
+	featureCards: FeatureCards,
+	// …
+};
+```
+
+`BlockRenderers` is derived from the union, so the two cannot drift:
+
+```tsx
+type BlockRenderers = {
+	[B in Block as B['type']]: BlockRenderer<Omit<B, 'type' | 'id'>>;
+};
+```
+
+A block in the union with no entry here is a missing property, and an entry here for a `type` no
+block declares is an excess property. Either way `npm run typecheck` fails and names the key.
+
+### D. The editor category
+
+`src/lib/admin/puck/config.tsx` groups the blocks in the editor's insert panel:
+
+```tsx
+categories: {
+	headers: {
+		title: 'Koppen & titels',
+		components: ['hero', 'ctaBanner', 'titleText'],
+		defaultExpanded: true,
+	},
+	content: {
+		title: 'Content',
+		components: ['prose', 'textMedia', 'steps', 'faqAccordion', 'momentList', 'chatPreview'],
+	},
+	// …
+	other: {
+		title: 'Overig',
+	},
+},
+```
+
+`other` is a reserved name: any block not named in another category is listed there. So skipping this
+step is not a bug, just an untidy panel.
+
+### E. The story doubles as the editor's presets
+
+Which is the one step with real constraints attached, so it has its own section below.
+
+## Story args are the editor's presets
+
+`src/lib/admin/puck/presets.ts` imports the content-block stories through the bundler and turns each
+one into a preset an editor can insert. Nothing is declared twice: a story that looks right in
+Storybook is a starting point in the editor for free.
+
+The loop that does it:
+
+```typescript
+// src/lib/admin/puck/presets.ts
+const stories = require.context('../../../stories/contentBlocks', false, /\.stories\.tsx$/);
+
+for (const key of stories.keys()) {
+	const mod = stories(key) as StoryModule;
+	const type = typeByComponent.get(mod.default?.component);
+	if (!type) {
+		continue;
+	}
+	// …
+	for (const [exportName, story] of Object.entries(mod)) {
+		if (exportName === 'default' || !story || typeof story !== 'object') {
+			continue;
+		}
+		const { args } = story as { args?: object };
+		if (args && typeof args === 'object') {
+			blockPresets.push({ label: humanise(exportName), props: sanitise(args) });
+		}
+	}
+}
+```
+
+Which puts five constraints on a content-block story:
+
+| Constraint | Why |
+| --- | --- |
+| The file sits **directly** in `src/stories/contentBlocks/`, named `*.stories.tsx` | `require.context` is called with `false` for recursion and that exact pattern. A subfolder is not scanned |
+| `component:` in the story's default export is the same component the registry holds | Presets are matched by component identity, through `typeByComponent.get(mod.default?.component)`. A wrapper or a re-declared copy matches nothing and the block silently gets no presets |
+| Every named export with an `args` object becomes a preset | There is no opt-out. A story that only exists to demonstrate a broken state will be offered to editors |
+| Args must be plain JSON — no functions, no JSX, no `undefined` values | `sanitise` does `JSON.parse(JSON.stringify(args))`, which drops all three |
+| One export should be called `Default` | `defaultPresetFor` looks for the preset labelled `Default` and falls back to the first one. That preset is what an editor gets when they drag the block in |
+
+Two conveniences the harvester adds on top:
+
+- **Item ids are backfilled.** Any object inside an array that has no `id` gets a fresh
+  `crypto.randomUUID()`, so item schemas that require an `id` stay valid. Writing `id: 's1'` in a
+  story is still clearer to read.
+- **Export names are humanised.** `humanise` splits on the camelCase boundary and sentence-cases the
+  result, so `WithHeading` is shown to the editor as "With heading". Name the exports accordingly.
+
+If a block has no story with args at all, the editor falls back to `defaultValueFor` in
+`src/lib/admin/puck/fields.tsx`, which invents a value per prop: `'Tekst'` for a string, `0` or the
+minimum for a number, the first option of an enum, `false` for a boolean. That is the source of the
+placeholder text that occasionally appears in the editor.
+
+### Which Zod type becomes which input
+
+The editor derives its form from the schema, so the Zod type chosen in step A decides what an editor
+sees. `fieldFor` in `src/lib/admin/puck/fields.tsx` maps:
+
+| Zod type | Editor input |
+| --- | --- |
+| `z.string()` | a text box |
+| `z.string().meta({ editor: 'textarea' })` | a multi-line box |
+| `z.string().meta({ editor: 'richtext' })` | a rich-text editor |
+| `z.string().meta({ editor: 'icon' })` | a dropdown of the `ICONS` names |
+| `z.string().meta({ editor: 'file' })` | a picker over the Supabase `media` bucket |
+| `z.number()` | a number input, with `min`/`max` carried over |
+| `z.enum([…])` | a dropdown |
+| A union of literals only | a dropdown |
+| `z.boolean()` | a Ja/Nee radio pair |
+| `z.array(z.object({ … }))` | a repeatable list |
+| `z.array(z.string())` | a line-per-item textarea |
+| `z.object({ … })` | a nested group of inputs |
+| **Anything else** | **nothing — the prop is not editable, with no warning** |
+
+A key named `id` is skipped on purpose: ids are generated, not typed.
+
+## Recipe: a third-party dependency
+
+Three things have to line up: the install, the client boundary, and the Content Security Policy.
+
+### 1. Install it
+
+```bash
+npm install <package>
+```
+
+Runtime dependencies belong in `dependencies`. Anything used only by Storybook, the build scripts or
+the type layer belongs in `devDependencies`.
+
+### 2. Wrap it in a `'use client'` island
+
+A library that touches the DOM, holds state or reads `window` cannot run in a server component. The
+wrapper around it gets `'use client'`, and it should be the *only* file that does, because the
+directive is inherited by everything that file imports.
+
+`Swiper` is the pattern to copy — it wraps `embla-carousel-react`:
+
+```tsx
+// src/components/components/Swiper.tsx
+'use client';
+
+import useEmblaCarousel from 'embla-carousel-react';
+import { useCallback, useEffect, useState } from 'react';
+
+import Content from '@/components/basics/Content';
+import Interactive from '@/components/basics/Interactive';
+import Media from '@/components/basics/Media';
+```
+
+The blocks that use `Swiper` stay server components. They render it as a child, pass it serialisable
+props, and ship no JavaScript of their own. Keeping the island small is the entire point: everything
+outside it is HTML by the time it reaches the browser.
+
+Note the shape of that wrapper. The library's API does not leak upward — callers see this project's
+prop names, taken from the schema, not Embla's. That is what makes the library replaceable later.
+
+### 3. Check the Content Security Policy
+
+`next.config.mjs` sets a Content Security Policy — a header that tells the browser which origins a
+page may load things from. Anything the policy does not list is blocked. The policy is one template
+literal:
+
+```typescript
+// next.config.mjs
+const cspHeader = `
+	default-src 'self';
+	script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval';
+	worker-src 'self' blob:;
+	style-src 'self' 'unsafe-inline';
+	img-src 'self' blob: data: ${supabaseOrigin};
+	font-src 'self';
+	connect-src 'self' ${supabaseOrigin} ${supabaseWs};
+	frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com https://www.tiktok.com https://fast.wistia.net https://fast.wistia.com;
+	object-src 'none';
+	base-uri 'self';
+	form-action 'self';
+	frame-ancestors 'none';
+`
+```
+
+What each directive gates, and what to do about it:
+
+| If the dependency… | The directive | What to add |
+| --- | --- | --- |
+| Loads a script from a CDN | `script-src` | the origin — or better, install the package so it is bundled and served from `'self'` |
+| Loads a stylesheet from another origin | `style-src` | the origin |
+| Loads a webfont from another origin | `font-src` | the origin |
+| Loads images from another origin | `img-src` | the origin |
+| Calls an HTTP API or opens a WebSocket | `connect-src` | the origin (a socket needs the `wss:` form too) |
+| Embeds an iframe | `frame-src` | the origin |
+| Starts a web worker | `worker-src` | usually nothing — `'self' blob:` is already allowed |
+
+Two things about this policy catch people out:
+
+- **It is not applied in development.** `headers()` returns an empty array when `NODE_ENV` is
+  `development`, so a blocked resource works locally and fails only after `npm run build` and
+  `npm start`. Test the production build before believing an embed works.
+- **It is not applied on the static target either.** When `HOST_TYPE=static` the config takes the
+  `output: 'export'` branch, which has no `headers()` at all — a static host would have to send the
+  headers itself.
+
+`/builder` gets its own slightly relaxed copy (`builderCspHeader`) for the editor's webfont. It is
+derived from the same string by three `.replace()` calls, so a change to the main policy carries
+over — unless the change happens to alter one of the three substrings those calls match on.
+
+## Troubleshooting
+
+| Symptom | Cause |
+| --- | --- |
+| The component renders, completely unstyled, no error anywhere | Its stylesheet is not imported in `src/styles/index.ts` |
+| `npm run typecheck` says a property is missing from `REGISTRY` | The block is in the union but has no renderer in `Blocks.tsx` |
+| `npm run typecheck` flags an unknown key in the `REGISTRY` object | An entry whose `type` no block schema declares |
+| The build stops with `✖ Invalid page content — 2 problems:` and a field path | A page in `src/content/pages/` no longer matches the schema. The message names the page and the field |
+| A prop is in the schema but has no input in `/builder` | `fieldFor` could not map that Zod type and returned `undefined`. See the mapping table above |
+| A new block appears in `/builder` under "Overig" | It is not listed in any `categories` entry in `src/lib/admin/puck/config.tsx` |
+| Dragging a block in gives placeholder text like "Tekst" | The block has no story with `args`, so `defaultValueFor` invented a value per prop |
+| A story exists but the block has no presets | The story file is not directly in `src/stories/contentBlocks/`, or `component:` is not the same component object as the one in `REGISTRY` |
+| A preset is missing a prop that the story clearly sets | The value was a function, JSX or `undefined`; `sanitise` JSON round-trips the args and drops all three |
+| `<Icon name="…" />` renders nothing at all | The name is not a key in the `ICONS` map in `src/components/basics/Icon.tsx`. `Icon` returns `null` for an unknown name |
+| A build error mentioning `server-only` | Something reaching the browser imports `@/lib/site/content`. Import the specific schema file instead |
+| `npm run lint` complains about `import/order` | Imports out of group order, missing a blank line between groups, or not alphabetical within a group |
+| `npm run lint` complains about `func-style` or `react/function-component-definition` | A `function` declaration. Everything is an arrow function assigned to a `const` |
+| A prop was added to the schema and nothing changed on screen | The component still has to destructure it and render it. The schema describes props; it does not render them |
+| An embed, font or external script works in `npm run dev` and breaks in production | The CSP is skipped in development. Add the origin to the right directive in `next.config.mjs` |
+| `next dev` hangs after a production build | Turbopack is choking on a stale webpack cache. `rm -rf .next` |
+
+## Before calling it done
+
+- `npm run typecheck` passes.
+- `npm run lint` passes.
+- The story opens in `npm run storybook`, and the **JSON Schema** panel lists no issues.
+- The component looks right on a light *and* a dark section. Storybook's dark-mode toggle flips
+  `data-colorset` on the preview body; blocks with a `colorset` prop also have their own control.
+- For a content block: `npm run dev`, open `/builder` ([9. The visual editor](?path=/docs/for-developers-9-the-visual-editor--docs)), insert the block, and confirm that every prop
+  has an input and that the default preset fills it in sensibly.
+- Nothing was added to a barrel out of dependency order.
 
 ---
-By following these steps closely, you keep the architecture clean and error-free. Should you encounter unexpected undefined components, always check the import order in your `index.ts` files first!
+
+Related: [4. Content & data](?path=/docs/for-developers-4-content-data--docs) for writing the page
+data a block renders, and [5. Validation](?path=/docs/for-developers-5-validation--docs) for what the
+schemas check and when.

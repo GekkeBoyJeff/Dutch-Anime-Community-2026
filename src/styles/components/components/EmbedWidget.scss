@@ -12,8 +12,8 @@
 		inline-size: 100%;
 		overflow: hidden;
 		border-radius: $rounded-m;
-		background-color: $surface-muted;
-		outline: 0.0625rem solid $border-color;
+		background-color: $grey-lightest;
+		outline: 0.0625rem solid $border;
 
 		.embed-widget-iframe {
 			position: absolute;
@@ -21,6 +21,10 @@
 			inline-size: 100%;
 			block-size: 100%;
 			border: 0;
+		}
+
+		@include on-colorset(dark) {
+			background-color: $grey-dark;
 		}
 	}
 

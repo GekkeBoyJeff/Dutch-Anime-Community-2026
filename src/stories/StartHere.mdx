@@ -2,107 +2,145 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="Start here" />
 
-# The starter, in one page
+# Start here
 
-A reusable foundation for building content-driven websites with **Next.js 16**. Pages are written
-as data, the UI is a small set of components you compose, and one set of tokens drives colour,
-type and spacing. This Storybook is where you read how it works and see every piece in isolation.
+One codebase holds two things: the public Dutch Anime Community website, and the staff platform the
+volunteers run it from. This page covers what those two are, how this Storybook is organised, how to
+start both servers, and which file to open for a given change.
 
-_Built by Jeffrey Ullers._
+## The two halves
 
-## What it's for
+**The public site.** A Dutch-language marketing site for an anime community that lives on Discord.
+Every page exists to move a visitor towards joining. It is small: `src/content/pages/index.ts`
+registers five paths, and `src/content/pages/notFound.ts` holds the 404.
 
-You start a new site. Instead of wiring up routing, metadata, SEO, a styling system and a component
-library from scratch each time, you get them here, already fitted together and documented:
-
-- **Content as data** — a page is a plain object, not hand-written markup, so it's ready to move to
-  a CMS later without touching the components.
-- **A validated contract** — every page and block is checked against a schema, at build time *and*
-  runtime, so broken content (a missing field, a rating out of range) fails instead of shipping.
-- **One styling system** — colour, typography and spacing come from tokens; change them in one place
-  and the whole site follows.
-- **SEO and sharing out of the box** — metadata, JSON-LD, Open Graph images, a sitemap and robots
-  are generated from the same content.
-
-## The stack
-
-| Tool | Version | Role |
-|---|---|---|
-| [Next.js](https://nextjs.org/docs) | 16 (App Router, Turbopack) | Routing, rendering, metadata, image/OG generation |
-| [React](https://react.dev) | 19 | Components, Server Components, `ref` as a prop |
-| [TypeScript](https://www.typescriptlang.org/docs/) | 5 (`strict`, `noUncheckedIndexedAccess`) | The content contract and component props |
-| [Zod](https://zod.dev/) | 4 | The content schema — runtime validation, with the types inferred from it |
-| [Sass](https://sass-lang.com/documentation/) | Dart Sass (`sass-embedded`) | Global SCSS with tokens, functions and mixins |
-| [Storybook](https://storybook.js.org/docs) | 10 (`nextjs-vite`) | This workshop — build, preview and document the UI |
-| [Serwist](https://serwist.pages.dev/) | 9 | Optional PWA / offline support (off by default) |
-
-## The core idea
-
-A page is **data, not markup**. You write an object — `{ meta, blocks }` — and the framework turns
-it into HTML through one fixed pipeline:
-
-```
-content object        →  lib/content (validate)  →  Blocks registry   →  page (Server Component)  →  HTML
-{ meta, blocks }         getPageByPath()             type → component     renders <Blocks blocks={…} />
+```typescript
+// src/content/pages/index.ts
+export const pages: Record<string, Page> = {
+	'/': homePage,
+	'/community': communityPage,
+	'/evenementen': evenementenPage,
+	'/supporters': supportersPage,
+	'/word-lid': wordLidPage,
+};
 ```
 
-Each block is `{ type, ...props }`. The `type` string selects which component renders it. Because the
-data and the components are separate, the same block type can appear many times with different data,
-and you reorder a page by reordering an array. **[1. Architecture](?path=/docs/for-developers-1-architecture--docs)** walks through the whole pipeline.
+Those pages are rendered ahead of time, into HTML, and served as files. Nothing runs per visitor.
 
-## How the UI is layered
+**The staff platform.** The same app behind a Discord login, talking to a Supabase (Postgres)
+database straight from the browser. Six routes exist today: `/login` and `/auth/callback` handle the
+Discord sign-in, `/builder` is the visual page editor ([9. The visual editor](?path=/docs/for-developers-9-the-visual-editor--docs)), `/enquete` fills in a survey, and `/account`
+and `/upload` are still placeholders that render a heading and nothing else. The database underneath
+is much further along than the screens — `supabase/migrations/` holds 83 SQL files.
 
-A page is built from one kind of thing: **content blocks**. Each layer below is composed from the one
-under it.
+Site content is written in **Dutch**. Code, comments and these docs are in **English**.
 
+> **Why one repository?** The staff platform is built from the same components as the site.
+> `src/components/dashboard/shell/DashboardNav.tsx` imports `Icon`, `Media`, `Shortcut` and
+> `Skeleton` from `@/components/basics/`, and the login screen uses the same `Button`. A change to a
+> primitive lands in both halves at once.
+
+This codebase started life as a reusable Next.js starter written by Jeffrey Ullers, and the Dutch
+Anime Community site is what that starter grew into. That explains two things that would otherwise
+look odd: no component is named after DAC, and two extra colour themes ship alongside the brand one.
+
+## What this Storybook is
+
+Storybook renders each component on its own, outside any page, so it can be inspected and poked at
+without clicking through the site. The sidebar has two kinds of entry: prose pages, and component
+catalogues.
+
+| Section | What is in it | Who it is for |
+| --- | --- | --- |
+| **Start here** | This page. | Everyone. |
+| **For developers** | Eight numbered pages, written to be read in order. | Anyone writing code here. |
+| **Look & feel** | [Colors](?path=/docs/look-feel-colors--docs), [Typography](?path=/docs/look-feel-typography--docs) and [Spacing](?path=/docs/look-feel-spacing--docs) — the design system, rendered from the real stylesheets. | Designers, and any developer picking a value. |
+| **Basics · Components · ContentBlocks · Structures · Forms · Dashboard** | The component catalogue. Every component gets a **Docs** tab (props table plus examples) and a **Canvas** tab (the component alone). | Both. |
+
+The sidebar order is not alphabetical — it is set explicitly in `.storybook/preview.tsx` under
+`options.storySort`.
+
+### The toolbar controls
+
+Three toolbar controls change what the canvas shows. All three are configured in
+`.storybook/preview.tsx`.
+
+| Control | What it changes |
+| --- | --- |
+| Sun/moon | Sets `data-colorset` to `light` or `dark` on the preview body — the same switch a dark section uses on the real site. |
+| **Theme** | Sets `data-theme` on the root element: `dac` (what the site ships, and the default here), `sepia`, or `default`. |
+| **Direction** | Sets `dir` to `ltr` or `rtl`. |
+
+The two non-brand themes are not decoration. They are the check that no component has hard-coded a
+colour: if something looks wrong in `sepia`, a value was written that should have been a token.
+
+## Running it
+
+Node 22 or newer. That version is stated in three places — `.nvmrc` contains `22`, `package.json`
+declares `"engines": { "node": ">=22" }`, and both GitHub Actions workflows pin `node-version: 22`.
+The reason is in `README.md`: the Supabase client needs a global `WebSocket`, which older Node does
+not have. Note that `engines` is a declaration, not a lock — npm warns, it does not stop you.
+
+```bash
+node -v                      # v22 or higher
+npm install
+cp .env.example .env.local    # then fill in the Supabase values
+npm run dev                   # the site   → http://localhost:3000
+npm run storybook             # these docs → http://localhost:6006
 ```
-page
-└─ content blocks   — the only thing that goes on a page  (Hero, FeatureCards, TextMedia, Prose, Reviews)
-   └─ components     — reusable, often interactive pieces  (Card, Carousel, Modal, Tabs, Form, EventCard, …)
-      └─ basics      — the smallest primitives  (Button, Title, Content, Media, Section, Icon, Pill, Interactive)
-```
 
-Separately, **`structures`** holds the page shells that wrap a page in the layout rather than sitting
-inside it — the public `Navigation`, `Footer` and `AnnouncementBar` (composed by `SiteChrome`) and the
-admin `MegaMenu` and `BottomTabBar`. Each layer composes only the layers beneath it: a content block
-never hand-rolls a button or a card, it uses the system component — and every capability lives in the
-lowest layer that can own it (the rules are spelled out in
-[Conventions](?path=/docs/for-developers-2-conventions--docs)).
+`.env.example` is a commented template; it lists which values are required and which are optional.
+Every variable is validated at startup by `src/lib/shared/env.ts`, and the optional ones default to
+"off" — so the app boots without a Supabase project, it just cannot log in or open `/builder`.
 
-## The repo map
+### The scripts
 
-| Folder | What it holds |
-|---|---|
-| `src/app` | Routes (App Router): pages, the root layout, `error`/`loading`/`not-found`, and the generated files — `sitemap`, `robots`, OG images, `manifest`. |
-| `src/components/<layer>` | The UI, grouped into `basics`, `components`, `contentBlocks` and the `structures` shell (see above). |
-| `src/content` | The content itself: page data files in `pages/`, registered in `index.ts`. |
-| `src/lib` | Non-UI logic: `content/` (async accessors + the Zod contract in `content/schema/`), `seo.ts`, `site.ts`, `env.ts` (the validated environment contract), `ogImage.tsx`. |
-| `src/hooks` | Small client-side utilities (`useHaptics`, `useHotkey`, `useOverlay`). |
-| `src/styles` | SCSS: `_initial.scss` (values + engine), `base.scss` (the global cascade), and `components/<layer>/` — a per-component stylesheet mirroring the component tree, all imported once through `src/styles/index.ts`. |
+Straight from `package.json`:
 
-## How these docs are organised
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | `next dev`. Port 3000. `/builder` is on in development. |
+| `npm run dev:local` | The same with `CONTENT_SOURCE=registry`, which forces page content to come from the files in `src/content/`. |
+| `npm run storybook` | This documentation, on port 6006. |
+| `npm run typecheck` | `tsc --noEmit`. `strict` plus `noUncheckedIndexedAccess`. |
+| `npm run lint` | `eslint .` |
+| `npm run build` | The production build: optimise images, then build with the service worker enabled. |
+| `npm run build:plain` | Optimise images, then a plain build without the service worker. |
+| `npm run images` | Regenerates the responsive image variants and the media list `/builder` picks from. |
+| `npm run seed` | One-off: writes the files in `src/content/` into the database. Read the warning below before running it. |
+| `npm run db:push` | Applies the SQL migrations to the linked Supabase project, then regenerates the types. |
+| `npm run db:types` | Regenerates `src/types/database.types.ts` from the linked project. Run it after every schema change. |
 
-- **For developers** — the guide if you're building. It's a short course: eight pages, **read top to
-  bottom**, each one building on the last. Pages 1–7 are the public content site; page 8 is the staff
-  platform that runs alongside it.
+> **There is no test runner.** No `vitest`, no `jest`, no `test` script. "Verified" here means
+> `npm run typecheck` and `npm run lint` both pass, plus a build — the build validates every page's
+> content against the schema and fails with the offending field named. See
+> [5. Validation](?path=/docs/for-developers-5-validation--docs).
 
-  1. **[Architecture](?path=/docs/for-developers-1-architecture--docs)** — how it fits together.
-  2. **[Conventions](?path=/docs/for-developers-2-conventions--docs)** — the rules you write by.
-  3. **[Adding things](?path=/docs/for-developers-3-adding-things--docs)** — blocks, components, pages.
-  4. **[Content & data](?path=/docs/for-developers-4-content-data--docs)** — pages as data.
-  5. **[Validation](?path=/docs/for-developers-5-validation--docs)** — how the contract is enforced.
-  6. **[SEO & sharing](?path=/docs/for-developers-6-seo-sharing--docs)** — metadata, OG, sitemap.
-  7. **[Hooks](?path=/docs/for-developers-7-hooks--docs)** — the small client-side utilities.
-  8. **[Staff platform](?path=/docs/for-developers-8-staff-platform--docs)** — the Supabase dashboard,
-     RLS boundary, and admin shell.
+## Where does my change go?
 
-- **[Look & feel](?path=/docs/look-feel-colors--docs)** — the visual system you can see and check
-  live: colours, typography and spacing. Start here if you're reviewing the design.
-- **Basics / Components / ContentBlocks / Structures / Forms** — every component with a **Docs** tab
-  (props table plus stories). Use the sun/moon toggle for light/dark and the **Theme** toolbar for the
-  brand palette.
-- **Why it's built this way** — the why-boxes throughout these docs (like the one below) carry the
-  rationale and trade-offs behind the non-obvious choices, next to the rule they explain.
+| To change… | Open | Notes |
+| --- | --- | --- |
+| The words on a page | `src/content/pages/<page>.ts` | Read the warning below first. This is often not what the live site serves. |
+| The header, footer or announcement bar | `src/content/structures.ts` | Same warning. |
+| How a component looks | `src/styles/components/<tier>/<Name>.scss` | One stylesheet per component, in a folder tree mirroring `src/components/`. Restyling the button is `src/styles/components/basics/Button.scss`. |
+| A brand colour | the `[data-theme='dac']` block in `src/styles/theme.scss` | A few runtime surfaces cannot read CSS — the browser theme colour and the share image — and repeat the palette in the `brand` object in `src/lib/site/site.ts`. Keep both in step. |
+| Add a page | a new file in `src/content/pages/`, registered in `src/content/pages/index.ts` | The route, the sitemap and the metadata all follow from that one registry entry. |
+| Add a new *kind* of section | a schema file, a component, and one line in `src/components/contentBlocks/Blocks.tsx` | A fixed sequence of files. [3. Adding things](?path=/docs/for-developers-3-adding-things--docs) walks through it. |
+| Who may do what in the dashboard | a new SQL file in `supabase/migrations/` | **Never** in React. The React checks only decide what to draw — see [1. Architecture](?path=/docs/for-developers-1-architecture--docs). |
 
-> **New here?** Read **[1. Architecture](?path=/docs/for-developers-1-architecture--docs)** next —
-> it's the foundation everything else builds on.
+> **The files in `src/content/` are a fallback, not the live content.** As soon as
+> `SUPABASE_SERVICE_ROLE_KEY` is set in the environment — and it is, on every real build — the
+> accessors in `src/lib/site/content/` read pages and site chrome from Supabase instead, and these
+> files are ignored. Editing them then changes nothing on the live site; that goes through `/builder`
+> or the database. `src/content/README.md` spells out the traps in full, including what
+> `npm run seed` overwrites.
+
+## Read this next
+
+- **Writing code:** [1. Architecture](?path=/docs/for-developers-1-architecture--docs), then the rest
+  of the developer pages in order. The later pages assume page 1.
+- **Working on the design:** [Colors](?path=/docs/look-feel-colors--docs),
+  [Typography](?path=/docs/look-feel-typography--docs) and
+  [Spacing](?path=/docs/look-feel-spacing--docs) are the whole visual system, and every component in
+  the catalogue is built from them. After that, browse **ContentBlocks** — those are the sections a
+  page is actually assembled from.

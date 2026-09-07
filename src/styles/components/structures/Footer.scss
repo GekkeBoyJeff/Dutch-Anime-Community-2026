@@ -1,8 +1,8 @@
 .footer {
 	--footer-rotation: -1deg;
 
-	background-color: $background-color;
-	border-block-start: 0.0625rem solid $border-color;
+	background-color: $background;
+	border-block-start: 0.0625rem solid $border;
 	color: $color-secondary;
 
 	.footer-inner {
@@ -49,11 +49,11 @@
 						border-radius: $rounded-m;
 						color: $color-secondary;
 						text-decoration: none;
-						box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+						box-shadow: inset 0 0 0 0.0625rem $border;
 
 						@include interactive {
 							color: $color;
-							box-shadow: inset 0 0 0 0.0625rem var(--border-strong);
+							box-shadow: inset 0 0 0 0.0625rem $border;
 						}
 
 						.footer-social-icon {
@@ -101,7 +101,7 @@
 			justify-content: space-between;
 			gap: spacing(m);
 			padding-block-start: spacing(2xl);
-			border-block-start: 0.0625rem solid $border-color;
+			border-block-start: 0.0625rem solid $border;
 			--font-size: 0.875rem;
 
 			.footer-copyright {

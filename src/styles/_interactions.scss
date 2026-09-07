@@ -1,5 +1,4 @@
-@use "initial" as *;
-@use "derived" as *;
+@use "tokens" as *;
 
 @mixin interactive {
 	&:not(:disabled):not([aria-disabled='true']) {
@@ -18,7 +17,7 @@
 
 @mixin link-underline {
 	display: inline;
-	color: $accent-text;
+	color: $primary-text;
 	border-radius: $rounded-s;
 	text-decoration: none;
 	background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0% 0.08em;
@@ -31,7 +30,7 @@
 	}
 }
 
-@mixin overlay-backdrop($color: $scrim) {
+@mixin overlay-backdrop($color: $overlay) {
 	position: fixed;
 	inset: 0;
 	z-index: $z-overlay;

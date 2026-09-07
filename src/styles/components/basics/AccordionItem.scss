@@ -23,11 +23,19 @@
 				transition: background-color $speed-fast $ease;
 
 				@include interactive {
-					background-color: $surface-faint;
+					background-color: $grey-lightest;
+
+					@include on-colorset(dark) {
+						background-color: $grey-dark;
+					}
 				}
 
 				&:active {
-					background-color: $background-active;
+					background-color: $grey-light;
+
+					@include on-colorset(dark) {
+						background-color: $grey;
+					}
 				}
 			}
 

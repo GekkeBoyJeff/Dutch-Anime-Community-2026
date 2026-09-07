@@ -100,8 +100,8 @@
 					inline-size: 2.5rem;
 					block-size: 2.5rem;
 					border-radius: $rounded-m;
-					background-color: $tint-accent;
-					color: $accent-text;
+					background-color: $tint-primary;
+					color: $primary-text;
 					font-size: 1.25rem;
 				}
 
@@ -114,7 +114,7 @@
 					.item-card-grid-link-card-cta {
 						margin-block-start: spacing(xs);
 						font-weight: $weight-medium;
-						color: $accent-text;
+						color: $primary-text;
 					}
 				}
 
@@ -136,7 +136,7 @@
 				&:hover .item-card-grid-link-card-arrow,
 				&:focus-within .item-card-grid-link-card-arrow {
 					transform: rotate(45deg) translate(0.125rem, -0.125rem);
-					color: $accent-text;
+					color: $primary-text;
 				}
 			}
 		}
@@ -164,14 +164,14 @@
 			block-size: $control-size;
 			border-radius: $rounded-full;
 			background-color: transparent;
-			box-shadow: inset 0 0 0 0.0625rem var(--border-color);
+			box-shadow: inset 0 0 0 0.0625rem $border;
 			color: $color;
 			cursor: pointer;
 
 			&:not([disabled]) {
 				@include interactive {
-					background-color: $tint-accent;
-					color: $accent-text;
+					background-color: $tint-primary;
+					color: $primary-text;
 				}
 			}
 

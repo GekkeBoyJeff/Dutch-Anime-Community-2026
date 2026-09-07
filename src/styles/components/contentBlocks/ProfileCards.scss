@@ -46,7 +46,7 @@
 			.profile-cards-role {
 				margin: 0;
 				font-weight: $weight-medium;
-				color: $accent-text;
+				color: $primary-text;
 			}
 
 			.profile-cards-socials {
@@ -67,7 +67,7 @@
 					color: $color-secondary;
 
 					@include interactive {
-						color: $accent-text;
+						color: $primary-text;
 					}
 				}
 			}

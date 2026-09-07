@@ -43,7 +43,7 @@ const config = {
 				...viteConfig.resolve?.alias,
 				// Order matters: the more specific supabase alias must precede the '@' catch-all, or
 				// Vite resolves the real client first and every dashboard story renders a spinner.
-				'@/lib/supabase/client': fileURLToPath(new URL('./mocks/supabase.ts', import.meta.url)),
+				'@/lib/shared/supabase/client': fileURLToPath(new URL('./mocks/supabase.ts', import.meta.url)),
 				'@': srcDir,
 			},
 		},

@@ -1,5 +1,3 @@
-@use "initial" as *;
-
 .meter {
 	display: flex;
 	flex-direction: column;
@@ -21,14 +19,18 @@
 		inline-size: 100%;
 		block-size: 0.5rem;
 		border-radius: $rounded-full;
-		background-color: $surface-track;
+		background-color: $grey-light;
+
+		@include on-colorset(dark) {
+			background-color: $grey;
+		}
 	}
 
 	.meter-fill {
 		display: block;
 		block-size: 100%;
 		border-radius: $rounded-full;
-		background-color: $accent;
+		background-color: $primary;
 		transition: inline-size $motion-standard;
 
 		@media (prefers-reduced-motion: reduce) {
@@ -49,11 +51,15 @@
 	}
 
 	.meter-ring-track {
-		stroke: $surface-track;
+		stroke: $grey-light;
+
+		@include on-colorset(dark) {
+			stroke: $grey;
+		}
 	}
 
 	.meter-ring-fill {
-		stroke: $accent;
+		stroke: $primary;
 		transition: stroke-dashoffset $motion-standard;
 
 		@media (prefers-reduced-motion: reduce) {
@@ -95,16 +101,16 @@
 		overflow: hidden;
 		padding: 0.15rem 0.6rem;
 		border-radius: $rounded-full;
-		background: linear-gradient(120deg, color-mix(in srgb, #{$accent} 22%, transparent), color-mix(in srgb, #{$accent} 10%, transparent));
-		box-shadow: inset 0 0 0 0.0625rem color-mix(in srgb, #{$accent-active} 50%, transparent);
-		color: $accent-text;
+		background: linear-gradient(120deg, color-mix(in srgb, #{$primary} 22%, transparent), color-mix(in srgb, #{$primary} 10%, transparent));
+		box-shadow: inset 0 0 0 0.0625rem color-mix(in srgb, #{$primary-active} 50%, transparent);
+		color: $primary-text;
 		font-weight: $weight-medium;
 
 		&::after {
 			content: '';
 			position: absolute;
 			inset: 0;
-			background: linear-gradient(110deg, transparent 20%, color-mix(in srgb, #{$background-color} 60%, transparent) 50%, transparent 80%);
+			background: linear-gradient(110deg, transparent 20%, color-mix(in srgb, #{$background} 60%, transparent) 50%, transparent 80%);
 			translate: -120% 0;
 			animation: meter-seal-shimmer 900ms $ease-out 120ms 1;
 		}
@@ -116,8 +122,8 @@
 		inline-size: 1rem;
 		block-size: 1rem;
 		border-radius: $rounded-full;
-		background-color: $accent;
-		color: $accent-contrast;
+		background-color: $primary;
+		color: $white;
 
 		.icon {
 			inline-size: 0.7rem;

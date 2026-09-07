@@ -2,81 +2,281 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="Look & feel/Typography" />
 
-# Typography
+export const RULE = '0.0625rem solid rgba(128, 128, 128, 0.3)';
 
-The headings, h1 through h6, live:
+export const SURFACE = {
+	borderRadius: '0.75rem',
+	background: 'var(--background)',
+	color: 'var(--color)',
+	boxShadow: 'inset 0 0 0 0.0625rem var(--border), 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.18)',
+};
 
-<div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBlock: '1.5rem' }}>
-	{[1, 2, 3, 4, 5, 6].map((n) => (
-		<div key={n} className={`title is-${n}`}>
-			Heading {n} — the quick brown fox
-		</div>
-	))}
-</div>
+export const Label = ({ children }) => (
+	<code style={{ fontSize: '0.7rem', opacity: 0.7 }}>{children}</code>
+);
 
-And the two body sizes:
+export const Sample = ({ className, label, children }) => (
+	<div style={{ paddingBlock: '0.9rem', borderBlockEnd: RULE }}>
+		<Label>{label}</Label>
+		<div className={className} style={{ marginBlockStart: '0.2rem' }}>{children}</div>
+	</div>
+);
 
-<div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBlock: '1.5rem' }}>
-	<p className="content">Body — the standard size for running text. It scales up with the screen.</p>
-	<p className="content is-small">Small — for captions and metadata. Same idea, a smaller curve.</p>
-</div>
+export const Box = ({ children }) => (
+	<div data-colorset="light" style={{ ...SURFACE, padding: '0.25rem 1.1rem 1.1rem', marginBlock: '1.5rem' }}>
+		{children}
+	</div>
+);
 
-## Roles, not a number scale
+## One property drives every size
 
-Type is taken from **semantic roles**, not a neutral numeric scale. Each role carries its own size and
-line height, and each is responsive — it grows at set breakpoints on its own. The role lives on the
-class (`.title.is-1`, `.content`), not the tag, so a heading can *look* like an h2 while still being an
-`<h1>` in the document outline.
+`src/styles/base.scss` sets the size of every element on the page in two rules:
 
-These are the real values (mobile-first base, then the size at the medium and large breakpoints):
+```css
+body {
+	font-size: $font-size;
+	line-height: 1.6;
+}
 
-| Role | Base (mobile) | At `m` (48rem) | At `l` (64rem) |
-|---|---|---|---|
-| `display` | 3rem / 1 | 4rem | 5rem |
-| `h1` | 2rem / 1.1 | 2.5rem | 3rem |
-| `h2` | 1.625rem / 1.15 | 2rem | 2.25rem |
-| `h3` | 1.375rem / 1.2 | 1.625rem | — |
-| `h4` | 1.1875rem / 1.25 | 1.375rem | — |
-| `h5` | 1.0625rem / 1.3 | 1.125rem | — |
-| `h6` | 1rem / 1.35 | — | — |
-| `body-large` | 1.125rem / 1.6 | 1.1875rem | 1.3125rem |
-| `body-default` | 1rem / 1.6 | 1.0625rem | 1.125rem |
-| `body-small` | 0.875rem / 1.55 | 0.9375rem | — |
-| `caption` | 0.8125rem / 1.4 | — | — |
-
-(Values are `font-size / line-height`; a dash means it doesn't change at that breakpoint.)
-
-`display` is for big standalone figures (a 404 code, a hero stat), not headings; `caption` is the small chrome
-text below body-small (badges, key caps, meta lines). Reach for a heading role (`h1`–`h6`) for actual headings.
-
-## The font
-
-The typeface is **Manrope**, self-hosted via [`next/font`](https://nextjs.org/docs/app/getting-started/fonts)
-in `src/app/layout.tsx`, exposed as the `--font-sans` custom property the SCSS reset reads. To use a
-different font, swap the `next/font` import there — that's the single place the typeface is set. (The
-`system-ui` in the reset is only a fallback while the font loads.)
-
-## How to use it
-
-`Title` picks the tag and the role; `Content` carries the body role.
-
-```tsx
-<Title size={1} value="A heading" />          {/* <h1 class="title is-1"> */}
-<Title element="h2" size={4} value="…" />     {/* <h2 tag, h4 size> — decoupled */}
-<Content value="Running text" />              {/* <p class="content"> */}
-<Content size="small" value="Small" />        {/* <p class="content is-small"> */}
+:where(body *) {
+	font-size: $font-size;
+}
 ```
 
-> **Why decouple size from tag?** Document structure (which heading level) is for accessibility and
-> SEO; visual size is for design. Tying them together forces you to pick a wrong heading level just to
-> get the right size. Here you choose each independently.
+`$font-size` is the alias for the custom property `--font-size`, which starts at `1.0625rem` (17px)
+on `:root`. So a class changes the type size by setting the **property**, never `font-size`:
 
-> **Why roles instead of `font-size`?** A role bundles size *and* line height *and* its responsive
-> steps under one name. You apply `h2` once and get all of it, consistently, everywhere.
+```css
+.badge {
+	--font-size: 0.8125rem;
+}
+```
 
-Where it lives: the roles and their per-breakpoint values are in `src/styles/_initial.scss`
-(`$type-roles` plus the `type-role()` mixin); the global classes are applied in `src/styles/base.scss`.
+> **Why not just write `font-size`?** Because `:where(body *)` re-applies `font-size: var(--font-size)`
+> to every element inside the badge as well. A plain `font-size` on `.badge` would be undone on its
+> children, which would snap back to the root's 17px. Setting `--font-size` instead lets the value
+> inherit, and the children follow.
 
----
+## The scale
 
-**See also:** [Colors](?path=/docs/look-feel-colors--docs) · [Spacing](?path=/docs/look-feel-spacing--docs).
+Rendered live with the real classes, so these are the actual sizes at this window width.
+
+<Box>
+	<Sample className="h1" label=".h1">The quick brown fox</Sample>
+	<Sample className="h2" label=".h2">The quick brown fox</Sample>
+	<Sample className="h3" label=".h3">The quick brown fox</Sample>
+	<Sample className="h4" label=".h4">The quick brown fox</Sample>
+	<Sample className="h5" label=".h5">The quick brown fox</Sample>
+	<Sample className="h6" label=".h6">The quick brown fox</Sample>
+	<Sample className="sb-unstyled" label="body — the default">The quick brown fox jumps over the lazy dog</Sample>
+	<Sample className="body-large" label=".body-large">The quick brown fox jumps over the lazy dog</Sample>
+	<Sample className="body-small" label=".body-small">The quick brown fox jumps over the lazy dog</Sample>
+	<Sample className="caption" label=".caption">The quick brown fox jumps over the lazy dog</Sample>
+</Box>
+
+The top six grow at two breakpoints; the body sizes do not.
+
+| Class | base | from `m` (48rem) | from `l` (64rem) | line-height |
+| --- | --- | --- | --- | --- |
+| `.h1` | 2rem | 2.5rem | 3rem | 1.1 |
+| `.h2` | 1.625rem | 2rem | 2.25rem | 1.15 |
+| `.h3` | 1.375rem | 1.625rem | — | 1.2 |
+| `.h4` | 1.1875rem | 1.375rem | — | 1.25 |
+| `.h5` | 1.0625rem | 1.125rem | — | 1.3 |
+| `.h6` | 1rem | — | — | 1.35 |
+| `body` | 1.0625rem | — | — | 1.6 |
+| `.body-large` | 1.125rem | — | — | 1.6 |
+| `.body-small` | 0.875rem | — | — | 1.55 |
+| `.caption` | 0.8125rem | — | — | 1.4 |
+
+All ten live in `base.scss`. `.caption` is the one components reach for by name — `Media`, `Gallery`,
+`Swiper` and `PhotoMosaic` all put it on a `figcaption`. `.h1`–`.h6` and the two body classes are
+handles for one-off cases; nothing in the repo uses them at the moment.
+
+## Size and meaning are separate choices
+
+`h1` through `h6` say what a heading *is*: the document outline, the thing a screen reader announces
+and a search engine reads. The `.h1`–`.h6` classes say what it *looks like*. Keeping them apart means
+a page can open with a real `h1` that is visually modest, or give an `h3` the size the layout needs.
+
+The split is literal in `base.scss`. The tag selectors set only the shared look:
+
+```css
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+.title {
+	font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
+	font-weight: $weight-semibold;
+	letter-spacing: $tracking-tight;
+}
+```
+
+No size in there. A bare `<h1>` gets the display font, the semibold weight and the tight tracking —
+and body size, because nothing set its `--font-size`. The size arrives only with a class.
+
+### `Title` picks both
+
+`src/components/basics/Title.tsx` turns that into two props:
+
+```tsx
+const Title = ({
+	element,
+	size = 2,
+	className,
+	value,
+	href,
+	linkClassName,
+	id,
+}: TitleProps) => {
+	const Element = (element || `h${size}`) as React.ElementType;
+	const content = value && parse(value);
+
+	return (
+		<Element className={classNames('title', `is-${size}`, className)} id={id}>
+			{href ? (
+				<Interactive url={href} className={linkClassName}>
+					{content}
+				</Interactive>
+			) : (
+				content
+			)}
+		</Element>
+	);
+};
+```
+
+- `size` (1–6, default 2) picks the visual role by writing the class `is-1` … `is-6`.
+- `element` picks the tag. Omit it and the tag follows the size — `size={3}` renders an `h3`.
+
+So `size={2} element="h1"` is a page's real first heading at the h2 size, and `element="p"` gives a
+paragraph the heading look without polluting the outline.
+
+`.title.is-1` … `.title.is-6` are not a second scale. They are declared on the same rule as
+`.h1`–`.h6` in `src/styles/base.scss`, so a `Title` and a bare `.h1` resolve to the same size *and*
+the same line-height:
+
+```css
+.h1,
+.title.is-1 {
+	--font-size: 2rem;
+	line-height: 1.1;
+	// …
+}
+```
+
+<Box>
+	<Sample className="title is-1" label='Title size={1} → .title.is-1'>Nieuws uit de club</Sample>
+	<Sample className="title is-3" label='Title size={3} → .title.is-3'>Nieuws uit de club</Sample>
+	<Sample className="title is-5" label='Title size={5} → .title.is-5'>Nieuws uit de club</Sample>
+</Box>
+
+Props and controls: [Title](?path=/docs/basics-title--docs).
+
+## Weights
+
+Four, in `src/styles/_tokens.scss`. Headings get `$weight-semibold` from `base.scss`; everything else
+is the component's choice.
+
+<Box>
+	<Sample label="$weight-regular · 400"><span style={{ fontWeight: 400 }}>Nederlandse Anime Community</span></Sample>
+	<Sample label="$weight-medium · 500"><span style={{ fontWeight: 500 }}>Nederlandse Anime Community</span></Sample>
+	<Sample label="$weight-semibold · 600"><span style={{ fontWeight: 600 }}>Nederlandse Anime Community</span></Sample>
+	<Sample label="$weight-bold · 700"><span style={{ fontWeight: 700 }}>Nederlandse Anime Community</span></Sample>
+</Box>
+
+## Letter-spacing
+
+Three tokens, and each has one job.
+
+<Box>
+	<Sample label="$tracking-tight · -0.02em — headings, applied by base.scss"><span style={{ fontSize: '1.6rem', fontWeight: 600, letterSpacing: '-0.02em' }}>Grote koppen sluiten aan</span></Sample>
+	<Sample label="$tracking-wide · 0.04em"><span style={{ letterSpacing: '0.04em' }}>Iets meer lucht</span></Sample>
+	<Sample label="$tracking-wider · 0.08em — small uppercase labels"><span style={{ fontSize: '0.875rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Aankondiging</span></Sample>
+</Box>
+
+Large text needs *less* spacing than small text, which is why the only automatic one is the negative
+tracking on headings. The wider value is for the opposite case — uppercase text at 14px, where the
+letters would otherwise crowd. `HeadingGroup` does exactly that with its tagline:
+
+```css
+.heading-group-tagline {
+	--font-size: 0.875rem;
+	font-weight: $weight-medium;
+	text-transform: uppercase;
+	letter-spacing: $tracking-wider;
+	color: $primary-text;
+}
+```
+
+## Line length
+
+`$measure` is `60ch` — sixty zero-widths of the current font, so it scales with the type size rather
+than being a fixed pixel width. It caps a column of running text at a comfortable line, somewhere
+around 65–75 characters in practice.
+
+<Box>
+	<div style={{ maxInlineSize: '60ch', paddingBlock: '0.9rem', paddingInlineStart: '0.9rem', borderInlineStart: '0.1875rem solid rgba(128, 128, 128, 0.45)' }}>Deze kolom is precies 60ch breed. Zodra een regel het einde ervan raakt, breekt hij af. Zonder die grens loopt lopende tekst op een breed scherm door tot voorbij de honderd tekens, en verliest het oog bij elke terugsprong de volgende regel.</div>
+</Box>
+
+One stylesheet uses it today — `HeadingGroup.scss`, on the intro paragraph under a heading:
+
+```css
+.heading-group-intro {
+	color: $color-secondary;
+	max-inline-size: $measure;
+}
+```
+
+`max-inline-size` rather than `max-width`: see [Spacing](?path=/docs/look-feel-spacing--docs) for what
+the logical properties buy.
+
+## The typefaces
+
+Two, loaded by `next/font` in `src/app/layout.tsx` and exposed as custom properties:
+
+```tsx
+const sans = Manrope({
+	subsets: ['latin'],
+	variable: '--font-sans',
+	display: 'swap',
+});
+
+const displayFont = Poppins({
+	subsets: ['latin'],
+	weight: ['500', '600', '700'],
+	variable: '--font-display',
+	display: 'swap',
+});
+```
+
+`body` uses `var(--font-sans, system-ui, sans-serif)`; headings use `--font-display` and fall back to
+`--font-sans`. Poppins ships only the three weights listed, which is why 400 never appears in a
+heading.
+
+Storybook loads neither, and its documentation pages impose their own UI font on top. So the samples
+above are accurate about size, weight, line-height and letter-spacing, and wrong about the
+letterforms. To see Manrope and Poppins, run `npm run dev` and open the site.
+
+## Which class for which job?
+
+| The job | Use |
+| --- | --- |
+| A heading in content | `Title` with `size`, and `element` when the outline needs a different tag |
+| Heading styling on something that is not a heading | `.h1` … `.h6` |
+| Running text | nothing — `body` is already 1.0625rem |
+| A lead paragraph under a heading | `HeadingGroup`'s `intro` prop, or `.body-large` |
+| Fine print, helper text under a field | `.body-small` |
+| An image caption, a timestamp | `.caption` |
+| A small uppercase label | `$tracking-wider` with `$weight-medium` at `0.875rem` |
+| One component that needs its own size | `--font-size` in that component's stylesheet |
+| A block of rich text | `Content`, which sets `1rem` and takes `size="small"` / `size="large"` |
