@@ -8,7 +8,7 @@ export const resolveNode = (root: JsonSchemaNode, path: SchemaPath): JsonSchemaN
 	for (const segment of path) {
 		if (!node) return null;
 		if (typeof segment === 'number') {
-			const variants = node.anyOf ?? node.oneOf;
+			const variants: unknown = node.anyOf ?? node.oneOf;
 			node = Array.isArray(variants) ? (variants[segment] ?? null) : null;
 			continue;
 		}

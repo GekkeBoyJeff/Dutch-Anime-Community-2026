@@ -61,10 +61,10 @@ const componentEntries = (): Config['components'] => {
 	);
 };
 
-// Puck's preview iframe has its own document, without the data-theme/data-colorset the root layout
-// sets on the real site — so the token cascade breaks. This invisible marker reaches the iframe
-// document through its own ref and restores both attributes.
-const PreviewTheme = () => {
+// Puck's preview iframe has its own document, without the data-colorset the root layout sets on the
+// real site — so the token cascade breaks. This invisible marker reaches the iframe document through
+// its own ref and restores it.
+const PreviewColorset = () => {
 	const ref = useRef<HTMLSpanElement>(null);
 
 	// Deliberately no dependency array: Puck can swap the iframe document underneath us (viewport
@@ -72,7 +72,6 @@ const PreviewTheme = () => {
 	useEffect(() => {
 		const doc = ref.current?.ownerDocument;
 		if (doc && doc !== document) {
-			doc.documentElement.dataset.theme ??= 'default';
 			doc.body.dataset.colorset ??= 'light';
 		}
 	});
@@ -129,7 +128,7 @@ export const config: Config = {
 
 			return (
 				<>
-					<PreviewTheme />
+					<PreviewColorset />
 					<div className="page-frame">
 						<div className="page-frame-scroll">
 							<SiteChrome

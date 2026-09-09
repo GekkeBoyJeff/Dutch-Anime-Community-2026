@@ -14,7 +14,7 @@ export type FaqItem = z.infer<typeof FaqItem>;
 
 export const FaqAccordionProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark colorset applied to the section background and text'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading group (tagline, title, size, intro) shown above the accordion list'),
 		items: z.array(FaqItem).min(1).describe('Question/answer entries rendered as accordion items'),
 		numbered: z.boolean().optional().describe('Prefixes each question with a running number, continuous across category groups'),

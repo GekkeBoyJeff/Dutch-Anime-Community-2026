@@ -188,10 +188,10 @@ const resolveFields =
 		: undefined;
 ```
 
-**`PreviewTheme`.** Puck renders the preview in its own iframe, which has its own document — without
-the `data-theme` and `data-colorset` the real layout sets. The token cascade would break, so an
-invisible marker reaches into the iframe document and restores both attributes. It runs on every
-render on purpose, because switching viewport recreates the frame.
+**`PreviewColorset`.** Puck renders the preview in its own iframe, which has its own document — without
+the `data-colorset` the real layout sets. The token cascade would break, so an invisible marker
+reaches into the iframe document and restores it. It runs on every render on purpose, because
+switching viewport recreates the frame.
 
 **`transform.ts`.** The editor's data shape and the site's page shape are not the same thing, so this
 converts between them and collects validation issues on the way back. It is also where empty strings

@@ -1,4 +1,4 @@
-import type { JsonSchemaNode } from './walk';
+import type { JsonSchemaNode } from './schema';
 
 export const buildExample = (node: JsonSchemaNode, depth = 0): unknown => {
 	if (!node || typeof node !== 'object' || depth > 12) return null;

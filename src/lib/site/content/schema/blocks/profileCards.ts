@@ -1,14 +1,8 @@
 import { z } from 'zod';
 
-import { Colorset, Heading, Id } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, Id, SocialLink } from '@/lib/site/content/schema/primitives';
 
-export const ProfileSocial = z
-	.object({
-		label: z.string().min(1).describe('Name of the social network; shown as the link text, or as hidden text for assistive tech when an icon is set'),
-		url: z.string().min(1).describe('Destination the social link opens in a new tab'),
-		icon: z.string().optional().describe('Icon glyph name rendered in place of the visible label').meta({ editor: 'icon' }),
-	})
-	.meta({ title: 'ProfileSocial' });
+export const ProfileSocial = SocialLink.meta({ title: 'ProfileSocial' });
 export type ProfileSocial = z.infer<typeof ProfileSocial>;
 
 export const ProfileCardItem = z
@@ -29,7 +23,7 @@ export type ProfileCardItem = z.infer<typeof ProfileCardItem>;
 
 export const ProfileCardsProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) rendered above the grid'),
 		columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).optional().describe('Number of columns in the profile grid'),
 		items: z.array(ProfileCardItem).describe('The people rendered as cards in the grid'),

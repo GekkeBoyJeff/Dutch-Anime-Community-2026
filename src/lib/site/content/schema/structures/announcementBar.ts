@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Action } from '@/lib/site/content/schema/primitives';
+import { Action } from '@/lib/site/content/schema/basics/actions';
 
 export const AnnouncementVariant = z.enum(['info', 'success', 'warning', 'accent']).meta({ title: 'AnnouncementVariant' });
 export type AnnouncementVariant = z.infer<typeof AnnouncementVariant>;

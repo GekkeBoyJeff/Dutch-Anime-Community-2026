@@ -55,9 +55,10 @@ export const Ramp = ({ steps }) => (
 ## The two colorsets
 
 A page is built from sections, and every section renders on either the light or the dark half of the
-palette. `Section` takes a `colorset` prop and writes it onto the DOM as `data-colorset`; six colours
-and one focus ring swap underneath. A section that says nothing keeps the half it is nested in, and
-the page starts on light. Both halves, live:
+palette. `Section` takes a `colorset` prop and writes it onto the DOM as `data-colorset`; seven colours
+and one focus ring swap underneath. `$primary` is listed with them so you can watch it do nothing —
+the brand fill is the same colour on both halves. A section that says nothing keeps the half it is
+nested in, and the page starts on light. Both halves, live:
 
 <TwoUp>
 	<Row fill="var(--background)" name="$background" note="The surface." />
@@ -65,12 +66,14 @@ the page starts on light. Both halves, live:
 	<Row fill="var(--color-secondary)" name="$color-secondary" note="Quieter text: intros, metadata." />
 	<Row fill="var(--color-tertiary)" name="$color-tertiary" note="Quietest: placeholders, disabled labels." />
 	<Row fill="var(--border)" name="$border" note="The hairline between two things." />
+	<Row fill="var(--primary)" name="$primary" note="Does not flip: the same fill in both halves." />
 	<Row fill="var(--primary-text)" name="$primary-text" note="The brand colour, kept readable as text." />
+	<Row fill="var(--secondary)" name="$secondary" note="The quiet brand surface beside the accent." />
 	<div style={{ marginBlockStart: '0.9rem' }}><span style={{ display: 'inline-block', padding: '0.4rem 0.8rem', borderRadius: '0.4rem', background: 'var(--background)', color: 'var(--color)', boxShadow: 'var(--shadow-focus)', fontSize: '0.8rem' }}>$shadow-focus</span></div>
 </TwoUp>
 
-These panels render the **dac** theme, the one the site ships. Storybook pins documentation pages to
-it: theme switching runs as a story decorator, and a page with no story in it never sees one.
+There is one palette, and this is it. The only thing a section chooses is which half of it to stand
+on.
 
 ## `--color` is the property, `$color` is the name you write
 
@@ -99,8 +102,8 @@ every stylesheet by the build, so no component ever writes an `@use` line to rea
 
 ## What flips, and what does not
 
-Exactly seven slots flip: `$background`, `$color`, `$color-secondary`, `$color-tertiary`, `$border`,
-`$primary-text` and `$shadow-focus`.
+Exactly eight slots flip: `$background`, `$color`, `$color-secondary`, `$color-tertiary`, `$border`,
+`$primary-text`, `$secondary` and `$shadow-focus`.
 
 Everything else is a **fixed** colour that the component picks itself — the grey scale, the status
 hues, `$primary`. A grey stays the same grey inside a dark section. When that is wrong, the component
@@ -133,13 +136,13 @@ no `var()`, no flipping.
 
 <Ramp steps={[['$white', '#ffffff'], ['$grey-lightest', '#f6f6f7'], ['$grey-light', '#e3e3e6'], ['$grey', '#a0a0a8'], ['$grey-dark', '#5c5c66'], ['$grey-darkest', '#202024'], ['$black', '#111112']]} />
 
-The default theme builds its two halves out of exactly these: `--color-light` is `$grey-darkest`,
-`--background-dark` is `$grey-darkest` again, and so on. The **dac** theme replaces them with plum
-and cream, which is why the panels above are not grey.
+The two halves are **not** built from these — the palette is plum and cream, which is why the panels
+above are not grey. Reach for a grey when you need a neutral that stays the same in both colorsets: a
+chip, an empty avatar, a skeleton.
 
 ## The brand colour
 
-One saturated colour per theme, and it does not flip — a primary button is the same yellow on a light
+One saturated colour, and it does not flip — a primary button is the same yellow on a light
 section and a dark one.
 
 <TwoUp>
@@ -148,11 +151,20 @@ section and a dark one.
 	<Row fill="var(--primary-active)" name="$primary-active" note="That fill while pressed." />
 	<Row fill="var(--tint-primary)" name="$tint-primary" note="A wash of it: a selected menu row." />
 	<Row fill="var(--primary-text)" name="$primary-text" note="Flips. Use when the brand colour is text." />
+	<Row fill="var(--secondary)" name="$secondary" note="Flips. The quiet surface beside the accent." />
 </TwoUp>
 
 `$primary-text` is the exception in this group, and the reason it exists: **dac** yellow is `#f5c24a`,
-which is unreadable as text on white. The theme therefore keeps two values, and the colorset picks
+which is unreadable as text on white. The palette therefore keeps two values, and the colorset picks
 one — `#875f0d` on the light half, `#f5c24a` on the dark half.
+
+The label on a primary button is `$black`, and deliberately not `$color`: the fill does not flip, so
+the text on it must not either. `$color` would turn cream on a dark section and leave 1.4 : 1 against
+the gold. A fixed fill always takes a fixed text colour.
+
+`$secondary` is a pair for the same reason the other way round. It is a surface rather than text, so
+each half needs the value that stays *quiet* against its own background: **dac** uses cream `#f2ebd7`
+on the light half and plum `#3b2938` on the dark half.
 
 ## Status colours
 
@@ -181,51 +193,38 @@ third as an inset hairline: `box-shadow: inset 0 0 0 0.0625rem $ring-success`.
 `$shadow-focus-error` is the matching focus ring for an invalid field, and it is a complete
 `box-shadow` value rather than a colour: `0 0 0 0.1875rem rgba($error, 0.3)`.
 
-## Three layers
+## Two layers
 
-`src/styles/theme.scss` is one file in three steps, and each step has exactly one job.
+`src/styles/theme.scss` is one file in two steps, and each step has exactly one job.
 
-**1. Palette.** Every colour the default theme owns, as a `-light` and a `-dark` pair.
+**1. Palette.** Every colour the site owns, as a `-light` and a `-dark` pair.
 
 ```css
 :root {
-	--primary: #3b5bdb;
-
-	/* The light half. */
-	--background-light: #{$white};
-	--color-light: #{$grey-darkest};
-	--color-secondary-light: #{$grey-dark};
-	--color-tertiary-light: #{$grey};
-	--border-light: #{rgba($grey-darkest, 0.12)};
-
-	/* The dark half — the same five slots, no more, no less. */
-	--background-dark: #{$grey-darkest};
-	--color-dark: #{$grey-lightest};
-	--color-secondary-dark: #{$grey-light};
-	--color-tertiary-dark: #{$grey};
-	--border-dark: #{rgba($white, 0.14)};
-}
-```
-
-**2. Theme.** A theme overrides those values and adds nothing. There are three: the default, `sepia`
-and `dac`. The site sets `data-theme` on the `html` element.
-
-```css
-[data-theme='dac'] {
 	--primary: #f5c24a;
 	--primary-text-light: #875f0d;
 	--primary-text-dark: #f5c24a;
 
+	--secondary-light: #f2ebd7;
+	--secondary-dark: #3b2938;
+
+	/* The light half. */
 	--background-light: #ffffff;
 	--color-light: #3b2938;
+	--color-secondary-light: #6f5f6a;
+	--color-tertiary-light: #948590;
 	--border-light: #e7dcc0;
 
+	/* The dark half — the same five slots, no more, no less. */
 	--background-dark: #241a22;
 	--color-dark: #f2ebd7;
+	--color-secondary-dark: #c9b4bf;
+	--color-tertiary-dark: #9a8792;
+	--border-dark: #{rgba(#f2ebd7, 0.14)};
 }
 ```
 
-**3. Colorset.** Picks the light half or the dark half for one subtree. Written out twice on purpose:
+**2. Colorset.** Picks the light half or the dark half for one subtree. Written out twice on purpose:
 every line reads `--x: var(--x-light)`, so what a colorset does is visible without decoding a loop.
 
 ```css
@@ -234,6 +233,7 @@ every line reads `--x: var(--x-light)`, so what a colorset does is visible witho
 	--background: var(--background-light);
 	--color: var(--color-light);
 	--primary-text: var(--primary-text-light);
+	--secondary: var(--secondary-light);
 	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-light);
 }
 
@@ -241,6 +241,7 @@ every line reads `--x: var(--x-light)`, so what a colorset does is visible witho
 	--background: var(--background-dark);
 	--color: var(--color-dark);
 	--primary-text: var(--primary-text-dark);
+	--secondary: var(--secondary-dark);
 	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-dark);
 }
 ```
@@ -249,9 +250,8 @@ every line reads `--x: var(--x-light)`, so what a colorset does is visible witho
 > property is resolved where it is *declared*, not where it is used. One written on `:root` would keep
 > the root's accent even inside a nested dark section.
 
-Restyling the whole site is step 2, and only step 2. Copy a theme block, change the values; nothing
-else in the codebase has to know. This is a leftover of the codebase's origin as a reusable Next.js
-starter, which is also why the default and `sepia` themes still ship next to the brand one.
+Restyling the whole site is step 1, and only step 1. Change the values in the `:root` palette; nothing
+else in the codebase has to know.
 
 `theme.scss` holds one more group: the `--admin-*` tokens. The staff platform has no palette of its
 own — it reads everything above. What it owns is density: radii, gaps, row heights and three shadow
@@ -269,6 +269,8 @@ levels, because a tool wants a tighter rhythm than a marketing site.
 | A focus ring | `$shadow-focus` | yes |
 | The brand colour **as text or an icon** | `$primary-text` | yes |
 | The fill of a primary button | `$primary`, `$primary-hover`, `$primary-active` | no |
+| The text or icon **on** that fill | `$black` | no |
+| A quiet brand surface behind content | `$secondary` | yes |
 | A selected row, an active filter chip | `$tint-primary` | no |
 | A neutral chip or an empty avatar | a grey, plus `on-colorset(dark)` | no |
 | Status text or a status icon | `$status-info` · `-success` · `-warning` · `-error` | no |
@@ -286,12 +288,10 @@ token definitions. A box that needs to stand out uses a border, a shadow, or a g
 
 1. `src/styles/theme.scss`, step 1 — add the value to the `:root` palette. If it has to flip, add the
    pair `--thing-light` and `--thing-dark`; if not, add plain `--thing`.
-2. Same file, step 2 — give `[data-theme='sepia']` and `[data-theme='dac']` their own value, but only
-   if it differs. A theme that omits a slot inherits the `:root` one.
-3. Same file, step 3 — if it flips, add one line to `[data-colorset='light']` and one to
+2. Same file, step 2 — if it flips, add one line to `[data-colorset='light']` and one to
    `[data-colorset='dark']`. Both blocks, always; a slot in one and not the other is a silent bug.
-4. `src/styles/_tokens.scss` — add the alias next to its neighbours: `$thing: var(--thing);`.
-5. Use `$thing` in the component stylesheet. Never `var(--thing)`.
+3. `src/styles/_tokens.scss` — add the alias next to its neighbours: `$thing: var(--thing);`.
+4. Use `$thing` in the component stylesheet. Never `var(--thing)`.
 6. Verify by compiling — `npm run storybook` or `npm run build`. An unknown Sass variable is a build
    error, so a missing step 4 cannot reach production. A missing step 3 can: nothing fails, the
    colour simply does not resolve inside that colorset. Hence both blocks, always.

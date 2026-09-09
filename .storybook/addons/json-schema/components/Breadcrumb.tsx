@@ -3,7 +3,7 @@ import React from 'react';
 import { IconButton } from 'storybook/internal/components';
 import { styled } from 'storybook/theming';
 
-import type { SchemaPath } from '../lib/walk';
+import type { SchemaPath } from '../lib/schema';
 
 const Bar = styled.div(({ theme }) => ({
 	display: 'flex',

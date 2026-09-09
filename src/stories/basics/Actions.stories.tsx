@@ -7,7 +7,7 @@ const meta: Meta<typeof Actions> = {
 	title: 'Basics/Actions',
 	component: Actions,
 	parameters: {
-		docs: { description: { component: 'The one CTA row: maps the shared `Action` content shape onto Buttons, so every block honors the same capabilities (variant, url, target, icon) without re-writing the loop. The row\'s layout (flex, gap) deliberately stays with the consuming block\'s stylesheet — this component owns only the mapping. `badge` opts primary actions into the circular icon-badge treatment, the house style for a leading CTA.' } },
+		docs: { description: { component: 'The one CTA row: maps the shared `Action` content shape onto Buttons, so every block honors the same capabilities (variant, url, target, icon) without re-writing the loop. The row itself is one flex row that wraps, styled in Actions.scss; a consuming block overrides only the gap or alignment it needs.' } },
 		jsonSchema: { schema: ActionsProps },
 	},
 	argTypes: {
@@ -43,13 +43,6 @@ export const Default: Story = {
 				variant: 'secondary',
 			},
 		],
-	},
-};
-
-export const WithBadge: Story = {
-	args: {
-		...Default.args,
-		badge: true,
 	},
 };
 

@@ -86,7 +86,6 @@ export const withJsonSchemaArgTypes: ArgTypesEnhancer = (context) => {
 			if (!enhanced.description && typeof description === 'string') enhanced.description = description;
 			if (required.has(name)) {
 				enhanced.type = { ...(enhanced.type ?? { name: 'other', value: 'unknown' }), required: true };
-				enhanced.table = { ...enhanced.table, type: { ...enhanced.table?.type, required: true } };
 			}
 			return [name, enhanced];
 		}),

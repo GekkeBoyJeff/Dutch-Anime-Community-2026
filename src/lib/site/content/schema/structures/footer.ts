@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import { Action } from '@/lib/site/content/schema/primitives';
+import { Action } from '@/lib/site/content/schema/basics/actions';
+import { SocialLink } from '@/lib/site/content/schema/primitives';
 
 // url is required here (optional on the Action primitive): every footer link renders into <Link>, which needs it.
 export const FooterLink = Action.pick({ value: true }).extend({ url: z.string().min(1).describe('The link destination') }).meta({ title: 'FooterLink' });
@@ -14,13 +15,7 @@ export const FooterColumn = z
 	.meta({ title: 'FooterColumn' });
 export type FooterColumn = z.infer<typeof FooterColumn>;
 
-export const FooterSocial = z
-	.object({
-		label: z.string().min(1).describe('The platform label, used for the accessible name'),
-		url: z.string().min(1).describe('The profile destination'),
-		icon: z.string().optional().describe('Optional icon glyph name (icon font is a placeholder, so this is never required)').meta({ editor: 'icon' }),
-	})
-	.meta({ title: 'FooterSocial' });
+export const FooterSocial = SocialLink.meta({ title: 'FooterSocial' });
 export type FooterSocial = z.infer<typeof FooterSocial>;
 
 export const FooterBrand = z

@@ -10,7 +10,7 @@ export const NewsletterSignup = z
 export type NewsletterSignup = z.infer<typeof NewsletterSignup>;
 
 export const SubscribeToNewsletterProps = z.object({
-	colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+	colorset: Colorset.optional(),
 	heading: Heading.optional().describe('Heading cluster (tagline, title, intro) rendered above the form'),
 	placeholder: z.string().optional().describe('Placeholder text shown inside the empty email field'),
 	ctaLabel: z.string().optional().describe('Visible label on the submit button'),

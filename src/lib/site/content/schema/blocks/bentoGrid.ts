@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import { Action, Colorset, Heading, Id, Media } from '@/lib/site/content/schema/primitives';
+import { Action } from '@/lib/site/content/schema/basics/actions';
+import { Colorset, Heading, Id, Media } from '@/lib/site/content/schema/primitives';
 
 export const BentoSpan = z.enum(['standard', 'wide', 'tall', 'feature']);
 export type BentoSpan = z.infer<typeof BentoSpan>;
@@ -25,7 +26,7 @@ export type BentoItem = z.infer<typeof BentoItem>;
 
 export const BentoGridProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light or dark theme applied to the section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Tagline, title and intro shown above the grid'),
 		columns: z.union([z.literal(3), z.literal(4), z.literal(5), z.literal(6)]).optional().describe('Number of columns in the grid'),
 		items: z.array(BentoItem).min(1).describe('Tiles rendered in the grid'),

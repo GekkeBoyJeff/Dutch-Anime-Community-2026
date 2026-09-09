@@ -6,7 +6,7 @@ import { z } from 'zod';
 // this module is the foundation every schema imports, so it runs before any runtime parse.
 z.config({ jitless: true });
 
-export const Colorset = z.enum(['light', 'dark']).meta({ title: 'Colorset' });
+export const Colorset = z.enum(['light', 'dark']).meta({ title: 'Colorset' }).describe('Light/dark theme applied to the surrounding section');
 export type Colorset = z.infer<typeof Colorset>;
 
 export const Id = z.union([z.string(), z.number()]).meta({ title: 'Id' });
@@ -56,16 +56,23 @@ export const OgImage = z
 	.meta({ title: 'OgImage' });
 export type OgImage = z.infer<typeof OgImage>;
 
-export const Action = z
+export const SocialLink = z
 	.object({
-		value: z.string().min(1).describe('The button or link text'),
-		url: z.string().optional().describe('Destination URL; omit to render a button with no navigation'),
-		variant: z.enum(['primary', 'secondary', 'ghost']).optional().describe('Visual style of the button'),
-		target: z.string().optional().describe('Anchor target attribute, e.g. \'_blank\' to open in a new tab'),
-		icon: z.string().optional().describe('Icon name shown alongside the text').meta({ editor: 'icon' }),
+		label: z.string().min(1).describe('The platform name; the visible link text, or the accessible name when an icon replaces it'),
+		url: z.string().min(1).describe('The profile destination, opened in a new tab'),
+		icon: z.string().optional().describe('Icon glyph name rendered in place of the visible label').meta({ editor: 'icon' }),
 	})
-	.meta({ title: 'Action' });
-export type Action = z.infer<typeof Action>;
+	.meta({ title: 'SocialLink' });
+export type SocialLink = z.infer<typeof SocialLink>;
+
+export const Option = z
+	.object({
+		value: z.string().min(1).describe('The option\'s value'),
+		label: z.string().optional().describe('Visible label'),
+		disabled: z.boolean().optional().describe('Renders the option but blocks selection'),
+	})
+	.meta({ title: 'Option' });
+export type Option = z.infer<typeof Option>;
 
 export const Heading = z
 	.object({

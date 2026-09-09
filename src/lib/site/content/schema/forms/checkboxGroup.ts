@@ -1,12 +1,10 @@
 import type { Ref } from 'react';
 import { z } from 'zod';
 
-export const CheckboxOption = z
-	.object({
-		value: z.string().min(1).describe('Unique value, added to the ticked array when this box is on'),
-		label: z.string().optional().describe('Visible label'),
-		disabled: z.boolean().optional().describe('Disable just this option'),
-	})
+import { Option } from '@/lib/site/content/schema/primitives';
+
+export const CheckboxOption = Option
+	.extend({ value: z.string().min(1).describe('Unique value, added to the ticked array when this box is on') })
 	.meta({ title: 'CheckboxOption' });
 export type CheckboxOption = z.infer<typeof CheckboxOption>;
 

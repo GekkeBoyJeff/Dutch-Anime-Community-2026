@@ -13,7 +13,7 @@ export type CommunityQuestionOption = z.infer<typeof CommunityQuestionOption>;
 
 export const CommunityQuestionProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		label: z
 			.string()
 			.optional()

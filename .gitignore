@@ -44,6 +44,12 @@ yarn-error.log*
 # vitest / coverage
 /coverage
 
+# playwright (vitest browser mode)
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache
+
 # typescript / sass caches
 *.tsbuildinfo
 .sass-cache

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Metric from '@/components/components/Metric';
 import Moment from '@/components/components/Moment';
-import Panel from '@/components/components/Panel';
+import Panel from '@/components/dashboard/components/Panel';
 import Navigation, { type MegaMenuGroup } from '@/components/structures/Navigation';
 import { NavigationProps } from '@/lib/site/content/schema/structures/navigation';
 

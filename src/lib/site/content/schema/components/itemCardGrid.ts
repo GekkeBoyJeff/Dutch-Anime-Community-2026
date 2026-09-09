@@ -43,7 +43,7 @@ export const ItemCardGridProps = z
 		searchLabel: z.string().optional().describe('Accessible label and placeholder for the search box; defaults to \'Search\''),
 		sortLabel: z.string().optional().describe('Visible label for the sort control; defaults to \'Sort by\''),
 		paginationLabel: z.string().optional().describe('Accessible label for the pagination nav; defaults to \'Pagination\''),
-		colorset: Colorset.optional().describe('Light or dark theme applied to the section'),
+		colorset: Colorset.optional(),
 	})
 	.meta({ title: 'ItemCardGrid' });
 export type ItemCardGridProps = z.infer<typeof ItemCardGridProps>;

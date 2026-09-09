@@ -14,7 +14,7 @@ export type FeatureCardItem = z.infer<typeof FeatureCardItem>;
 
 export const FeatureCardsProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light or dark theme applied to the section'),
+		colorset: Colorset.optional(),
 		title: z.string().optional().describe('The section\'s heading text'),
 		intro: z.string().optional().describe('The section\'s intro text shown below the heading').meta({ editor: 'textarea' }),
 		items: z.array(FeatureCardItem).min(1).describe('Cards rendered in the grid'),

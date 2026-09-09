@@ -23,7 +23,7 @@ export type IntroGridPanel = z.infer<typeof IntroGridPanel>;
 
 export const IntroGridProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, size, intro) shown above the grid'),
 		panels: z.array(IntroGridPanel).min(1).describe('The 2–4 panels rendered as cards in the grid; the count drives the column layout'),
 	})

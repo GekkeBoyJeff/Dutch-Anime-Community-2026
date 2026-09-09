@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Action } from '@/lib/site/content/schema/primitives';
+import { Action } from '@/lib/site/content/schema/basics/actions';
 import { AnnouncementVariant } from '@/lib/site/content/schema/structures/announcementBar';
 
 export const AnnouncementDismissProps = z

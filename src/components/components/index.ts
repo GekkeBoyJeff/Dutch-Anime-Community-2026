@@ -24,7 +24,6 @@ export { default as ToggleGroup } from '@/components/components/ToggleGroup';
 export { default as Pagination, PaginationEllipsis } from '@/components/components/Pagination';
 export type { PaginationProps, PaginationEllipsisProps, PaginationTranslations } from '@/components/components/Pagination';
 export { default as PermissionGroups } from '@/components/components/PermissionGroups';
-export { default as Panel } from '@/components/components/Panel';
 export { default as Entry } from '@/components/components/Entry';
 export { default as Moment } from '@/components/components/Moment';
 export { default as Metric } from '@/components/components/Metric';

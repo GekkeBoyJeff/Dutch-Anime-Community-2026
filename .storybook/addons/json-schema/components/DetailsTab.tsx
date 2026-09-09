@@ -1,7 +1,6 @@
-import React from 'react';
 import { styled } from 'storybook/theming';
 
-import { describeType, listProperties, type JsonSchemaNode, type SchemaPath } from '../lib/walk';
+import { describeType, listProperties, type JsonSchemaNode, type SchemaPath } from '../lib/schema';
 
 const List = styled.div({ padding: '12px 16px', overflow: 'auto' });
 

@@ -12,12 +12,19 @@ const config = {
 	addons: [
 		{
 			name: '@storybook/addon-docs',
-			options: { mdxPluginOptions: { mdxCompileOptions: { remarkPlugins: [remarkGfm] } } },
+			options: {
+				mdxPluginOptions: {
+					mdxCompileOptions: {
+						remarkPlugins: [remarkGfm],
+					},
+				},
+			},
 		},
 		'@storybook/addon-a11y',
-		'@storybook/addon-themes',
 		'storybook-addon-pseudo-states',
 		'@storybook-community/storybook-dark-mode',
+		'@storybook/addon-mcp',
+		'@storybook/addon-vitest',
 	],
 	framework: {
 		name: '@storybook/nextjs-vite',

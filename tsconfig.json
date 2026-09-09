@@ -34,7 +34,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".storybook",
+    ".storybook/**/*",
     "styles.config.mjs",
     "next.config.mjs",
     ".next/types/**/*.ts",

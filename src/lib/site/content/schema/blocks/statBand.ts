@@ -13,7 +13,7 @@ export type StatBandItem = z.infer<typeof StatBandItem>;
 
 export const StatBandProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) shown above the figures'),
 		items: z.array(StatBandItem).min(2).max(4).describe('The key figures rendered in the band'),
 	})

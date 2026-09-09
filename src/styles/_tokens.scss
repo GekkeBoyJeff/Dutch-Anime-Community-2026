@@ -5,7 +5,7 @@
 // Everything a stylesheet may read. This file is prepended to every stylesheet by the build, so no
 // component ever writes `@use` for it. Two kinds of value live here: fixed ones, written out below,
 // and aliases for the custom properties that theme.scss defines — so a component writes $color
-// rather than var(--color), and gets whatever the current theme and colorset resolved it to.
+// rather than var(--color), and gets whatever the current colorset resolved it to.
 
 $white: #ffffff;
 $grey-lightest: #f6f6f7;
@@ -27,9 +27,10 @@ $color-secondary: var(--color-secondary);
 $color-tertiary: var(--color-tertiary);
 $border: var(--border);
 $primary-text: var(--primary-text);
+$secondary: var(--secondary);
 $shadow-focus: var(--shadow-focus);
 
-// Set by the theme, the same in every colorset.
+// Set by the palette, the same in every colorset.
 $primary: var(--primary);
 $primary-hover: var(--primary-hover);
 $primary-active: var(--primary-active);

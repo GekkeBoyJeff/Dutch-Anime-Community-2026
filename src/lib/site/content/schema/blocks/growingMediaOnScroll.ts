@@ -4,7 +4,7 @@ import { Colorset, Heading, Id, Media } from '@/lib/site/content/schema/primitiv
 
 export const GrowingMediaOnScrollProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) shown above the stage'),
 		media: Media.describe('The image or video that grows while scrolling'),
 		caption: z.string().optional().describe('Short line shown under the stage'),

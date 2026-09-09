@@ -9,6 +9,7 @@ import '@/styles/base.scss';
 // basics
 import '@/styles/components/basics/Accordion.scss';
 import '@/styles/components/basics/AccordionItem.scss';
+import '@/styles/components/basics/Actions.scss';
 import '@/styles/components/basics/Alert.scss';
 import '@/styles/components/basics/Avatar.scss';
 import '@/styles/components/basics/Badge.scss';
@@ -59,7 +60,7 @@ import '@/styles/components/components/Modal.scss';
 import '@/styles/components/components/Moment.scss';
 import '@/styles/components/components/Notification.scss';
 import '@/styles/components/components/Pagination.scss';
-import '@/styles/components/components/Panel.scss';
+import '@/styles/components/dashboard/components/Panel.scss';
 import '@/styles/components/components/Person.scss';
 import '@/styles/components/components/PermissionGroups.scss';
 import '@/styles/components/components/Popover.scss';

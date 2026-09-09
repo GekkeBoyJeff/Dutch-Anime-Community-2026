@@ -25,7 +25,7 @@ const Panel = ({
 			<header className="panel-head">
 				<Title element="h3" size={6} value={title} />
 				{action && <span className="panel-action">{action}</span>}
-				{href && <Button variant="ghost" icon="arrow-right" iconStyle="badge" url={href} ariaLabel={linkLabel ?? title} className="panel-link" />}
+				{href && <Button variant="ghost" icon="arrow-right" url={href} ariaLabel={linkLabel ?? title} className="panel-link" />}
 			</header>
 			<div className="panel-body">
 				{error ? <p className="panel-error">{errorLabel}</p> : isEmpty ? <p className="panel-empty">{emptyLabel}</p> : children}

@@ -6,10 +6,11 @@
 
 	&.is-primary {
 		background-color: $primary;
-		color: $white;
+		color: $black;
 
 		@include interactive {
-			background-color: $primary-hover;
+			background-color: $color;
+			color: $background;
 		}
 
 		&:active:not(:disabled):not([aria-disabled='true']) {
@@ -22,11 +23,18 @@
 		color: $color;
 		box-shadow: inset 0 0 0 0.0625rem $primary;
 
+		@include on-colorset(dark) {
+			box-shadow: inset 0 0 0 0.0625rem $white;
+		}
+
 		@include interactive {
-			background-color: $grey-lightest;
+			background-color: $black;
+			box-shadow: inset 0 0 0 0.0625rem $color-secondary;
+			color: $background;
 
 			@include on-colorset(dark) {
-				background-color: $grey-dark;
+				background-color: $white;
+				box-shadow: inset 0 0 0 0.0625rem $white;
 			}
 		}
 
@@ -77,40 +85,6 @@
 	&.has-icon {
 		display: inline-flex;
 		align-items: center;
-		gap: spacing(xs);
-
-		.icon {
-			font-size: 1em;
-		}
-	}
-
-	&.has-badge {
-		display: inline-flex;
-		align-items: center;
-		gap: spacing(m);
-
-		.button-badge {
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			inline-size: 1.875rem;
-			block-size: 1.875rem;
-			border-radius: $rounded-full;
-			background-color: $grey-darkest;
-			color: $white;
-			margin-block: -0.375rem;
-			margin-inline-end: -0.625rem;
-
-			.icon {
-				font-size: 1rem;
-				transition: transform $speed $ease-snappy;
-			}
-		}
-
-		@include interactive {
-			.button-badge .icon {
-				transform: translate(0.1875rem, -0.1875rem);
-			}
-		}
+		gap: spacing(s);
 	}
 }

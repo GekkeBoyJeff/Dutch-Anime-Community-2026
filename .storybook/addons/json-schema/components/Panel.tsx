@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { STORY_CHANGED } from 'storybook/internal/core-events';
 import { useArgs, useChannel, useStorybookApi } from 'storybook/manager-api';
 import { styled } from 'storybook/theming';
 
 import { EVENTS, type SchemaResult } from '../constants';
 import { diffTopLevel } from '../lib/diff';
-import { resolveNode, type SchemaPath } from '../lib/walk';
+import { resolveNode, type SchemaPath } from '../lib/schema';
 
 import Breadcrumb from './Breadcrumb';
 import DetailsTab from './DetailsTab';

@@ -2,7 +2,7 @@ import React from 'react';
 import { SyntaxHighlighter } from 'storybook/internal/components';
 
 import { buildExample } from '../lib/example';
-import type { JsonSchemaNode } from '../lib/walk';
+import type { JsonSchemaNode } from '../lib/schema';
 
 const ExampleTab = ({ node }: { node: JsonSchemaNode }) => {
 	return (

@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import Panel from '@/components/components/Panel';
+import Panel from '@/components/dashboard/components/Panel';
 
 const meta: Meta<typeof Panel> = {
-	title: 'Components/Panel',
+	title: 'Dashboard/Panel',
 	component: Panel,
 	parameters: {
 		docs: {

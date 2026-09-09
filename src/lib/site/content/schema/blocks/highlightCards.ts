@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import { Action, Colorset, Heading, Id, Media } from '@/lib/site/content/schema/primitives';
+import { Action } from '@/lib/site/content/schema/basics/actions';
+import { Colorset, Heading, Id, Media } from '@/lib/site/content/schema/primitives';
 
 export const HighlightCardItem = z
 	.object({
@@ -17,7 +18,7 @@ export type HighlightCardItem = z.infer<typeof HighlightCardItem>;
 
 export const HighlightCardsProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster rendered above the card grid'),
 		columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).optional().describe('Number of card columns in the grid'),
 		items: z.array(HighlightCardItem).min(1).describe('Cards rendered in the grid, each with its own running number'),

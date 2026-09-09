@@ -14,7 +14,7 @@ export type StepItem = z.infer<typeof StepItem>;
 
 export const StepsProps = z
 	.object({
-		colorset: Colorset.optional().describe('Background/text color theme of the section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Optional heading group (tagline, title, intro) shown above the steps list'),
 		variant: z.enum(['process', 'progress']).optional().describe('Layout style: marketing "how it works" row, or compact multi-step progress strip'),
 		current: z.number().int().min(0).optional().describe('Zero-based index of the active step; earlier steps render as done'),

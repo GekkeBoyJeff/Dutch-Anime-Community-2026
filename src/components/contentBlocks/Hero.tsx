@@ -32,7 +32,7 @@ const Hero = ({
 			{isCover && <span className="hero-divider" aria-hidden="true" />}
 			{value && <Content value={value} />}
 
-			<Actions actions={actions} defaultVariant="primary" badge />
+			<Actions actions={actions} defaultVariant="primary" />
 		</div>
 	);
 

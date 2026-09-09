@@ -14,7 +14,7 @@ export type ShowcaseStep = z.infer<typeof ShowcaseStep>;
 
 export const StickyShowcaseProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) shown above the showcase'),
 		steps: z.array(ShowcaseStep).min(2).max(5).describe('The steps that scroll past the pinned media stage'),
 	})

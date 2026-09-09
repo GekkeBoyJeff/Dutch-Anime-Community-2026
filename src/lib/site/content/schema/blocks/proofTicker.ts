@@ -5,7 +5,7 @@ import { Colorset, Id } from '@/lib/site/content/schema/primitives';
 
 export const ProofTickerProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		items: z
 			.array(MarqueeItem)
 			.min(2)

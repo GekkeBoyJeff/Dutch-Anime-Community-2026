@@ -54,7 +54,7 @@
 
 			.pagination-page[data-selected] {
 				background-color: $primary;
-				color: $white;
+				color: $black;
 
 				@include interactive {
 					background-color: $primary-hover;

@@ -22,7 +22,7 @@ export type ChannelBoardItem = z.infer<typeof ChannelBoardItem>;
 
 export const ChannelBoardProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) shown above the list'),
 		items: z.array(ChannelBoardItem).min(2).max(6).describe('Two to six channels; more than six stops being a floor plan and becomes an index'),
 	})

@@ -1,4 +1,5 @@
 import next from 'eslint-config-next/core-web-vitals';
+import storybook from 'eslint-plugin-storybook';
 
 // v16 ships a native flat config — spread it directly, no FlatCompat (that's what crashes on ESLint 9).
 const config = [
@@ -25,6 +26,7 @@ const config = [
 	// Serwist writes its service worker into public/ on a PWA build; a generated, minified
 	// artifact has no author to fix its style. Same grouping as .gitignore:11-13.
 	{ ignores: ['.next/**', 'storybook-static/**', 'public/sw.js', 'public/swe-worker-*.js'] },
+	...storybook.configs['flat/recommended'],
 ];
 
 export default config;

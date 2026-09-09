@@ -1,9 +1,10 @@
 import { z } from 'zod';
 
-import { Action, Colorset, Heading, Id, Media } from '@/lib/site/content/schema/primitives';
+import { Action } from '@/lib/site/content/schema/basics/actions';
+import { Colorset, Heading, Id, Media } from '@/lib/site/content/schema/primitives';
 
 export const CTABannerProps = z.object({
-	colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+	colorset: Colorset.optional(),
 	heading: Heading.optional().describe('Heading group (tagline, title, size, intro) shown above the actions'),
 	primaryCta: Action.optional().describe('Main call-to-action button shown in the actions row'),
 	secondaryCta: Action.optional().describe('Secondary call-to-action button shown alongside the primary one'),

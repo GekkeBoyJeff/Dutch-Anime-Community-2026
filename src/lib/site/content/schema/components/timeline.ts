@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import { Action, Media } from '@/lib/site/content/schema/primitives';
+import { Action } from '@/lib/site/content/schema/basics/actions';
+import { Media } from '@/lib/site/content/schema/primitives';
 
 export const TimelineItem = z
 	.object({

@@ -14,7 +14,7 @@ export type MosaicItem = z.infer<typeof MosaicItem>;
 
 export const PhotoMosaicProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) shown above the wall'),
 		variant: z.enum(['clean', 'scrapbook']).optional().describe('Visual treatment of the photos; defaults to clean'),
 		items: z.array(MosaicItem).min(3).describe('The photos in the wall'),

@@ -14,7 +14,7 @@ export type ReviewItem = z.infer<typeof ReviewItem>;
 
 export const ReviewsProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		title: z.string().optional().describe('Main heading of the reviews section'),
 		intro: z.string().optional().describe('Supporting introductory text rendered below the title'),
 		subject: z.string().optional().describe('Name of the reviewed entity for the JSON-LD rich snippet; defaults to the site name when omitted'),

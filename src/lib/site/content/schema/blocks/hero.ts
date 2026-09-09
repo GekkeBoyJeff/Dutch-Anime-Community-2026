@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
-import { Action, Colorset, Id, Media } from '@/lib/site/content/schema/primitives';
+import { Action } from '@/lib/site/content/schema/basics/actions';
+import { Colorset, Id, Media } from '@/lib/site/content/schema/primitives';
 
-export const HeroAction = Action.pick({ value: true, url: true, variant: true, target: true, icon: true }).meta({ title: 'HeroAction' });
+export const HeroAction = Action.meta({ title: 'HeroAction' });
 export type HeroAction = z.infer<typeof HeroAction>;
 
 export const HeroStat = z
@@ -15,7 +16,7 @@ export type HeroStat = z.infer<typeof HeroStat>;
 
 export const HeroProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		variant: z.enum(['panel', 'cover']).optional().describe('How media renders: `panel` = rounded panel inside the container, `cover` = full-bleed to the page frame edges; defaults to `panel`'),
 		tagline: z.string().optional().describe('Small label rendered above the title'),
 		title: z.string().optional().describe('Main heading text of the hero section'),

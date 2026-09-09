@@ -21,7 +21,7 @@ export type MomentListItem = z.infer<typeof MomentListItem>;
 
 export const MomentListProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) shown above the timeline'),
 		items: z.array(MomentListItem).min(1).describe('The entries, in the order they should read — oldest first reads as history, newest first as an agenda'),
 	})

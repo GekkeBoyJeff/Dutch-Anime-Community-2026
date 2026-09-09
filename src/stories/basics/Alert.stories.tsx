@@ -53,13 +53,3 @@ export const Error: Story = {
 		value: 'We could not complete your request.',
 	},
 };
-
-export const Neutral: Story = {
-	args: {
-		...Default.args,
-		variant: 'neutral',
-		icon: 'info',
-		title: 'Good to know',
-		value: 'A neutral note that carries no severity.',
-	},
-};

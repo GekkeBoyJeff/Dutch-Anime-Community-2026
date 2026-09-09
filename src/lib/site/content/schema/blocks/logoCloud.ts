@@ -14,7 +14,7 @@ export type LogoItem = z.infer<typeof LogoItem>;
 
 export const LogoCloudProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, size, intro) shown above the logo strip'),
 		value: z.string().optional().describe('Supporting text rendered below the heading and above the logo strip').meta({ editor: 'textarea' }),
 		items: z.array(LogoItem).min(1).describe('The list of logos rendered in the strip'),

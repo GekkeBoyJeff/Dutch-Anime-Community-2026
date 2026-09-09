@@ -1,7 +1,7 @@
 import React from 'react';
 import { SyntaxHighlighter } from 'storybook/internal/components';
 
-import type { JsonSchemaNode } from '../lib/walk';
+import type { JsonSchemaNode } from '../lib/schema';
 
 const SchemaTab = ({ node }: { node: JsonSchemaNode }) => {
 	return (

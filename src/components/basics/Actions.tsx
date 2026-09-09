@@ -7,7 +7,6 @@ type ActionsProps = ActionsSchemaProps;
 const Actions = ({
 	actions,
 	defaultVariant = 'primary',
-	badge,
 	className,
 }: ActionsProps) => {
 	if (!actions?.length) {
@@ -16,22 +15,16 @@ const Actions = ({
 
 	return (
 		<div className={classNames('actions', className)}>
-			{actions.map((action, index) => {
-				const variant = action.variant ?? defaultVariant;
-				const badged = badge && variant === 'primary';
-
-				return (
-					<Button
-						key={`${action.value}-${index}`}
-						variant={variant}
-						url={action.url}
-						target={action.target}
-						value={action.value}
-						icon={badged ? (action.icon ?? 'arrow-up-right') : action.icon}
-						iconStyle={badged ? 'badge' : 'plain'}
-					/>
-				);
-			})}
+			{actions.map((action, index) => (
+				<Button
+					key={`${action.value}-${index}`}
+					variant={action.variant ?? defaultVariant}
+					url={action.url}
+					target={action.target}
+					value={action.value}
+					icon={action.icon}
+				/>
+			))}
 		</div>
 	);
 };

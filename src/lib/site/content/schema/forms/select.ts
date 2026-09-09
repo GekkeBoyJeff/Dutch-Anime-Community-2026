@@ -1,11 +1,12 @@
 import type { Ref } from 'react';
 import { z } from 'zod';
 
-export const SelectOption = z
-	.object({
+import { Option } from '@/lib/site/content/schema/primitives';
+
+export const SelectOption = Option
+	.extend({
 		value: z.string().min(1).describe('The submitted form value'),
 		label: z.string().min(1).describe('Visible label (also used for typeahead)'),
-		disabled: z.boolean().optional().describe('Renders the row but blocks selection'),
 	})
 	.meta({ title: 'SelectOption' });
 export type SelectOption = z.infer<typeof SelectOption>;

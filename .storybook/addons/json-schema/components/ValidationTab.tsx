@@ -1,8 +1,7 @@
-import React from 'react';
 import { styled } from 'storybook/theming';
 
 import type { ValidationIssue } from '../constants';
-import { formatPath } from '../lib/walk';
+import { formatPath } from '../lib/schema';
 
 const List = styled.div({ padding: '12px 16px', overflow: 'auto' });
 

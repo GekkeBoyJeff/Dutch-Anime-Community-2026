@@ -52,7 +52,7 @@
 		&[data-pressed] {
 			box-shadow: inset 0 0 0 0.0625rem $primary;
 			background-color: $primary;
-			color: $white;
+			color: $black;
 		}
 
 		&[data-disabled] {

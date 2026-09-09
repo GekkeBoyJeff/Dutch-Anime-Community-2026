@@ -1,53 +1,57 @@
 /* ==========================================================================
    THEME — the colour system
    --------------------------------------------------------------------------
-   Three steps, always in this order:
+   Two steps, always in this order:
 
-     1. PALETTE   every colour a theme owns, as a -light and a -dark pair
-     2. THEME     a theme overrides those values, nothing else
-     3. COLORSET  picks the light half or the dark half for one subtree
+     1. PALETTE   every colour the site owns, as a -light and a -dark pair
+     2. COLORSET  picks the light half or the dark half for one subtree
 
-   Restyling the whole site is step 2 only.
+   Restyling the whole site is step 1 only.
 
-   Only the seven slots in step 3 flip. Everything else — the grey scale, the
+   Only the eight slots in step 2 flip. Everything else — the grey scale, the
    status colours, $primary — is a fixed colour a component picks itself. When
    such a fixed colour has to change inside a dark section, the component says
    so with @include on-colorset(dark) { … }.
    ========================================================================== */
 
-/* --- 1. PALETTE — the default theme -------------------------------------- */
+/* --- 1. PALETTE — the DAC brand: gold accent, cream canvas, plum ink ------ */
 
 :root {
 	--font-size: 1.0625rem;
 
 	/* The one saturated colour. Anything that must stand out uses it. */
-	--primary: #3b5bdb;
-	--primary-hover: #3450c1;
-	--primary-active: #2e47ab;
+	--primary: #f5c24a;
+	--primary-hover: #eab63f;
+	--primary-active: #e3ac5e;
 	/* The background of a selected item: a menu row, a combobox option, a filter chip. */
-	--tint-primary: #{rgba(#3b5bdb, 0.14)};
+	--tint-primary: #{rgba(#f5c24a, 0.16)};
 
 	/* The accent used AS TEXT needs its own value per half: the accent itself
 	   rarely has enough contrast on both a light and a dark background. */
-	--primary-text-light: #3b5bdb;
-	--primary-text-dark: #94a8ef;
+	--primary-text-light: #875f0d;
+	--primary-text-dark: #f5c24a;
+
+	/* The quiet companion to the accent: a brand surface, not an accent. It has to
+	   stay gentle against whichever half it lands on, so it needs a value per half. */
+	--secondary-light: #f2ebd7;
+	--secondary-dark: #3b2938;
 
 	/* The light half. */
-	--background-light: #{$white};
-	--color-light: #{$grey-darkest};
-	--color-secondary-light: #{$grey-dark};
-	--color-tertiary-light: #{$grey};
-	--border-light: #{rgba($grey-darkest, 0.12)};
+	--background-light: #ffffff;
+	--color-light: #3b2938;
+	--color-secondary-light: #6f5f6a;
+	--color-tertiary-light: #948590;
+	--border-light: #e7dcc0;
 
 	/* The dark half — the same five slots, no more, no less. */
-	--background-dark: #{$grey-darkest};
-	--color-dark: #{$grey-lightest};
-	--color-secondary-dark: #{$grey-light};
-	--color-tertiary-dark: #{$grey};
-	--border-dark: #{rgba($white, 0.14)};
+	--background-dark: #241a22;
+	--color-dark: #f2ebd7;
+	--color-secondary-dark: #c9b4bf;
+	--color-tertiary-dark: #9a8792;
+	--border-dark: #{rgba(#f2ebd7, 0.14)};
 
 	/* The canvas around the rounded page frame. Sits outside it, so it never flips. */
-	--page: #{$grey-lightest};
+	--page: #f2ebd7;
 
 	/* Status colours are the same hue in every colorset: success is always
 	   green, on a light section and on a dark one. */
@@ -68,8 +72,8 @@
 
 	--shadow-focus-error: 0 0 0 0.1875rem #{rgba($error, 0.3)};
 
-	--overlay: #{rgba($black, 0.4)};
-	--overlay-strong: #{rgba($black, 0.78)};
+	--overlay: #{rgba(#241a22, 0.55)};
+	--overlay-strong: #{rgba(#241a22, 0.78)};
 
 	--section-gutter: #{spacing(l)};
 
@@ -107,63 +111,7 @@
 	}
 }
 
-/* --- 2. THEMES — override values, never add slots ------------------------- */
-/* Copy a block, change the values. Nothing else in the codebase has to know. */
-
-[data-theme='sepia'] {
-	--primary: #b4632a;
-	--primary-hover: #a1571f;
-	--primary-active: #8f4d1b;
-	--tint-primary: #{rgba(#b4632a, 0.14)};
-	--primary-text-light: #a1571f;
-	--primary-text-dark: #dd9457;
-
-	--background-light: #f4ecd8;
-	--color-light: #3a2f21;
-	--color-secondary-light: #7a6a52;
-	--color-tertiary-light: #9b8a70;
-	--border-light: #{rgba(#3a2f21, 0.14)};
-
-	--background-dark: #2a2118;
-	--color-dark: #f4ecd8;
-	--color-secondary-dark: #c9b79a;
-	--color-tertiary-dark: #9d8d76;
-	--border-dark: #{rgba(#f4ecd8, 0.16)};
-
-	--page: #e8dcc0;
-
-	--overlay: #{rgba(#2a2118, 0.5)};
-	--overlay-strong: #{rgba(#2a2118, 0.78)};
-}
-
-/* The DAC brand: gold accent, cream canvas, plum ink. See docs/MERKBRIEF.md. */
-[data-theme='dac'] {
-	--primary: #f5c24a;
-	--primary-hover: #eab63f;
-	--primary-active: #e3ac5e;
-	--tint-primary: #{rgba(#f5c24a, 0.16)};
-	--primary-text-light: #875f0d;
-	--primary-text-dark: #f5c24a;
-
-	--background-light: #ffffff;
-	--color-light: #3b2938;
-	--color-secondary-light: #6f5f6a;
-	--color-tertiary-light: #948590;
-	--border-light: #e7dcc0;
-
-	--background-dark: #241a22;
-	--color-dark: #f2ebd7;
-	--color-secondary-dark: #c9b4bf;
-	--color-tertiary-dark: #9a8792;
-	--border-dark: #{rgba(#f2ebd7, 0.14)};
-
-	--page: #f2ebd7;
-
-	--overlay: #{rgba(#241a22, 0.55)};
-	--overlay-strong: #{rgba(#241a22, 0.78)};
-}
-
-/* --- 3. COLORSET — pick the light half or the dark half ------------------- */
+/* --- 2. COLORSET — pick the light half or the dark half ------------------- */
 /* Written out twice on purpose. Every line reads --x: var(--x-light), so you
    can see what a colorset does without decoding a loop, and adding a slot is
    the same edit in two visible places. */
@@ -176,6 +124,7 @@
 	--color-tertiary: var(--color-tertiary-light);
 	--border: var(--border-light);
 	--primary-text: var(--primary-text-light);
+	--secondary: var(--secondary-light);
 
 	/* Spelled out per colorset rather than derived from --primary-text: a custom
 	   property is resolved where it is declared, so one written on :root would
@@ -190,6 +139,7 @@
 	--color-tertiary: var(--color-tertiary-dark);
 	--border: var(--border-dark);
 	--primary-text: var(--primary-text-dark);
+	--secondary: var(--secondary-dark);
 
 	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-dark);
 }

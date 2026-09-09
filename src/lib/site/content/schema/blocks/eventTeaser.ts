@@ -21,7 +21,7 @@ export type EventTeaserItem = z.infer<typeof EventTeaserItem>;
 
 export const EventTeaserProps = z
 	.object({
-		colorset: Colorset.optional().describe('Background color theme of the section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, size, intro) shown above the list'),
 		value: z.string().optional().describe('Supporting text shown below the heading').meta({ editor: 'textarea' }),
 		events: z.array(EventTeaserItem).min(1).describe('The list of events rendered as compact cards'),

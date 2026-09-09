@@ -5,7 +5,7 @@ import { Colorset, Heading, Id } from '@/lib/site/content/schema/primitives';
 
 export const ShowreelProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) shown above the reel'),
 		slides: z.array(SwiperSlide).min(2).describe('The slides: image or video (poster + provider/src)'),
 		ratio: z.string().optional().describe('Aspect ratio of the slide frame, e.g. \'16 / 9\''),

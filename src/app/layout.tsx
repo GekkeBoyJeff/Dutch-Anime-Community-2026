@@ -58,7 +58,7 @@ type RootLayoutProps = { children: ReactNode };
 
 const RootLayout = ({ children }: RootLayoutProps) => {
 	return (
-		<html lang="nl" dir="ltr" data-theme="dac" className={classNames(sans.variable, displayFont.variable)}>
+		<html lang="nl" dir="ltr" className={classNames(sans.variable, displayFont.variable)}>
 			<body data-colorset="light">
 				{children}
 

@@ -337,9 +337,9 @@ the class names the components write.
 
 | File | What it is for |
 | --- | --- |
-| `src/styles/_tokens.scss` | everything a stylesheet may read: fixed colours, the aliases for the themed ones, `spacing()`, `bp()`, `breakpoint()`, `on-colorset()` |
+| `src/styles/_tokens.scss` | everything a stylesheet may read: fixed colours, the aliases for the ones the palette sets, `spacing()`, `bp()`, `breakpoint()`, `on-colorset()` |
 | `src/styles/_interactions.scss` | the interaction mixins: `interactive`, `link-underline`, `overlay-backdrop`, `popup-enter-exit` |
-| `src/styles/theme.scss` | every custom property: the `:root` palette, the `[data-theme]` overrides (`sepia`, `dac`) and the `[data-colorset]` mapping |
+| `src/styles/theme.scss` | every custom property: the `:root` palette and the `[data-colorset]` mapping |
 | `src/styles/base.scss` | the reset and the bare HTML elements — nothing component-specific |
 | `src/styles/components/<tier>/<Name>.scss` | one file per component |
 | `src/styles/index.ts` | the single entry point |
@@ -392,9 +392,8 @@ with the `on-colorset` mixin, as `Badge` does above:
 }
 ```
 
-Two attributes drive the cascade. `data-theme` sits on `<html>` and picks the palette (the default,
-`sepia`, or `dac` — the one this site ships). `data-colorset` picks the light or the dark half of
-that palette, and any `Section` can set it, so a dark band in the middle of a light page is a prop:
+One attribute drives the cascade. `data-colorset` picks the light or the dark half of the palette,
+and any `Section` can set it, so a dark band in the middle of a light page is a prop:
 
 ```tsx
 // src/components/contentBlocks/StatBand.tsx
@@ -610,10 +609,10 @@ reliable way to get it right.
 
 ## Where the names come from
 
-Nothing in `src/components/` is named after the Dutch Anime Community, and three colour themes ship
-where the site uses one. That is because this codebase started as a reusable Next.js starter written
-by Jeffrey Ullers, and the site grew out of it. The brand-specific parts are deliberately narrow:
-`src/content/`, the `[data-theme='dac']` block in `theme.scss`, `src/lib/site/site.ts` and
+Nothing in `src/components/` is named after the Dutch Anime Community. That is because this codebase
+started as a reusable Next.js starter written by Jeffrey Ullers, and the site grew out of it. The
+brand-specific parts are deliberately narrow: `src/content/`, the `:root` palette in `theme.scss`,
+`src/lib/site/site.ts` and
 `public/media/`. Everything else is meant to stay generic, which is why a component is never called
 `DacHero`.
 

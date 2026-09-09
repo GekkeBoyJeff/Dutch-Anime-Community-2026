@@ -57,7 +57,7 @@ const CardGridItem = z
 export const CardGridProps = z
 	.object({
 		variant: z.enum(['article', 'event', 'link']).describe('Which card the grid renders; it also decides which fields each item asks for'),
-		colorset: Colorset.optional().describe('Light or dark theme applied to the section'),
+		colorset: Colorset.optional(),
 		heading: Heading.optional().describe('The section\'s tagline, title and intro shown above the grid'),
 		items: z.array(CardGridItem).min(1).describe('The cards rendered in the grid'),
 		filterable: z.boolean().optional().describe('Shows the category filter chips (built from filterOptions) when true'),

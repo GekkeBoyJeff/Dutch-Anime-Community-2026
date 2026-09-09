@@ -14,7 +14,7 @@ export type ChatMessage = z.infer<typeof ChatMessage>;
 
 export const ChatPreviewProps = z
 	.object({
-		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
+		colorset: Colorset.optional(),
 		channel: z.string().min(1).describe('Channel name without the #; the block draws that itself'),
 		messages: z.array(ChatMessage).min(2).max(6).describe('The exchange, in order. Uneven gaps between times are the point, not a mistake — a quiet stretch shows that a pause is normal'),
 		caption: z

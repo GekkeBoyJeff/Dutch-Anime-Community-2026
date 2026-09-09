@@ -9,7 +9,7 @@ access control (RBAC), moderation, inventory & convention management, expense de
 and push notifications.
 
 Built on the **NEXT_TS_SETUP** starter: Next.js 16 (App Router), React 19, typed schema-validated content
-blocks, and a token-driven theme (`data-theme="dac"` — gold `#f5c24a`, cream and plum ink). The staff platform
+blocks, and a token-driven palette (gold `#f5c24a`, cream and plum ink). The staff platform
 was added on top of that starter
 
 > Code and comments are in English; the site content is in Dutch.
@@ -33,7 +33,7 @@ and **Row Level Security + `SECURITY DEFINER` RPCs are the real security boundar
 
 ## Requirements
 
-- **Node.js 22+** (see `.nvmrc` / `engines`; required by the Supabase build — supabase-js needs a global WebSocket)
+- **Node.js 26+** (see `.nvmrc` / `engines`). The hard floor is 22 — the Supabase build needs a global WebSocket — but the project tracks Current.
 - npm (a `package-lock.json` is committed)
 - A **Supabase project** (Postgres + Auth + Storage) with Discord OAuth configured. The schema lives in
   `supabase/migrations/` (48 phased SQL migrations); the three Edge Functions live in `supabase/functions/`.
@@ -127,9 +127,9 @@ src/app/(website)/page.tsx + [...slug]   home and a catch-all; both delegate to 
   the Puck editor all derive from the same union — so nothing drifts and a mis-wire is a compile error.
 - **Validated at the boundary.** The `lib/content` accessors `safeParse` every page, so invalid content
   fails `next build` (or an invalid DB row never reaches the site) with a path-pointed error.
-- **Theming via tokens.** Colour, type and spacing live in `src/styles/_initial.scss` and cascade through
-  `data-theme` / `data-colorset`. Runtime surfaces that can't read CSS (OG images, the manifest, the
-  viewport theme colour) read the matching `brand` palette in `src/lib/site.ts`.
+- **Theming via tokens.** Colour, type and spacing live in `src/styles/theme.scss` and `src/styles/_tokens.scss`
+  and cascade through `data-colorset`. Runtime surfaces that can't read CSS (OG images, the manifest, the
+  viewport theme colour) read the matching `brand` palette in `src/lib/site/site.ts`.
 
 The full architecture guide lives in Storybook (`npm run storybook` → **For developers**): Architecture,
 Conventions, Content & data, Validation, SEO & sharing, and a step-by-step **Adding things**.
@@ -223,7 +223,7 @@ git fetch starter
 git merge starter/main    # resolve conflicts (usually only in src/content/ and the theme)
 ```
 
-DAC-specific changes are deliberately concentrated in `src/content/`, the `[data-theme='dac']` block in
-`src/styles/base.scss`, `src/lib/site.ts`, and `public/media/` — so merges stay small. (The Supabase staff
+DAC-specific changes are deliberately concentrated in `src/content/`, the `:root` palette in
+`src/styles/theme.scss`, `src/lib/site/site.ts`, and `public/media/` — so merges stay small. (The Supabase staff
 platform under `src/app/(admin)`, `src/lib/auth`, `src/lib/supabase` and `supabase/` is DAC-only and not part
 of the starter.)

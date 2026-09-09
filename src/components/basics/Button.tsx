@@ -13,25 +13,17 @@ type ButtonProps = ButtonSchemaProps & HTMLAttributes<HTMLElement> & { children?
 const Button = ({
 	variant = 'primary',
 	icon,
-	iconStyle = 'plain',
 	className,
 	value,
 	...rest
 }: ButtonProps) => {
 	return (
 		<Interactive
-			className={classNames('button', `is-${variant}`, icon && (iconStyle === 'badge' ? 'has-badge' : 'has-icon'), className)}
+			className={classNames('button', `is-${variant}`, icon && 'has-icon', className)}
 			{...rest}
 		>
 			{value}
-			{icon &&
-				(iconStyle === 'badge' ? (
-					<span className="button-badge" aria-hidden="true">
-						<Icon name={icon} />
-					</span>
-				) : (
-					<Icon name={icon} />
-				))}
+			{icon && <Icon name={icon} />}
 		</Interactive>
 	);
 };
