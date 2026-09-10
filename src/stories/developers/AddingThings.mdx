@@ -55,12 +55,12 @@ Seven steps. The rightmost column is what goes wrong if the step is missed.
 | 3 | Write the component: `src/components/basics/Ribbon.tsx` | — |
 | 4 | Add a line to `src/components/basics/index.ts` | Nothing breaks today; the tier's list is incomplete |
 | 5 | Write the stylesheet: `src/styles/components/basics/Ribbon.scss` | The component renders unstyled |
-| 6 | Add an import line to `src/styles/index.ts` | The stylesheet is never compiled. The component renders unstyled, with **no error** |
+| 6 | Add an import line to `src/styles/index.ts` | The stylesheet is never compiled and the component renders unstyled — `npm run verify` fails until you add it |
 | 7 | Write the story: `src/stories/basics/Ribbon.stories.tsx` | The component is invisible in Storybook and cannot be reviewed |
 
-Steps 2 and 4 are the only ones the build does not care about. They are still expected: the barrels
-are how a tier lists what it contains. Step 6 is the one that costs an afternoon, because it fails
-silently.
+Steps 2 and 4 are the only ones nothing checks. They are still expected: the barrels are how a tier
+lists what it contains. Step 6 used to be the one that cost an afternoon, because it failed silently —
+`npm run verify` now names the stylesheet you forgot.
 
 ### 1. The schema
 
@@ -169,18 +169,17 @@ bare `&.is-…`, everything nested. Never BEM.
 
 ### 6. The style entry point
 
-`src/styles/index.ts` lists every stylesheet, grouped by tier behind a `// basics` style comment and
-alphabetical inside the group. Add one line:
+`src/styles/index.ts` lists every stylesheet, grouped by tier and alphabetical inside the group. Add
+one line:
 
 ```typescript
 import '@/styles/components/basics/Ribbon.scss';
 ```
 
-The file says the same thing at the top:
-
-```typescript
-// Add a component? Create src/styles/components/<layer>/Name.scss and add one import line here.
-```
+A stylesheet under `dashboard/` joins the tier its own folder names, so `dashboard/components/Panel.scss`
+sits in the `// components` group; only `dashboard/shell/` is its own section. Forget the line and
+`npm run verify` fails with the file's path — it is the one mistake here that nothing else would
+mention.
 
 ### 7. The story
 
@@ -231,13 +230,12 @@ args on every render, so a bad arg is reported instead of silently rendering wro
 ### Then
 
 ```bash
-npm run typecheck
-npm run lint
+npm run verify
 npm run storybook
 ```
 
-There is no test runner. Those three commands plus looking at the story are the whole verification
-loop.
+`verify` is typecheck, lint and every stylesheet compiled and imported. That plus looking at the
+story is the whole verification loop.
 
 ## Recipe: a content block
 
@@ -540,7 +538,7 @@ over — unless the change happens to alter one of the three substrings those ca
 
 | Symptom | Cause |
 | --- | --- |
-| The component renders, completely unstyled, no error anywhere | Its stylesheet is not imported in `src/styles/index.ts` |
+| The component renders, completely unstyled | Its stylesheet is not imported in `src/styles/index.ts` — `npm run verify` names it |
 | `npm run typecheck` says a property is missing from `REGISTRY` | The block is in the union but has no renderer in `Blocks.tsx` |
 | `npm run typecheck` flags an unknown key in the `REGISTRY` object | An entry whose `type` no block schema declares |
 | The build stops with `✖ Invalid page content — 2 problems:` and a field path | A page in `src/content/pages/` no longer matches the schema. The message names the page and the field |

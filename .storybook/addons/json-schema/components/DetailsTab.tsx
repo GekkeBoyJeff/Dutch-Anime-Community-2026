@@ -1,3 +1,4 @@
+import React from 'react';
 import { styled } from 'storybook/theming';
 
 import { describeType, listProperties, type JsonSchemaNode, type SchemaPath } from '../lib/schema';

@@ -602,7 +602,7 @@ worth knowing which of the rules above a machine will catch.
 | Four files per component, and their casing | nothing — convention |
 | Tier import direction | nothing — convention |
 | Class-name shape and SCSS nesting | nothing — convention |
-| Stylesheet registered in `src/styles/index.ts` | nothing — a missing line renders unstyled, silently |
+| Stylesheet registered in `src/styles/index.ts` | `npm run verify` — every stylesheet on disk must appear in the list |
 
 Where a rule is not enforced, the repo is consistent enough that copying the nearest neighbour is a
 reliable way to get it right.

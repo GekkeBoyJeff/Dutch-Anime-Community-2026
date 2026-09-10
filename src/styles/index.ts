@@ -1,7 +1,8 @@
 // The single style entry point — imported once by src/app/layout.tsx and the Storybook preview.
 // theme.scss defines every design token, base.scss resets and styles bare elements, then one line
 // per component stylesheet (mirroring src/components).
-// Add a component? Create src/styles/components/<layer>/Name.scss and add one import line here.
+// Add a component? Create src/styles/components/<tier>/Name.scss and add one import line here —
+// `npm run verify` fails if a stylesheet is missing from this list.
 
 import '@/styles/theme.scss';
 import '@/styles/base.scss';
@@ -51,18 +52,18 @@ import '@/styles/components/components/FilterBar.scss';
 import '@/styles/components/components/Gallery.scss';
 import '@/styles/components/components/ImageList.scss';
 import '@/styles/components/components/ItemCardGrid.scss';
-import '@/styles/components/components/NewsletterForm.scss';
 import '@/styles/components/components/MarqueeTicker.scss';
 import '@/styles/components/components/Menu.scss';
 import '@/styles/components/components/Meter.scss';
 import '@/styles/components/components/Metric.scss';
 import '@/styles/components/components/Modal.scss';
 import '@/styles/components/components/Moment.scss';
+import '@/styles/components/components/NewsletterForm.scss';
 import '@/styles/components/components/Notification.scss';
 import '@/styles/components/components/Pagination.scss';
 import '@/styles/components/dashboard/components/Panel.scss';
-import '@/styles/components/components/Person.scss';
 import '@/styles/components/components/PermissionGroups.scss';
+import '@/styles/components/components/Person.scss';
 import '@/styles/components/components/Popover.scss';
 import '@/styles/components/components/ScrollProgress.scss';
 import '@/styles/components/components/ScrollytellingTimeline.scss';
@@ -90,9 +91,9 @@ import '@/styles/components/contentBlocks/Hero.scss';
 import '@/styles/components/contentBlocks/HighlightCards.scss';
 import '@/styles/components/contentBlocks/IntroGrid.scss';
 import '@/styles/components/contentBlocks/LogoCloud.scss';
-import '@/styles/components/contentBlocks/ProfileCards.scss';
 import '@/styles/components/contentBlocks/MomentList.scss';
 import '@/styles/components/contentBlocks/PhotoMosaic.scss';
+import '@/styles/components/contentBlocks/ProfileCards.scss';
 import '@/styles/components/contentBlocks/ProofTicker.scss';
 import '@/styles/components/contentBlocks/Prose.scss';
 import '@/styles/components/contentBlocks/Reviews.scss';

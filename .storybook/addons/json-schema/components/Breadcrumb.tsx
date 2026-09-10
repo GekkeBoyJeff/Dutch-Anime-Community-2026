@@ -52,7 +52,7 @@ const Breadcrumb = ({
 				);
 			})}
 			<Spacer />
-			<IconButton title='Reset editor to current args' onClick={onRefresh}>
+			<IconButton title='Reset editor to current args' ariaLabel='Reset editor to current args' onClick={onRefresh}>
 				<SyncIcon />
 			</IconButton>
 		</Bar>

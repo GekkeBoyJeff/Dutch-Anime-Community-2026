@@ -8,7 +8,7 @@ const meta: Meta<typeof AnnouncementBar> = {
 	component: AnnouncementBar,
 	parameters: {
 		layout: 'fullscreen',
-		docs: { description: { component: 'Dismissible top-of-page banner with a message and optional CTA (a Button, ghost by default). Server-rendered content; the AnnouncementDismiss client island (behavior only, no story of its own) owns the close control and remembers the dismissal per id in localStorage.' } },
+		docs: { description: { component: 'Dismissible top-of-page banner with a message and optional CTA (a Button, ghost by default). It renders visible on the server and only hides once the client has read the dismissal, so there is no hydration mismatch; give it an `id` and the choice is remembered in localStorage under that key.' } },
 		jsonSchema: { schema: AnnouncementBarProps },
 	},
 	argTypes: {

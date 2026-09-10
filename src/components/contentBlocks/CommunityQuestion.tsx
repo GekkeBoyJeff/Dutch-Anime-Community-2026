@@ -13,7 +13,7 @@ type CommunityQuestionProps = CommunityQuestionSchemaProps;
 
 const STORAGE_PREFIX = 'community-question:';
 
-// The answer never leaves the browser, so it is remembered the way AnnouncementDismiss remembers a
+// The answer never leaves the browser, so it is remembered the way AnnouncementBar remembers a
 // dismissal: an external store whose server snapshot is empty, so the first client render still
 // matches the HTML. The key is the question itself — publish a new question and the block starts
 // over, which is what should happen.

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { STORY_CHANGED } from 'storybook/internal/core-events';
 import { useArgs, useChannel, useStorybookApi } from 'storybook/manager-api';
 import { styled } from 'storybook/theming';
