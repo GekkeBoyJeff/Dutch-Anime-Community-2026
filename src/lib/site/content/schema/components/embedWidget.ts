@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { z } from 'zod';
 
-import { MediaProvider } from '@/lib/site/content/schema/primitives';
+import { MediaProvider } from '@/lib/site/content/schema/shared';
 
 export const EmbedWidgetProps = z
 	.object({

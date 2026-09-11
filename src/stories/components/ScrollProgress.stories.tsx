@@ -15,16 +15,6 @@ const meta: Meta<typeof ScrollProgress> = {
 		},
 		jsonSchema: { schema: ScrollProgressProps },
 	},
-	argTypes: {
-		position: {
-			control: 'inline-radio',
-			options: ['top', 'bottom'],
-		},
-		color: {
-			control: 'inline-radio',
-			options: ['primary', 'secondary'],
-		},
-	},
 	// Tall filler so there is something to scroll past in the preview.
 	decorators: [
 		(Story) => {

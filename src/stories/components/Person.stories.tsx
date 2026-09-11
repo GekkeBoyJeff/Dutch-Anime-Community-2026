@@ -13,7 +13,6 @@ const meta: Meta<typeof Person> = {
 	},
 	argTypes: {
 		status: { control: 'inline-radio', options: [undefined, 'online', 'busy', 'away', 'offline'] },
-		loading: { control: 'boolean' },
 	},
 };
 
@@ -26,19 +25,36 @@ export const Default: Story = {
 };
 
 export const WithStatus: Story = {
-	args: { name: 'Sanne Bakker', role: 'Stand-staff', status: 'online' },
+	args: {
+		name: 'Sanne Bakker',
+		role: 'Stand-staff',
+		status: 'online',
+	},
 };
 
 export const Interactive: Story = {
-	args: { name: 'Milan Jansen', role: 'Auteur', href: '/dashboard/moderation', chevron: true },
+	args: {
+		name: 'Milan Jansen',
+		role: 'Auteur',
+		href: '/dashboard/moderation',
+		chevron: true,
+	},
 };
 
 export const WithTrailing: Story = {
-	args: { name: 'Eva Smit', role: 'Beheerder', trailing: <Badge variant="primary" value="3 shifts" /> },
+	args: {
+		name: 'Eva Smit',
+		role: 'Beheerder',
+		trailing: <Badge variant="primary" value="3 shifts" />,
+	},
 };
 
 export const Loading: Story = {
-	args: { name: 'Jeffrey de Vries', role: 'Yakuza', loading: true },
+	args: {
+		name: 'Jeffrey de Vries',
+		role: 'Yakuza',
+		loading: true,
+	},
 };
 
 export const Roster: Story = {

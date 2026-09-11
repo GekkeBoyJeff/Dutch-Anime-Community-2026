@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { z } from 'zod';
 
 import { EventCardTranslations } from '@/lib/site/content/schema/components/eventCard';
-import { Colorset, FilterOption, Heading, Id, Media, SortOption, StatusVariant } from '@/lib/site/content/schema/primitives';
+import { Colorset, FilterOption, Heading, IconName, Id, Media, SortOption, StatusVariant } from '@/lib/site/content/schema/shared';
 
 export const CardGridItem = z
 	.object({
@@ -19,7 +19,7 @@ export const CardGridItem = z
 		statusVariant: StatusVariant.optional().describe('Status chip variant'),
 		translations: EventCardTranslations.optional().describe('Localised strings for the event card\'s meta labels'),
 		tag: z.string().optional().describe('Tag shown on the article card; falls back to the category'),
-		icon: z.string().optional().describe('Leading icon glyph name on the link card (see the $icons map)'),
+		icon: IconName.optional().describe('Leading icon glyph name on the link card (see the $icons map)'),
 		cta: z.string().optional().describe('Call-to-action label rendered beside the link card\'s trailing arrow'),
 	})
 	.meta({ title: 'CardGridItem' });

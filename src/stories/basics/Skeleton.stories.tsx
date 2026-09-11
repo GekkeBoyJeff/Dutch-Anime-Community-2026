@@ -10,9 +10,6 @@ const meta: Meta<typeof Skeleton> = {
 		docs: { description: { component: 'Token-driven loading placeholder with a CSS-only shimmer (gated by prefers-reduced-motion). aria-hidden — the loading semantics live on the surrounding region.' } },
 		jsonSchema: { schema: SkeletonProps },
 	},
-	argTypes: {
-		radius: { control: 'inline-radio', options: ['s', 'm', 'l', 'full'] },
-	},
 };
 
 export default meta;

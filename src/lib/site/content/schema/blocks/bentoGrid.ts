@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { Action } from '@/lib/site/content/schema/basics/actions';
-import { Colorset, Heading, Id, Media } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, Id, Media } from '@/lib/site/content/schema/shared';
 
 export const BentoSpan = z.enum(['standard', 'wide', 'tall', 'feature']);
 export type BentoSpan = z.infer<typeof BentoSpan>;

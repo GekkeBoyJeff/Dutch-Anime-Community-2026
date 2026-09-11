@@ -10,12 +10,6 @@ const meta: Meta<typeof FeatureCards> = {
 		docs: { description: { component: 'Complete section with a heading group and a grid of cards. Receives all data via props and never fetches.' } },
 		jsonSchema: { schema: FeatureCardsProps },
 	},
-	argTypes: {
-		colorset: {
-			control: 'inline-radio',
-			options: ['light', 'dark'],
-		},
-	},
 };
 
 export default meta;
@@ -27,9 +21,21 @@ export const Default: Story = {
 		title: 'What you get',
 		intro: 'A contentBlock that receives all its data via props.',
 		items: [
-			{ id: 'components', title: 'Components', value: 'A small set of primitives you compose every page from.' },
-			{ id: 'content', title: 'Content as data', value: 'Pages are validated data, ready for a CMS.' },
-			{ id: 'theming', title: 'Theming', value: 'Colour and typography cascade through tokens.' },
+			{
+				id: 'components',
+				title: 'Components',
+				value: 'A small set of primitives you compose every page from.',
+			},
+			{
+				id: 'content',
+				title: 'Content as data',
+				value: 'Pages are validated data, ready for a CMS.',
+			},
+			{
+				id: 'theming',
+				title: 'Theming',
+				value: 'Colour and typography cascade through tokens.',
+			},
 		],
 	},
 };

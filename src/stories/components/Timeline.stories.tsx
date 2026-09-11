@@ -16,16 +16,6 @@ const meta: Meta<typeof Timeline> = {
 		},
 		jsonSchema: { schema: TimelineProps },
 	},
-	argTypes: {
-		align: {
-			control: 'inline-radio',
-			options: ['alternating', 'left'],
-		},
-		headingLevel: {
-			control: 'inline-radio',
-			options: [2, 3, 4, 5],
-		},
-	},
 };
 
 export default meta;
@@ -88,7 +78,11 @@ export const WithMedia: Story = {
 				year: '2025',
 				title: 'New platform launch',
 				value: 'A rebuilt site with watch parties, reviews and event listings.',
-				actions: [{ value: 'Read the story', url: '#', variant: 'secondary' }],
+				actions: [{
+					value: 'Read the story',
+					url: '#',
+					variant: 'secondary',
+				}],
 			},
 		],
 	},

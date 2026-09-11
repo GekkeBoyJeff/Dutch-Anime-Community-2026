@@ -13,10 +13,6 @@ const meta: Meta<typeof HighlightCards> = {
 		docs: { description: { component: 'Polaroid-style numbered photo cards with floating badges, tagline, title, body and a row of actions. Presentational — all data arrives via props.' } },
 		jsonSchema: { schema: HighlightCardsProps },
 	},
-	argTypes: {
-		columns: { control: 'inline-radio', options: [2, 3, 4] },
-		colorset: { control: 'inline-radio', options: ['light', 'dark'] },
-	},
 };
 
 export default meta;
@@ -25,12 +21,38 @@ type Story = StoryObj<typeof HighlightCards>;
 
 export const Default: Story = {
 	args: {
-		heading: { title: 'Highlights', tagline: 'This season', intro: 'A few things worth a closer look.' },
+		heading: {
+			title: 'Highlights',
+			tagline: 'This season',
+			intro: 'A few things worth a closer look.',
+		},
 		columns: 3,
 		items: [
-			{ id: 'h1', media: photo, badges: ['New'], tagline: 'Series', title: 'Spring picks', value: 'Hand-chosen favourites for the new season.', actions: [{ value: 'Explore' }] },
-			{ id: 'h2', media: photo, badges: ['Popular'], tagline: 'Series', title: 'Crowd favourites', value: 'What everyone has been watching lately.' },
-			{ id: 'h3', media: photo, tagline: 'Series', title: 'Hidden gems', value: 'Quieter releases you might have missed.', actions: [{ value: 'See all', variant: 'ghost' }] },
+			{
+				id: 'h1',
+				media: photo,
+				badges: ['New'],
+				tagline: 'Series',
+				title: 'Spring picks',
+				value: 'Hand-chosen favourites for the new season.',
+				actions: [{ value: 'Explore' }],
+			},
+			{
+				id: 'h2',
+				media: photo,
+				badges: ['Popular'],
+				tagline: 'Series',
+				title: 'Crowd favourites',
+				value: 'What everyone has been watching lately.',
+			},
+			{
+				id: 'h3',
+				media: photo,
+				tagline: 'Series',
+				title: 'Hidden gems',
+				value: 'Quieter releases you might have missed.',
+				actions: [{ value: 'See all', variant: 'ghost' }],
+			},
 		],
 	},
 };

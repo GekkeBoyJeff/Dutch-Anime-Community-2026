@@ -19,8 +19,12 @@ const meta: Meta<typeof AccordionItem> = {
 		jsonSchema: { schema: AccordionItemProps },
 	},
 	argTypes: {
-		headingLevel: { control: { type: 'range', min: 2, max: 6, step: 1 } },
-		disabled: { control: 'boolean' },
+		headingLevel: { control: {
+			type: 'range',
+			min: 2,
+			max: 6,
+			step: 1,
+		} },
 	},
 	decorators: [
 		(Story) => (

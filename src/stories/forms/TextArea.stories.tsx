@@ -17,8 +17,12 @@ const meta: Meta<typeof TextArea> = {
 		jsonSchema: { schema: TextAreaProps },
 	},
 	argTypes: {
-		rows: { control: { type: 'range', min: 2, max: 12, step: 1 } },
-		disabled: { control: 'boolean' },
+		rows: { control: {
+			type: 'range',
+			min: 2,
+			max: 12,
+			step: 1,
+		} },
 	},
 };
 

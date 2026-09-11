@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { Action } from '@/lib/site/content/schema/basics/actions';
-import { Colorset, Heading, Id, Media } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, Id, Media } from '@/lib/site/content/schema/shared';
 
 export const HighlightCardItem = z
 	.object({

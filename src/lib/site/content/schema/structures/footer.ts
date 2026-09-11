@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { Action } from '@/lib/site/content/schema/basics/actions';
-import { SocialLink } from '@/lib/site/content/schema/primitives';
+import { SocialLink } from '@/lib/site/content/schema/shared';
 
 // url is required here (optional on the Action primitive): every footer link renders into <Link>, which needs it.
 export const FooterLink = Action.pick({ value: true }).extend({ url: z.string().min(1).describe('The link destination') }).meta({ title: 'FooterLink' });

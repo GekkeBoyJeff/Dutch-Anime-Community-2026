@@ -10,9 +10,6 @@ const meta: Meta<typeof ShinyText> = {
 		docs: { description: { component: 'A sweeping highlight across text, done purely in CSS (background-clip: text). The sweep respects prefers-reduced-motion; `disabled` opts out.' } },
 		jsonSchema: { schema: ShinyTextProps },
 	},
-	argTypes: {
-		speed: { control: { type: 'range', min: 1, max: 8, step: 0.5 } },
-	},
 };
 
 export default meta;

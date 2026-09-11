@@ -19,10 +19,6 @@ const meta: Meta<typeof ImageList> = {
 		},
 		jsonSchema: { schema: ImageListProps },
 	},
-	argTypes: {
-		layout: { control: 'inline-radio', options: ['grid', 'featured', 'masonry', 'mosaic'] },
-		columns: { control: 'inline-radio', options: [2, 3, 4] },
-	},
 };
 
 export default meta;

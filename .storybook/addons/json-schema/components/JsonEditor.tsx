@@ -107,7 +107,11 @@ const JsonEditor = ({
 		const valueParsed = parseObject(value);
 		if (docParsed && valueParsed && deepEqual(docParsed, valueParsed)) return;
 		if (!focusedRef.current) {
-			view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: value } });
+			view.dispatch({ changes: {
+				from: 0,
+				to: view.state.doc.length,
+				insert: value,
+			} });
 			setParseError(false);
 		}
 	}, [value]);
@@ -115,7 +119,11 @@ const JsonEditor = ({
 	useEffect(() => {
 		const view = viewRef.current;
 		if (refreshSignal > 0 && view) {
-			view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: value } });
+			view.dispatch({ changes: {
+				from: 0,
+				to: view.state.doc.length,
+				insert: value,
+			} });
 			setParseError(false);
 		}
 	}, [refreshSignal]); // eslint-disable-line react-hooks/exhaustive-deps

@@ -17,12 +17,6 @@ const meta: Meta<typeof Notification> = {
 		},
 		jsonSchema: { schema: NotificationProps },
 	},
-	argTypes: {
-		position: {
-			control: 'inline-radio',
-			options: ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'top-center', 'bottom-center'],
-		},
-	},
 };
 
 export default meta;
@@ -34,14 +28,30 @@ const Trigger = () => {
 	const toast = Toast.useToastManager();
 
 	return (
-		<div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-			<button type="button" onClick={() => toast.add({ title: 'Opgeslagen', description: 'Je wijzigingen zijn bewaard.', type: 'success' })}>
+		<div style={{
+			display: 'flex',
+			gap: '0.5rem',
+			flexWrap: 'wrap',
+		}}>
+			<button type="button" onClick={() => toast.add({
+				title: 'Opgeslagen',
+				description: 'Je wijzigingen zijn bewaard.',
+				type: 'success',
+			})}>
 				Success
 			</button>
-			<button type="button" onClick={() => toast.add({ title: 'Let op', description: 'Controleer je invoer.', type: 'warning' })}>
+			<button type="button" onClick={() => toast.add({
+				title: 'Let op',
+				description: 'Controleer je invoer.',
+				type: 'warning',
+			})}>
 				Warning
 			</button>
-			<button type="button" onClick={() => toast.add({ title: 'Mislukt', description: 'Er ging iets mis.', type: 'error' })}>
+			<button type="button" onClick={() => toast.add({
+				title: 'Mislukt',
+				description: 'Er ging iets mis.',
+				type: 'error',
+			})}>
 				Error
 			</button>
 		</div>

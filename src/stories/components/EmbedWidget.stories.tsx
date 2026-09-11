@@ -17,9 +17,6 @@ const meta: Meta<typeof EmbedWidget> = {
 	},
 	argTypes: {
 		provider: { control: 'inline-radio', options: ['youtube', 'vimeo', 'tiktok'] },
-		ratio: { control: 'text' },
-		title: { control: 'text' },
-		caption: { control: 'text' },
 	},
 };
 
@@ -52,10 +49,22 @@ export const RawIframe: Story = {
 
 export const CustomChild: Story = {
 	...Default,
-	args: { ...Default.args, provider: undefined, embedId: undefined, src: undefined, title: 'Custom widget', caption: undefined },
+	args: {
+		...Default.args,
+		provider: undefined,
+		embedId: undefined,
+		src: undefined,
+		title: 'Custom widget',
+		caption: undefined,
+	},
 	render: (args) => (
 		<EmbedWidget {...args}>
-			<div style={{ display: 'grid', placeItems: 'center', inlineSize: '100%', blockSize: '100%' }}>
+			<div style={{
+				display: 'grid',
+				placeItems: 'center',
+				inlineSize: '100%',
+				blockSize: '100%',
+			}}>
 				Any script-based widget renders here.
 			</div>
 		</EmbedWidget>

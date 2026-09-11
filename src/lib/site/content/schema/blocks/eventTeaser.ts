@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { EventCardProps } from '@/lib/site/content/schema/components/eventCard';
-import { Colorset, Heading, Id } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, Id } from '@/lib/site/content/schema/shared';
 
 export const EventTeaserItem = EventCardProps.pick({
 	title: true,

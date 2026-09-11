@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Panel from '@/components/dashboard/components/Panel';
+import { PanelProps } from '@/lib/site/content/schema/components/panel';
 
 const meta: Meta<typeof Panel> = {
 	title: 'Dashboard/Panel',
@@ -12,10 +13,7 @@ const meta: Meta<typeof Panel> = {
 					'The card frame around one or more facts: title, optional deep link, and the empty and error states. Loading is not its concern — each fact component skeletons itself in its own shape.',
 			},
 		},
-	},
-	argTypes: {
-		isEmpty: { control: 'boolean' },
-		hideWhenEmpty: { control: 'boolean' },
+		jsonSchema: { schema: PanelProps },
 	},
 };
 
@@ -32,9 +30,17 @@ export const Default: Story = {
 };
 
 export const Empty: Story = {
-	args: { title: 'Volgende shift', isEmpty: true, emptyLabel: 'Nog geen shifts toegewezen.' },
+	args: {
+		title: 'Volgende shift',
+		isEmpty: true,
+		emptyLabel: 'Nog geen shifts toegewezen.',
+	},
 };
 
 export const Error: Story = {
-	args: { title: 'Volgende shift', error: 'network', errorLabel: 'Kon niet laden.' },
+	args: {
+		title: 'Volgende shift',
+		error: 'network',
+		errorLabel: 'Kon niet laden.',
+	},
 };

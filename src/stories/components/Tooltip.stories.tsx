@@ -15,22 +15,17 @@ const meta: Meta<typeof Tooltip> = {
 		(Story) => {
 			return (
 				<TooltipProvider>
-					<div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
+					<div style={{
+						display: 'flex',
+						justifyContent: 'center',
+						padding: '4rem',
+					}}>
 						<Story />
 					</div>
 				</TooltipProvider>
 			);
 		},
 	],
-	argTypes: {
-		side: { control: 'inline-radio', options: ['top', 'bottom', 'left', 'right'] },
-		align: { control: 'inline-radio', options: ['start', 'center', 'end'] },
-		sideOffset: { control: 'number' },
-		arrow: { control: 'boolean' },
-		delay: { control: 'number' },
-		disabled: { control: 'boolean' },
-		label: { control: 'text' },
-	},
 };
 
 export default meta;

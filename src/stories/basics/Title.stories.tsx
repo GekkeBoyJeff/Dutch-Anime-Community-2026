@@ -12,7 +12,12 @@ const meta: Meta<typeof Title> = {
 	},
 	argTypes: {
 		size: {
-			control: { type: 'range', min: 1, max: 6, step: 1 },
+			control: {
+				type: 'range',
+				min: 1,
+				max: 6,
+				step: 1,
+			},
 		},
 		element: {
 			control: 'select',

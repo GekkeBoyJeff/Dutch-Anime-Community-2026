@@ -80,7 +80,12 @@ export const fromPuckData = (data: BuilderData): BuilderExport => {
 	}
 
 	const rawPage = clean({
-		meta: { title: root.title, description: root.description, image: root.image, structuredData },
+		meta: {
+			title: root.title,
+			description: root.description,
+			image: root.image,
+			structuredData,
+		},
 		blocks: data.content.map(({ type, props }) => ({ type, ...props })),
 	});
 	const pageResult = Page.safeParse(rawPage);

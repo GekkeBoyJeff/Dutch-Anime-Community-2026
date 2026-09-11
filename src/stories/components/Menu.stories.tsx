@@ -16,11 +16,6 @@ const meta: Meta<typeof Menu> = {
 		},
 		jsonSchema: { schema: MenuProps },
 	},
-	argTypes: {
-		side: { control: 'inline-radio', options: ['top', 'bottom', 'left', 'right', 'inline-start', 'inline-end'] },
-		align: { control: 'inline-radio', options: ['start', 'center', 'end'] },
-		modal: { control: 'boolean' },
-	},
 };
 
 export default meta;

@@ -1,10 +1,12 @@
 import { z } from 'zod';
 
+import { IconName } from '@/lib/site/content/schema/shared';
+
 export const ToggleGroupItem = z
 	.object({
 		value: z.string().min(1).describe('Unique value emitted when this item is pressed'),
 		label: z.string().optional().describe('Visible label (omit for an icon-only item, then set ariaLabel)'),
-		icon: z.string().optional().describe('Optional leading Icon glyph name'),
+		icon: IconName.optional().describe('Optional leading Icon glyph name'),
 		ariaLabel: z.string().optional().describe('Accessible name, required when the item is icon-only'),
 		disabled: z.boolean().optional().describe('Disable just this item'),
 	})

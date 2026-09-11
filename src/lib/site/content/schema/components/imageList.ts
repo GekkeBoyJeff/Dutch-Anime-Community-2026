@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Media, MediaShape } from '@/lib/site/content/schema/primitives';
+import { Media, MediaShape } from '@/lib/site/content/schema/shared';
 
 export const ImageListProps = z
 	.object({

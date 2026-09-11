@@ -16,9 +16,6 @@ const meta: Meta<typeof CheckboxGroup> = {
 		},
 		jsonSchema: { schema: CheckboxGroupProps },
 	},
-	argTypes: {
-		disabled: { control: 'boolean' },
-	},
 };
 
 export default meta;
@@ -44,7 +41,11 @@ export const WithDisabledOption: Story = {
 		options: [
 			{ value: 'anime', label: 'Anime' },
 			{ value: 'manga', label: 'Manga' },
-			{ value: 'cosplay', label: 'Cosplay (full)', disabled: true },
+			{
+				value: 'cosplay',
+				label: 'Cosplay (full)',
+				disabled: true,
+			},
 		],
 	},
 };

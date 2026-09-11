@@ -12,7 +12,11 @@ const DetailTabs = ({
 	tabs,
 	...rest
 }: DetailTabsProps) => {
-	const items = tabs.map((tab): TabItem => ({ label: tab.label, icon: tab.icon, disabled: tab.disabled }));
+	const items = tabs.map((tab): TabItem => ({
+		label: tab.label,
+		icon: tab.icon,
+		disabled: tab.disabled,
+	}));
 	const panels = tabs.map((tab) => tab.panel);
 	return <Tabs items={items} panels={panels} {...rest} />;
 };

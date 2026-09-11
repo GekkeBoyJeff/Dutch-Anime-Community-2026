@@ -16,10 +16,6 @@ const meta: Meta<typeof EventTeaser> = {
 		},
 		jsonSchema: { schema: EventTeaserProps },
 	},
-	argTypes: {
-		viewAllLabel: { control: 'text' },
-		colorset: { control: 'inline-radio', options: ['light', 'dark'] },
-	},
 };
 
 export default meta;
@@ -28,7 +24,11 @@ type Story = StoryObj<typeof EventTeaser>;
 
 export const Default: Story = {
 	args: {
-		heading: { title: 'Upcoming events', tagline: 'Save the date', intro: 'A few things happening soon.' },
+		heading: {
+			title: 'Upcoming events',
+			tagline: 'Save the date',
+			intro: 'A few things happening soon.',
+		},
 		value: 'Tickets go fast — grab yours early.',
 		viewAllUrl: '/events',
 		viewAllLabel: 'View all events',

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Colorset, Id } from '@/lib/site/content/schema/primitives';
+import { Colorset, Id } from '@/lib/site/content/schema/shared';
 
 export const ChatMessage = z
 	.object({

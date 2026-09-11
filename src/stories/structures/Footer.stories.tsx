@@ -11,9 +11,6 @@ const meta: Meta<typeof Footer> = {
 		docs: { description: { component: 'Generalised site footer: brand block, link columns, social row and a legal bar with the copyright year (computed server-side). All content comes from props sourced from site.ts.' } },
 		jsonSchema: { schema: FooterProps },
 	},
-	argTypes: {
-		decorated: { control: 'boolean' },
-	},
 };
 
 export default meta;

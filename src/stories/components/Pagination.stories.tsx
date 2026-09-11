@@ -15,15 +15,6 @@ const meta: Meta<typeof Pagination> = {
 		},
 		jsonSchema: { schema: PaginationProps },
 	},
-	argTypes: {
-		totalPages: { control: 'number' },
-		siblingCount: { control: 'number' },
-		boundaryCount: { control: 'number' },
-		variant: { control: 'inline-radio', options: ['button', 'link'] },
-		withControls: { control: 'boolean' },
-		withEdges: { control: 'boolean' },
-		disabled: { control: 'boolean' },
-	},
 };
 
 export default meta;

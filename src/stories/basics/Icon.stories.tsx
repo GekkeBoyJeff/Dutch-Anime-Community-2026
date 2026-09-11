@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import Icon, { ICONS } from '@/components/basics/Icon';
+import Icon from '@/components/basics/Icon';
 import { IconProps } from '@/lib/site/content/schema/basics/icon';
 
 const meta: Meta<typeof Icon> = {
@@ -14,12 +14,6 @@ const meta: Meta<typeof Icon> = {
 			},
 		},
 		jsonSchema: { schema: IconProps },
-	},
-	argTypes: {
-		name: {
-			control: 'select',
-			options: Object.keys(ICONS),
-		},
 	},
 };
 

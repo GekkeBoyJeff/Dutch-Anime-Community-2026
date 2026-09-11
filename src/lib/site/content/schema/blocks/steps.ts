@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-import { Colorset, Heading, Id } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, IconName, Id } from '@/lib/site/content/schema/shared';
 
 export const StepItem = z
 	.object({
 		id: Id,
 		title: z.string().min(1).describe('Step title text shown next to the marker'),
 		value: z.string().optional().describe('Optional supporting text shown below the step title'),
-		icon: z.string().optional().describe('Optional icon glyph rendered in the marker instead of the step number').meta({ editor: 'icon' }),
+		icon: IconName.optional().describe('Optional icon glyph rendered in the marker instead of the step number'),
 	})
 	.meta({ title: 'StepItem' });
 export type StepItem = z.infer<typeof StepItem>;

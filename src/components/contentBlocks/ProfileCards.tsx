@@ -25,7 +25,11 @@ const ProfileCards = ({
 	anonymousLabel,
 	colorset,
 }: ProfileCardsProps) => {
-	const cards = anonymousLabel ? [...items, { id: 'anonymous', name: anonymousLabel, initials: '+' }] : items;
+	const cards = anonymousLabel ? [...items, {
+		id: 'anonymous',
+		name: anonymousLabel,
+		initials: '+',
+	}] : items;
 	return (
 		<Section colorset={colorset} className="profile-cards">
 			<Container>

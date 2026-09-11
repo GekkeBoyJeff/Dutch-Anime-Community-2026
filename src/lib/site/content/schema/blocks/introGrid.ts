@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Colorset, Heading, Id } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, IconName, Id } from '@/lib/site/content/schema/shared';
 
 export const IntroGridPanel = z
 	.object({
@@ -13,7 +13,7 @@ export const IntroGridPanel = z
 			.object({
 				label: z.string().min(1).describe('Visible text of the action shown at the bottom of the panel'),
 				href: z.string().min(1).describe('Destination URL that makes the whole panel a clickable link'),
-				icon: z.string().optional().describe('Name of the icon rendered before the action label').meta({ editor: 'icon' }),
+				icon: IconName.optional().describe('Name of the icon rendered before the action label'),
 			})
 			.optional()
 			.describe('Turns the whole panel into a link and renders a label with optional icon at the bottom of the card'),

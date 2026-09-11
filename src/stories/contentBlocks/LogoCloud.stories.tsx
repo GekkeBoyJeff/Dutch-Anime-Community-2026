@@ -5,10 +5,27 @@ import { LogoCloudProps } from '@/lib/site/content/schema/blocks/logoCloud';
 import { demoImage } from '@/stories/basics/Media.stories';
 
 const logos = [
-	{ id: 'l1', name: 'Abunai!', logo: '/media/logos/abunai.svg', href: 'https://example.com/' },
-	{ id: 'l2', name: 'Dutch Comic Con', logo: '/media/logos/dutch-comic-con.svg' },
-	{ id: 'l3', name: 'Heroes Made in Asia', logo: demoImage.src },
-	{ id: 'l4', name: 'AnimeCon', logo: demoImage.src },
+	{
+		id: 'l1',
+		name: 'Abunai!',
+		logo: '/media/logos/abunai.svg',
+		href: 'https://example.com/',
+	},
+	{
+		id: 'l2',
+		name: 'Dutch Comic Con',
+		logo: '/media/logos/dutch-comic-con.svg',
+	},
+	{
+		id: 'l3',
+		name: 'Heroes Made in Asia',
+		logo: demoImage.src,
+	},
+	{
+		id: 'l4',
+		name: 'AnimeCon',
+		logo: demoImage.src,
+	},
 ];
 
 const meta: Meta<typeof LogoCloud> = {
@@ -17,16 +34,6 @@ const meta: Meta<typeof LogoCloud> = {
 	parameters: {
 		docs: { description: { component: 'A customer/partner logo strip. `grid` wraps the logos in a row; `marquee` scrolls them in a continuous CSS loop. No JS; grayscale-on-rest hover. Server Component.' } },
 		jsonSchema: { schema: LogoCloudProps },
-	},
-	argTypes: {
-		variant: {
-			control: 'inline-radio',
-			options: ['grid', 'marquee'],
-		},
-		colorset: {
-			control: 'inline-radio',
-			options: ['light', 'dark'],
-		},
 	},
 };
 

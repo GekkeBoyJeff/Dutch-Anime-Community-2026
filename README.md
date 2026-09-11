@@ -112,7 +112,7 @@ supabase/
 ```
 src/content/pages/*  plain typed data (one Page per path)      ← the CMS seam
    │
-src/lib/content/*    async accessors that VALIDATE the data with Zod at load (fail the build on bad data;
+src/lib/site/content/*    async accessors that VALIDATE the data with Zod at load (fail the build on bad data;
    │                 read from Supabase when SUPABASE_SERVICE_ROLE_KEY is set, else the static registry)
 src/components/contentBlocks/Blocks.tsx   maps each block's `type` → its component
    │
@@ -122,8 +122,8 @@ src/app/(website)/page.tsx + [...slug]   home and a catch-all; both delegate to 
 
 - **Content is data.** A page is `{ meta, blocks }` at a path. Each block has a `type` that selects its
   component; the rest of the block is that component's props. Add or reorder sections by editing data.
-- **One contract.** `src/lib/content/schema/` defines the Zod schemas (`primitives`, `blocks/<type>`,
-  `document`); every TypeScript type is inferred from them, and the render registry + JSON-LD builders +
+- **One contract.** `src/lib/site/content/schema/` defines the Zod schemas (`shared`, `blocks/<type>`,
+  `page`); every TypeScript type is inferred from them, and the render registry + JSON-LD builders +
   the Puck editor all derive from the same union — so nothing drifts and a mis-wire is a compile error.
 - **Validated at the boundary.** The `lib/content` accessors `safeParse` every page, so invalid content
   fails `next build` (or an invalid DB row never reaches the site) with a path-pointed error.

@@ -14,20 +14,18 @@ const meta: Meta<typeof Popover> = {
 	decorators: [
 		(Story) => {
 			return (
-				<div style={{ display: 'flex', justifyContent: 'center', padding: '6rem' }}>
+				<div style={{
+					display: 'flex',
+					justifyContent: 'center',
+					padding: '6rem',
+				}}>
 					<Story />
 				</div>
 			);
 		},
 	],
 	argTypes: {
-		side: { control: 'inline-radio', options: ['top', 'bottom', 'left', 'right', 'inline-start', 'inline-end'] },
-		align: { control: 'inline-radio', options: ['start', 'center', 'end'] },
-		sideOffset: { control: 'number' },
-		alignOffset: { control: 'number' },
-		showArrow: { control: 'boolean' },
 		modal: { control: 'boolean' },
-		title: { control: 'text' },
 	},
 };
 

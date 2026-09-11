@@ -15,7 +15,11 @@ const generateBuilderManifest = async () => {
 			const relative = path.relative(publicDir, path.join(entry.parentPath, entry.name));
 			const webPath = `/${relative.split(path.sep).join('/')}`;
 			const dir = path.dirname(relative);
-			return { path: webPath, name: entry.name, dir: dir === '.' ? '/' : dir };
+			return {
+				path: webPath,
+				name: entry.name,
+				dir: dir === '.' ? '/' : dir,
+			};
 		})
 		.filter((file) => !GENERATED_DIRS.test(file.dir))
 		.sort((a, b) => a.path.localeCompare(b.path));

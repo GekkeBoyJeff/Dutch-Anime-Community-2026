@@ -10,16 +10,15 @@ const meta: Meta<typeof Actions> = {
 		docs: { description: { component: 'The one CTA row: maps the shared `Action` content shape onto Buttons, so every block honors the same capabilities (variant, url, target, icon) without re-writing the loop. The row itself is one flex row that wraps, styled in Actions.scss; a consuming block overrides only the gap or alignment it needs.' } },
 		jsonSchema: { schema: ActionsProps },
 	},
-	argTypes: {
-		defaultVariant: {
-			control: 'inline-radio',
-			options: ['primary', 'secondary', 'ghost'],
-		},
-	},
 	decorators: [
 		// Row layout is block-local by design; the workshop provides the minimal flex context.
 		(Story) => (
-			<div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem' }}>
+			<div style={{
+				display: 'flex',
+				flexWrap: 'wrap',
+				alignItems: 'center',
+				gap: '1rem',
+			}}>
 				<Story />
 			</div>
 		),

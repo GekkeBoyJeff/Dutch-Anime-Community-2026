@@ -21,7 +21,11 @@ const ArticleCard = ({
 	layout = 'vertical',
 	className,
 }: ArticleCardProps) => {
-	const published = publishedAt ? formatDate(publishedAt, { day: 'numeric', month: 'long', year: 'numeric' }) : undefined;
+	const published = publishedAt ? formatDate(publishedAt, {
+		day: 'numeric',
+		month: 'long',
+		year: 'numeric',
+	}) : undefined;
 	const titleSize = layout === 'feature' ? 3 : 4;
 
 	return (

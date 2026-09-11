@@ -10,10 +10,6 @@ const meta: Meta<typeof Table> = {
 		docs: { description: { component: 'Styled semantic table with a horizontal scroll container and a mobile stacked layout (each row becomes label/value pairs). The responsive-table primitive PricingComparison and ComparisonTable reuse; stays a Server Component.' } },
 		jsonSchema: { schema: TableProps },
 	},
-	argTypes: {
-		striped: { control: 'boolean' },
-		bordered: { control: 'boolean' },
-	},
 };
 
 export default meta;

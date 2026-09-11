@@ -1,7 +1,7 @@
 import type { Ref } from 'react';
 import { z } from 'zod';
 
-import { Option } from '@/lib/site/content/schema/primitives';
+import { Option } from '@/lib/site/content/schema/shared';
 
 export const SelectOption = Option
 	.extend({

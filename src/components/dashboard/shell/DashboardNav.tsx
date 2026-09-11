@@ -155,7 +155,14 @@ const DashboardNavReady = () => {
 				jobs.push(
 					(async () => {
 						const { data } = await db.from('events').select('id, name, location').ilike('name', like).order('starts_on', { ascending: false, nullsFirst: false }).limit(6);
-						return (data ?? []).map((event) => ({ key: `event:${event.id}`, group: 'events' as const, label: event.name, sublabel: event.location, href: `/dashboard/events?id=${event.id}`, icon: 'calendar' }));
+						return (data ?? []).map((event) => ({
+							key: `event:${event.id}`,
+							group: 'events' as const,
+							label: event.name,
+							sublabel: event.location,
+							href: `/dashboard/events?id=${event.id}`,
+							icon: 'calendar',
+						}));
 					})(),
 				);
 			}
@@ -165,7 +172,13 @@ const DashboardNavReady = () => {
 						const { data } = await db.from('subject_names').select('id, display_name').ilike('display_name', like).limit(6);
 						return (data ?? [])
 							.filter((person): person is { id: string; display_name: string } => person.display_name !== null)
-							.map((person) => ({ key: `person:${person.id}`, group: 'people' as const, label: person.display_name, href: `/dashboard/moderation?id=${person.id}`, icon: 'user' }));
+							.map((person) => ({
+								key: `person:${person.id}`,
+								group: 'people' as const,
+								label: person.display_name,
+								href: `/dashboard/moderation?id=${person.id}`,
+								icon: 'user',
+							}));
 					})(),
 				);
 			}
@@ -216,7 +229,12 @@ const DashboardNavReady = () => {
 			/>
 			<BottomTabBar
 				items={tabBarItems}
-				more={{ label: 'Meer', icon: 'menu', active: menuOpen, onClick: () => setMenuOpen((open) => !open) }}
+				more={{
+					label: 'Meer',
+					icon: 'menu',
+					active: menuOpen,
+					onClick: () => setMenuOpen((open) => !open),
+				}}
 			/>
 		</>
 	);

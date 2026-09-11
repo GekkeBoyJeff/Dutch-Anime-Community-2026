@@ -186,7 +186,7 @@ meta: {
 ```
 
 Only `url` is required; `alt`, `width` and `height` are optional. The shape is `OgImage` in
-`src/lib/site/content/schema/primitives.ts`, and `url` is a plain non-empty string rather than a strict
+`src/lib/site/content/schema/shared.ts`, and `url` is a plain non-empty string rather than a strict
 URL, because a root-relative value is resolved against `metadataBase`.
 
 > **Why the pre-generated PNGs?** The live site is a static export. The deploy workflow

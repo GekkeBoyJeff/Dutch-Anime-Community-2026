@@ -134,7 +134,11 @@ class Query implements PromiseLike<{ data: unknown; error: null; count: number |
 		if (this.limitTo !== null) out = out.slice(0, this.limitTo);
 		if (this.headOnly) return { data: null, error: null, count };
 		if (this.singleRow) return { data: out[0] ?? null, error: null, count };
-		return { data: out, error: null, count: this.wantCount ? count : null };
+		return {
+			data: out,
+			error: null,
+			count: this.wantCount ? count : null,
+		};
 	}
 
 	then<TResult1 = { data: unknown; error: null; count: number | null }, TResult2 = never>(

@@ -16,12 +16,6 @@ const meta: Meta<typeof EventCard> = {
 		},
 		jsonSchema: { schema: EventCardProps },
 	},
-	argTypes: {
-		statusVariant: {
-			control: 'inline-radio',
-			options: ['neutral', 'primary', 'info', 'success', 'warning', 'error'],
-		},
-	},
 };
 
 export default meta;

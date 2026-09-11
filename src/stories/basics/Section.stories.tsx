@@ -12,12 +12,6 @@ const meta: Meta<typeof Section> = {
 		docs: { description: { component: 'Page-shell unit that carries the colorset attribute; the whole subtree inherits the colors without color props.' } },
 		jsonSchema: { schema: SectionProps },
 	},
-	argTypes: {
-		colorset: {
-			control: 'inline-radio',
-			options: ['light', 'dark'],
-		},
-	},
 };
 
 export default meta;

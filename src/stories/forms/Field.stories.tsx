@@ -17,11 +17,6 @@ const meta: Meta<typeof Field> = {
 		},
 		jsonSchema: { schema: FieldProps },
 	},
-	argTypes: {
-		orientation: { control: 'inline-radio', options: ['vertical', 'horizontal'] },
-		disabled: { control: 'boolean' },
-		invalid: { control: 'boolean' },
-	},
 };
 
 export default meta;

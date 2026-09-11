@@ -15,12 +15,6 @@ const meta: Meta<typeof Checkbox> = {
 		},
 		jsonSchema: { schema: CheckboxProps },
 	},
-	argTypes: {
-		disabled: { control: 'boolean' },
-		required: { control: 'boolean' },
-		defaultChecked: { control: 'boolean' },
-		indeterminate: { control: 'boolean' },
-	},
 };
 
 export default meta;

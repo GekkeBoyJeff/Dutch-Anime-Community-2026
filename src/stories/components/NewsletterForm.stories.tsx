@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { userEvent, within } from 'storybook/test';
 
 import NewsletterForm from '@/components/components/NewsletterForm';
+import { NewsletterFormProps } from '@/lib/site/content/schema/components/newsletterForm';
 
 const meta: Meta<typeof NewsletterForm> = {
 	title: 'Components/NewsletterForm',
@@ -13,10 +14,7 @@ const meta: Meta<typeof NewsletterForm> = {
 					'The interactive island for SubscribeToNewsletter: the shared Form shell (react-hook-form + the NewsletterSignup zod schema) around a TextInput and submit button, with a local success/error status swap. With no `endpoint` it treats a submit as a successful no-op, so the success state is demonstrable in isolation.',
 			},
 		},
-	},
-	argTypes: {
-		placeholder: { control: 'text' },
-		ctaLabel: { control: 'text' },
+		jsonSchema: { schema: NewsletterFormProps },
 	},
 };
 

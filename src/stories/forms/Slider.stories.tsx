@@ -16,14 +16,6 @@ const meta: Meta<typeof Slider> = {
 		},
 		jsonSchema: { schema: SliderProps },
 	},
-	argTypes: {
-		min: { control: 'number' },
-		max: { control: 'number' },
-		step: { control: 'number' },
-		disabled: { control: 'boolean' },
-		showValue: { control: 'boolean' },
-		orientation: { control: 'inline-radio', options: ['horizontal', 'vertical'] },
-	},
 };
 
 export default meta;
@@ -60,7 +52,12 @@ export const Stepped: Story = {
 
 export const SliderSelection: Story = {
 	...Default,
-	args: { ...Default.args, ariaLabel: 'Price range', defaultValue: [25, 75], showValue: true },
+	args: {
+		...Default.args,
+		ariaLabel: 'Price range',
+		defaultValue: [25, 75],
+		showValue: true,
+	},
 };
 
 export const Disabled: Story = {

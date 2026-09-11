@@ -11,8 +11,12 @@ const meta: Meta<typeof HeadingGroup> = {
 		jsonSchema: { schema: HeadingGroupProps },
 	},
 	argTypes: {
-		size: { control: { type: 'range', min: 1, max: 6, step: 1 } },
-		orientation: { control: 'inline-radio', options: ['normal', 'reversed'] },
+		size: { control: {
+			type: 'range',
+			min: 1,
+			max: 6,
+			step: 1,
+		} },
 	},
 };
 

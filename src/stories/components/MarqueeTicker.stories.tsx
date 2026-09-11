@@ -16,16 +16,13 @@ const meta: Meta<typeof MarqueeTicker> = {
 		jsonSchema: { schema: MarqueeTickerProps },
 	},
 	argTypes: {
-		direction: {
-			control: 'inline-radio',
-			options: ['left', 'right'],
-		},
-		variant: {
-			control: 'inline-radio',
-			options: ['primary', 'dark', 'light'],
-		},
 		speed: {
-			control: { type: 'range', min: 5, max: 60, step: 1 },
+			control: {
+				type: 'range',
+				min: 5,
+				max: 60,
+				step: 1,
+			},
 		},
 	},
 };

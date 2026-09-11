@@ -10,9 +10,6 @@ const meta: Meta<typeof Spinner> = {
 		docs: { description: { component: 'Inline async indicator (CSS-only). role="status" with an sr-only label; the spin respects prefers-reduced-motion.' } },
 		jsonSchema: { schema: SpinnerProps },
 	},
-	argTypes: {
-		size: { control: 'inline-radio', options: ['s', 'm', 'l'] },
-	},
 };
 
 export default meta;

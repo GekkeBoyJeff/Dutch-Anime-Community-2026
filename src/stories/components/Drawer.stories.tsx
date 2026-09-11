@@ -19,13 +19,6 @@ const meta: Meta<typeof Drawer> = {
 		size: '22rem',
 		dismissible: true,
 	},
-	argTypes: {
-		position: { control: 'inline-radio', options: ['left', 'right', 'bottom'] },
-		size: { control: 'text' },
-		dismissible: { control: 'boolean' },
-		title: { control: 'text' },
-		description: { control: 'text' },
-	},
 };
 
 export default meta;
@@ -63,6 +56,10 @@ export const Left: Story = {
 };
 
 export const Bottom: Story = {
-	args: { position: 'bottom', size: '50dvh', title: 'Details' },
+	args: {
+		position: 'bottom',
+		size: '50dvh',
+		title: 'Details',
+	},
 	render: (args) => <Drawer {...args} trigger={<Button value="Open bottom sheet" />}>A bottom sheet on small screens.</Drawer>,
 };

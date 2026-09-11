@@ -1,12 +1,14 @@
 import { z } from 'zod';
 
+import { IconName } from '@/lib/site/content/schema/shared';
+
 export const SearchPaletteItem = z
 	.object({
 		id: z.string().min(1).describe('Stable id, used as the React key and the cmdk value'),
 		label: z.string().min(1).describe('The visible label that the fuzzy filter matches against'),
 		hint: z.string().optional().describe('A muted line under the label (a path, a description, …)'),
 		category: z.string().optional().describe('Group heading this item is filed under; falls back to `fallbackCategory`'),
-		icon: z.string().optional().describe('Leading icon glyph name (the icon font is a placeholder, so it is optional)'),
+		icon: IconName.optional().describe('Leading icon glyph name (the icon font is a placeholder, so it is optional)'),
 		url: z.string().optional().describe('Internal route to navigate to on select'),
 	})
 	.meta({ title: 'SearchPaletteItem' });

@@ -20,9 +20,6 @@ const meta: Meta<typeof VideoLightbox> = {
 	},
 	argTypes: {
 		provider: { control: 'inline-radio', options: [undefined, 'youtube', 'vimeo', 'tiktok'] },
-		embedId: { control: 'text' },
-		src: { control: 'text' },
-		title: { control: 'text' },
 	},
 	// Trigger wrapper so the controlled open/close is exercised; args pass through for live Controls.
 	render: function Render(args: Partial<ComponentProps<typeof VideoLightbox>>) {
@@ -58,5 +55,10 @@ export const TikTokPortrait: Story = {
 
 export const NativeVideo: Story = {
 	...Default,
-	args: { ...Default.args, provider: undefined, embedId: undefined, src: demoVideo.src },
+	args: {
+		...Default.args,
+		provider: undefined,
+		embedId: undefined,
+		src: demoVideo.src,
+	},
 };

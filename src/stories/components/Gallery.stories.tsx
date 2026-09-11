@@ -25,11 +25,6 @@ const meta: Meta<typeof Gallery> = {
 		},
 		jsonSchema: { schema: GalleryProps },
 	},
-	argTypes: {
-		variant: { control: 'inline-radio', options: ['masonry', 'grid', 'strip'] },
-		columns: { control: { type: 'range', min: 1, max: 5, step: 1 } },
-		gap: { control: 'inline-radio', options: ['s', 'm', 'l', 'xl'] },
-	},
 };
 
 export default meta;

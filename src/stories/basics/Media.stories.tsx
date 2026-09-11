@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import Media from '@/components/basics/Media';
 import type { Media as MediaData } from '@/lib/site/content';
 import { MediaProps } from '@/lib/site/content/schema/basics/media';
-import { MediaProvider } from '@/lib/site/content/schema/primitives';
+import { MediaProvider } from '@/lib/site/content/schema/shared';
 
 // Media is the home for shared demo media: defined and exported here, imported by other stories as
 // `{ demoImage, demoVideo }` — spread to override alt/ratio, or read `.src` for a bare URL. They're listed
@@ -12,8 +12,16 @@ import { MediaProvider } from '@/lib/site/content/schema/primitives';
 // `alt` lives here too, so a story spreads the whole object and INHERITS it (`{ ...demoImage, caption: '…' }`)
 // instead of re-declaring alt per item. `satisfies` (not a `: MediaData` annotation) keeps `.src` a concrete
 // string for the stories that read it as a bare URL (the annotation would widen it to `string | undefined`).
-export const demoImage = { type: 'image' as const, src: '/media/demo.png', alt: 'Demo image' } satisfies MediaData;
-export const demoVideo = { type: 'video' as const, src: '/media/demo.mp4', alt: 'Demo video' } satisfies MediaData;
+export const demoImage = {
+	type: 'image' as const,
+	src: '/media/demo.png',
+	alt: 'Demo image',
+} satisfies MediaData;
+export const demoVideo = {
+	type: 'video' as const,
+	src: '/media/demo.mp4',
+	alt: 'Demo video',
+} satisfies MediaData;
 
 const meta: Meta<typeof Media> = {
 	title: 'Basics/Media',
@@ -30,9 +38,6 @@ const meta: Meta<typeof Media> = {
 		jsonSchema: { schema: MediaProps },
 	},
 	argTypes: {
-		type: { control: 'inline-radio', options: ['image', 'video', 'embed'] },
-		mode: { control: 'inline-radio', options: ['fill', 'fit'] },
-		ratio: { control: 'text' },
 		sizes: {
 			control: 'text',
 			description: 'How wide the image renders, so the browser fetches the smallest fitting variant: a CSS sizes string (`"50vw"`) or a per-breakpoint map in code (`{ base: "100vw", m: "50vw" }`). Optional — responsive by default.',

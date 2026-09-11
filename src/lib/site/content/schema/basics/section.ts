@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { z } from 'zod';
 
-import { Colorset } from '@/lib/site/content/schema/primitives';
+import { Colorset } from '@/lib/site/content/schema/shared';
 
 export const SectionProps = z
 	.object({

@@ -16,14 +16,6 @@ const meta: Meta<typeof Switch> = {
 		},
 		jsonSchema: { schema: SwitchProps },
 	},
-	argTypes: {
-		checked: { control: 'boolean' },
-		defaultChecked: { control: 'boolean' },
-		disabled: { control: 'boolean' },
-		readOnly: { control: 'boolean' },
-		required: { control: 'boolean' },
-		ariaLabel: { control: 'text' },
-	},
 };
 
 export default meta;
@@ -66,7 +58,11 @@ export const WithLabel: Story = {
 	...Default,
 	render: (args) => {
 		return (
-			<label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+			<label style={{
+				display: 'inline-flex',
+				alignItems: 'center',
+				gap: '0.5rem',
+			}}>
 				<Switch {...args} ariaLabel={undefined} id="notify" />
 				Email notifications
 			</label>

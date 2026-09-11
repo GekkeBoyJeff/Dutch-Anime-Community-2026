@@ -10,12 +10,6 @@ const meta: Meta<typeof Badge> = {
 		docs: { description: { component: 'Static status/label chip — the non-interactive sibling of Pill. Variant tints come from the colorset and status tokens.' } },
 		jsonSchema: { schema: BadgeProps },
 	},
-	argTypes: {
-		variant: {
-			control: 'inline-radio',
-			options: ['neutral', 'primary', 'info', 'success', 'warning', 'error', 'outline'],
-		},
-	},
 };
 
 export default meta;

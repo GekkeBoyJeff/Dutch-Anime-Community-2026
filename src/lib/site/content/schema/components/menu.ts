@@ -1,6 +1,8 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { z } from 'zod';
 
+import { IconName } from '@/lib/site/content/schema/shared';
+
 export const MenuProps = z
 	.object({
 		trigger: z.custom<ReactNode>().describe('The element that opens the menu; rendered as the Base UI trigger'),
@@ -27,7 +29,7 @@ export type MenuProps = z.infer<typeof MenuProps>;
 
 export const MenuItemProps = z
 	.object({
-		icon: z.string().optional().describe('Leading icon glyph name (see the $icons map)'),
+		icon: IconName.optional().describe('Leading icon glyph name (see the $icons map)'),
 		label: z.string().min(1).describe('The item\'s visible text; typeahead matches on it too'),
 		url: z.string().optional().describe('Internal route or external URL — renders the item as a link'),
 		target: z.string().optional().describe('Link target, e.g. \'_blank\''),

@@ -15,10 +15,6 @@ const meta: Meta<typeof FilterBar> = {
 		},
 		jsonSchema: { schema: FilterBarProps },
 	},
-	argTypes: {
-		searchable: { control: 'boolean' },
-		resettable: { control: 'boolean' },
-	},
 };
 
 export default meta;
@@ -26,10 +22,26 @@ export default meta;
 type Story = StoryObj<typeof FilterBar>;
 
 const filters = [
-	{ label: 'Alles', value: 'all', count: 42 },
-	{ label: 'Meetups', value: 'meetup', count: 18 },
-	{ label: 'Watch parties', value: 'watch-party', count: 15 },
-	{ label: 'Conventies', value: 'convention', count: 9 },
+	{
+		label: 'Alles',
+		value: 'all',
+		count: 42,
+	},
+	{
+		label: 'Meetups',
+		value: 'meetup',
+		count: 18,
+	},
+	{
+		label: 'Watch parties',
+		value: 'watch-party',
+		count: 15,
+	},
+	{
+		label: 'Conventies',
+		value: 'convention',
+		count: 9,
+	},
 ];
 
 export const Default: Story = {

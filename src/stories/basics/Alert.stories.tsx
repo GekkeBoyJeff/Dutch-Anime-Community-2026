@@ -10,9 +10,6 @@ const meta: Meta<typeof Alert> = {
 		docs: { description: { component: 'Static inline status callout — distinct from the transient Notification toast and the site-wide AnnouncementBar. Warning/error announce via role="alert".' } },
 		jsonSchema: { schema: AlertProps },
 	},
-	argTypes: {
-		variant: { control: 'inline-radio', options: ['info', 'success', 'warning', 'error', 'neutral'] },
-	},
 };
 
 export default meta;

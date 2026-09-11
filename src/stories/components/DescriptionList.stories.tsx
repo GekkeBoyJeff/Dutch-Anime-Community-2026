@@ -10,10 +10,6 @@ const meta: Meta<typeof DescriptionList> = {
 		docs: { description: { component: 'Semantic `<dl>` term/definition pairs for spec and detail panels — event detail pages like date, venue, price and organizer. Pure CSS, server-safe.' } },
 		jsonSchema: { schema: DescriptionListProps },
 	},
-	argTypes: {
-		layout: { control: 'inline-radio', options: ['stacked', 'inline'] },
-		divided: { control: 'boolean' },
-	},
 };
 
 export default meta;

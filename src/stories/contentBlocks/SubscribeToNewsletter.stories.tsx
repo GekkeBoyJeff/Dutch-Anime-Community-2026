@@ -15,11 +15,6 @@ const meta: Meta<typeof SubscribeToNewsletter> = {
 		},
 		jsonSchema: { schema: SubscribeToNewsletterProps },
 	},
-	argTypes: {
-		placeholder: { control: 'text' },
-		ctaLabel: { control: 'text' },
-		colorset: { control: 'inline-radio', options: ['light', 'dark'] },
-	},
 };
 
 export default meta;

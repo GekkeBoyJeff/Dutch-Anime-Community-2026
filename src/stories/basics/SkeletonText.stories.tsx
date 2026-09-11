@@ -11,7 +11,12 @@ const meta: Meta<typeof SkeletonText> = {
 		jsonSchema: { schema: SkeletonTextProps },
 	},
 	argTypes: {
-		lines: { control: { type: 'range', min: 1, max: 8, step: 1 } },
+		lines: { control: {
+			type: 'range',
+			min: 1,
+			max: 8,
+			step: 1,
+		} },
 	},
 };
 

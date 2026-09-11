@@ -4,7 +4,13 @@ import { ButtonProps } from '@/lib/site/content/schema/basics/button';
 
 // The content-authoring face of a Button: the subset a page author fills in, so block data can never
 // reach for onClick, the aria-* props or className.
-export const Action = ButtonProps.pick({ value: true, url: true, variant: true, target: true, icon: true })
+export const Action = ButtonProps.pick({
+	value: true,
+	url: true,
+	variant: true,
+	target: true,
+	icon: true,
+})
 	.extend({ value: z.string().min(1).describe('The button or link text') })
 	.meta({ title: 'Action' });
 export type Action = z.infer<typeof Action>;

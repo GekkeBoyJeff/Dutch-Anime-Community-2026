@@ -10,12 +10,6 @@ const meta: Meta<typeof TextMedia> = {
 		docs: { description: { component: 'Text next to media in two columns (stacked on mobile); reverse swaps the order.' } },
 		jsonSchema: { schema: TextMediaProps },
 	},
-	argTypes: {
-		colorset: {
-			control: 'inline-radio',
-			options: ['light', 'dark'],
-		},
-	},
 };
 
 export default meta;

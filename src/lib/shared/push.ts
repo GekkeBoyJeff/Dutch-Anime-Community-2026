@@ -44,7 +44,12 @@ export const subscribePush = async (): Promise<{ ok: boolean; error?: string }> 
 			if (!userId) throw new Error('Niet ingelogd.');
 			const { error } = await db
 				.from('push_subscriptions')
-				.upsert({ user_id: userId, endpoint: sub.endpoint, p256dh: json.keys?.p256dh ?? '', auth: json.keys?.auth ?? '' }, { onConflict: 'endpoint' });
+				.upsert({
+					user_id: userId,
+					endpoint: sub.endpoint,
+					p256dh: json.keys?.p256dh ?? '',
+					auth: json.keys?.auth ?? '',
+				}, { onConflict: 'endpoint' });
 			if (error) throw new Error(error.message);
 			return { ok: true };
 		} catch (e) {

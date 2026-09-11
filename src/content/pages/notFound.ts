@@ -15,8 +15,17 @@ export const notFoundPage: Page = {
 			title: 'Oeps. Deze pagina bestaat niet.',
 			value: 'Amelia heeft overal gezocht. Niks.',
 			actions: [
-				{ value: 'Terug naar home', variant: 'primary', url: '/' },
-				{ value: 'Word lid', variant: 'ghost', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
+				{
+					value: 'Terug naar home',
+					variant: 'primary',
+					url: '/',
+				},
+				{
+					value: 'Word lid',
+					variant: 'ghost',
+					url: 'https://discord.gg/dutchanimecommunity',
+					target: '_blank',
+				},
 			],
 		},
 	],

@@ -276,7 +276,7 @@ export type StatBandBlock = z.infer<typeof StatBandBlock>;
 
 The `type` literal is camelCase and is the block's identity everywhere else: in the union, in the
 render registry, and in the JSON stored for a page. `Colorset`, `Heading` and `Id` come from
-`src/lib/site/content/schema/primitives.ts`, which holds the shapes several blocks share — reuse
+`src/lib/site/content/schema/shared.ts`, which holds the shapes several blocks share — reuse
 them rather than re-declaring a heading.
 
 So `posterWall.ts` would end with:

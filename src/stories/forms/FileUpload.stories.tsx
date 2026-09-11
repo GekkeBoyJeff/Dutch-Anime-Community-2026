@@ -16,14 +16,6 @@ const meta: Meta<typeof FileUpload> = {
 		},
 		jsonSchema: { schema: FileUploadProps },
 	},
-	argTypes: {
-		multiple: { control: 'boolean' },
-		disabled: { control: 'boolean' },
-		busy: { control: 'boolean' },
-		accept: { control: 'text' },
-		label: { control: 'text' },
-		hint: { control: 'text' },
-	},
 };
 
 export default meta;

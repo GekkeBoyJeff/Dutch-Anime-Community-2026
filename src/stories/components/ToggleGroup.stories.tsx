@@ -15,14 +15,6 @@ const meta: Meta<typeof ToggleGroup> = {
 			},
 		},
 	},
-	argTypes: {
-		multiple: { control: 'boolean' },
-		required: { control: 'boolean' },
-		loop: { control: 'boolean' },
-		segmented: { control: 'boolean' },
-		disabled: { control: 'boolean' },
-		orientation: { control: 'inline-radio', options: ['horizontal', 'vertical'] },
-	},
 };
 
 export default meta;
@@ -86,9 +78,21 @@ export const WithIcons: Story = {
 		required: true,
 		defaultValue: ['left'],
 		items: [
-			{ value: 'left', icon: 'align-left', ariaLabel: 'Align left' },
-			{ value: 'center', icon: 'align-center', ariaLabel: 'Align center' },
-			{ value: 'right', icon: 'align-right', ariaLabel: 'Align right' },
+			{
+				value: 'left',
+				icon: 'align-left',
+				ariaLabel: 'Align left',
+			},
+			{
+				value: 'center',
+				icon: 'align-center',
+				ariaLabel: 'Align center',
+			},
+			{
+				value: 'right',
+				icon: 'align-right',
+				ariaLabel: 'Align right',
+			},
 		],
 	},
 };

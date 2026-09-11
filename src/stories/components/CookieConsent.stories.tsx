@@ -32,8 +32,16 @@ export const Default: Story = {
 		title: 'We use cookies',
 		description: 'We use cookies to keep the site working and to understand how it is used. You choose what to allow.',
 		categories: [
-			{ id: 'analytics', label: 'Analytics', description: 'Helps us understand which pages are popular.' },
-			{ id: 'marketing', label: 'Marketing', description: 'Lets us show relevant event promotions.' },
+			{
+				id: 'analytics',
+				label: 'Analytics',
+				description: 'Helps us understand which pages are popular.',
+			},
+			{
+				id: 'marketing',
+				label: 'Marketing',
+				description: 'Lets us show relevant event promotions.',
+			},
 		],
 	},
 };

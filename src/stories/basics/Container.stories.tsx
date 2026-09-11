@@ -4,7 +4,11 @@ import Container from '@/components/basics/Container';
 import { ContainerProps } from '@/lib/site/content/schema/basics/container';
 
 const box = (
-	<div style={{ background: 'color-mix(in srgb, currentColor 12%, transparent)', padding: '1rem', borderRadius: '8px' }}>
+	<div style={{
+		background: 'color-mix(in srgb, currentColor 12%, transparent)',
+		padding: '1rem',
+		borderRadius: '8px',
+	}}>
 		Centred content at a readable max-width.
 	</div>
 );
@@ -17,7 +21,6 @@ const meta: Meta<typeof Container> = {
 		jsonSchema: { schema: ContainerProps },
 	},
 	argTypes: {
-		full: { control: 'boolean' },
 		gutter: { control: 'inline-radio', options: [undefined, 'none', 'xs', 's', 'm', 'l', 'xl'] },
 	},
 };

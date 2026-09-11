@@ -10,10 +10,6 @@ const meta: Meta<typeof Indicator> = {
 		docs: { description: { component: 'Positions a dot or count badge in the corner of the host element it is placed on (notification badge, online status). Pair with VisuallyHidden on the host for an accessible count.' } },
 		jsonSchema: { schema: IndicatorProps },
 	},
-	argTypes: {
-		position: { control: 'inline-radio', options: ['top-end', 'top-start', 'bottom-end', 'bottom-start'] },
-		variant: { control: 'inline-radio', options: ['primary', 'success', 'warning', 'error'] },
-	},
 };
 
 export default meta;

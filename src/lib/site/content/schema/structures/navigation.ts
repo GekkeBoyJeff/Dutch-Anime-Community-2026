@@ -1,12 +1,14 @@
 import type { ReactNode } from 'react';
 import { z } from 'zod';
 
+import { IconName } from '@/lib/site/content/schema/shared';
+
 export const NavItem = z
 	.object({
 		label: z.string().min(1).describe('The link label'),
 		url: z.string().min(1).describe('The link destination'),
 		exact: z.boolean().optional().describe('Match active state on the exact path only (like a home/index link), not nested routes'),
-		icon: z.string().optional().describe('Icon glyph shown next to the label in the mobile menu').meta({ editor: 'icon' }),
+		icon: IconName.optional().describe('Icon glyph shown next to the label in the mobile menu'),
 		target: z
 			.literal('_blank')
 			.optional()
@@ -49,7 +51,7 @@ export const MegaMenuLink = z
 		label: z.string().min(1).describe('The link label'),
 		description: z.string().describe('One-line explanation shown under the label in the panel'),
 		href: z.string().min(1).describe('The link destination'),
-		icon: z.string().min(1).describe('Icon glyph shown in front of the label'),
+		icon: IconName.min(1).describe('Icon glyph shown in front of the label'),
 		activeHrefs: z.array(z.string()).optional().describe('Extra paths that also mark this link active (detail routes that live under another prefix)'),
 	})
 	.meta({ title: 'MegaMenuLink' });

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import StatusBadge from '@/components/basics/StatusBadge';
-import { StatusBadgeProps, StatusDomain } from '@/lib/site/content/schema/basics/statusBadge';
+import { StatusBadgeProps } from '@/lib/site/content/schema/basics/statusBadge';
 
 const meta: Meta<typeof StatusBadge> = {
 	title: 'Basics/StatusBadge',
@@ -14,10 +14,6 @@ const meta: Meta<typeof StatusBadge> = {
 			},
 		},
 		jsonSchema: { schema: StatusBadgeProps },
-	},
-	argTypes: {
-		domain: { control: 'inline-radio', options: StatusDomain.options },
-		dot: { control: 'boolean' },
 	},
 };
 
@@ -46,7 +42,11 @@ export const Survey: Story = {
 };
 
 export const WithDot: Story = {
-	args: { domain: 'expense', status: 'submitted', dot: true },
+	args: {
+		domain: 'expense',
+		status: 'submitted',
+		dot: true,
+	},
 };
 
 export const UnknownStatus: Story = {

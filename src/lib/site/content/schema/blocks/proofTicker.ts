@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { MarqueeItem } from '@/lib/site/content/schema/components/marqueeTicker';
-import { Colorset, Id } from '@/lib/site/content/schema/primitives';
+import { Colorset, Id } from '@/lib/site/content/schema/shared';
 
 export const ProofTickerProps = z
 	.object({

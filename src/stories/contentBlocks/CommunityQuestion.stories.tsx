@@ -25,9 +25,21 @@ export const Default: Story = {
 	args: {
 		question: 'Wat zou jij nu aanzetten?',
 		options: [
-			{ id: 'q1', label: 'Iets uit het nieuwe seizoen', count: 116 },
-			{ id: 'q2', label: 'Een klassieker inhalen', count: 75 },
-			{ id: 'q3', label: 'Ik kijk even niks', count: 149 },
+			{
+				id: 'q1',
+				label: 'Iets uit het nieuwe seizoen',
+				count: 116,
+			},
+			{
+				id: 'q2',
+				label: 'Een klassieker inhalen',
+				count: 75,
+			},
+			{
+				id: 'q3',
+				label: 'Ik kijk even niks',
+				count: 149,
+			},
 		],
 		resultLine: 'Zo antwoordden {total} leden op Discord.',
 		previousLine: 'Vorige maand won "een klassieker inhalen" nipt.',
@@ -38,8 +50,16 @@ export const TwoAnswers: Story = {
 	args: {
 		question: 'Kom je liever online of in het echt langs?',
 		options: [
-			{ id: 'a', label: 'Online, vanaf de bank', count: 208 },
-			{ id: 'b', label: 'In het echt, op een con', count: 132 },
+			{
+				id: 'a',
+				label: 'Online, vanaf de bank',
+				count: 208,
+			},
+			{
+				id: 'b',
+				label: 'In het echt, op een con',
+				count: 132,
+			},
 		],
 		resultLine: 'Zo antwoordden {total} leden op Discord.',
 	},

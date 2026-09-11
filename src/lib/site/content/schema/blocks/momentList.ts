@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Colorset, Heading, Id } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, Id } from '@/lib/site/content/schema/shared';
 
 export const MomentListItem = z
 	.object({

@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 
 import { classNames } from '@/lib/shared/classNames';
 import type { MediaProps as MediaSchemaProps } from '@/lib/site/content/schema/basics/media';
-import type { MediaProvider } from '@/lib/site/content/schema/primitives';
+import type { MediaProvider } from '@/lib/site/content/schema/shared';
 import { compileSizes, getImage, variantsToSrcSet, withBasePath } from '@/lib/site/images';
 
 const EMBEDS: Record<MediaProvider, (id: string) => string> = {

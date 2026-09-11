@@ -1,5 +1,5 @@
 import { REGISTRY } from '@/components/contentBlocks/Blocks';
-import { humanise } from '@/lib/admin/puck/fields';
+import { humanise } from '@/lib/shared/schemaFields';
 
 export interface BlockPreset {
 	label: string;

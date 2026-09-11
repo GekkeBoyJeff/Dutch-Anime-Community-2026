@@ -23,9 +23,24 @@ const manifest = (): MetadataRoute.Manifest => {
 		icons: [
 			// Manifest icons are PNG: an SVG whose artwork is text fails in Chromium's sandboxed icon
 			// decoder. The SVG lives on as the favicon instead (see metadata.icons in layout.tsx).
-			{ src: `${base}/icon-192.png`, type: 'image/png', sizes: '192x192', purpose: 'any' },
-			{ src: `${base}/icon-512.png`, type: 'image/png', sizes: '512x512', purpose: 'any' },
-			{ src: `${base}/icon-maskable-512.png`, type: 'image/png', sizes: '512x512', purpose: 'maskable' },
+			{
+				src: `${base}/icon-192.png`,
+				type: 'image/png',
+				sizes: '192x192',
+				purpose: 'any',
+			},
+			{
+				src: `${base}/icon-512.png`,
+				type: 'image/png',
+				sizes: '512x512',
+				purpose: 'any',
+			},
+			{
+				src: `${base}/icon-maskable-512.png`,
+				type: 'image/png',
+				sizes: '512x512',
+				purpose: 'maskable',
+			},
 		],
 	};
 };

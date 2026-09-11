@@ -10,16 +10,6 @@ const meta: Meta<typeof TitleText> = {
 		docs: { description: { component: 'The most generic prose block: a heading group, a rich-text body and a row of action buttons. Server Component.' } },
 		jsonSchema: { schema: TitleTextProps },
 	},
-	argTypes: {
-		align: {
-			control: 'inline-radio',
-			options: ['start', 'center'],
-		},
-		colorset: {
-			control: 'inline-radio',
-			options: ['light', 'dark'],
-		},
-	},
 };
 
 export default meta;
@@ -36,7 +26,11 @@ export const Default: Story = {
 		value: '<p>Compose pages from a small set of primitives. Each block receives its data via props and never fetches on its own.</p>',
 		actions: [
 			{ value: 'Get started', variant: 'primary' },
-			{ value: 'Learn more', variant: 'ghost', url: '/about' },
+			{
+				value: 'Learn more',
+				variant: 'ghost',
+				url: '/about',
+			},
 		],
 		align: 'start',
 	},

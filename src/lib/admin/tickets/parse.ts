@@ -118,7 +118,13 @@ const normalizeEmbed = (e: z.infer<typeof rawEmbed>): TicketEmbedMeta => ({
 const normalizeAttachment = (a: z.infer<typeof rawAttachment>): TicketAttachmentMeta | null => {
 	const url = safeHttpUrl(a.url);
 	if (url === null) return null;
-	return { name: a.name ?? 'bijlage', url, size: a.size ?? null, width: a.width ?? null, height: a.height ?? null };
+	return {
+		name: a.name ?? 'bijlage',
+		url,
+		size: a.size ?? null,
+		width: a.width ?? null,
+		height: a.height ?? null,
+	};
 };
 
 export const parseTranscript = (html: string): ParsedTicket => {
@@ -151,7 +157,11 @@ export const parseTranscript = (html: string): ParsedTicket => {
 	const seen = new Map<string, ParsedParticipant>();
 	for (const m of messages) {
 		if (!seen.has(m.authorDiscordId)) {
-			seen.set(m.authorDiscordId, { discordId: m.authorDiscordId, name: m.authorName, isBot: m.isBot });
+			seen.set(m.authorDiscordId, {
+				discordId: m.authorDiscordId,
+				name: m.authorName,
+				isBot: m.isBot,
+			});
 		}
 	}
 

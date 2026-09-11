@@ -16,12 +16,6 @@ const meta: Meta<typeof Swiper> = {
 		},
 		jsonSchema: { schema: SwiperProps },
 	},
-	argTypes: {
-		ratio: { control: 'text' },
-		rounded: { control: 'inline-radio', options: ['s', 'm', 'l', 'xl', 'full'] },
-		showCounter: { control: 'boolean' },
-		loop: { control: 'boolean' },
-	},
 };
 
 export default meta;
@@ -35,9 +29,23 @@ export const Default: Story = {
 		showCounter: true,
 		loop: false,
 		slides: [
-			{ image: demoImage.src, alt: 'Slide een', title: 'Eerste slide', description: 'Een korte ondertitel.' },
-			{ image: demoImage.src, alt: 'Slide twee', title: 'Tweede slide', description: 'Nog een ondertitel.' },
-			{ image: demoImage.src, alt: 'Slide drie', title: 'Derde slide' },
+			{
+				image: demoImage.src,
+				alt: 'Slide een',
+				title: 'Eerste slide',
+				description: 'Een korte ondertitel.',
+			},
+			{
+				image: demoImage.src,
+				alt: 'Slide twee',
+				title: 'Tweede slide',
+				description: 'Nog een ondertitel.',
+			},
+			{
+				image: demoImage.src,
+				alt: 'Slide drie',
+				title: 'Derde slide',
+			},
 		],
 	},
 };
@@ -55,8 +63,18 @@ export const Linked: Story = {
 	args: {
 		...Default.args,
 		slides: [
-			{ image: demoImage.src, alt: 'Slide een', title: 'Naar de homepage', href: '/' },
-			{ image: demoImage.src, alt: 'Slide twee', title: 'Naar de blog', href: '/blog' },
+			{
+				image: demoImage.src,
+				alt: 'Slide een',
+				title: 'Naar de homepage',
+				href: '/',
+			},
+			{
+				image: demoImage.src,
+				alt: 'Slide twee',
+				title: 'Naar de blog',
+				href: '/blog',
+			},
 		],
 	},
 };
@@ -66,8 +84,18 @@ export const WithVideoSlide: Story = {
 	args: {
 		...Default.args,
 		slides: [
-			{ image: demoImage.src, alt: 'Slide een', title: 'Afbeelding' },
-			{ image: demoImage.src, alt: 'Videoposter', title: 'Bekijk de video', provider: 'youtube', embedId: 'dQw4w9WgXcQ' },
+			{
+				image: demoImage.src,
+				alt: 'Slide een',
+				title: 'Afbeelding',
+			},
+			{
+				image: demoImage.src,
+				alt: 'Videoposter',
+				title: 'Bekijk de video',
+				provider: 'youtube',
+				embedId: 'dQw4w9WgXcQ',
+			},
 		],
 	},
 };

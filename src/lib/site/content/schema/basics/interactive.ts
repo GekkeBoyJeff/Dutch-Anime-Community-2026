@@ -1,6 +1,8 @@
 import type { MouseEvent } from 'react';
 import { z } from 'zod';
 
+import { IconName } from '@/lib/site/content/schema/shared';
+
 export const InteractiveProps = z
 	.object({
 		url: z
@@ -15,7 +17,7 @@ export const InteractiveProps = z
 			.optional()
 			.describe('Button type when there is no url (button branch only); defaults to \'button\''),
 		disabled: z.boolean().optional().describe('Blocks the click (and navigation) and dims the element; defaults to false'),
-		icon: z.string().optional().describe('Icon name rendered in place of the visible text; `value` then only names the element for assistive tech').meta({ editor: 'icon' }),
+		icon: IconName.optional().describe('Icon name rendered in place of the visible text; `value` then only names the element for assistive tech'),
 		value: z.string().optional().describe('The visible text, or — when an icon is set — the accessible name that replaces it'),
 		ariaLabel: z.string().optional().describe('Accessible name; required when an icon replaces the visible text'),
 		ariaExpanded: z.boolean().optional().describe('Sets aria-expanded — for a trigger that opens a menu, overlay or disclosure'),

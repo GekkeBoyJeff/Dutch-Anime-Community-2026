@@ -11,20 +11,6 @@ const meta: Meta<typeof CTABanner> = {
 		docs: { description: { component: 'A conversion banner: a heading cluster with one or two call-to-action buttons, optionally beside media. Server Component.' } },
 		jsonSchema: { schema: CTABannerProps },
 	},
-	argTypes: {
-		tone: {
-			control: 'inline-radio',
-			options: ['neutral', 'primary', 'success', 'warning'],
-		},
-		align: {
-			control: 'inline-radio',
-			options: ['start', 'center'],
-		},
-		colorset: {
-			control: 'inline-radio',
-			options: ['light', 'dark'],
-		},
-	},
 };
 
 export default meta;
@@ -39,7 +25,11 @@ export const Default: Story = {
 			intro: 'Compose a page from validated blocks and ship it the same afternoon.',
 		},
 		primaryCta: { value: 'Start now', variant: 'primary' },
-		secondaryCta: { value: 'Read the docs', variant: 'secondary', url: '/docs' },
+		secondaryCta: {
+			value: 'Read the docs',
+			variant: 'secondary',
+			url: '/docs',
+		},
 		tone: 'primary',
 		align: 'start',
 	},

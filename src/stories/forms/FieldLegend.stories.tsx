@@ -17,9 +17,6 @@ const meta: Meta<typeof FieldLegend> = {
 		},
 		jsonSchema: { schema: FieldLegendProps },
 	},
-	argTypes: {
-		variant: { control: 'inline-radio', options: ['legend', 'label'] },
-	},
 };
 
 export default meta;

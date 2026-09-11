@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react';
 import { z } from 'zod';
 
+import { IconName } from '@/lib/site/content/schema/shared';
+
 export const TabItem = z
 	.object({
 		label: z.string().describe('The tab label; may contain HTML'),
-		icon: z.string().optional().describe('Optional leading icon glyph name (see the $icons map)'),
+		icon: IconName.optional().describe('Optional leading icon glyph name (see the $icons map)'),
 		disabled: z.boolean().optional().describe('Greys out the tab and skips it during keyboard navigation'),
 	})
 	.meta({ title: 'TabItem' });

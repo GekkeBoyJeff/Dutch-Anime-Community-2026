@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Colorset, Id, Media } from '@/lib/site/content/schema/primitives';
+import { Colorset, Id, Media } from '@/lib/site/content/schema/shared';
 
 export const SpotlightQuoteProps = z
 	.object({

@@ -144,7 +144,7 @@ Every message below is the real output, not a paraphrase.
 | Embed media with no `embedId` | `blocks.0.media.embedId` | `An embed requires both a provider and an embedId` |
 
 The last one is not a field rule but a cross-field rule, written with `.refine()` in
-`schema/primitives.ts`. `Media` carries two:
+`schema/shared.ts`. `Media` carries two:
 
 ```typescript
 export const Media = MediaShape

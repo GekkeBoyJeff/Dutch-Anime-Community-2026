@@ -26,7 +26,6 @@ const meta: Meta<typeof Card> = {
 			control: 'inline-radio',
 			options: [undefined, 'flat', 'panel', 'polaroid', 'bare'],
 		},
-		href: { control: 'text' },
 	},
 };
 

@@ -11,7 +11,12 @@ const meta: Meta<typeof Progress> = {
 		jsonSchema: { schema: ProgressProps },
 	},
 	argTypes: {
-		value: { control: { type: 'range', min: 0, max: 100, step: 1 } },
+		value: { control: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		} },
 	},
 };
 

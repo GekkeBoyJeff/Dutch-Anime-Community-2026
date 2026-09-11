@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { Action } from '@/lib/site/content/schema/basics/actions';
-import { Colorset, Id, Media } from '@/lib/site/content/schema/primitives';
+import { Colorset, Id, Media } from '@/lib/site/content/schema/shared';
 
 export const HeroAction = Action.meta({ title: 'HeroAction' });
 export type HeroAction = z.infer<typeof HeroAction>;

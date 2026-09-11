@@ -30,14 +30,38 @@ export interface ReportData {
 }
 
 const styles = StyleSheet.create({
-	page: { padding: 28, fontSize: 8, fontFamily: 'Helvetica', color: '#111' },
-	header: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 14, borderBottom: '1px solid #ddd', paddingBottom: 10 },
+	page: {
+		padding: 28,
+		fontSize: 8,
+		fontFamily: 'Helvetica',
+		color: '#111',
+	},
+	header: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 10,
+		marginBottom: 14,
+		borderBottom: '1px solid #ddd',
+		paddingBottom: 10,
+	},
 	logo: { width: 40, height: 40 },
 	org: { fontSize: 14, fontFamily: 'Helvetica-Bold' },
 	title: { fontSize: 10, marginTop: 1 },
-	meta: { fontSize: 7, color: '#888', marginTop: 2 },
-	headRow: { flexDirection: 'row', borderBottom: '1px solid #999', paddingVertical: 3 },
-	row: { flexDirection: 'row', borderBottom: '1px solid #eee', paddingVertical: 3 },
+	meta: {
+		fontSize: 7,
+		color: '#888',
+		marginTop: 2,
+	},
+	headRow: {
+		flexDirection: 'row',
+		borderBottom: '1px solid #999',
+		paddingVertical: 3,
+	},
+	row: {
+		flexDirection: 'row',
+		borderBottom: '1px solid #eee',
+		paddingVertical: 3,
+	},
 	cPerson: { flex: 2, paddingRight: 4 },
 	cDesc: { flex: 3, paddingRight: 4 },
 	cEvent: { flex: 2, paddingRight: 4 },
@@ -48,14 +72,42 @@ const styles = StyleSheet.create({
 	cAmount: { flex: 1.4, textAlign: 'right' },
 	bold: { fontFamily: 'Helvetica-Bold' },
 	sub: { color: '#666', fontSize: 7 },
-	totalsWrap: { flexDirection: 'row', gap: 40, marginTop: 16 },
+	totalsWrap: {
+		flexDirection: 'row',
+		gap: 40,
+		marginTop: 16,
+	},
 	totalsCol: { flex: 1 },
-	totalsHead: { fontSize: 10, fontFamily: 'Helvetica-Bold', marginBottom: 4 },
-	totalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 1 },
-	grandTotal: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4, marginTop: 6, borderTop: '1px solid #999', fontFamily: 'Helvetica-Bold', fontSize: 10 },
+	totalsHead: {
+		fontSize: 10,
+		fontFamily: 'Helvetica-Bold',
+		marginBottom: 4,
+	},
+	totalRow: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingVertical: 1,
+	},
+	grandTotal: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingVertical: 4,
+		marginTop: 6,
+		borderTop: '1px solid #999',
+		fontFamily: 'Helvetica-Bold',
+		fontSize: 10,
+	},
 	receiptPage: { padding: 24, fontFamily: 'Helvetica' },
-	receiptLabel: { fontSize: 10, marginBottom: 8, color: '#555' },
-	receiptImg: { objectFit: 'contain', maxWidth: '100%', maxHeight: 500 },
+	receiptLabel: {
+		fontSize: 10,
+		marginBottom: 8,
+		color: '#555',
+	},
+	receiptImg: {
+		objectFit: 'contain',
+		maxWidth: '100%',
+		maxHeight: 500,
+	},
 });
 
 export const ExpenseReport = ({ data, logoDataUri }: { data: ReportData; logoDataUri?: string }) => (

@@ -12,13 +12,6 @@ const meta: Meta<typeof Modal> = {
 		docs: { description: { component: 'Accessible dialog wrapping Base UI: focus trap, scroll lock, Escape and aria-modal come free. `variant="alert"` swaps to role=alertdialog and never light-dismisses. Tab inside an open modal to confirm focus loops.' } },
 		jsonSchema: { schema: ModalProps },
 	},
-	argTypes: {
-		variant: { control: 'inline-radio', options: ['modal', 'alert'] },
-		size: { control: 'inline-radio', options: ['s', 'm', 'l', 'xl'] },
-		dismissible: { control: 'boolean' },
-		title: { control: 'text' },
-		description: { control: 'text' },
-	},
 };
 
 export default meta;
@@ -42,7 +35,12 @@ export const Default: Story = {
 
 export const AlertDialog: Story = {
 	...Default,
-	args: { ...Default.args, variant: 'alert', title: 'Discard changes?', description: 'Your unsaved edits will be lost.' },
+	args: {
+		...Default.args,
+		variant: 'alert',
+		title: 'Discard changes?',
+		description: 'Your unsaved edits will be lost.',
+	},
 	render: (args) => (
 		<Modal {...args} trigger={<Button variant="secondary" value="Discard" />} />
 	),

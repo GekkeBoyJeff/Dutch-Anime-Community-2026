@@ -1,6 +1,6 @@
 import Badge from '@/components/basics/Badge';
 import type { StatusBadgeProps as StatusBadgeSchemaProps, StatusDomain } from '@/lib/site/content/schema/basics/statusBadge';
-import type { StatusVariant } from '@/lib/site/content/schema/primitives';
+import type { StatusVariant } from '@/lib/site/content/schema/shared';
 
 type StatusBadgeProps = StatusBadgeSchemaProps;
 

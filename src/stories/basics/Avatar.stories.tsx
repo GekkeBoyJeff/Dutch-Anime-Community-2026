@@ -12,8 +12,6 @@ const meta: Meta<typeof Avatar> = {
 		jsonSchema: { schema: AvatarProps },
 	},
 	argTypes: {
-		size: { control: 'inline-radio', options: ['s', 'm', 'l'] },
-		src: { control: 'text' },
 		status: { control: 'inline-radio', options: [undefined, 'online', 'offline', 'busy'] },
 	},
 };

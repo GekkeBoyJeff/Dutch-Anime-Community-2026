@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Heading } from '@/lib/site/content/schema/primitives';
+import { Heading } from '@/lib/site/content/schema/shared';
 
 export const HeadingGroupProps = Heading.extend({
 	element: z.string().optional().describe('The element tag to render; defaults to \'div\''),

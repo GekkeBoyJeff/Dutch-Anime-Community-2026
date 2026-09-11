@@ -10,12 +10,6 @@ const meta: Meta<typeof Prose> = {
 		docs: { description: { component: 'Long-form text (e.g. a blog body) as HTML, rendered via Content. The .prose class governs the rhythm between headings and paragraphs.' } },
 		jsonSchema: { schema: ProseProps },
 	},
-	argTypes: {
-		colorset: {
-			control: 'inline-radio',
-			options: ['light', 'dark'],
-		},
-	},
 };
 
 export default meta;

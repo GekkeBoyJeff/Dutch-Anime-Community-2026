@@ -20,10 +20,18 @@ export const ogImageMeta = (path: string, image?: OgImage): Pick<Metadata, 'open
 	// subpath, which basePath + metadataBase would prepend a second time.
 	if (isStatic) {
 		const slug = path === '/' ? 'home' : path.replace(/^\//, '').replace(/\//g, '-');
-		return { openGraph: { images: [{ url: `${site.url}/og/${slug}.png`, width: ogSize.width, height: ogSize.height }] } };
+		return { openGraph: { images: [{
+			url: `${site.url}/og/${slug}.png`,
+			width: ogSize.width,
+			height: ogSize.height,
+		}] } };
 	}
 	return {
-		openGraph: { images: [{ url: `/api/og?path=${encodeURIComponent(path)}`, width: ogSize.width, height: ogSize.height }] },
+		openGraph: { images: [{
+			url: `/api/og?path=${encodeURIComponent(path)}`,
+			width: ogSize.width,
+			height: ogSize.height,
+		}] },
 	};
 }
 

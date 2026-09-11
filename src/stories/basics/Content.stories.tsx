@@ -10,12 +10,6 @@ const meta: Meta<typeof Content> = {
 		docs: { description: { component: 'Running text with the body role. `size` picks a responsive curve: `standard` (default, no class), `small`, or `large` — never a fixed size. `value` may contain HTML.' } },
 		jsonSchema: { schema: ContentProps },
 	},
-	argTypes: {
-		size: {
-			control: 'inline-radio',
-			options: ['small', 'standard', 'large'],
-		},
-	},
 };
 
 export default meta;

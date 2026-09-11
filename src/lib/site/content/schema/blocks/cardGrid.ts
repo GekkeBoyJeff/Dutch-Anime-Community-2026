@@ -2,16 +2,34 @@ import { z } from 'zod';
 
 import { ArticleCardProps } from '@/lib/site/content/schema/components/articleCard';
 import { EventCardProps } from '@/lib/site/content/schema/components/eventCard';
-import { Colorset, FilterOption, Heading, Id, SortOption } from '@/lib/site/content/schema/primitives';
+import { Colorset, FilterOption, Heading, IconName, Id, SortOption } from '@/lib/site/content/schema/shared';
 
 export const ArticleCardGridItem = ArticleCardProps
-	.pick({ title: true, href: true, value: true, media: true, tag: true, publishedAt: true })
+	.pick({
+		title: true,
+		href: true,
+		value: true,
+		media: true,
+		tag: true,
+		publishedAt: true,
+	})
 	.extend({ id: Id })
 	.meta({ title: 'ArticleCardGridItem' });
 export type ArticleCardGridItem = z.infer<typeof ArticleCardGridItem>;
 
 export const EventCardGridItem = EventCardProps
-	.pick({ title: true, value: true, startDate: true, endDate: true, location: true, status: true, statusVariant: true, media: true, href: true, translations: true })
+	.pick({
+		title: true,
+		value: true,
+		startDate: true,
+		endDate: true,
+		location: true,
+		status: true,
+		statusVariant: true,
+		media: true,
+		href: true,
+		translations: true,
+	})
 	.extend({
 		id: Id,
 		// Required here (optional on the card itself): the grid's date sort depends on it.
@@ -25,7 +43,7 @@ export const LinkCardGridItem = z
 	.object({
 		id: Id,
 		href: z.string().min(1).describe('Destination the whole card links to'),
-		icon: z.string().optional().describe('Name of the optional icon rendered before the title').meta({ editor: 'icon' }),
+		icon: IconName.optional().describe('Name of the optional icon rendered before the title'),
 		title: z.string().min(1).describe('Card heading text'),
 		value: z.string().optional().describe('Supporting text rendered below the title'),
 		cta: z.string().optional().describe('Call-to-action label rendered beside the trailing arrow'),
@@ -78,7 +96,12 @@ export const CardGridProps = z
 			const result = shape.safeParse(item);
 			if (result.success) return;
 			for (const issue of result.error.issues) {
-				ctx.issues.push({ code: 'custom', message: issue.message, input: item, path: ['items', index, ...issue.path] });
+				ctx.issues.push({
+					code: 'custom',
+					message: issue.message,
+					input: item,
+					path: ['items', index, ...issue.path],
+				});
 			}
 		});
 	})

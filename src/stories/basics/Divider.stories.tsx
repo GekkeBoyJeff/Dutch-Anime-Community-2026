@@ -10,9 +10,6 @@ const meta: Meta<typeof Divider> = {
 		docs: { description: { component: 'Separator with role="separator" and aria-orientation. Horizontal dividers may carry a centered label; vertical ones stretch inside a row.' } },
 		jsonSchema: { schema: DividerProps },
 	},
-	argTypes: {
-		orientation: { control: 'inline-radio', options: ['horizontal', 'vertical'] },
-	},
 };
 
 export default meta;

@@ -1,9 +1,14 @@
 import { z } from 'zod';
 
 import { CountUpProps } from '@/lib/site/content/schema/basics/countUp';
-import { Colorset, Heading, Id } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, Id } from '@/lib/site/content/schema/shared';
 
-export const StatBandItem = CountUpProps.pick({ value: true, prefix: true, suffix: true, decimals: true })
+export const StatBandItem = CountUpProps.pick({
+	value: true,
+	prefix: true,
+	suffix: true,
+	decimals: true,
+})
 	.extend({
 		id: Id,
 		label: z.string().min(1).describe('Short description shown under the number'),

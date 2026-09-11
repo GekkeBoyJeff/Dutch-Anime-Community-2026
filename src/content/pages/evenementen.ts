@@ -22,7 +22,11 @@ export const evenementenPage: Page = {
 				title: 'Waar je ons tegenkomt',
 				intro: 'Elke week iets online, en een stuk of vijf keer per jaar in het echt.',
 			},
-			media: { type: 'image', src: '/media/hmia-2024.png', alt: 'DAC-groepsfoto op Heroes Made in Asia' },
+			media: {
+				type: 'image',
+				src: '/media/hmia-2024.png',
+				alt: 'DAC-groepsfoto op Heroes Made in Asia',
+			},
 		},
 		{
 			type: 'titleText',
@@ -42,7 +46,11 @@ export const evenementenPage: Page = {
 			reverse: true,
 			title: 'Zo ziet onze stand eruit',
 			value: 'Art prints aan de wand, bordspellen op tafel, en een quiz die de hele dag doorloopt. Waag een potje galgje of maak een groepsfoto met de crew. Even hoi zeggen is genoeg; blijven hangen mag ook.',
-			media: { type: 'image', src: '/media/dac-stand.jpg', alt: 'De DAC-stand op een conventie' },
+			media: {
+				type: 'image',
+				src: '/media/dac-stand.jpg',
+				alt: 'De DAC-stand op een conventie',
+			},
 		},
 		{
 			type: 'cardGrid',
@@ -168,9 +176,24 @@ export const evenementenPage: Page = {
 				title: 'De agenda staat in Discord',
 				intro: 'Daar hoor je waar we afspreken, en met wie je meerijdt.',
 			},
-			primaryCta: { value: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
-			secondaryCta: { value: 'Hoe het werkt', variant: 'secondary', url: '/word-lid' },
-			media: { type: 'image', src: '/media/amelia-smile.webp', alt: 'Amelia, de mascotte van DAC', mode: 'fit', ratio: '1 / 1' },
+			primaryCta: {
+				value: 'Word lid',
+				variant: 'primary',
+				url: 'https://discord.gg/dutchanimecommunity',
+				target: '_blank',
+			},
+			secondaryCta: {
+				value: 'Hoe het werkt',
+				variant: 'secondary',
+				url: '/word-lid',
+			},
+			media: {
+				type: 'image',
+				src: '/media/amelia-smile.webp',
+				alt: 'Amelia, de mascotte van DAC',
+				mode: 'fit',
+				ratio: '1 / 1',
+			},
 		},
 	],
 };

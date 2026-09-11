@@ -169,7 +169,11 @@ const PublicHeader = ({
 	// Layout effect, not effect, so the scroll lands before the new page paints.
 	useLayoutEffect(() => {
 		const frame = rootRef.current?.closest('.page-frame-scroll');
-		(frame ?? window).scrollTo({ top: 0, left: 0, behavior: 'instant' });
+		(frame ?? window).scrollTo({
+			top: 0,
+			left: 0,
+			behavior: 'instant',
+		});
 	}, [pathname]);
 
 	useEffect(() => {

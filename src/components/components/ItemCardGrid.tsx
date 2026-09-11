@@ -18,7 +18,7 @@ import Select from '@/components/forms/Select';
 import TextInput from '@/components/forms/TextInput';
 import { classNames } from '@/lib/shared/classNames';
 import type { CardGridItem, ItemCardGridProps as ItemCardGridSchemaProps } from '@/lib/site/content/schema/components/itemCardGrid';
-import type { SortOption } from '@/lib/site/content/schema/primitives';
+import type { SortOption } from '@/lib/site/content/schema/shared';
 
 export type { CardGridItem };
 

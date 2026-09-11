@@ -6,12 +6,52 @@ import SearchPalette from '@/components/components/SearchPalette';
 import { SearchPaletteOverlayProps, type SearchPaletteItem } from '@/lib/site/content/schema/components/searchPalette';
 
 const items: SearchPaletteItem[] = [
-	{ id: 'home', label: 'Home', hint: '/', category: 'Pages', icon: 'home', url: '/' },
-	{ id: 'events', label: 'Events', hint: '/events', category: 'Pages', icon: 'calendar', url: '/events' },
-	{ id: 'about', label: 'About us', hint: '/about', category: 'Pages', icon: 'info', url: '/about' },
-	{ id: 'new', label: 'New post', hint: 'Create a draft', category: 'Actions', icon: 'plus', url: '/posts/new' },
-	{ id: 'drafts', label: 'Drafts', hint: '/posts/drafts', category: 'Actions', icon: 'file', url: '/posts/drafts' },
-	{ id: 'docs', label: 'Documentation', hint: 'External', icon: 'book' },
+	{
+		id: 'home',
+		label: 'Home',
+		hint: '/',
+		category: 'Pages',
+		icon: 'home',
+		url: '/',
+	},
+	{
+		id: 'events',
+		label: 'Events',
+		hint: '/events',
+		category: 'Pages',
+		icon: 'calendar',
+		url: '/events',
+	},
+	{
+		id: 'about',
+		label: 'About us',
+		hint: '/about',
+		category: 'Pages',
+		icon: 'info',
+		url: '/about',
+	},
+	{
+		id: 'new',
+		label: 'New post',
+		hint: 'Create a draft',
+		category: 'Actions',
+		icon: 'plus',
+		url: '/posts/new',
+	},
+	{
+		id: 'drafts',
+		label: 'Drafts',
+		hint: '/posts/drafts',
+		category: 'Actions',
+		icon: 'file',
+		url: '/posts/drafts',
+	},
+	{
+		id: 'docs',
+		label: 'Documentation',
+		hint: 'External',
+		icon: 'book',
+	},
 ];
 
 const meta: Meta<typeof SearchPalette> = {
@@ -27,12 +67,6 @@ const meta: Meta<typeof SearchPalette> = {
 					'Cmd/Ctrl+K command palette over cmdk: fuzzy filter, category grouping and full keyboard nav. Rendered in our own overlay so it reuses useOverlay (scroll lock + Escape) and useHotkey. Selecting navigates, then closes.',
 			},
 		},
-	},
-	argTypes: {
-		placeholder: { control: 'text' },
-		emptyLabel: { control: 'text' },
-		fallbackCategory: { control: 'text' },
-		selectHint: { control: 'text' },
 	},
 };
 

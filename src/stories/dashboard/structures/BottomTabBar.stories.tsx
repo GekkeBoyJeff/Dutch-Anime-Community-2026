@@ -5,9 +5,25 @@ import BottomTabBar, { type BottomTabBarItem } from '@/components/dashboard/stru
 
 // Mock items mirroring the shape buildTabBarItems() produces from DASHBOARD_SECTIONS — no Supabase here.
 const items: BottomTabBarItem[] = [
-	{ key: 'home', label: 'Home', href: '/dashboard', icon: 'home', exact: true },
-	{ key: 'my-inventory', label: 'Mijn spullen', href: '/dashboard/my-inventory', icon: 'star' },
-	{ key: 'expenses', label: 'Declaraties', href: '/dashboard/expenses', icon: 'file' },
+	{
+		key: 'home',
+		label: 'Home',
+		href: '/dashboard',
+		icon: 'home',
+		exact: true,
+	},
+	{
+		key: 'my-inventory',
+		label: 'Mijn spullen',
+		href: '/dashboard/my-inventory',
+		icon: 'star',
+	},
+	{
+		key: 'expenses',
+		label: 'Declaraties',
+		href: '/dashboard/expenses',
+		icon: 'file',
+	},
 ];
 
 const meta: Meta<typeof BottomTabBar> = {
@@ -37,6 +53,11 @@ export const Default: Story = {
 export const WithMore: Story = {
 	render: function Render() {
 		const [open, setOpen] = useState(false);
-		return <BottomTabBar items={items} more={{ label: 'Meer', icon: 'menu', active: open, onClick: () => setOpen((value) => !value) }} />;
+		return <BottomTabBar items={items} more={{
+			label: 'Meer',
+			icon: 'menu',
+			active: open,
+			onClick: () => setOpen((value) => !value),
+		}} />;
 	},
 };

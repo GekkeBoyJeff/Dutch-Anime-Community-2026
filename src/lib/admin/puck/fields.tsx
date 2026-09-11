@@ -2,33 +2,11 @@ import { FieldLabel, type Field } from '@puckeditor/core';
 import { z } from 'zod';
 
 import { ICONS } from '@/components/basics/Icon';
+import { authoredBound, describeField, unwrap, type FieldDescription } from '@/lib/shared/schemaFields';
 import { getBrowserClient } from '@/lib/shared/supabase/client';
 
-const metaOf = (schema: z.ZodType): Record<string, unknown> => {
-	let merged: Record<string, unknown> = {};
-	let current: z.ZodType | undefined = schema;
-	while (current) {
-		merged = { ...current.meta(), ...merged };
-		current =
-			current instanceof z.ZodOptional || current instanceof z.ZodNullable || current instanceof z.ZodDefault
-				? (current.unwrap() as z.ZodType)
-				: undefined;
-	}
-	return merged;
-};
-
-const unwrap = (schema: z.ZodType): z.ZodType => {
-	let current = schema;
-	while (current instanceof z.ZodOptional || current instanceof z.ZodNullable || current instanceof z.ZodDefault) {
-		current = current.unwrap() as z.ZodType;
-	}
-	return current;
-};
-
-export const humanise = (name: string): string => {
-	const spaced = name.replace(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase();
-	return spaced.charAt(0).toUpperCase() + spaced.slice(1);
-};
+// describeField() decides what kind of input a property wants; this file only says what that looks
+// like in Puck. The Storybook controls panel renders the same descriptions its own way.
 
 const itemSummary = (item: Record<string, unknown>, index?: number): string => {
 	// Values starting with '<' are rich text; the summary must read as plain text, not markup.
@@ -99,6 +77,14 @@ const stringListField = (label: string): Field => {
 	};
 };
 
+const iconField = (label: string): Field => {
+	return {
+		type: 'select',
+		label,
+		options: [{ label: 'Geen icoon', value: '' }, ...Object.keys(ICONS).map((icon) => ({ label: icon, value: icon }))],
+	};
+};
+
 export const objectFieldsFor = (schema: z.ZodObject): Record<string, Field> => {
 	const fields: Record<string, Field> = {};
 	for (const [key, value] of Object.entries(schema.shape)) {
@@ -113,97 +99,58 @@ export const objectFieldsFor = (schema: z.ZodObject): Record<string, Field> => {
 	return fields;
 };
 
-/** Maps one schema property to a Puck field; undefined = not editable (and that's deliberate). */
-export const fieldFor = (name: string, schema: z.ZodType): Field | undefined => {
-	const meta = metaOf(schema);
-	const inner = unwrap(schema);
-	const label = humanise(name);
+/** Renders one field description as a Puck field. */
+const puckField = (field: FieldDescription): Field => {
+	const { label } = field;
 
-	if (inner instanceof z.ZodString) {
-		if (meta.editor === 'richtext') {
+	switch (field.kind) {
+		case 'richtext':
 			return { type: 'richtext', label };
-		}
-		if (meta.editor === 'textarea') {
+		case 'textarea':
 			return { type: 'textarea', label };
-		}
-		if (meta.editor === 'icon') {
+		case 'icon':
+			return iconField(label);
+		case 'file':
+			return fileField(label);
+		case 'text':
+			return { type: 'text', label };
+		case 'number':
 			return {
-				type: 'select',
+				type: 'number',
+				label,
+				...(field.min !== undefined ? { min: field.min } : {}),
+				...(field.max !== undefined ? { max: field.max } : {}),
+			};
+		case 'choice':
+			return { type: 'select', label, options: field.options.map((option) => ({ label: String(option), value: option })) };
+		case 'boolean':
+			return {
+				type: 'radio',
 				label,
 				options: [
-					{ label: 'Geen icoon', value: '' },
-					...Object.keys(ICONS).map((icon) => ({ label: icon, value: icon })),
+					{ label: 'Ja', value: true },
+					{ label: 'Nee', value: false },
 				],
 			};
-		}
-		if (meta.editor === 'file') {
-			return fileField(label);
-		}
-		return { type: 'text', label };
-	}
-
-	if (inner instanceof z.ZodNumber) {
-		return {
-			type: 'number',
-			label,
-			...(inner.minValue !== null ? { min: inner.minValue } : {}),
-			...(inner.maxValue !== null ? { max: inner.maxValue } : {}),
-		};
-	}
-
-	if (inner instanceof z.ZodEnum) {
-		return {
-			type: 'select',
-			label,
-			options: (inner.options as string[]).map((option) => ({ label: String(option), value: option })),
-		};
-	}
-
-	if (inner instanceof z.ZodUnion) {
-		const options = (inner.options as z.ZodType[]).filter((option) => option instanceof z.ZodLiteral);
-		if (options.length > 0 && options.length === (inner.options as z.ZodType[]).length) {
-			return {
-				type: 'select',
-				label,
-				options: options.map((option) => ({ label: String(option.value), value: option.value as string | number })),
-			};
-		}
-		return undefined;
-	}
-
-	if (inner instanceof z.ZodBoolean) {
-		return {
-			type: 'radio',
-			label,
-			options: [
-				{ label: 'Ja', value: true },
-				{ label: 'Nee', value: false },
-			],
-		};
-	}
-
-	if (inner instanceof z.ZodArray) {
-		const element = unwrap(inner.element as z.ZodType);
-		if (element instanceof z.ZodObject) {
+		case 'textList':
+			return stringListField(label);
+		case 'objectList':
 			return {
 				type: 'array',
 				label,
-				arrayFields: objectFieldsFor(element),
-				defaultItemProps: () => defaultValueFor(element) as Record<string, unknown>,
+				arrayFields: objectFieldsFor(field.shape),
+				defaultItemProps: () => defaultValueFor(field.shape) as Record<string, unknown>,
 				getItemSummary: itemSummary,
 			};
-		}
-		if (element instanceof z.ZodString) {
-			return stringListField(label);
-		}
-		return undefined;
+		case 'object':
+			return { type: 'object', label, objectFields: objectFieldsFor(field.shape) };
 	}
+};
 
-	if (inner instanceof z.ZodObject) {
-		return { type: 'object', label, objectFields: objectFieldsFor(inner) };
-	}
-
-	return undefined;
+/** Maps one schema property to a Puck field; undefined = not editable (and that's deliberate). */
+export const fieldFor = (name: string, schema: z.ZodType): Field | undefined => {
+	const field = describeField(name, schema);
+	return field ? puckField(field) : undefined;
 };
 
 export const defaultValueFor = (schema: z.ZodType): unknown => {
@@ -216,7 +163,7 @@ export const defaultValueFor = (schema: z.ZodType): unknown => {
 		return 'Tekst';
 	}
 	if (inner instanceof z.ZodNumber) {
-		return inner.minValue ?? 0;
+		return authoredBound(inner.minValue) ?? 0;
 	}
 	if (inner instanceof z.ZodEnum) {
 		return (inner.options as string[])[0];

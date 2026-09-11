@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
+import { IconName } from '@/lib/site/content/schema/shared';
+
 export const MarqueeItem = z
 	.object({
 		label: z.string().min(1).describe('The text shown for this item'),
-		icon: z.string().optional().describe('Optional leading icon glyph name (see the $icons map)'),
+		icon: IconName.optional().describe('Optional leading icon glyph name (see the $icons map)'),
 	})
 	.meta({ title: 'MarqueeItem' });
 export type MarqueeItem = z.infer<typeof MarqueeItem>;

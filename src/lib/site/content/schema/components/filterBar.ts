@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { z } from 'zod';
 
-import { FilterOption } from '@/lib/site/content/schema/primitives';
+import { FilterOption, IconName } from '@/lib/site/content/schema/shared';
 
 export const FilterBarProps = z
 	.object({
@@ -20,7 +20,7 @@ export const FilterBarProps = z
 		searchLabel: z.string().optional().describe('Accessible name for the search field; defaults to \'Search\''),
 		sortLabel: z.string().optional().describe('Accessible label for the sort control; defaults to \'Sort\''),
 		resetLabel: z.string().optional().describe('Label for the reset button; defaults to \'Reset\''),
-		filterIcon: z.string().optional().describe('Icon glyph name shown before the chips (see the $icons map)'),
+		filterIcon: IconName.optional().describe('Icon glyph name shown before the chips (see the $icons map)'),
 		ariaLabel: z.string().optional().describe('Accessible name for the chip group; defaults to \'Filters\''),
 		children: z.custom<ReactNode>().optional().describe('Extra controls appended after the built-in ones'),
 		className: z.string().optional().describe('Additional classes on the root element'),

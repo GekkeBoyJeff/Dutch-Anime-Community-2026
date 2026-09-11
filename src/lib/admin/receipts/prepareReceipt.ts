@@ -9,7 +9,12 @@ const isPdf = (file: File): boolean => file.type === 'application/pdf' || /\.pdf
 
 // Bewust JPEG i.p.v. webp (dat is ~25-30% kleiner): géén PDF-library embedt webp (react-pdf/pdf-lib/jsPDF
 // kunnen alleen JPEG/PNG), dus webp zou bij élke declaratie-PDF-export een lossy canvas-herconversie vergen.
-const COMPRESS_OPTS = { maxWidthOrHeight: 2000, maxSizeMB: 0.5, useWebWorker: true, fileType: 'image/jpeg' } as const;
+const COMPRESS_OPTS = {
+	maxWidthOrHeight: 2000,
+	maxSizeMB: 0.5,
+	useWebWorker: true,
+	fileType: 'image/jpeg',
+} as const;
 
 const swapExtension = (name: string, ext: string): string => `${name.replace(/\.[^./\\]+$/, '')}.${ext}`;
 
@@ -19,7 +24,11 @@ export const prepareReceipt = async (file: File): Promise<File> => {
 	let raster = file;
 	if (HEIC_MIME.test(file.type) || isHeicName(file.name)) {
 		const { heicTo } = await import('heic-to');
-		const blob = await heicTo({ blob: file, type: 'image/jpeg', quality: 0.9 });
+		const blob = await heicTo({
+			blob: file,
+			type: 'image/jpeg',
+			quality: 0.9,
+		});
 		raster = new File([blob], swapExtension(file.name, 'jpg'), { type: 'image/jpeg' });
 	} else if (!RASTER_MIME.test(file.type)) {
 		throw new Error('Alleen afbeeldingen (JPG/PNG/HEIC) of een PDF zijn toegestaan.');

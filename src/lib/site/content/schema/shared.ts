@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+// The shapes more than one schema needs: a colorset, an id, an icon name, a media object, a heading
+// cluster, an option in a list. If two component schemas would otherwise declare the same thing
+// twice, it belongs here — and the second one picks or extends it rather than re-typing it.
+// See Media -> MediaProps, or Heading -> HeadingGroupProps, for how that looks.
+
 // The strict CSP has no 'unsafe-eval', so Zod v4's JIT probe (`new Function`) is reported as a
 // securitypolicyviolation — even though Zod swallows the throw and falls back. `jitless` skips the
 // probe entirely: no console CSP error, validation stays correct (non-JIT path). Set here because
@@ -11,6 +16,11 @@ export type Colorset = z.infer<typeof Colorset>;
 
 export const Id = z.union([z.string(), z.number()]).meta({ title: 'Id' });
 export type Id = z.infer<typeof Id>;
+
+// An icon glyph name. The editor hint is what makes every consumer — the visual editor and the
+// Storybook controls panel alike — render the icon picker instead of a bare text field.
+export const IconName = z.string().meta({ title: 'IconName', editor: 'icon' });
+export type IconName = z.infer<typeof IconName>;
 
 export const MediaProvider = z.enum(['youtube', 'vimeo', 'tiktok', 'wistia']).meta({ title: 'MediaProvider' });
 export type MediaProvider = z.infer<typeof MediaProvider>;
@@ -60,7 +70,7 @@ export const SocialLink = z
 	.object({
 		label: z.string().min(1).describe('The platform name; the visible link text, or the accessible name when an icon replaces it'),
 		url: z.string().min(1).describe('The profile destination, opened in a new tab'),
-		icon: z.string().optional().describe('Icon glyph name rendered in place of the visible label').meta({ editor: 'icon' }),
+		icon: IconName.optional().describe('Icon glyph name rendered in place of the visible label'),
 	})
 	.meta({ title: 'SocialLink' });
 export type SocialLink = z.infer<typeof SocialLink>;

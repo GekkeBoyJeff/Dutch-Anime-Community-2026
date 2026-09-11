@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
+import { IconName } from '@/lib/site/content/schema/shared';
+
 export const IconProps = z
 	.object({
-		name: z.string().min(1).describe('The glyph name, e.g. \'search\' or \'chevron-down\' — see the ICONS map for the set'),
+		name: IconName.min(1).describe('The glyph name, e.g. \'search\' or \'chevron-down\' — see the ICONS map for the set'),
 		className: z.string().optional().describe('Additional classes on the root element'),
 	})
 	.meta({ title: 'Icon' });

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { MediaProvider } from '@/lib/site/content/schema/primitives';
+import { MediaProvider } from '@/lib/site/content/schema/shared';
 
 export const SwiperSlide = z
 	.object({

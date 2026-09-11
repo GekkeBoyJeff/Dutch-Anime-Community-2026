@@ -18,8 +18,6 @@ const meta: Meta<typeof TextInput> = {
 	},
 	argTypes: {
 		type: { control: 'inline-radio', options: ['text', 'email', 'password', 'tel', 'url', 'search'] },
-		disabled: { control: 'boolean' },
-		required: { control: 'boolean' },
 	},
 };
 

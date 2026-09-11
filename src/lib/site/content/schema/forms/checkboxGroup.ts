@@ -1,7 +1,7 @@
 import type { Ref } from 'react';
 import { z } from 'zod';
 
-import { Option } from '@/lib/site/content/schema/primitives';
+import { Option } from '@/lib/site/content/schema/shared';
 
 export const CheckboxOption = Option
 	.extend({ value: z.string().min(1).describe('Unique value, added to the ticked array when this box is on') })

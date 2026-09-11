@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Colorset, Heading, Id, SocialLink } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, Id, SocialLink } from '@/lib/site/content/schema/shared';
 
 export const ProfileSocial = SocialLink.meta({ title: 'ProfileSocial' });
 export type ProfileSocial = z.infer<typeof ProfileSocial>;

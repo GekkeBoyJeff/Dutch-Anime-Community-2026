@@ -18,11 +18,6 @@ const meta: Meta<typeof RadioGroup> = {
 			},
 		},
 	},
-	argTypes: {
-		horizontal: { control: 'boolean' },
-		disabled: { control: 'boolean' },
-		required: { control: 'boolean' },
-	},
 };
 
 export default meta;
@@ -48,7 +43,11 @@ export const WithDisabledOption: Story = {
 		options: [
 			{ value: 'free', label: 'Free' },
 			{ value: 'pro', label: 'Pro' },
-			{ value: 'team', label: 'Team (sold out)', disabled: true },
+			{
+				value: 'team',
+				label: 'Team (sold out)',
+				disabled: true,
+			},
 		],
 	},
 };

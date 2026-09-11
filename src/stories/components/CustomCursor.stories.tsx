@@ -19,15 +19,29 @@ const meta: Meta<typeof CustomCursor> = {
 	},
 	argTypes: {
 		lerp: {
-			control: { type: 'range', min: 0.05, max: 0.5, step: 0.01 },
+			control: {
+				type: 'range',
+				min: 0.05,
+				max: 0.5,
+				step: 0.01,
+			},
 		},
 	},
 	decorators: [
 		(Story) => {
 			return (
-				<div style={{ minBlockSize: '60vh', display: 'grid', placeItems: 'center', gap: '1rem' }}>
+				<div style={{
+					minBlockSize: '60vh',
+					display: 'grid',
+					placeItems: 'center',
+					gap: '1rem',
+				}}>
 					<p>Move your pointer around. Hover the controls to grow the ring.</p>
-					<div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+					<div style={{
+						display: 'flex',
+						gap: '1rem',
+						alignItems: 'center',
+					}}>
 						<Button variant="secondary" value="A button" />
 						<Link url="#" value="A link" />
 						<span className="hover-target" style={{ padding: '0.5rem 1rem', border: '1px solid' }}>

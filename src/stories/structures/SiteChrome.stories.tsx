@@ -22,7 +22,13 @@ export const Default: Story = {
 	args: {
 		structures,
 		children: (
-			<main style={{ minBlockSize: '70vh', display: 'grid', placeContent: 'center', textAlign: 'center', padding: '6rem 2rem 4rem' }}>
+			<main style={{
+				minBlockSize: '70vh',
+				display: 'grid',
+				placeContent: 'center',
+				textAlign: 'center',
+				padding: '6rem 2rem 4rem',
+			}}>
 				<p>Hier rendert de pagina-inhoud — tussen de navigatie en de footer.</p>
 			</main>
 		),

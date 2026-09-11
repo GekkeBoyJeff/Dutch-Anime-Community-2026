@@ -16,12 +16,6 @@ const meta: Meta<typeof ScrollytellingTimeline> = {
 		},
 		jsonSchema: { schema: ScrollytellingTimelineProps },
 	},
-	argTypes: {
-		headingLevel: {
-			control: 'inline-radio',
-			options: [2, 3, 4, 5],
-		},
-	},
 };
 
 export default meta;

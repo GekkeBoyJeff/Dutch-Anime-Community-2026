@@ -4,7 +4,11 @@ import type { MetricDelta, MetricProps as MetricSchemaProps } from '@/lib/site/c
 
 type MetricProps = MetricSchemaProps;
 
-const DELTA_ARROW: Record<MetricDelta['direction'], string> = { up: '▲', down: '▼', flat: '→' };
+const DELTA_ARROW: Record<MetricDelta['direction'], string> = {
+	up: '▲',
+	down: '▼',
+	flat: '→',
+};
 
 const SPARK_WIDTH = 96;
 const SPARK_HEIGHT = 28;

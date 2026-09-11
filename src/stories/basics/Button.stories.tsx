@@ -10,12 +10,6 @@ const meta: Meta<typeof Button> = {
 		docs: { description: { component: 'The one CTA face of the system: every button and button-styled link renders through here — a content block never hand-rolls `class="button is-…"` markup. Interactive keeps the element honest (no `url` = a real `<button>`, an internal path = next/link, an external URL = a safe `<a>`); Button adds the visual variant and the optional trailing icon.' } },
 		jsonSchema: { schema: ButtonProps },
 	},
-	argTypes: {
-		variant: {
-			control: 'inline-radio',
-			options: ['primary', 'secondary', 'ghost'],
-		},
-	},
 };
 
 export default meta;

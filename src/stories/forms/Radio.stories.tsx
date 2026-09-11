@@ -16,10 +16,6 @@ const meta: Meta<typeof Radio> = {
 		},
 		jsonSchema: { schema: RadioProps },
 	},
-	argTypes: {
-		disabled: { control: 'boolean' },
-		required: { control: 'boolean' },
-	},
 	decorators: [
 		(Story) => (
 			<BaseRadioGroup className="radio-group" aria-label="Shipping method" defaultValue="standard">

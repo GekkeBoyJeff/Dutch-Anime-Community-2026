@@ -88,10 +88,10 @@ The folder has three layers.
 
 | Path | Holds |
 | --- | --- |
-| `schema/primitives.ts` | Pieces shared by many blocks: `Colorset`, `Id`, `Media`, `Action`, `Heading`, `OgImage`. |
+| `schema/shared.ts` | Shapes more than one schema needs: `Colorset`, `Id`, `IconName`, `Media`, `Heading`, `Option`, `SocialLink`, `OgImage`. |
 | `schema/blocks/<name>.ts` | One file per block type. |
 | `schema/blocks/index.ts` | The union of all block types. |
-| `schema/document.ts` | `PageMeta` and `Page` — the object at the top of a content file. |
+| `schema/page.ts` | `PageMeta` and `Page` — the object at the top of a content file. |
 
 `schema/basics/`, `schema/components/`, `schema/forms/` and `schema/structures/` sit alongside
 them; `schema/index.ts` re-exports the lot.
@@ -166,7 +166,7 @@ the list is considered.
 That is what makes the error messages precise. An unknown `type` is reported once, against `type`,
 with the valid names listed — not as 28 separate "this does not match" complaints.
 
-`schema/document.ts` puts the last lid on it:
+`schema/page.ts` puts the last lid on it:
 
 ```typescript
 export const Page = z.object({

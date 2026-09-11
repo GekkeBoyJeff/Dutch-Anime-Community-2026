@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { IconName } from '@/lib/site/content/schema/shared';
+
 export const AccordionItemProps = z
 	.object({
 		id: z.string().min(1).describe('Unique id for this row'),
@@ -10,7 +12,7 @@ export const AccordionItemProps = z
 			.union([z.literal(2), z.literal(3), z.literal(4), z.literal(5), z.literal(6)])
 			.optional()
 			.describe('Heading element h{level} wrapping the trigger; defaults to 3'),
-		icon: z.string().optional().describe('The chevron glyph name; rotates when open; defaults to \'chevron-down\''),
+		icon: IconName.optional().describe('The chevron glyph name; rotates when open; defaults to \'chevron-down\''),
 		keepMounted: z
 			.boolean()
 			.optional()

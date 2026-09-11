@@ -16,12 +16,6 @@ const meta: Meta<typeof ArticleCard> = {
 		},
 		jsonSchema: { schema: ArticleCardProps },
 	},
-	argTypes: {
-		layout: {
-			control: 'inline-radio',
-			options: ['vertical', 'horizontal', 'feature'],
-		},
-	},
 };
 
 export default meta;
@@ -37,8 +31,17 @@ export const Default: Story = {
 		publishedAt: '2026-03-30',
 		href: '/community',
 		layout: 'vertical',
-		media: { type: 'image', src: '/media/dac-stand.jpg', alt: 'Bezoekers bij de DAC-stand op Dutch Comic Con', ratio: '16/9' },
-		author: { name: 'Sanne Bakker', role: 'Moderator', avatar: demoImage.src },
+		media: {
+			type: 'image',
+			src: '/media/dac-stand.jpg',
+			alt: 'Bezoekers bij de DAC-stand op Dutch Comic Con',
+			ratio: '16/9',
+		},
+		author: {
+			name: 'Sanne Bakker',
+			role: 'Moderator',
+			avatar: demoImage.src,
+		},
 	},
 };
 

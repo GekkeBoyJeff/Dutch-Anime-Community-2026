@@ -10,10 +10,6 @@ const meta: Meta<typeof Shortcut> = {
 		docs: { description: { component: 'A keyboard shortcut hint — one or more `<kbd>` keys joined by a separator (nested `<kbd>` is the HTML markup for a key combination). Pairs with SearchPalette / useHotkey hints.' } },
 		jsonSchema: { schema: ShortcutProps },
 	},
-	argTypes: {
-		keys: { control: 'object', description: 'Array of key labels, e.g. ["⌘","K"]' },
-		separator: { control: 'text' },
-	},
 };
 
 export default meta;

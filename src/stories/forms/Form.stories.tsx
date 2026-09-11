@@ -20,9 +20,6 @@ const meta: Meta<typeof Form> = {
 		},
 		jsonSchema: { schema: FormProps },
 	},
-	argTypes: {
-		validateOn: { control: 'inline-radio', options: ['blur', 'input', 'submit'] },
-	},
 };
 
 export default meta;

@@ -21,8 +21,16 @@ const GlobalError = ({ error, reset }: GlobalErrorProps) => {
 					color: '#f9f9f9',
 				}}
 			>
-				<main style={{ maxWidth: '32rem', padding: '2rem', textAlign: 'center' }}>
-					<h1 style={{ fontSize: '2rem', lineHeight: 1.1, marginBottom: '1rem' }}>Er ging iets mis</h1>
+				<main style={{
+					maxWidth: '32rem',
+					padding: '2rem',
+					textAlign: 'center',
+				}}>
+					<h1 style={{
+						fontSize: '2rem',
+						lineHeight: 1.1,
+						marginBottom: '1rem',
+					}}>Er ging iets mis</h1>
 					<p style={{ lineHeight: 1.6, marginBottom: '1.5rem' }}>
 						Er trad een onverwachte fout op. Probeer de pagina opnieuw te laden.
 					</p>
@@ -42,7 +50,11 @@ const GlobalError = ({ error, reset }: GlobalErrorProps) => {
 						Probeer opnieuw
 					</button>
 					{error.digest && (
-						<p style={{ marginTop: '1.5rem', fontSize: '0.75rem', opacity: 0.6 }}>Foutcode: {error.digest}</p>
+						<p style={{
+							marginTop: '1.5rem',
+							fontSize: '0.75rem',
+							opacity: 0.6,
+						}}>Foutcode: {error.digest}</p>
 					)}
 				</main>
 			</body>

@@ -10,12 +10,6 @@ const meta: Meta<typeof Hero> = {
 		docs: { description: { component: 'Header section of a page: tagline, title, intro and a row of call-to-action buttons (Actions → Button, with the badged arrow on the primary CTA) — rendered plain, inside a rounded media panel with quick stats (Stat), or as a full-bleed cover with a glass stats bar.' } },
 		jsonSchema: { schema: HeroProps },
 	},
-	argTypes: {
-		colorset: {
-			control: 'inline-radio',
-			options: ['light', 'dark'],
-		},
-	},
 };
 
 export default meta;
@@ -27,9 +21,22 @@ export const Default: Story = {
 		title: 'Vind je crew. Kijk samen. Voel je thuis.',
 		value: 'De grootste Nederlandstalige anime- en mangacommunity — voor en door fans. Bij ons is er altijd iemand online en altijd een plek voor jou.',
 		actions: [
-			{ value: 'Word lid', variant: 'primary', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
-			{ value: 'Bekijk evenementen', variant: 'secondary', url: '/evenementen' },
-			{ value: 'Hoe werkt het?', variant: 'ghost', url: '/word-lid' },
+			{
+				value: 'Word lid',
+				variant: 'primary',
+				url: 'https://discord.gg/dutchanimecommunity',
+				target: '_blank',
+			},
+			{
+				value: 'Bekijk evenementen',
+				variant: 'secondary',
+				url: '/evenementen',
+			},
+			{
+				value: 'Hoe werkt het?',
+				variant: 'ghost',
+				url: '/word-lid',
+			},
 		],
 	},
 };
@@ -38,7 +45,11 @@ export const MediaPanel: Story = {
 	args: {
 		...Default.args,
 		tagline: 'De gezelligste anime-community van Nederland',
-		media: { type: 'image', src: '/media/dac-meetup.png', alt: 'DAC-leden samen op een meetup' },
+		media: {
+			type: 'image',
+			src: '/media/dac-meetup.png',
+			alt: 'DAC-leden samen op een meetup',
+		},
 		stats: [
 			{ count: '4.500+', label: 'leden' },
 			{ count: '1.000+', label: 'tegelijk online' },
@@ -53,9 +64,21 @@ export const Cover: Story = {
 		...MediaPanel.args,
 		variant: 'cover',
 		socials: [
-			{ value: 'Discord', url: 'https://discord.gg/dutchanimecommunity', target: '_blank' },
-			{ value: 'Instagram', url: 'https://www.instagram.com/dutchanimecommunity/', target: '_blank' },
-			{ value: 'TikTok', url: 'https://www.tiktok.com/@dutchanimecommunity', target: '_blank' },
+			{
+				value: 'Discord',
+				url: 'https://discord.gg/dutchanimecommunity',
+				target: '_blank',
+			},
+			{
+				value: 'Instagram',
+				url: 'https://www.instagram.com/dutchanimecommunity/',
+				target: '_blank',
+			},
+			{
+				value: 'TikTok',
+				url: 'https://www.tiktok.com/@dutchanimecommunity',
+				target: '_blank',
+			},
 		],
 	},
 	parameters: { layout: 'fullscreen' },

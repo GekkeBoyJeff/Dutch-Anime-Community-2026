@@ -6,26 +6,96 @@ import CommandPalette, { type PaletteResult } from '@/components/dashboard/struc
 import type { PaletteCommand } from '@/lib/shared/auth/dashboard-sections';
 
 const pages: PaletteCommand[] = [
-	{ key: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'home' },
-	{ key: 'profiel', label: 'Profiel', href: '/account', icon: 'user' },
-	{ key: 'events', label: 'Conventies & events', href: '/dashboard/events', icon: 'calendar' },
-	{ key: 'inventory', label: 'Inventaris', href: '/dashboard/inventory', icon: 'list' },
-	{ key: 'moderation', label: 'Moderatie', href: '/dashboard/moderation', icon: 'warning' },
-	{ key: 'finance', label: 'Financiën', href: '/dashboard/finance', icon: 'file' },
+	{
+		key: 'dashboard',
+		label: 'Dashboard',
+		href: '/dashboard',
+		icon: 'home',
+	},
+	{
+		key: 'profiel',
+		label: 'Profiel',
+		href: '/account',
+		icon: 'user',
+	},
+	{
+		key: 'events',
+		label: 'Conventies & events',
+		href: '/dashboard/events',
+		icon: 'calendar',
+	},
+	{
+		key: 'inventory',
+		label: 'Inventaris',
+		href: '/dashboard/inventory',
+		icon: 'list',
+	},
+	{
+		key: 'moderation',
+		label: 'Moderatie',
+		href: '/dashboard/moderation',
+		icon: 'warning',
+	},
+	{
+		key: 'finance',
+		label: 'Financiën',
+		href: '/dashboard/finance',
+		icon: 'file',
+	},
 ];
 
 const actions: PaletteCommand[] = [
-	{ key: 'new-event', label: 'Nieuwe conventie', href: '/dashboard/events?new=1', icon: 'calendar' },
-	{ key: 'new-income', label: 'Inkomst toevoegen', href: '/dashboard/finance?new=1', icon: 'file' },
-	{ key: 'send-notification', label: 'Melding sturen', href: '/dashboard/notifications', icon: 'mail' },
-	{ key: 'upload-media', label: 'Media uploaden', href: '/upload', icon: 'upload' },
+	{
+		key: 'new-event',
+		label: 'Nieuwe conventie',
+		href: '/dashboard/events?new=1',
+		icon: 'calendar',
+	},
+	{
+		key: 'new-income',
+		label: 'Inkomst toevoegen',
+		href: '/dashboard/finance?new=1',
+		icon: 'file',
+	},
+	{
+		key: 'send-notification',
+		label: 'Melding sturen',
+		href: '/dashboard/notifications',
+		icon: 'mail',
+	},
+	{
+		key: 'upload-media',
+		label: 'Media uploaden',
+		href: '/upload',
+		icon: 'upload',
+	},
 ];
 
 // Mock live search (no Supabase in Storybook): matches a couple of fake conventions and members.
 const mockEntities: PaletteResult[] = [
-	{ key: 'event:1', group: 'events', label: 'Dutch Comic Con', sublabel: 'Jaarbeurs Utrecht', href: '/dashboard/events?id=1', icon: 'calendar' },
-	{ key: 'event:2', group: 'events', label: 'Dutch Anime Con', sublabel: 'Van der Valk Eindhoven', href: '/dashboard/events?id=2', icon: 'calendar' },
-	{ key: 'person:1', group: 'people', label: 'Jeffrey', href: '/dashboard/moderation?id=1', icon: 'user' },
+	{
+		key: 'event:1',
+		group: 'events',
+		label: 'Dutch Comic Con',
+		sublabel: 'Jaarbeurs Utrecht',
+		href: '/dashboard/events?id=1',
+		icon: 'calendar',
+	},
+	{
+		key: 'event:2',
+		group: 'events',
+		label: 'Dutch Anime Con',
+		sublabel: 'Van der Valk Eindhoven',
+		href: '/dashboard/events?id=2',
+		icon: 'calendar',
+	},
+	{
+		key: 'person:1',
+		group: 'people',
+		label: 'Jeffrey',
+		href: '/dashboard/moderation?id=1',
+		icon: 'user',
+	},
 ];
 const searchEntities = async (query: string): Promise<PaletteResult[]> => {
 	const q = query.toLowerCase();

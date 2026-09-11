@@ -16,16 +16,6 @@ const meta: Meta<typeof NumberField> = {
 		},
 		jsonSchema: { schema: NumberFieldProps },
 	},
-	argTypes: {
-		step: { control: 'number' },
-		min: { control: 'number' },
-		max: { control: 'number' },
-		disabled: { control: 'boolean' },
-		readOnly: { control: 'boolean' },
-		required: { control: 'boolean' },
-		scrub: { control: 'boolean' },
-		allowWheelScrub: { control: 'boolean' },
-	},
 };
 
 export default meta;
@@ -42,7 +32,14 @@ export const Default: Story = {
 
 export const WithMinMax: Story = {
 	...Default,
-	args: { ...Default.args, label: 'Tickets', defaultValue: 2, min: 0, max: 6, description: 'Up to 6 per order.' },
+	args: {
+		...Default.args,
+		label: 'Tickets',
+		defaultValue: 2,
+		min: 0,
+		max: 6,
+		description: 'Up to 6 per order.',
+	},
 };
 
 export const Currency: Story = {
@@ -73,12 +70,25 @@ export const Percent: Story = {
 
 export const WithError: Story = {
 	...Default,
-	args: { ...Default.args, label: 'Guests', defaultValue: 0, min: 1, error: 'At least one guest is required.' },
+	args: {
+		...Default.args,
+		label: 'Guests',
+		defaultValue: 0,
+		min: 1,
+		error: 'At least one guest is required.',
+	},
 };
 
 export const Scrub: Story = {
 	...Default,
-	args: { ...Default.args, label: 'Volume', defaultValue: 50, min: 0, max: 100, scrub: true },
+	args: {
+		...Default.args,
+		label: 'Volume',
+		defaultValue: 50,
+		min: 0,
+		max: 100,
+		scrub: true,
+	},
 };
 
 export const Disabled: Story = {
@@ -96,5 +106,10 @@ export const Controlled: Story = {
 
 		return <NumberField {...args} value={value} onValueChange={setValue} />;
 	},
-	args: { ...Default.args, label: 'Seats', min: 0, max: 10 },
+	args: {
+		...Default.args,
+		label: 'Seats',
+		min: 0,
+		max: 10,
+	},
 };

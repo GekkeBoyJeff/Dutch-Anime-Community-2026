@@ -19,7 +19,12 @@ export const getBrowserClient = (): SupabaseClient<Database> => {
 		}
 		// Explicit PKCE: the OAuth flow returns a ?code we exchange client-side (see /auth/callback).
 		cached = createClient<Database>(url, anonKey, {
-			auth: { persistSession: true, autoRefreshToken: true, flowType: 'pkce', detectSessionInUrl: true },
+			auth: {
+				persistSession: true,
+				autoRefreshToken: true,
+				flowType: 'pkce',
+				detectSessionInUrl: true,
+			},
 		});
 	}
 	return cached;

@@ -15,15 +15,6 @@ const meta: Meta<typeof Tabs> = {
 		},
 		jsonSchema: { schema: TabsProps },
 	},
-	argTypes: {
-		orientation: {
-			control: 'inline-radio',
-			options: ['horizontal', 'vertical'],
-		},
-		activateOnFocus: { control: 'boolean' },
-		defaultValue: { control: { type: 'number', min: 0 } },
-		value: { control: { type: 'number', min: 0 } },
-	},
 };
 
 export default meta;

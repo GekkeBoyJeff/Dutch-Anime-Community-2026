@@ -9,7 +9,11 @@ const flat = [
 	{ value: 'de', label: 'Germany' },
 	{ value: 'fr', label: 'France' },
 	{ value: 'es', label: 'Spain' },
-	{ value: 'it', label: 'Italy', disabled: true },
+	{
+		value: 'it',
+		label: 'Italy',
+		disabled: true,
+	},
 ];
 
 const grouped = [
@@ -41,14 +45,6 @@ const meta: Meta<typeof Select> = {
 			},
 		},
 		jsonSchema: { schema: SelectProps },
-	},
-	argTypes: {
-		placeholder: { control: 'text' },
-		disabled: { control: 'boolean' },
-		required: { control: 'boolean' },
-		multiple: { control: 'boolean' },
-		native: { control: 'boolean' },
-		side: { control: 'inline-radio', options: ['top', 'bottom', 'left', 'right'] },
 	},
 };
 

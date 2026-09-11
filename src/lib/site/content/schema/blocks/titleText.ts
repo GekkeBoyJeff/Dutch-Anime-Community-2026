@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { Action } from '@/lib/site/content/schema/basics/actions';
-import { Colorset, Heading, Id } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, Id } from '@/lib/site/content/schema/shared';
 
 export const TitleTextProps = z.object({
 	colorset: Colorset.optional(),

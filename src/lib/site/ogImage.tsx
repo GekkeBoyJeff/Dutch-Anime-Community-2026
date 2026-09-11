@@ -24,10 +24,23 @@ export const OgCard = ({ title, description }: OgCardProps) => {
 				color: brand.page,
 			}}
 		>
-			<div style={{ display: 'flex', width: '72px', height: '8px', backgroundColor: brand.primary }} />
+			<div style={{
+				display: 'flex',
+				width: '72px',
+				height: '8px',
+				backgroundColor: brand.primary,
+			}} />
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
-				<div style={{ fontSize: '76px', fontWeight: 700, lineHeight: 1.05 }}>{title}</div>
-				<div style={{ fontSize: '32px', color: brand.subtle, marginTop: '20px' }}>{description}</div>
+				<div style={{
+					fontSize: '76px',
+					fontWeight: 700,
+					lineHeight: 1.05,
+				}}>{title}</div>
+				<div style={{
+					fontSize: '32px',
+					color: brand.subtle,
+					marginTop: '20px',
+				}}>{description}</div>
 			</div>
 		</div>
 	);

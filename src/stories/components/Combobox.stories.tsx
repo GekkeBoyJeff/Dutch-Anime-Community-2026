@@ -18,12 +18,6 @@ const meta: Meta<typeof Combobox> = {
 		},
 		jsonSchema: { schema: ComboboxProps },
 	},
-	argTypes: {
-		autoHighlight: { control: 'boolean' },
-		disabled: { control: 'boolean' },
-		readOnly: { control: 'boolean' },
-		required: { control: 'boolean' },
-	},
 };
 
 export default meta;

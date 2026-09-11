@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Media } from '@/lib/site/content/schema/primitives';
+import { Media } from '@/lib/site/content/schema/shared';
 
 export const ArticleCardAuthor = z
 	.object({

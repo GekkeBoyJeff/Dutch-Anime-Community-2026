@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { SwiperSlide } from '@/lib/site/content/schema/components/swiper';
-import { Colorset, Heading, Id } from '@/lib/site/content/schema/primitives';
+import { Colorset, Heading, Id } from '@/lib/site/content/schema/shared';
 
 export const ShowreelProps = z
 	.object({

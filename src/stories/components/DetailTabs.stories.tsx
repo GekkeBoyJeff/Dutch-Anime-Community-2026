@@ -26,9 +26,21 @@ export const Default: Story = {
 			defaultValue={0}
 			tabs={[
 				{ label: 'Info', panel: <p>Algemene informatie over de conventie.</p> },
-				{ label: 'Aanwezigheid', icon: 'users', panel: <p>Wie is aangemeld en aanwezig.</p> },
-				{ label: 'Agenda', icon: 'calendar', panel: <p>Shifts en tijden.</p> },
-				{ label: 'Logs', disabled: true, panel: <p>Nog niet beschikbaar.</p> },
+				{
+					label: 'Aanwezigheid',
+					icon: 'users',
+					panel: <p>Wie is aangemeld en aanwezig.</p>,
+				},
+				{
+					label: 'Agenda',
+					icon: 'calendar',
+					panel: <p>Shifts en tijden.</p>,
+				},
+				{
+					label: 'Logs',
+					disabled: true,
+					panel: <p>Nog niet beschikbaar.</p>,
+				},
 			]}
 		/>
 	),

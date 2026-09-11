@@ -10,12 +10,6 @@ const meta: Meta<typeof IntroGrid> = {
 		docs: { description: { component: 'A 2–4 panel intro grid of accent-tinted cards. The panel count drives the column layout; a panel with an action surfaces the whole card as a link. Server Component.' } },
 		jsonSchema: { schema: IntroGridProps },
 	},
-	argTypes: {
-		colorset: {
-			control: 'inline-radio',
-			options: ['light', 'dark'],
-		},
-	},
 };
 
 export default meta;
@@ -29,9 +23,30 @@ export const Default: Story = {
 			intro: 'Pick the path that fits where you are.',
 		},
 		panels: [
-			{ id: 'p1', tagline: 'New', title: 'Quick start', subtitle: 'Spin up a page in minutes.', accent: 'primary', action: { label: 'Open guide', href: '/start' } },
-			{ id: 'p2', tagline: 'Build', title: 'Components', subtitle: 'Compose from primitives.', accent: 'info', action: { label: 'Browse', href: '/components' } },
-			{ id: 'p3', tagline: 'Ship', title: 'Deploy', subtitle: 'Go live the same day.', accent: 'success', action: { label: 'Read more', href: '/deploy' } },
+			{
+				id: 'p1',
+				tagline: 'New',
+				title: 'Quick start',
+				subtitle: 'Spin up a page in minutes.',
+				accent: 'primary',
+				action: { label: 'Open guide', href: '/start' },
+			},
+			{
+				id: 'p2',
+				tagline: 'Build',
+				title: 'Components',
+				subtitle: 'Compose from primitives.',
+				accent: 'info',
+				action: { label: 'Browse', href: '/components' },
+			},
+			{
+				id: 'p3',
+				tagline: 'Ship',
+				title: 'Deploy',
+				subtitle: 'Go live the same day.',
+				accent: 'success',
+				action: { label: 'Read more', href: '/deploy' },
+			},
 		],
 	},
 };
@@ -41,10 +56,30 @@ export const FourPanels: Story = {
 	args: {
 		...Default.args,
 		panels: [
-			{ id: 'p1', title: 'Plan', subtitle: 'Map out the pages.', accent: 'primary' },
-			{ id: 'p2', title: 'Build', subtitle: 'Compose the blocks.', accent: 'info' },
-			{ id: 'p3', title: 'Review', subtitle: 'Check the content.', accent: 'warning' },
-			{ id: 'p4', title: 'Ship', subtitle: 'Deploy with confidence.', accent: 'success' },
+			{
+				id: 'p1',
+				title: 'Plan',
+				subtitle: 'Map out the pages.',
+				accent: 'primary',
+			},
+			{
+				id: 'p2',
+				title: 'Build',
+				subtitle: 'Compose the blocks.',
+				accent: 'info',
+			},
+			{
+				id: 'p3',
+				title: 'Review',
+				subtitle: 'Check the content.',
+				accent: 'warning',
+			},
+			{
+				id: 'p4',
+				title: 'Ship',
+				subtitle: 'Deploy with confidence.',
+				accent: 'success',
+			},
 		],
 	},
 };

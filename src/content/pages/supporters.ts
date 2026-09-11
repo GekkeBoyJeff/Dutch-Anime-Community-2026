@@ -22,7 +22,11 @@ export const supportersPage: Page = {
 				title: 'Wie dit overeind houdt',
 				intro: 'DAC draait op vrijwilligers en op een paar mensen die meebetalen.',
 			},
-			media: { type: 'image', src: '/media/dac-stand.jpg', alt: 'De DAC-stand op een conventie' },
+			media: {
+				type: 'image',
+				src: '/media/dac-stand.jpg',
+				alt: 'De DAC-stand op een conventie',
+			},
 		},
 		{
 			type: 'titleText',

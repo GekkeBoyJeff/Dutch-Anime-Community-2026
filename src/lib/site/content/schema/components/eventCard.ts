@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Media, StatusVariant } from '@/lib/site/content/schema/primitives';
+import { Media, StatusVariant } from '@/lib/site/content/schema/shared';
 
 export const EventCardTranslations = z
 	.object({
