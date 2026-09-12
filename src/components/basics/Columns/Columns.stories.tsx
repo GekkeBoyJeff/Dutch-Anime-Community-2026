@@ -1,10 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Column from '@/components/basics/Column/Column';
-import { cell } from '@/stories/gridCell';
 
 import Columns from './Columns';
 import { ColumnsProps } from './Columns.schema';
+
+// A tinted, labelled box so the spans and offsets are visible in the examples below.
+const cell = (label: string) => (
+	<div style={{
+		background: 'color-mix(in srgb, currentColor 12%, transparent)',
+		padding: '1rem',
+		borderRadius: '8px',
+		textAlign: 'center',
+	}}>
+		{label}
+	</div>
+);
 
 const thirds = (
 	<>

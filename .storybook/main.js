@@ -11,7 +11,7 @@ const srcDir = fileURLToPath(new URL('../src', import.meta.url));
 
 /** @type {import('@storybook/nextjs-vite').StorybookConfig} */
 const config = {
-	stories: ['../src/stories/**/*.mdx', '../src/components/**/*.stories.tsx'],
+	stories: ['../src/docs/**/*.mdx', '../src/components/**/*.stories.tsx'],
 	addons: [
 		{
 			name: '@storybook/addon-docs',

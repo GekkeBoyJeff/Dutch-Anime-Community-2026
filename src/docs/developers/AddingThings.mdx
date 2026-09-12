@@ -53,7 +53,7 @@ Four steps. The rightmost column is what goes wrong if the step is missed.
 | 1 | Write the schema: `src/lib/site/content/basics/ribbon.ts` | There is no props type to write the component against |
 | 2 | Write the component: `src/components/basics/Ribbon.tsx`, its imports ending with its own stylesheet | Without that import line the stylesheet never reaches the bundle and the component renders unstyled |
 | 3 | Write the stylesheet: `src/styles/components/basics/Ribbon.scss` | The component renders unstyled |
-| 4 | Write the story: `src/stories/basics/Ribbon.stories.tsx` | The component is invisible in Storybook and cannot be reviewed |
+| 4 | Write the story: `src/components/basics/Ribbon/Ribbon.stories.tsx` | The component is invisible in Storybook and cannot be reviewed |
 
 Every step writes a file the component needs to work. There is no list to append to and no barrel to
 keep in sync: a component imports its own stylesheet, so the only file that has to know `Ribbon.scss`
@@ -155,7 +155,7 @@ bare `&.is-…`, everything nested. Never BEM.
 ### 4. The story
 
 ```tsx
-// src/stories/basics/Ribbon.stories.tsx
+// src/components/basics/Ribbon/Ribbon.stories.tsx
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Ribbon from '@/components/basics/Ribbon';
@@ -347,7 +347,7 @@ Which puts five constraints on a content-block story:
 
 | Constraint | Why |
 | --- | --- |
-| The file sits **directly** in `src/stories/contentBlocks/`, named `*.stories.tsx` | `require.context` is called with `false` for recursion and that exact pattern. A subfolder is not scanned |
+| The file sits in the block's own folder under `src/components/contentBlocks/`, named `<Name>.stories.tsx` | `require.context` scans that tree for exactly that pattern |
 | `component:` in the story's default export is the same component the registry holds | Presets are matched by component identity, through `typeByComponent.get(mod.default?.component)`. A wrapper or a re-declared copy matches nothing and the block silently gets no presets |
 | Every named export with an `args` object becomes a preset | There is no opt-out. A story that only exists to demonstrate a broken state will be offered to editors |
 | Args must be plain JSON — no functions, no JSX, no `undefined` values | `sanitise` does `JSON.parse(JSON.stringify(args))`, which drops all three |
@@ -489,7 +489,7 @@ over — unless the change happens to alter one of the three substrings those ca
 | A prop is in the schema but has no input in `/builder` | `fieldFor` could not map that Zod type and returned `undefined`. See the mapping table above |
 | A new block appears in `/builder` under "Overig" | It is not listed in any `categories` entry in `src/lib/admin/puck/config.tsx` |
 | Dragging a block in gives placeholder text like "Tekst" | The block has no story with `args`, so `defaultValueFor` invented a value per prop |
-| A story exists but the block has no presets | The story file is not directly in `src/stories/contentBlocks/`, or `component:` is not the same component object as the one in `REGISTRY` |
+| A story exists but the block has no presets | The story file is not under `src/components/contentBlocks/`, or `component:` is not the same component object as the one in `REGISTRY` |
 | A preset is missing a prop that the story clearly sets | The value was a function, JSX or `undefined`; `sanitise` JSON round-trips the args and drops all three |
 | `<Icon name="…" />` renders nothing at all | The name is not a key in the `ICONS` map in `src/components/basics/Icon/Icon.tsx`. `Icon` returns `null` for an unknown name |
 | A build error mentioning `server-only` | Something reaching the browser imports `@/lib/site/content`. Import the specific schema file instead |

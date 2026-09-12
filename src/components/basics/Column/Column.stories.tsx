@@ -1,11 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Columns from '@/components/basics/Columns/Columns';
-import { cell } from '@/stories/gridCell';
 
 import Column from './Column';
 import { ColumnProps } from './Column.schema';
 
+// A tinted, labelled box so the spans and offsets are visible in the examples below.
+const cell = (label: string) => (
+	<div style={{
+		background: 'color-mix(in srgb, currentColor 12%, transparent)',
+		padding: '1rem',
+		borderRadius: '8px',
+		textAlign: 'center',
+	}}>
+		{label}
+	</div>
+);
 
 const meta: Meta<typeof Column> = {
 	title: 'Basics/Column',
