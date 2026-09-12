@@ -5,6 +5,8 @@ import Title from '@/components/basics/Title';
 import { classNames } from '@/lib/shared/classNames';
 import type { TimelineProps as TimelineSchemaProps } from '@/lib/site/content/schema/components/timeline';
 
+import '@/styles/components/components/Timeline.scss';
+
 type TimelineProps = TimelineSchemaProps;
 
 const Timeline = ({

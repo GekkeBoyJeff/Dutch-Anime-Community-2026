@@ -7,6 +7,8 @@ import Title from '@/components/basics/Title';
 import Card from '@/components/components/Card';
 import type { FeatureCardsProps as FeatureCardsSchemaProps } from '@/lib/site/content/schema/blocks/featureCards';
 
+import '@/styles/components/contentBlocks/FeatureCards.scss';
+
 type FeatureCardsProps = FeatureCardsSchemaProps;
 
 const FeatureCards = ({

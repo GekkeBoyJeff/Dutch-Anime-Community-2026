@@ -6,6 +6,8 @@ import Title from '@/components/basics/Title';
 import { classNames } from '@/lib/shared/classNames';
 import type { PopoverProps as PopoverSchemaProps } from '@/lib/site/content/schema/components/popover';
 
+import '@/styles/components/components/Popover.scss';
+
 type PopoverProps = PopoverSchemaProps;
 
 const Popover = ({

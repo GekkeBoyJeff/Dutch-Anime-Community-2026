@@ -6,6 +6,8 @@ import { Dialog } from '@base-ui/react/dialog';
 import { classNames } from '@/lib/shared/classNames';
 import type { ModalProps as ModalSchemaProps } from '@/lib/site/content/schema/components/modal';
 
+import '@/styles/components/components/Modal.scss';
+
 type ModalProps = ModalSchemaProps;
 
 const Modal = ({

@@ -7,6 +7,8 @@ import Interactive from '@/components/basics/Interactive';
 import { isActivePath } from '@/components/structures/Navigation';
 import { classNames } from '@/lib/shared/classNames';
 
+import '@/styles/components/dashboard/structures/BottomTabBar.scss';
+
 export interface BottomTabBarItem {
 	key: string;
 	label: string;

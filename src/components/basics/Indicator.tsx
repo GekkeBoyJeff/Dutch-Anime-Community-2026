@@ -1,6 +1,8 @@
 import { classNames } from '@/lib/shared/classNames';
 import type { IndicatorProps as IndicatorSchemaProps } from '@/lib/site/content/schema/basics/indicator';
 
+import '@/styles/components/basics/Indicator.scss';
+
 type IndicatorProps = IndicatorSchemaProps;
 
 const Indicator = ({

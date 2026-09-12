@@ -6,6 +6,8 @@ import parse from 'html-react-parser';
 import { classNames } from '@/lib/shared/classNames';
 import type { TooltipProviderProps as TooltipProviderSchemaProps, TooltipProps as TooltipSchemaProps } from '@/lib/site/content/schema/components/tooltip';
 
+import '@/styles/components/components/Tooltip.scss';
+
 type TooltipProviderProps = TooltipProviderSchemaProps;
 
 export const TooltipProvider = ({

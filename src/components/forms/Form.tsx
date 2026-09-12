@@ -18,6 +18,8 @@ import type { z } from 'zod';
 import { classNames } from '@/lib/shared/classNames';
 import type { FormProps as FormSchemaProps } from '@/lib/site/content/schema/forms/form';
 
+import '@/styles/components/forms/Form.scss';
+
 /** When validation runs: as the user leaves a field, as they type, or only on submit. */
 export type FormValidateOn = 'blur' | 'input' | 'submit';
 

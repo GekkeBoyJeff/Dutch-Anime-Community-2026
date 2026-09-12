@@ -9,6 +9,8 @@ import Title from '@/components/basics/Title';
 import Card from '@/components/components/Card';
 import type { HighlightCardsProps as HighlightCardsSchemaProps } from '@/lib/site/content/schema/blocks/highlightCards';
 
+import '@/styles/components/contentBlocks/HighlightCards.scss';
+
 type HighlightCardsProps = HighlightCardsSchemaProps;
 
 const HighlightCards = ({

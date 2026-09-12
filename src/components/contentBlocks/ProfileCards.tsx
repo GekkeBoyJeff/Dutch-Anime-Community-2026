@@ -9,6 +9,8 @@ import Title from '@/components/basics/Title';
 import Card from '@/components/components/Card';
 import type { ProfileCardsProps as ProfileCardsSchemaProps } from '@/lib/site/content/schema/blocks/profileCards';
 
+import '@/styles/components/contentBlocks/ProfileCards.scss';
+
 type ProfileCardsProps = ProfileCardsSchemaProps;
 
 const initials = (name: string): string => {

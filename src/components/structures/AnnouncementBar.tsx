@@ -9,6 +9,8 @@ import useReducedMotion from '@/hooks/useReducedMotion';
 import { classNames } from '@/lib/shared/classNames';
 import type { AnnouncementBarProps as AnnouncementBarSchemaProps, AnnouncementVariant } from '@/lib/site/content/schema/structures/announcementBar';
 
+import '@/styles/components/structures/AnnouncementBar.scss';
+
 export type { AnnouncementVariant };
 
 type AnnouncementBarProps = AnnouncementBarSchemaProps;

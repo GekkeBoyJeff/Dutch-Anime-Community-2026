@@ -3,6 +3,8 @@ import Interactive from '@/components/basics/Interactive';
 import { classNames } from '@/lib/shared/classNames';
 import type { BreadcrumbProps as BreadcrumbSchemaProps } from '@/lib/site/content/schema/basics/breadcrumb';
 
+import '@/styles/components/basics/Breadcrumb.scss';
+
 type BreadcrumbProps = BreadcrumbSchemaProps;
 
 const Breadcrumb = ({

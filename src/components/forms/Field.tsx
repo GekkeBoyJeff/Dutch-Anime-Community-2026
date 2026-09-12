@@ -10,6 +10,8 @@ import { FieldSetContext } from '@/components/forms/FieldSet';
 import { classNames } from '@/lib/shared/classNames';
 import type { FieldProps as FieldSchemaProps } from '@/lib/site/content/schema/forms/field';
 
+import '@/styles/components/forms/Field.scss';
+
 /** When a field runs its validate callback; overrides the parent <Form>. */
 export type FieldValidationMode = 'onSubmit' | 'onBlur' | 'onChange';
 

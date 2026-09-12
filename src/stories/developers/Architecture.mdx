@@ -269,11 +269,14 @@ import Container from '@/components/basics/Container';
 import Content from '@/components/basics/Content';
 // …
 import type { HeroProps as HeroSchemaProps } from '@/lib/site/content/schema/blocks/hero';
+
+import '@/styles/components/contentBlocks/Hero.scss';
 ```
 
-The five site-facing folders each have an `index.ts` — a barrel, a file whose only job is to
-re-export its neighbours — so a consumer can import several components on one line. `dashboard/` has
-none; its six files are imported by their full path.
+Two rules are visible there. Every import names the file that defines the thing — no folder has an
+`index.ts` that re-exports its neighbours. And the last import is the component's own stylesheet,
+which is how a global `.scss` reaches the bundle at all, and why a route downloads only the CSS of
+the components it renders.
 
 ## Server components, client islands
 

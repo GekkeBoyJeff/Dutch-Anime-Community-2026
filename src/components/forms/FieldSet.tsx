@@ -6,6 +6,8 @@ import { createContext } from 'react';
 import { classNames } from '@/lib/shared/classNames';
 import type { FieldSetProps as FieldSetSchemaProps } from '@/lib/site/content/schema/forms/fieldSet';
 
+import '@/styles/components/forms/FieldSet.scss';
+
 /** How a FieldSet stacks its child Fields; child Fields inherit this unless they set their own. */
 export type FieldOrientation = 'vertical' | 'horizontal';
 

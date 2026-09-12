@@ -6,6 +6,8 @@ import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
 import type { LogoCloudProps as LogoCloudSchemaProps, LogoItem } from '@/lib/site/content/schema/blocks/logoCloud';
 
+import '@/styles/components/contentBlocks/LogoCloud.scss';
+
 type LogoCloudProps = LogoCloudSchemaProps;
 
 const Logo = ({ item }: { item: LogoItem }) => {

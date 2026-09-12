@@ -3,6 +3,8 @@ import Title from '@/components/basics/Title';
 import { classNames } from '@/lib/shared/classNames';
 import type { HeadingGroupProps as HeadingGroupSchemaProps } from '@/lib/site/content/schema/basics/headingGroup';
 
+import '@/styles/components/basics/HeadingGroup.scss';
+
 type HeadingGroupProps = HeadingGroupSchemaProps;
 
 const HeadingGroup = ({

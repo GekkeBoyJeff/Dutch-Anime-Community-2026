@@ -5,6 +5,8 @@ import Interactive from '@/components/basics/Interactive';
 import { classNames } from '@/lib/shared/classNames';
 import type { ButtonProps as ButtonSchemaProps } from '@/lib/site/content/schema/basics/button';
 
+import '@/styles/components/basics/Button.scss';
+
 // Base UI clones this through `render=` when a Button is a Menu/Popover/Modal/Drawer/Tooltip trigger and
 // merges its own props in — id, type, aria-haspopup/expanded/controls and the pointer/keyboard handlers —
 // so the HTML attribute set stays open here; narrowing it drops those props without a type error.

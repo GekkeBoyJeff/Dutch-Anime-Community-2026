@@ -5,6 +5,8 @@ import Section from '@/components/basics/Section';
 import { classNames } from '@/lib/shared/classNames';
 import type { PhotoMosaicProps as PhotoMosaicSchemaProps } from '@/lib/site/content/schema/blocks/photoMosaic';
 
+import '@/styles/components/contentBlocks/PhotoMosaic.scss';
+
 type PhotoMosaicProps = PhotoMosaicSchemaProps;
 
 const PhotoMosaic = ({

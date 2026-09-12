@@ -5,6 +5,8 @@ import Skeleton from '@/components/basics/Skeleton';
 import { classNames } from '@/lib/shared/classNames';
 import type { PersonProps as PersonSchemaProps, PersonStatus } from '@/lib/site/content/schema/components/person';
 
+import '@/styles/components/components/Person.scss';
+
 type PersonProps = PersonSchemaProps;
 
 const STATUS_LABEL: Record<PersonStatus, string> = {

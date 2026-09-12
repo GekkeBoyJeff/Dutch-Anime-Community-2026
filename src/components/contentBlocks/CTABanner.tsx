@@ -6,6 +6,8 @@ import Section from '@/components/basics/Section';
 import { classNames } from '@/lib/shared/classNames';
 import type { CTABannerProps as CTABannerSchemaProps } from '@/lib/site/content/schema/blocks/ctaBanner';
 
+import '@/styles/components/contentBlocks/CTABanner.scss';
+
 // `eager` is a render hint Blocks derives from a block's position, not content, so it stays out of the content schema.
 type CTABannerProps = CTABannerSchemaProps & { eager?: boolean };
 

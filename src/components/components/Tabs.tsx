@@ -7,6 +7,8 @@ import Icon from '@/components/basics/Icon';
 import { classNames } from '@/lib/shared/classNames';
 import type { TabsProps as TabsSchemaProps } from '@/lib/site/content/schema/components/tabs';
 
+import '@/styles/components/components/Tabs.scss';
+
 type TabsProps = TabsSchemaProps;
 
 const Tabs = ({

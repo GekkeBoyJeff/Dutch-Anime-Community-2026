@@ -3,6 +3,8 @@ import parse from 'html-react-parser';
 import { classNames } from '@/lib/shared/classNames';
 import type { DescriptionListProps as DescriptionListSchemaProps } from '@/lib/site/content/schema/components/descriptionList';
 
+import '@/styles/components/components/DescriptionList.scss';
+
 type DescriptionListProps = DescriptionListSchemaProps;
 
 const DescriptionList = ({

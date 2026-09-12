@@ -5,6 +5,8 @@ import { Field } from '@base-ui/react/field';
 import { classNames } from '@/lib/shared/classNames';
 import type { TextAreaProps as TextAreaSchemaProps } from '@/lib/site/content/schema/forms/textArea';
 
+import '@/styles/components/forms/TextArea.scss';
+
 type TextAreaProps = TextAreaSchemaProps;
 
 // A multi-line text control. There is no Base UI Textarea primitive, so we render Field.Control as

@@ -1,5 +1,5 @@
 import Container from '@/components/basics/Container';
-import { Blocks } from '@/components/contentBlocks';
+import Blocks from '@/components/contentBlocks/Blocks';
 import SiteChrome from '@/components/structures/SiteChrome';
 import { getNotFoundPage, getSiteStructures } from '@/lib/site/content';
 import { resolveChrome } from '@/lib/site/site';

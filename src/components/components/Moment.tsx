@@ -3,6 +3,8 @@ import Skeleton from '@/components/basics/Skeleton';
 import { classNames } from '@/lib/shared/classNames';
 import type { MomentProps as MomentSchemaProps, MomentsProps as MomentsSchemaProps } from '@/lib/site/content/schema/components/moment';
 
+import '@/styles/components/components/Moment.scss';
+
 type MomentProps = MomentSchemaProps;
 
 type MomentListProps = MomentsSchemaProps;

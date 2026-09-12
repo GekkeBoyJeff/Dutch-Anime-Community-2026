@@ -6,6 +6,8 @@ import Section from '@/components/basics/Section';
 import EventCard from '@/components/components/EventCard';
 import type { EventTeaserProps as EventTeaserSchemaProps } from '@/lib/site/content/schema/blocks/eventTeaser';
 
+import '@/styles/components/contentBlocks/EventTeaser.scss';
+
 type EventTeaserProps = EventTeaserSchemaProps;
 
 const EventTeaser = ({

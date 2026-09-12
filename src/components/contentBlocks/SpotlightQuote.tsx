@@ -4,6 +4,8 @@ import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
 import type { SpotlightQuoteProps as SpotlightQuoteSchemaProps } from '@/lib/site/content/schema/blocks/spotlightQuote';
 
+import '@/styles/components/contentBlocks/SpotlightQuote.scss';
+
 type SpotlightQuoteProps = SpotlightQuoteSchemaProps;
 
 const SpotlightQuote = ({

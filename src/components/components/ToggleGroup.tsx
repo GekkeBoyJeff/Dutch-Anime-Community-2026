@@ -9,6 +9,8 @@ import useHaptics from '@/hooks/useHaptics';
 import { classNames } from '@/lib/shared/classNames';
 import type { ToggleGroupProps as ToggleGroupSchemaProps } from '@/lib/site/content/schema/components/toggleGroup';
 
+import '@/styles/components/components/ToggleGroup.scss';
+
 export type ToggleGroupProps = ToggleGroupSchemaProps;
 
 const ToggleGroup = ({

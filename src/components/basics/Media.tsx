@@ -5,6 +5,8 @@ import type { MediaProps as MediaSchemaProps } from '@/lib/site/content/schema/b
 import type { MediaProvider } from '@/lib/site/content/schema/shared';
 import { compileSizes, getImage, variantsToSrcSet, withBasePath } from '@/lib/site/images';
 
+import '@/styles/components/basics/Media.scss';
+
 const EMBEDS: Record<MediaProvider, (id: string) => string> = {
 	youtube: (id) => `https://www.youtube-nocookie.com/embed/${id}`,
 	vimeo: (id) => `https://player.vimeo.com/video/${id}`,

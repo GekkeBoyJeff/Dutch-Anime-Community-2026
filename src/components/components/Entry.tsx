@@ -3,6 +3,8 @@ import Skeleton from '@/components/basics/Skeleton';
 import { classNames } from '@/lib/shared/classNames';
 import type { EntryListProps as EntryListSchemaProps, EntryProps as EntrySchemaProps } from '@/lib/site/content/schema/components/entry';
 
+import '@/styles/components/components/Entry.scss';
+
 type EntryProps = EntrySchemaProps;
 
 type EntryListProps = EntryListSchemaProps;

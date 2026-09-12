@@ -5,6 +5,8 @@ import { Dialog } from '@base-ui/react/dialog';
 import { classNames } from '@/lib/shared/classNames';
 import type { DrawerProps as DrawerSchemaProps } from '@/lib/site/content/schema/components/drawer';
 
+import '@/styles/components/components/Drawer.scss';
+
 type DrawerProps = DrawerSchemaProps;
 
 const Drawer = ({

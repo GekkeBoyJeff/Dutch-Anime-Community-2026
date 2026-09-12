@@ -4,6 +4,8 @@ import Title from '@/components/basics/Title';
 import { classNames } from '@/lib/shared/classNames';
 import type { EmbedWidgetProps as EmbedWidgetSchemaProps } from '@/lib/site/content/schema/components/embedWidget';
 
+import '@/styles/components/components/EmbedWidget.scss';
+
 type EmbedWidgetProps = EmbedWidgetSchemaProps;
 
 const EmbedWidget = ({

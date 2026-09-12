@@ -2,6 +2,8 @@ import Interactive from '@/components/basics/Interactive';
 import { classNames } from '@/lib/shared/classNames';
 import type { PillProps as PillSchemaProps } from '@/lib/site/content/schema/basics/pill';
 
+import '@/styles/components/basics/Pill.scss';
+
 type PillProps = PillSchemaProps;
 
 const Pill = ({

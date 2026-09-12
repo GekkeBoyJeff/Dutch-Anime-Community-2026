@@ -3,6 +3,8 @@ import type { ComponentPropsWithoutRef } from 'react';
 import { classNames } from '@/lib/shared/classNames';
 import type { ColumnProps as ColumnSchemaProps } from '@/lib/site/content/schema/basics/column';
 
+import '@/styles/components/basics/Column.scss';
+
 type ColumnProps = ColumnSchemaProps;
 
 const Column = ({

@@ -26,6 +26,10 @@ import type {
 	NavItem as NavItemSchema,
 } from '@/lib/site/content/schema/structures/navigation';
 
+import '@/styles/components/structures/Navigation.scss';
+
+import '@/styles/components/structures/MegaMenu.scss';
+
 export type NavItem = NavItemSchema;
 
 export type NavCta = NavCtaSchema;

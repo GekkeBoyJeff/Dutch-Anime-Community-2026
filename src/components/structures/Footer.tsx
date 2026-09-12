@@ -6,6 +6,8 @@ import Link from '@/components/basics/Link';
 import { classNames } from '@/lib/shared/classNames';
 import type { FooterProps as FooterSchemaProps } from '@/lib/site/content/schema/structures/footer';
 
+import '@/styles/components/structures/Footer.scss';
+
 type FooterProps = FooterSchemaProps;
 
 const Footer = ({

@@ -10,6 +10,8 @@ import useHaptics from '@/hooks/useHaptics';
 import { classNames } from '@/lib/shared/classNames';
 import type { FileUploadProps as FileUploadSchemaProps } from '@/lib/site/content/schema/forms/fileUpload';
 
+import '@/styles/components/forms/FileUpload.scss';
+
 type FileUploadProps = FileUploadSchemaProps;
 
 // A drag-and-drop file picker over a real <input type="file">, so files still participate in native

@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import DashboardNav from '@/components/dashboard/shell/DashboardNav';
 import RouteReveal from '@/components/dashboard/structures/RouteReveal';
 
+import '@/styles/components/dashboard/shell/DashboardChrome.scss';
+
 interface DashboardChromeProps {
 	children?: ReactNode;
 }

@@ -3,6 +3,8 @@ import { Fragment } from 'react';
 import { classNames } from '@/lib/shared/classNames';
 import type { ShortcutProps as ShortcutSchemaProps } from '@/lib/site/content/schema/basics/shortcut';
 
+import '@/styles/components/basics/Shortcut.scss';
+
 type ShortcutProps = ShortcutSchemaProps;
 
 const Shortcut = ({

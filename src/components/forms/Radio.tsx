@@ -7,6 +7,8 @@ import Content from '@/components/basics/Content';
 import { classNames } from '@/lib/shared/classNames';
 import type { RadioProps as RadioSchemaProps } from '@/lib/site/content/schema/forms/radio';
 
+import '@/styles/components/forms/Radio.scss';
+
 type RadioProps = RadioSchemaProps;
 
 // A single choice. Wraps Base UI's Radio, so it carries role="radio" + aria-checked and a hidden

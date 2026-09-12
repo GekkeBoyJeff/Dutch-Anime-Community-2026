@@ -13,6 +13,8 @@ import { NewsletterSignup } from '@/lib/site/content/schema/blocks/subscribeToNe
 import type { NewsletterSignup as NewsletterSignupValues } from '@/lib/site/content/schema/blocks/subscribeToNewsletter';
 import type { NewsletterFormProps as NewsletterFormSchemaProps } from '@/lib/site/content/schema/components/newsletterForm';
 
+import '@/styles/components/components/NewsletterForm.scss';
+
 type NewsletterFormProps = NewsletterFormSchemaProps;
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';

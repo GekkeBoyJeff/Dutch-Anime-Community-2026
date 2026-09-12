@@ -3,6 +3,8 @@ import type { CSSProperties } from 'react';
 import { classNames } from '@/lib/shared/classNames';
 import type { SkeletonProps as SkeletonSchemaProps } from '@/lib/site/content/schema/basics/skeleton';
 
+import '@/styles/components/basics/Skeleton.scss';
+
 type SkeletonProps = SkeletonSchemaProps;
 
 const Skeleton = ({

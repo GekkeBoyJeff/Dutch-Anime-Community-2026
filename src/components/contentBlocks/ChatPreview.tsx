@@ -4,6 +4,8 @@ import Content from '@/components/basics/Content';
 import Section from '@/components/basics/Section';
 import type { ChatMessage, ChatPreviewProps as ChatPreviewSchemaProps } from '@/lib/site/content/schema/blocks/chatPreview';
 
+import '@/styles/components/contentBlocks/ChatPreview.scss';
+
 type ChatPreviewProps = ChatPreviewSchemaProps;
 
 const startsTurn = (message: ChatMessage, previous: ChatMessage | undefined) => {

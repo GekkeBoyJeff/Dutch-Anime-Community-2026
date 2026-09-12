@@ -9,6 +9,8 @@ import useHaptics from '@/hooks/useHaptics';
 import { classNames } from '@/lib/shared/classNames';
 import type { NumberFieldProps as NumberFieldSchemaProps } from '@/lib/site/content/schema/forms/numberField';
 
+import '@/styles/components/forms/NumberField.scss';
+
 export interface NumberFieldTranslations {
 	/** Label for the decrement button @default 'Decrease' */
 	decrementLabel?: string;

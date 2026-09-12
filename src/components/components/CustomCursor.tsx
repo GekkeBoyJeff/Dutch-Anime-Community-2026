@@ -5,6 +5,8 @@ import { useEffect, useRef } from 'react';
 import { classNames } from '@/lib/shared/classNames';
 import type { CustomCursorProps as CustomCursorSchemaProps } from '@/lib/site/content/schema/components/customCursor';
 
+import '@/styles/components/components/CustomCursor.scss';
+
 type CustomCursorProps = CustomCursorSchemaProps;
 
 const CustomCursor = ({

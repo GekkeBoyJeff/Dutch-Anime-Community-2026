@@ -46,21 +46,18 @@ The worked example is `Ribbon`, a basic that does not exist in this repo: a smal
 sits in the corner of a card and says something like "Nieuw". Substitute the tier folder from the
 table above and the recipe is identical for all four tiers.
 
-Seven steps. The rightmost column is what goes wrong if the step is missed.
+Four steps. The rightmost column is what goes wrong if the step is missed.
 
 | # | Step | If skipped |
 | --- | --- | --- |
 | 1 | Write the schema: `src/lib/site/content/schema/basics/ribbon.ts` | There is no props type to write the component against |
-| 2 | Re-export it from `src/lib/site/content/schema/basics/index.ts` | Nothing breaks today; the type is just missing from the schema barrel |
-| 3 | Write the component: `src/components/basics/Ribbon.tsx` | — |
-| 4 | Add a line to `src/components/basics/index.ts` | Nothing breaks today; the tier's list is incomplete |
-| 5 | Write the stylesheet: `src/styles/components/basics/Ribbon.scss` | The component renders unstyled |
-| 6 | Add an import line to `src/styles/index.ts` | The stylesheet is never compiled and the component renders unstyled — `npm run verify` fails until you add it |
-| 7 | Write the story: `src/stories/basics/Ribbon.stories.tsx` | The component is invisible in Storybook and cannot be reviewed |
+| 2 | Write the component: `src/components/basics/Ribbon.tsx`, its imports ending with its own stylesheet | Without that import line the stylesheet never reaches the bundle and the component renders unstyled |
+| 3 | Write the stylesheet: `src/styles/components/basics/Ribbon.scss` | The component renders unstyled |
+| 4 | Write the story: `src/stories/basics/Ribbon.stories.tsx` | The component is invisible in Storybook and cannot be reviewed |
 
-Steps 2 and 4 are the only ones nothing checks. They are still expected: the barrels are how a tier
-lists what it contains. Step 6 used to be the one that cost an afternoon, because it failed silently —
-`npm run verify` now names the stylesheet you forgot.
+Every step writes a file the component needs to work. There is no list to append to and no barrel to
+keep in sync: a component imports its own stylesheet, so the only file that has to know `Ribbon.scss`
+exists is `Ribbon.tsx`.
 
 ### 1. The schema
 
@@ -84,20 +81,14 @@ export type RibbonProps = z.infer<typeof RibbonProps>;
 Every prop gets a `.describe()` — that text is what shows up in Storybook's args table. `.optional()`
 marks the props the component supplies a default for.
 
-### 2. The schema barrel
-
-`src/lib/site/content/schema/basics/index.ts` is one alphabetical list of `export *` lines. Add one:
-
-```typescript
-export * from '@/lib/site/content/schema/basics/ribbon';
-```
-
-### 3. The component
+### 2. The component
 
 ```tsx
 // src/components/basics/Ribbon.tsx
 import { classNames } from '@/lib/shared/classNames';
 import type { RibbonProps as RibbonSchemaProps } from '@/lib/site/content/schema/basics/ribbon';
+
+import '@/styles/components/basics/Ribbon.scss';
 
 type RibbonProps = RibbonSchemaProps;
 
@@ -116,8 +107,11 @@ const Ribbon = ({
 export default Ribbon;
 ```
 
-Four things that are not optional:
+Five things that are not optional:
 
+- The last import is the component's own stylesheet, on its own line after a blank one. A global
+  `.scss` only reaches the bundle when a module imports it, and the module that needs it is this one.
+  ESLint leaves the line alone: `import/order` does not sort imports that bind no name.
 - The type import points at **the schema file**, never at `@/lib/site/content` — that barrel is
   server-only and will fail the build if it reaches the browser.
 - The component is an arrow function assigned to a `const`, and it is the **default** export. ESLint
@@ -130,16 +124,7 @@ A form field additionally needs `'use client'` on the first line, because the fo
 UI, whose components use state and effects. Every file in `src/components/forms/` carries it except
 `FieldGroup.tsx`, which is a plain wrapper element.
 
-### 4. The component barrel
-
-```typescript
-export { default as Ribbon } from '@/components/basics/Ribbon';
-```
-
-Order matters here: a component that composes others is exported after them. `structures/index.ts`
-says so in the file — "SiteChrome composes the other three, so it is exported last (barrel rule)".
-
-### 5. The stylesheet
+### 3. The stylesheet
 
 ```css
 /* src/styles/components/basics/Ribbon.scss */
@@ -167,21 +152,7 @@ No `@use` and no import line: `spacing()`, `$primary` and `$white` are prepended
 by the build. One top-level selector, every child class prefixed with the root class, modifiers as
 bare `&.is-…`, everything nested. Never BEM.
 
-### 6. The style entry point
-
-`src/styles/index.ts` lists every stylesheet, grouped by tier and alphabetical inside the group. Add
-one line:
-
-```typescript
-import '@/styles/components/basics/Ribbon.scss';
-```
-
-A stylesheet under `dashboard/` joins the tier its own folder names, so `dashboard/components/Panel.scss`
-sits in the `// components` group; only `dashboard/shell/` is its own section. Forget the line and
-`npm run verify` fails with the file's path — it is the one mistake here that nothing else would
-mention.
-
-### 7. The story
+### 4. The story
 
 ```tsx
 // src/stories/basics/Ribbon.stories.tsx
@@ -239,7 +210,7 @@ story is the whole verification loop.
 
 ## Recipe: a content block
 
-A content block is a component in `src/components/contentBlocks/` — so the seven steps above all
+A content block is a component in `src/components/contentBlocks/` — so the four steps above all
 apply, unchanged, with `basics` swapped for `contentBlocks` in every path. What follows is
 everything that is *extra*.
 
@@ -288,8 +259,7 @@ export type PosterWallBlock = z.infer<typeof PosterWallBlock>;
 
 ### B. The block union
 
-`src/lib/site/content/schema/blocks/index.ts` needs **two** edits, not one. First an import and a
-line in the union:
+`src/lib/site/content/schema/blocks/index.ts` needs one edit: an import and a line in the union.
 
 ```typescript
 import { PosterWallBlock } from '@/lib/site/content/schema/blocks/posterWall';
@@ -302,14 +272,12 @@ export const Block = z.discriminatedUnion('type', [
 ]);
 ```
 
-Then the `export *` line at the bottom of the same file:
+The imports at the top are alphabetical by path — ESLint enforces that. The union array is not, and
+does not need to be.
 
-```typescript
-export * from '@/lib/site/content/schema/blocks/posterWall';
-```
-
-The imports at the top are alphabetical by path — ESLint enforces that. The union array and the
-`export *` list below it are not, and do not need to be.
+This is a hand-written list, and it is the kind that is allowed: `REGISTRY` in `Blocks.tsx` derives
+its type from this union, so a block in one and not the other is a `tsc` error. A list you cannot
+forget is a registry; a list you can forget is homework.
 
 `Block` is the single union every other part of the system reads. A `Page` is a `meta` object plus an
 array of `Block`, the content loader validates against it, and the editor builds its component list
@@ -538,7 +506,7 @@ over — unless the change happens to alter one of the three substrings those ca
 
 | Symptom | Cause |
 | --- | --- |
-| The component renders, completely unstyled | Its stylesheet is not imported in `src/styles/index.ts` — `npm run verify` names it |
+| The component renders, completely unstyled | The component file has no `import '@/styles/components/…'` line, so its stylesheet never reached the bundle |
 | `npm run typecheck` says a property is missing from `REGISTRY` | The block is in the union but has no renderer in `Blocks.tsx` |
 | `npm run typecheck` flags an unknown key in the `REGISTRY` object | An entry whose `type` no block schema declares |
 | The build stops with `✖ Invalid page content — 2 problems:` and a field path | A page in `src/content/pages/` no longer matches the schema. The message names the page and the field |
@@ -564,7 +532,6 @@ over — unless the change happens to alter one of the three substrings those ca
   `data-colorset` on the preview body; blocks with a `colorset` prop also have their own control.
 - For a content block: `npm run dev`, open `/builder` ([9. The visual editor](?path=/docs/for-developers-9-the-visual-editor--docs)), insert the block, and confirm that every prop
   has an input and that the default preset fills it in sensibly.
-- Nothing was added to a barrel out of dependency order.
 
 ---
 

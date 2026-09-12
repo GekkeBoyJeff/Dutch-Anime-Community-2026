@@ -10,6 +10,8 @@ import useHaptics from '@/hooks/useHaptics';
 import { classNames } from '@/lib/shared/classNames';
 import type { RadioGroupProps as RadioGroupSchemaProps } from '@/lib/site/content/schema/forms/radioGroup';
 
+import '@/styles/components/forms/RadioGroup.scss';
+
 export type { RadioGroupOption as RadioOption } from '@/lib/site/content/schema/forms/radioGroup';
 
 export type RadioGroupProps = RadioGroupSchemaProps;

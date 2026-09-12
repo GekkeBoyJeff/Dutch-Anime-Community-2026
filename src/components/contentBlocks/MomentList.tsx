@@ -5,6 +5,8 @@ import Moment from '@/components/components/Moment';
 import { formatDate } from '@/lib/shared/formatDate';
 import type { MomentListItem, MomentListProps as MomentListSchemaProps } from '@/lib/site/content/schema/blocks/momentList';
 
+import '@/styles/components/contentBlocks/MomentList.scss';
+
 type MomentListProps = MomentListSchemaProps;
 
 // Decided once, when the site is built: a static export cannot learn that a date has passed since.

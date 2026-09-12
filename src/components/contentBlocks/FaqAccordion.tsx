@@ -6,6 +6,8 @@ import Title from '@/components/basics/Title';
 import { classNames } from '@/lib/shared/classNames';
 import type { FaqAccordionProps as FaqAccordionSchemaProps, FaqItem } from '@/lib/site/content/schema/blocks/faqAccordion';
 
+import '@/styles/components/contentBlocks/FaqAccordion.scss';
+
 type FaqAccordionProps = FaqAccordionSchemaProps;
 
 const UNCATEGORISED = 'Overig';

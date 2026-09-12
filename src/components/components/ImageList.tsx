@@ -4,6 +4,8 @@ import Media from '@/components/basics/Media';
 import { classNames } from '@/lib/shared/classNames';
 import type { ImageListProps as ImageListSchemaProps } from '@/lib/site/content/schema/components/imageList';
 
+import '@/styles/components/components/ImageList.scss';
+
 type ImageListProps = ImageListSchemaProps;
 
 const ImageList = ({

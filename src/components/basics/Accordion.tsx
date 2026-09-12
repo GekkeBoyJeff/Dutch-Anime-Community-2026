@@ -6,6 +6,8 @@ import AccordionItem from '@/components/basics/AccordionItem';
 import { classNames } from '@/lib/shared/classNames';
 import type { AccordionProps as AccordionSchemaProps } from '@/lib/site/content/schema/basics/accordion';
 
+import '@/styles/components/basics/Accordion.scss';
+
 type AccordionProps = AccordionSchemaProps;
 
 const Accordion = ({

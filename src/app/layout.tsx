@@ -1,3 +1,6 @@
+import '@/styles/theme.scss';
+import '@/styles/base.scss';
+
 import type { Metadata, Viewport } from 'next';
 import { Manrope, Poppins } from 'next/font/google';
 import type { ReactNode } from 'react';
@@ -8,7 +11,6 @@ import { classNames } from '@/lib/shared/classNames';
 import { env } from '@/lib/shared/env';
 import { organizationJsonLd } from '@/lib/site/seo';
 import { site, brand } from '@/lib/site/site';
-import '@/styles';
 
 const sans = Manrope({
 	subsets: ['latin'],

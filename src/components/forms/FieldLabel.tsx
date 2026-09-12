@@ -5,6 +5,8 @@ import { Field } from '@base-ui/react/field';
 import { classNames } from '@/lib/shared/classNames';
 import type { FieldLabelProps as FieldLabelSchemaProps } from '@/lib/site/content/schema/forms/fieldLabel';
 
+import '@/styles/components/forms/FieldLabel.scss';
+
 type FieldLabelProps = FieldLabelSchemaProps;
 
 // The field's <label>. Base UI auto-wires htmlFor to the control's generated id, so clicking the

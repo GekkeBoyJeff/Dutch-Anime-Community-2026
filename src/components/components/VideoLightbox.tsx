@@ -9,6 +9,8 @@ import VisuallyHidden from '@/components/basics/VisuallyHidden';
 import { classNames } from '@/lib/shared/classNames';
 import type { VideoLightboxProps as VideoLightboxSchemaProps } from '@/lib/site/content/schema/components/videoLightbox';
 
+import '@/styles/components/components/VideoLightbox.scss';
+
 // Keep the media mounted until the close transition finishes, so the iframe/video doesn't pop out
 // before the panel has faded. Matches $speed in the SCSS.
 const CLOSE_DELAY = 200;

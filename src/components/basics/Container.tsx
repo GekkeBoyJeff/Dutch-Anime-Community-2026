@@ -3,6 +3,8 @@ import type { ComponentPropsWithoutRef } from 'react';
 import { classNames } from '@/lib/shared/classNames';
 import type { ContainerProps as ContainerSchemaProps } from '@/lib/site/content/schema/basics/container';
 
+import '@/styles/components/basics/Container.scss';
+
 type ContainerProps = ContainerSchemaProps;
 
 const Container = ({

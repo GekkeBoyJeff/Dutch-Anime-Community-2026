@@ -5,6 +5,8 @@ import Icon from '@/components/basics/Icon';
 import { classNames } from '@/lib/shared/classNames';
 import type { MarqueeTickerProps as MarqueeTickerSchemaProps } from '@/lib/site/content/schema/components/marqueeTicker';
 
+import '@/styles/components/components/MarqueeTicker.scss';
+
 type MarqueeTickerProps = MarqueeTickerSchemaProps;
 
 // The duplicate copy is aria-hidden and the strip carries a single generic label, so a screen

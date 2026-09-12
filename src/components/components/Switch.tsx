@@ -6,6 +6,8 @@ import useHaptics from '@/hooks/useHaptics';
 import { classNames } from '@/lib/shared/classNames';
 import type { SwitchProps as SwitchSchemaProps } from '@/lib/site/content/schema/components/switch';
 
+import '@/styles/components/components/Switch.scss';
+
 export type SwitchProps = SwitchSchemaProps;
 
 const Switch = ({

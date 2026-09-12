@@ -52,6 +52,8 @@ import type { LucideIcon } from 'lucide-react';
 import { classNames } from '@/lib/shared/classNames';
 import type { IconProps as IconSchemaProps } from '@/lib/site/content/schema/basics/icon';
 
+import '@/styles/components/basics/Icon.scss';
+
 type IconProps = IconSchemaProps;
 
 // The explicit imports above are what keeps lucide tree-shakeable; a dynamic lookup bundles every glyph.

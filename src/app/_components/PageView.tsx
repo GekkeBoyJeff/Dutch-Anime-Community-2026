@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import JsonLd from '@/components/basics/JsonLd';
-import { Blocks } from '@/components/contentBlocks';
+import Blocks from '@/components/contentBlocks/Blocks';
 import { getPageByPath } from '@/lib/site/content';
 import { pageJsonLd } from '@/lib/site/seo';
 

@@ -4,6 +4,8 @@ import { classNames } from '@/lib/shared/classNames';
 import { sanitizeHtml } from '@/lib/shared/sanitize';
 import type { ContentProps as ContentSchemaProps } from '@/lib/site/content/schema/basics/content';
 
+import '@/styles/components/basics/Content.scss';
+
 type ContentProps = ContentSchemaProps;
 
 const Content = ({

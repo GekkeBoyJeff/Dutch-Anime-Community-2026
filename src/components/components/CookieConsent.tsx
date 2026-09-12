@@ -10,6 +10,8 @@ import Interactive from '@/components/basics/Interactive';
 import { classNames } from '@/lib/shared/classNames';
 import type { CookieConsentProps as CookieConsentSchemaProps } from '@/lib/site/content/schema/components/cookieConsent';
 
+import '@/styles/components/components/CookieConsent.scss';
+
 type ConsentChoices = Record<string, boolean>;
 
 type CookieConsentProps = CookieConsentSchemaProps;

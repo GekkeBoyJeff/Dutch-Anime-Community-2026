@@ -9,6 +9,8 @@ import Title from '@/components/basics/Title';
 import RadioGroup from '@/components/forms/RadioGroup';
 import type { CommunityQuestionProps as CommunityQuestionSchemaProps } from '@/lib/site/content/schema/blocks/communityQuestion';
 
+import '@/styles/components/contentBlocks/CommunityQuestion.scss';
+
 type CommunityQuestionProps = CommunityQuestionSchemaProps;
 
 const STORAGE_PREFIX = 'community-question:';

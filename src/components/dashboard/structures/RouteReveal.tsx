@@ -3,6 +3,8 @@
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 
+import '@/styles/components/dashboard/structures/RouteReveal.scss';
+
 interface RouteRevealProps {
 	children?: ReactNode;
 }

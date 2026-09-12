@@ -3,6 +3,8 @@ import parse from 'html-react-parser';
 import { classNames } from '@/lib/shared/classNames';
 import type { TableProps as TableSchemaProps } from '@/lib/site/content/schema/components/table';
 
+import '@/styles/components/components/Table.scss';
+
 type TableProps = TableSchemaProps;
 
 const Table = ({

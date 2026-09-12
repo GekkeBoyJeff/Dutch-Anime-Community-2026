@@ -2,6 +2,8 @@ import Interactive from '@/components/basics/Interactive';
 import { classNames } from '@/lib/shared/classNames';
 import type { LinkProps as LinkSchemaProps } from '@/lib/site/content/schema/basics/link';
 
+import '@/styles/components/basics/Link.scss';
+
 type LinkProps = LinkSchemaProps;
 
 const Link = ({

@@ -6,6 +6,8 @@ import Section from '@/components/basics/Section';
 import Card from '@/components/components/Card';
 import type { ReviewsProps as ReviewsSchemaProps } from '@/lib/site/content/schema/blocks/reviews';
 
+import '@/styles/components/contentBlocks/Reviews.scss';
+
 type ReviewsProps = ReviewsSchemaProps;
 
 const Reviews = ({

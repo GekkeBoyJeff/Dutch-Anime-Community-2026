@@ -6,6 +6,8 @@ import Interactive from '@/components/basics/Interactive';
 import { classNames } from '@/lib/shared/classNames';
 import type { NotificationProps as NotificationSchemaProps } from '@/lib/site/content/schema/components/notification';
 
+import '@/styles/components/components/Notification.scss';
+
 export type NotificationPosition = NotificationSchemaProps['position'];
 
 type NotificationProps = NotificationSchemaProps;

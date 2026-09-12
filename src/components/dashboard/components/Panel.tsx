@@ -3,6 +3,8 @@ import Title from '@/components/basics/Title';
 import { classNames } from '@/lib/shared/classNames';
 import type { PanelProps as PanelSchemaProps } from '@/lib/site/content/schema/components/panel';
 
+import '@/styles/components/dashboard/components/Panel.scss';
+
 export type PanelProps = PanelSchemaProps;
 
 const Panel = ({

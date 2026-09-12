@@ -8,6 +8,8 @@ import Section from '@/components/basics/Section';
 import Title from '@/components/basics/Title';
 import type { HeroProps as HeroSchemaProps } from '@/lib/site/content/schema/blocks/hero';
 
+import '@/styles/components/contentBlocks/Hero.scss';
+
 // `eager` is a render hint Blocks derives from a block's position, not content, so it stays out of the content schema.
 type HeroProps = HeroSchemaProps & { eager?: boolean };
 

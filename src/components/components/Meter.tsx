@@ -3,6 +3,8 @@ import Skeleton from '@/components/basics/Skeleton';
 import { classNames } from '@/lib/shared/classNames';
 import type { MeterProps as MeterSchemaProps } from '@/lib/site/content/schema/components/meter';
 
+import '@/styles/components/components/Meter.scss';
+
 type MeterProps = MeterSchemaProps;
 
 const RING_RADIUS = 26;

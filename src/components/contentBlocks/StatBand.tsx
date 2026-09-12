@@ -4,6 +4,8 @@ import HeadingGroup from '@/components/basics/HeadingGroup';
 import Section from '@/components/basics/Section';
 import type { StatBandProps as StatBandSchemaProps } from '@/lib/site/content/schema/blocks/statBand';
 
+import '@/styles/components/contentBlocks/StatBand.scss';
+
 type StatBandProps = StatBandSchemaProps;
 
 const StatBand = ({

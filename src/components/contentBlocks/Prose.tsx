@@ -3,6 +3,8 @@ import Content from '@/components/basics/Content';
 import Section from '@/components/basics/Section';
 import type { ProseProps as ProseSchemaProps } from '@/lib/site/content/schema/blocks/prose';
 
+import '@/styles/components/contentBlocks/Prose.scss';
+
 type ProseProps = ProseSchemaProps;
 
 const Prose = ({

@@ -9,6 +9,8 @@ import Card from '@/components/components/Card';
 import { classNames } from '@/lib/shared/classNames';
 import type { BentoGridProps as BentoGridSchemaProps, BentoItem } from '@/lib/site/content/schema/blocks/bentoGrid';
 
+import '@/styles/components/contentBlocks/BentoGrid.scss';
+
 type BentoGridProps = BentoGridSchemaProps;
 
 const TileBody = ({ item }: { item: BentoItem }) => {

@@ -6,6 +6,8 @@ import { useCallback, useState, type ReactNode, type Ref } from 'react';
 import { classNames } from '@/lib/shared/classNames';
 import type { SelectOption, SelectOptionGroup, SelectProps as SelectSchemaProps } from '@/lib/site/content/schema/forms/select';
 
+import '@/styles/components/forms/Select.scss';
+
 export type { SelectOption, SelectOptionGroup };
 
 type SelectProps = SelectSchemaProps;

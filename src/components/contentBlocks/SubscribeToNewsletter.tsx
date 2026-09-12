@@ -4,6 +4,8 @@ import Section from '@/components/basics/Section';
 import NewsletterForm from '@/components/components/NewsletterForm';
 import type { SubscribeToNewsletterProps as SubscribeToNewsletterSchemaProps } from '@/lib/site/content/schema/blocks/subscribeToNewsletter';
 
+import '@/styles/components/contentBlocks/SubscribeToNewsletter.scss';
+
 type SubscribeToNewsletterProps = SubscribeToNewsletterSchemaProps;
 
 const SubscribeToNewsletter = ({

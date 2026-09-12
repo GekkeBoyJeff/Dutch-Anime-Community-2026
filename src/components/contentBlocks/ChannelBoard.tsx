@@ -5,6 +5,8 @@ import HeadingGroup from '@/components/basics/HeadingGroup';
 import Section from '@/components/basics/Section';
 import type { ChannelBoardProps as ChannelBoardSchemaProps } from '@/lib/site/content/schema/blocks/channelBoard';
 
+import '@/styles/components/contentBlocks/ChannelBoard.scss';
+
 type ChannelBoardProps = ChannelBoardSchemaProps;
 
 // The rooms of the server, named and explained. Nothing links out: a channel URL only works once you

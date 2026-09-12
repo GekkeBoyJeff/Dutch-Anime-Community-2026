@@ -1,6 +1,8 @@
 import { classNames } from '@/lib/shared/classNames';
 import type { DividerProps as DividerSchemaProps } from '@/lib/site/content/schema/basics/divider';
 
+import '@/styles/components/basics/Divider.scss';
+
 type DividerProps = DividerSchemaProps;
 
 const Divider = ({

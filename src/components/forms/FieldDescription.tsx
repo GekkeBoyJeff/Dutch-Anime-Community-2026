@@ -5,6 +5,8 @@ import { Field } from '@base-ui/react/field';
 import { classNames } from '@/lib/shared/classNames';
 import type { FieldDescriptionProps as FieldDescriptionSchemaProps } from '@/lib/site/content/schema/forms/fieldDescription';
 
+import '@/styles/components/forms/FieldDescription.scss';
+
 type FieldDescriptionProps = FieldDescriptionSchemaProps;
 
 // Helper text under a control. Base UI links its id into the control's aria-describedby, so screen

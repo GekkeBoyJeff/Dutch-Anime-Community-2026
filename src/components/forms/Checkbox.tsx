@@ -7,6 +7,8 @@ import useHaptics from '@/hooks/useHaptics';
 import { classNames } from '@/lib/shared/classNames';
 import type { CheckboxProps as CheckboxSchemaProps } from '@/lib/site/content/schema/forms/checkbox';
 
+import '@/styles/components/forms/Checkbox.scss';
+
 type CheckboxProps = CheckboxSchemaProps;
 
 // A single tick-box. Wraps Base UI's Checkbox, so it carries role="checkbox" + aria-checked

@@ -6,6 +6,8 @@ import Checkbox from '@/components/forms/Checkbox';
 import { classNames } from '@/lib/shared/classNames';
 import type { CheckboxGroupProps as CheckboxGroupSchemaProps } from '@/lib/site/content/schema/forms/checkboxGroup';
 
+import '@/styles/components/forms/CheckboxGroup.scss';
+
 export type CheckboxGroupProps = CheckboxGroupSchemaProps;
 
 // A set of related checkboxes sharing one ticked-values array. Wraps Base UI's CheckboxGroup for the

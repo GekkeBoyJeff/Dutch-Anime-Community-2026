@@ -1,6 +1,8 @@
 import { classNames } from '@/lib/shared/classNames';
 import type { ProgressProps as ProgressSchemaProps } from '@/lib/site/content/schema/basics/progress';
 
+import '@/styles/components/basics/Progress.scss';
+
 type ProgressProps = ProgressSchemaProps;
 
 const Progress = ({

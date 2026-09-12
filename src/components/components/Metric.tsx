@@ -2,6 +2,8 @@ import Skeleton from '@/components/basics/Skeleton';
 import { classNames } from '@/lib/shared/classNames';
 import type { MetricDelta, MetricProps as MetricSchemaProps } from '@/lib/site/content/schema/components/metric';
 
+import '@/styles/components/components/Metric.scss';
+
 type MetricProps = MetricSchemaProps;
 
 const DELTA_ARROW: Record<MetricDelta['direction'], string> = {

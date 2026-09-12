@@ -5,6 +5,8 @@ import { Fieldset } from '@base-ui/react/fieldset';
 import { classNames } from '@/lib/shared/classNames';
 import type { FieldLegendProps as FieldLegendSchemaProps } from '@/lib/site/content/schema/forms/fieldLegend';
 
+import '@/styles/components/forms/FieldLegend.scss';
+
 type FieldLegendProps = FieldLegendSchemaProps;
 
 // The accessible name for a FieldSet. `variant='legend'` is a section-sized title; `variant='label'`

@@ -8,6 +8,8 @@ import Icon from '@/components/basics/Icon';
 import Shortcut from '@/components/basics/Shortcut';
 import type { PaletteCommand } from '@/lib/shared/auth/dashboard-sections';
 
+import '@/styles/components/dashboard/structures/CommandPalette.scss';
+
 export interface PaletteResult {
 	key: string;
 	group: 'events' | 'people';

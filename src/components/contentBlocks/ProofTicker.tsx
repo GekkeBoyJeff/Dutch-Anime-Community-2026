@@ -2,6 +2,8 @@ import Section from '@/components/basics/Section';
 import MarqueeTicker from '@/components/components/MarqueeTicker';
 import type { ProofTickerProps as ProofTickerSchemaProps } from '@/lib/site/content/schema/blocks/proofTicker';
 
+import '@/styles/components/contentBlocks/ProofTicker.scss';
+
 type ProofTickerProps = ProofTickerSchemaProps;
 
 const ProofTicker = ({

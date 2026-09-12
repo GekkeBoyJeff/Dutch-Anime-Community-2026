@@ -20,6 +20,8 @@ import { classNames } from '@/lib/shared/classNames';
 import type { CardGridItem, ItemCardGridProps as ItemCardGridSchemaProps } from '@/lib/site/content/schema/components/itemCardGrid';
 import type { SortOption } from '@/lib/site/content/schema/shared';
 
+import '@/styles/components/components/ItemCardGrid.scss';
+
 export type { CardGridItem };
 
 type ItemCardGridProps = ItemCardGridSchemaProps;

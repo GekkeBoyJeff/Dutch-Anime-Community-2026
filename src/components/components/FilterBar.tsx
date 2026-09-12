@@ -9,6 +9,8 @@ import VisuallyHidden from '@/components/basics/VisuallyHidden';
 import { classNames } from '@/lib/shared/classNames';
 import type { FilterBarProps as FilterBarSchemaProps } from '@/lib/site/content/schema/components/filterBar';
 
+import '@/styles/components/components/FilterBar.scss';
+
 export type FilterBarProps = FilterBarSchemaProps;
 
 const FilterBar = ({

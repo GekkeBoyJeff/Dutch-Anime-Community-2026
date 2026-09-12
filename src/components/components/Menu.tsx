@@ -21,6 +21,8 @@ import type {
 	MenuSeparatorProps as MenuSeparatorSchemaProps,
 } from '@/lib/site/content/schema/components/menu';
 
+import '@/styles/components/components/Menu.scss';
+
 type MenuProps = MenuSchemaProps;
 
 type MenuItemProps = MenuItemSchemaProps;

@@ -11,6 +11,8 @@ import Title from '@/components/basics/Title';
 import { classNames } from '@/lib/shared/classNames';
 import type { StickyShowcaseProps as StickyShowcaseSchemaProps } from '@/lib/site/content/schema/blocks/stickyShowcase';
 
+import '@/styles/components/contentBlocks/StickyShowcase.scss';
+
 type StickyShowcaseProps = StickyShowcaseSchemaProps;
 
 const StickyShowcase = ({

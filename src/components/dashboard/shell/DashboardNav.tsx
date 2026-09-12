@@ -15,6 +15,8 @@ import { buildNavGroups, buildPaletteActions, buildPalettePages, buildTabBarItem
 import { emphasisRole, usePermissions, ROLE_LABELS, highestRole, type AppRole, type Permission } from '@/lib/shared/auth/permissions';
 import { getBrowserClient } from '@/lib/shared/supabase/client';
 
+import '@/styles/components/structures/MegaMenu.scss';
+
 interface NavIndicator {
 	dot?: boolean;
 	badge?: number;

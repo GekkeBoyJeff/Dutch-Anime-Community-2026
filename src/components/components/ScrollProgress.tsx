@@ -3,6 +3,8 @@ import type { CSSProperties } from 'react';
 import { classNames } from '@/lib/shared/classNames';
 import type { ScrollProgressProps as ScrollProgressSchemaProps } from '@/lib/site/content/schema/components/scrollProgress';
 
+import '@/styles/components/components/ScrollProgress.scss';
+
 type ScrollProgressProps = ScrollProgressSchemaProps;
 
 // Where scroll-driven timelines aren't supported (Safari still lags in 2026) the bar is hidden via

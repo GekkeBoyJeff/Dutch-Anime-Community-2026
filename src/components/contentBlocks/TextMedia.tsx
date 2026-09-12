@@ -6,6 +6,8 @@ import Title from '@/components/basics/Title';
 import { classNames } from '@/lib/shared/classNames';
 import type { TextMediaProps as TextMediaSchemaProps } from '@/lib/site/content/schema/blocks/textMedia';
 
+import '@/styles/components/contentBlocks/TextMedia.scss';
+
 type TextMediaProps = TextMediaSchemaProps;
 
 const TextMedia = ({

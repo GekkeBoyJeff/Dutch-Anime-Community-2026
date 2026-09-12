@@ -2,6 +2,8 @@ import Button from '@/components/basics/Button';
 import { classNames } from '@/lib/shared/classNames';
 import type { ActionsProps as ActionsSchemaProps } from '@/lib/site/content/schema/basics/actions';
 
+import '@/styles/components/basics/Actions.scss';
+
 type ActionsProps = ActionsSchemaProps;
 
 const Actions = ({

@@ -6,6 +6,8 @@ import Media from '@/components/basics/Media';
 import { classNames } from '@/lib/shared/classNames';
 import type { GalleryProps as GallerySchemaProps } from '@/lib/site/content/schema/components/gallery';
 
+import '@/styles/components/components/Gallery.scss';
+
 type GalleryProps = GallerySchemaProps;
 
 const Gallery = ({

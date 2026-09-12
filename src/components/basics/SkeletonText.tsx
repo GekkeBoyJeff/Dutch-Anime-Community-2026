@@ -2,6 +2,8 @@ import Skeleton from '@/components/basics/Skeleton';
 import { classNames } from '@/lib/shared/classNames';
 import type { SkeletonTextProps as SkeletonTextSchemaProps } from '@/lib/site/content/schema/basics/skeletonText';
 
+import '@/styles/components/basics/SkeletonText.scss';
+
 type SkeletonTextProps = SkeletonTextSchemaProps;
 
 const SkeletonText = ({

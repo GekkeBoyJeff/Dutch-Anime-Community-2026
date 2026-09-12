@@ -2,6 +2,8 @@ import Content from '@/components/basics/Content';
 import { classNames } from '@/lib/shared/classNames';
 import type { AlertProps as AlertSchemaProps } from '@/lib/site/content/schema/basics/alert';
 
+import '@/styles/components/basics/Alert.scss';
+
 type AlertProps = AlertSchemaProps;
 
 const Alert = ({

@@ -11,6 +11,8 @@ import type {
 	PaginationTranslations as PaginationTranslationsSchema,
 } from '@/lib/site/content/schema/components/pagination';
 
+import '@/styles/components/components/Pagination.scss';
+
 export type PaginationTranslations = PaginationTranslationsSchema;
 
 export type PaginationProps = PaginationSchemaProps;

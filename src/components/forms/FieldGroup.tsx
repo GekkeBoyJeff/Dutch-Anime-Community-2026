@@ -1,6 +1,8 @@
 import { classNames } from '@/lib/shared/classNames';
 import type { FieldGroupProps as FieldGroupSchemaProps } from '@/lib/site/content/schema/forms/fieldGroup';
 
+import '@/styles/components/forms/FieldGroup.scss';
+
 type FieldGroupProps = FieldGroupSchemaProps;
 
 // A non-semantic layout wrapper that stacks Fields with a consistent gap and opens a container

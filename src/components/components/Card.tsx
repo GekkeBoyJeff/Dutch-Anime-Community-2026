@@ -3,6 +3,8 @@ import Interactive from '@/components/basics/Interactive';
 import { classNames } from '@/lib/shared/classNames';
 import type { CardProps as CardSchemaProps } from '@/lib/site/content/schema/components/card';
 
+import '@/styles/components/components/Card.scss';
+
 type CardProps = CardSchemaProps;
 
 const Card = ({

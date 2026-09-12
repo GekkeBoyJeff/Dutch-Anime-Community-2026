@@ -6,6 +6,8 @@ import Section from '@/components/basics/Section';
 import { classNames } from '@/lib/shared/classNames';
 import type { TitleTextProps as TitleTextSchemaProps } from '@/lib/site/content/schema/blocks/titleText';
 
+import '@/styles/components/contentBlocks/TitleText.scss';
+
 type TitleTextProps = TitleTextSchemaProps;
 
 const TitleText = ({

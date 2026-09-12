@@ -78,6 +78,8 @@ import Icon from '@/components/basics/Icon';
 import { classNames } from '@/lib/shared/classNames';
 import type { BadgeProps as BadgeSchemaProps } from '@/lib/site/content/schema/basics/badge';
 
+import '@/styles/components/basics/Badge.scss';
+
 type BadgeProps = BadgeSchemaProps;
 
 const Badge = ({
@@ -341,8 +343,7 @@ the class names the components write.
 | `src/styles/_interactions.scss` | the interaction mixins: `interactive`, `link-underline`, `overlay-backdrop`, `popup-enter-exit` |
 | `src/styles/theme.scss` | every custom property: the `:root` palette and the `[data-colorset]` mapping |
 | `src/styles/base.scss` | the reset and the bare HTML elements — nothing component-specific |
-| `src/styles/components/<tier>/<Name>.scss` | one file per component |
-| `src/styles/index.ts` | the single entry point |
+| `src/styles/components/<tier>/<Name>.scss` | one file per component, imported by that component |
 
 The two underscore files are **prepended to every stylesheet by the build**, which is why no
 component file writes `@use`. The prelude is one constant, in `styles.config.mjs`:
@@ -354,20 +355,33 @@ export const SCSS_PRELUDE = '@use "tokens" as *;\n@use "interactions" as *;';
 Both `next.config.mjs` and `.storybook/main.js` import that constant, so Storybook and the site
 compile SCSS identically.
 
-`src/styles/index.ts` is imported once, by `src/app/layout.tsx`, and lists every stylesheet:
+A global `.scss` — and none of these are CSS Modules — only reaches the bundle when a module
+imports it. So **every component imports its own stylesheet**, as the last of its imports:
+
+```tsx
+// src/components/basics/Badge.tsx
+import Icon from '@/components/basics/Icon';
+import { classNames } from '@/lib/shared/classNames';
+import type { BadgeProps as BadgeSchemaProps } from '@/lib/site/content/schema/basics/badge';
+
+import '@/styles/components/basics/Badge.scss';
+```
+
+`import/order` leaves that line where you put it: the rule does not sort imports that bind no name.
+
+Only the two site-wide stylesheets are imported centrally, as the **first** lines of
+`src/app/layout.tsx` and `.storybook/preview.tsx`, so the reset and the tokens land in the cascade
+before any component:
 
 ```typescript
 import '@/styles/theme.scss';
 import '@/styles/base.scss';
-
-// basics
-import '@/styles/components/basics/Accordion.scss';
-import '@/styles/components/basics/AccordionItem.scss';
-import '@/styles/components/basics/Alert.scss';
 ```
 
-A stylesheet that is not listed there is never compiled. The component renders, with no styling and
-no error.
+Two things follow. A route now downloads only the CSS of the components it renders — the home page
+loads 135 KiB of the 239 KiB the site has — and `/builder` and dashboard styling never reach the
+public site at all. And a stylesheet no component imports is simply never compiled: the component
+renders with no styling and no error, which is what Storybook is for.
 
 ### The colour model
 
@@ -451,45 +465,26 @@ selector. Every stylesheet in `basics` has exactly one top-level selector. The o
 are the ones whose markup is portalled out of the component's own subtree — `Menu.scss` has to style
 `.menu-positioner` separately because Base UI renders it at the end of the document.
 
-## Barrels, imports, and the one real trap
+## Imports, and the one real trap
 
-A **barrel** is a file whose only job is to re-export its neighbours. Each tier has one, at
-`src/components/<tier>/index.ts`:
+**Every import names the file that defines the thing.** There is no `src/components/<tier>/index.ts`
+and no `schema/<tier>/index.ts`; `Badge.tsx` writes
+`import Icon from '@/components/basics/Icon';`, the full path, and so does app code.
 
-```typescript
-export { default as Interactive } from '@/components/basics/Interactive';
-export { default as Button } from '@/components/basics/Button';
-export { default as Actions } from '@/components/basics/Actions';
-export { default as Link } from '@/components/basics/Link';
-export { default as Pill } from '@/components/basics/Pill';
-```
+The tiers used to have barrels — a file whose only job is to re-export its neighbours. They were
+removed because they earned nothing and cost three things. They were a second list to keep in sync
+by hand, and nothing checked it. They pulled every module a tier names into any client bundle that
+touched them, used or not. And they invited an import cycle: a barrel imports every component in its
+tier, so a component importing its own barrel would read a binding that is not initialised yet.
 
-The barrel is the tier's public list of what it contains, and the export order encodes the
-dependency order — dependencies first. `structures/index.ts` states the rule in the file itself:
+Two barrels remain, and they are a different kind of file. `@/lib/site/content` and
+`@/lib/site/content/schema` name the handful of types the content layer is *used by* —
+`Page`, `Block`, `NavItem`, `SiteStructures` and the page accessors — not everything the folder
+happens to contain. That list grows when something becomes public, not when a component is added.
 
-```typescript
-// SiteChrome composes the other three, so it is exported last (barrel rule).
-export { default as Navigation } from '@/components/structures/Navigation';
-export { default as Footer } from '@/components/structures/Footer';
-export { default as AnnouncementBar } from '@/components/structures/AnnouncementBar';
-export { default as SiteChrome } from '@/components/structures/SiteChrome';
-```
-
-The trap the ordering guards against is a cycle. A barrel imports every component in its tier; if a
-component then imported the barrel, the two would import each other and one of them would read a
-binding that is not initialised yet. So **components never import their own tier's barrel** —
-`Badge.tsx` writes `import Icon from '@/components/basics/Icon';`, the full path. Across all 128
-component files there is not one import of a tier barrel, and app code imports through one in
-exactly two places, both for `Blocks`.
-
-`forms/index.ts` records the second reason to prefer the full path:
-
-```typescript
-// One barrel like every other tier; in a 'use client' file import the component directly instead of this barrel.
-```
-
-A client component that imports a barrel drags every module the barrel names into the browser
-bundle, whether it is used or not.
+> A barrel is a public API, not a table of contents. And a hand-written list may only exist when the
+> compiler holds you to it: `REGISTRY` in `Blocks.tsx` is typed from the `Block` union, so you
+> cannot forget it.
 
 ### The trap: `@/lib/site/content` is server-only
 
@@ -500,7 +495,7 @@ bundle. So there are three import targets with the same-looking path and very di
 | Import from | Contains | Safe on the client |
 | --- | --- | --- |
 | `@/lib/site/content` | schema + `getPageByPath`, `getSiteStructures` | **no** |
-| `@/lib/site/content/schema` | the whole schema, nothing else | yes |
+| `@/lib/site/content/schema` | the public content types, nothing else | yes |
 | `@/lib/site/content/schema/basics/badge` | one component's props | yes |
 
 Components always use the third. `SiteChrome.tsx` spells out why:
@@ -602,7 +597,7 @@ worth knowing which of the rules above a machine will catch.
 | Four files per component, and their casing | nothing — convention |
 | Tier import direction | nothing — convention |
 | Class-name shape and SCSS nesting | nothing — convention |
-| Stylesheet registered in `src/styles/index.ts` | `npm run verify` — every stylesheet on disk must appear in the list |
+| A component imports its own stylesheet | nothing — convention (an unstyled component in Storybook is the tell) |
 
 Where a rule is not enforced, the repo is consistent enough that copying the nearest neighbour is a
 reliable way to get it right.

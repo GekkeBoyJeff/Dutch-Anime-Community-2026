@@ -5,6 +5,8 @@ import Icon from '@/components/basics/Icon';
 import Section from '@/components/basics/Section';
 import type { StepsProps as StepsSchemaProps } from '@/lib/site/content/schema/blocks/steps';
 
+import '@/styles/components/contentBlocks/Steps.scss';
+
 type StepsProps = StepsSchemaProps;
 
 const Steps = ({

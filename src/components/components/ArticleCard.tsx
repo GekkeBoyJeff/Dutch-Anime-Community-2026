@@ -7,6 +7,8 @@ import { classNames } from '@/lib/shared/classNames';
 import { formatDate } from '@/lib/shared/formatDate';
 import type { ArticleCardProps as ArticleCardSchemaProps } from '@/lib/site/content/schema/components/articleCard';
 
+import '@/styles/components/components/ArticleCard.scss';
+
 type ArticleCardProps = ArticleCardSchemaProps;
 
 const ArticleCard = ({

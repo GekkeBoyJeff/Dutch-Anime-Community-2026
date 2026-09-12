@@ -8,6 +8,8 @@ import Title from '@/components/basics/Title';
 import { classNames } from '@/lib/shared/classNames';
 import type { ScrollytellingTimelineProps as ScrollytellingTimelineSchemaProps } from '@/lib/site/content/schema/components/scrollytellingTimeline';
 
+import '@/styles/components/components/ScrollytellingTimeline.scss';
+
 type ScrollytellingTimelineProps = ScrollytellingTimelineSchemaProps;
 
 const ScrollytellingTimeline = ({

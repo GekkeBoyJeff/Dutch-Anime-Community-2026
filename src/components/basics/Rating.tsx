@@ -2,6 +2,8 @@ import Icon from '@/components/basics/Icon';
 import { classNames } from '@/lib/shared/classNames';
 import type { RatingProps as RatingSchemaProps } from '@/lib/site/content/schema/basics/rating';
 
+import '@/styles/components/basics/Rating.scss';
+
 type RatingProps = RatingSchemaProps;
 
 const Rating = ({

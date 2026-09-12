@@ -9,6 +9,8 @@ import useHaptics from '@/hooks/useHaptics';
 import { classNames } from '@/lib/shared/classNames';
 import type { InteractiveProps as InteractiveSchemaProps } from '@/lib/site/content/schema/basics/interactive';
 
+import '@/styles/components/basics/Interactive.scss';
+
 // Base UI clones this through `render=` (Menu.LinkItem, Dialog.Close, Toast.Close) and merges its own
 // interaction props into it — role, tabIndex, id, data-state and a bundle of keyboard/pointer handlers —
 // so the HTML attribute set stays open here; narrowing it drops those props without a type error.

@@ -5,6 +5,8 @@ import Switch from '@/components/components/Switch';
 import { PERMISSION_GROUPS } from '@/lib/shared/auth/permission-groups';
 import type { Permission } from '@/lib/shared/auth/permissions';
 
+import '@/styles/components/components/PermissionGroups.scss';
+
 type PermissionGroupsProps = {
 	/** The person's complete, editable permission set (user_permissions) */
 	grants: ReadonlySet<Permission>;

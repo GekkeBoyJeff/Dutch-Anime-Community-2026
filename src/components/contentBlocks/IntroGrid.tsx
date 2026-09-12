@@ -8,6 +8,8 @@ import Title from '@/components/basics/Title';
 import { classNames } from '@/lib/shared/classNames';
 import type { IntroGridProps as IntroGridSchemaProps } from '@/lib/site/content/schema/blocks/introGrid';
 
+import '@/styles/components/contentBlocks/IntroGrid.scss';
+
 type IntroGridProps = IntroGridSchemaProps;
 
 const IntroGrid = ({

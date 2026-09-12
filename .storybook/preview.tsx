@@ -1,3 +1,6 @@
+import '@/styles/theme.scss';
+import '@/styles/base.scss';
+
 import type { Decorator } from '@storybook/nextjs-vite';
 import { useDarkMode } from '@storybook-community/storybook-dark-mode';
 import { DarkModeDocsContainer } from '@storybook-community/storybook-dark-mode/docs';
@@ -12,7 +15,6 @@ import {
 	withJsonSchemaArgTypes,
 } from './addons/json-schema/preview';
 import { light, dark } from './theme';
-import '@/styles';
 import './docs.css';
 
 export const tags = ['autodocs'];

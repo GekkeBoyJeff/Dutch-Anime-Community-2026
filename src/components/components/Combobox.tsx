@@ -6,6 +6,8 @@ import Icon from '@/components/basics/Icon';
 import { classNames } from '@/lib/shared/classNames';
 import type { ComboboxProps as ComboboxSchemaProps } from '@/lib/site/content/schema/components/combobox';
 
+import '@/styles/components/components/Combobox.scss';
+
 type ComboboxProps = ComboboxSchemaProps;
 
 const Combobox = ({

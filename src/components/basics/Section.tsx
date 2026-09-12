@@ -3,6 +3,8 @@ import type { ComponentPropsWithoutRef, ElementType } from 'react';
 import { classNames } from '@/lib/shared/classNames';
 import type { SectionProps as SectionSchemaProps } from '@/lib/site/content/schema/basics/section';
 
+import '@/styles/components/basics/Section.scss';
+
 type SectionProps = SectionSchemaProps;
 
 const Section = ({

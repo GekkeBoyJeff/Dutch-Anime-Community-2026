@@ -2,6 +2,8 @@ import Content from '@/components/basics/Content';
 import { classNames } from '@/lib/shared/classNames';
 import type { ShinyTextProps as ShinyTextSchemaProps } from '@/lib/site/content/schema/basics/shinyText';
 
+import '@/styles/components/basics/ShinyText.scss';
+
 type ShinyTextProps = ShinyTextSchemaProps;
 
 const ShinyText = ({

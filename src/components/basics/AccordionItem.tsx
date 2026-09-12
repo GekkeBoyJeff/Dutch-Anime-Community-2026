@@ -5,6 +5,8 @@ import Icon from '@/components/basics/Icon';
 import { classNames } from '@/lib/shared/classNames';
 import type { AccordionItemProps as AccordionItemSchemaProps } from '@/lib/site/content/schema/basics/accordionItem';
 
+import '@/styles/components/basics/AccordionItem.scss';
+
 type AccordionItemProps = AccordionItemSchemaProps;
 
 const AccordionItem = ({

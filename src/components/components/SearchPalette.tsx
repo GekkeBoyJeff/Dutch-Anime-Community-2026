@@ -15,6 +15,8 @@ import type {
 	SearchPaletteOverlayProps as SearchPaletteSchemaProps,
 } from '@/lib/site/content/schema/components/searchPalette';
 
+import '@/styles/components/components/SearchPalette.scss';
+
 type SearchPaletteProps = SearchPaletteSchemaProps;
 
 // Preserves the caller's category order, then first-seen order for the rest. Relies on Map keeping

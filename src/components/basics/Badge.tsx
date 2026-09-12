@@ -2,6 +2,8 @@ import Icon from '@/components/basics/Icon';
 import { classNames } from '@/lib/shared/classNames';
 import type { BadgeProps as BadgeSchemaProps } from '@/lib/site/content/schema/basics/badge';
 
+import '@/styles/components/basics/Badge.scss';
+
 type BadgeProps = BadgeSchemaProps;
 
 const Badge = ({

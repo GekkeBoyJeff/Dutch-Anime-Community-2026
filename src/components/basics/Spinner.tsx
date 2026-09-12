@@ -2,6 +2,8 @@ import VisuallyHidden from '@/components/basics/VisuallyHidden';
 import { classNames } from '@/lib/shared/classNames';
 import type { SpinnerProps as SpinnerSchemaProps } from '@/lib/site/content/schema/basics/spinner';
 
+import '@/styles/components/basics/Spinner.scss';
+
 type SpinnerProps = SpinnerSchemaProps;
 
 const Spinner = ({

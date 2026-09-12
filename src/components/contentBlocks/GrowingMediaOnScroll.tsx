@@ -5,6 +5,8 @@ import Media from '@/components/basics/Media';
 import Section from '@/components/basics/Section';
 import type { GrowingMediaOnScrollProps as GrowingMediaOnScrollSchemaProps } from '@/lib/site/content/schema/blocks/growingMediaOnScroll';
 
+import '@/styles/components/contentBlocks/GrowingMediaOnScroll.scss';
+
 type GrowingMediaOnScrollProps = GrowingMediaOnScrollSchemaProps;
 
 const GrowingMediaOnScroll = ({

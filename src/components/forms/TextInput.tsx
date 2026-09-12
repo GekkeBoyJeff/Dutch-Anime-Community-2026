@@ -5,6 +5,8 @@ import { Input } from '@base-ui/react/input';
 import { classNames } from '@/lib/shared/classNames';
 import type { TextInputProps as TextInputSchemaProps } from '@/lib/site/content/schema/forms/textInput';
 
+import '@/styles/components/forms/TextInput.scss';
+
 type TextInputProps = TextInputSchemaProps;
 
 // A single-line text control. Wraps Base UI's Input so that, inside a <Field>, it picks up the

@@ -3,6 +3,8 @@ import Media from '@/components/basics/Media';
 import { classNames } from '@/lib/shared/classNames';
 import type { AvatarProps as AvatarSchemaProps } from '@/lib/site/content/schema/basics/avatar';
 
+import '@/styles/components/basics/Avatar.scss';
+
 type AvatarProps = AvatarSchemaProps;
 
 const Avatar = ({

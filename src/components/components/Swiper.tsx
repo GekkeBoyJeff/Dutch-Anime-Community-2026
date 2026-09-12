@@ -11,6 +11,8 @@ import VideoLightbox from '@/components/components/VideoLightbox';
 import { classNames } from '@/lib/shared/classNames';
 import type { SwiperProps as SwiperSchemaProps, SwiperSlide, SwiperTranslations } from '@/lib/site/content/schema/components/swiper';
 
+import '@/styles/components/components/Swiper.scss';
+
 export type { SwiperSlide, SwiperTranslations };
 
 const DEFAULT_TRANSLATIONS: Required<SwiperTranslations> = {

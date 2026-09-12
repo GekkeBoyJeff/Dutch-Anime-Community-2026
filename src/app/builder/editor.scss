@@ -1,6 +1,5 @@
-// Editor-only styles for the /builder route, imported by src/app/builder/page.tsx. Deliberately
-// NOT wired into src/styles/index.ts: the editor must never ship CSS to the public site (the
-// documented exception to the central style index — see the rebuild design doc).
+// Editor-only styles for the /builder route, imported by src/app/builder/page.tsx — the same rule
+// every component follows, which is what keeps this CSS off the public site.
 
 .builder {
 	display: flex;

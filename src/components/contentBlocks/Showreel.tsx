@@ -4,6 +4,8 @@ import Section from '@/components/basics/Section';
 import Swiper from '@/components/components/Swiper';
 import type { ShowreelProps as ShowreelSchemaProps } from '@/lib/site/content/schema/blocks/showreel';
 
+import '@/styles/components/contentBlocks/Showreel.scss';
+
 type ShowreelProps = ShowreelSchemaProps;
 
 const Showreel = ({

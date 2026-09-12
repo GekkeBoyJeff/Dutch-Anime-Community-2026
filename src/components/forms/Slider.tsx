@@ -5,6 +5,8 @@ import { Slider as BaseSlider } from '@base-ui/react/slider';
 import { classNames } from '@/lib/shared/classNames';
 import type { SliderProps as SliderSchemaProps } from '@/lib/site/content/schema/forms/slider';
 
+import '@/styles/components/forms/Slider.scss';
+
 export type SliderProps = SliderSchemaProps;
 
 // A draggable slider input for picking a number or a min–max range. Wraps Base UI's Slider, which

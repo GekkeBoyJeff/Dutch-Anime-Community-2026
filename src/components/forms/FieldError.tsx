@@ -5,6 +5,8 @@ import { Field } from '@base-ui/react/field';
 import { classNames } from '@/lib/shared/classNames';
 import type { FieldErrorProps as FieldErrorSchemaProps } from '@/lib/site/content/schema/forms/fieldError';
 
+import '@/styles/components/forms/FieldError.scss';
+
 export type { FieldErrorValidity } from '@/lib/site/content/schema/forms/fieldError';
 
 type FieldErrorProps = FieldErrorSchemaProps;

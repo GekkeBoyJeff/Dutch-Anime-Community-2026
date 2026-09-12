@@ -6,6 +6,8 @@ import { classNames } from '@/lib/shared/classNames';
 import { formatDate } from '@/lib/shared/formatDate';
 import type { EventCardProps as EventCardSchemaProps, EventCardTranslations } from '@/lib/site/content/schema/components/eventCard';
 
+import '@/styles/components/components/EventCard.scss';
+
 export type { EventCardTranslations };
 
 const DEFAULT_TRANSLATIONS: Required<EventCardTranslations> = {
