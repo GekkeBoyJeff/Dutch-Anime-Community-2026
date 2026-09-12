@@ -2,12 +2,12 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 
-import Alert from '@/components/basics/Alert';
-import Button from '@/components/basics/Button';
-import Container from '@/components/basics/Container';
-import Spinner from '@/components/basics/Spinner';
-import Title from '@/components/basics/Title';
-import Checkbox from '@/components/forms/Checkbox';
+import Alert from '@/components/basics/Alert/Alert';
+import Button from '@/components/basics/Button/Button';
+import Container from '@/components/basics/Container/Container';
+import Spinner from '@/components/basics/Spinner/Spinner';
+import Title from '@/components/basics/Title/Title';
+import Checkbox from '@/components/forms/Checkbox/Checkbox';
 import { useSession } from '@/lib/shared/auth/permissions';
 import { getBrowserClient } from '@/lib/shared/supabase/client';
 

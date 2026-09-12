@@ -31,7 +31,7 @@ component, and so does everything it imports — that subtree ships to the brows
 being rendered to HTML on the server.
 
 So keep the client part small. The pattern in this repo is a plain server component that renders one
-`'use client'` island. `src/components/structures/AnnouncementBar.tsx` has no directive and no state:
+`'use client'` island. `src/components/structures/AnnouncementBar/AnnouncementBar.tsx` has no directive and no state:
 
 ```tsx
 const AnnouncementBar = ({ message, cta, dismissible = true, variant = 'info', id, className }: AnnouncementBarProps) => {
@@ -86,7 +86,7 @@ The eleven presets that ship with the package:
 ([story](?path=/docs/basics-interactive--docs)) — already calls it on every enabled click:
 
 ```tsx
-// src/components/basics/Interactive.tsx
+// src/components/basics/Interactive/Interactive.tsx
 const handleClick = (event: MouseEvent<HTMLElement>) => {
 	if (disabled) {
 		event.preventDefault();
@@ -225,7 +225,7 @@ Its one consumer is [`Pagination`](?path=/docs/components-pagination--docs), whi
 nothing more:
 
 ```tsx
-// src/components/components/Pagination.tsx
+// src/components/components/Pagination/Pagination.tsx
 if (resolvedTotalPages <= 1) {
 	return null;
 }

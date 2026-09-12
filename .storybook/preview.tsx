@@ -7,8 +7,8 @@ import { DarkModeDocsContainer } from '@storybook-community/storybook-dark-mode/
 import type { ArgTypesEnhancer } from 'storybook/internal/csf';
 import { useEffect } from 'storybook/preview-api';
 
-import Notification from '@/components/components/Notification';
-import NotificationProvider from '@/components/components/NotificationProvider';
+import Notification from '@/components/components/Notification/Notification';
+import NotificationProvider from '@/components/components/NotificationProvider/NotificationProvider';
 
 import {
 	withJsonSchema,

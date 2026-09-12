@@ -1,7 +1,7 @@
 import { FieldLabel, type Field } from '@puckeditor/core';
 import { z } from 'zod';
 
-import { ICONS } from '@/components/basics/Icon';
+import { ICONS } from '@/components/basics/Icon/Icon';
 import { authoredBound, describeField, unwrap, type FieldDescription } from '@/lib/shared/schemaFields';
 import { getBrowserClient } from '@/lib/shared/supabase/client';
 

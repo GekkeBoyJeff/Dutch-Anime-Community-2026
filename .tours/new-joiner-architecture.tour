@@ -40,7 +40,7 @@
       "description": "Dit bestand vangt zowat elk publiek webadres op en zet er de juiste pagina neer. Vooraf wordt van alle bekende adressen alvast een pagina klaargemaakt, en een adres dat niet bestaat leidt netjes naar een 'niet gevonden'-pagina.\n\nHiermee komt de keten uit de vorige stappen samen: de gegevens (stap 3), gecontroleerd binnengehaald (stap 5), belanden hier en worden getekend. De homepagina heeft nog een eigen bestandje ernaast; dit bestand doet al het overige."
     },
     {
-      "file": "src/components/contentBlocks/Blocks.tsx",
+      "file": "src/components/contentBlocks/Blocks/Blocks.tsx",
       "pattern": "export const REGISTRY",
       "title": "7 · Van bloktype naar het juiste schermonderdeel",
       "description": "Elk blok uit een pagina zei in stap 3 zélf welk type het was ('hero', 'tekst', 'kaarten'…). Hier staat de vertaaltabel die zo'n type koppelt aan het schermonderdeel dat het daadwerkelijk tekent. De pagina loopt simpelweg z'n blokken langs en laat per blok het bijbehorende onderdeel verschijnen.\n\nDit sluit de cirkel van stap 4: die afspraak bepaalt welke bloktypes er zijn, en deze tabel bepaalt hoe ze getekend worden. Goed om te weten: deze blokken halen zelf nooit gegevens op — de pagina levert alles kant-en-klaar aan."

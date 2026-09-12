@@ -4,8 +4,8 @@ import type { Session } from '@supabase/supabase-js';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, type ReactNode } from 'react';
 
-import Container from '@/components/basics/Container';
-import Spinner from '@/components/basics/Spinner';
+import Container from '@/components/basics/Container/Container';
+import Spinner from '@/components/basics/Spinner/Spinner';
 import { DASHBOARD_SECTIONS } from '@/lib/shared/auth/dashboard-sections';
 import { usePermissions, type Permission } from '@/lib/shared/auth/permissions';
 

@@ -1,0 +1,21 @@
+import { z } from 'zod';
+
+import { Action } from '@/components/basics/Actions/Actions.schema';
+import { Colorset, Heading, Id, Media } from '@/lib/site/content/shared';
+
+export const CTABannerProps = z.object({
+	colorset: Colorset.optional(),
+	heading: Heading.optional().describe('Heading group (tagline, title, size, intro) shown above the actions'),
+	primaryCta: Action.optional().describe('Main call-to-action button shown in the actions row'),
+	secondaryCta: Action.optional().describe('Secondary call-to-action button shown alongside the primary one'),
+	tone: z.enum(['neutral', 'primary', 'success', 'warning']).optional().describe('Color tint applied to the banner panel'),
+	align: z.enum(['start', 'center']).optional().describe('Horizontal alignment of the heading cluster'),
+	media: Media.optional().describe('Image, video or embed displayed beside the copy'),
+}).meta({ title: 'CTABanner' });
+export type CTABannerProps = z.infer<typeof CTABannerProps>;
+
+export const CTABannerBlock = CTABannerProps.extend({
+	type: z.literal('ctaBanner'),
+	id: Id.optional(),
+}).meta({ category: 'headers' });
+export type CTABannerBlock = z.infer<typeof CTABannerBlock>;

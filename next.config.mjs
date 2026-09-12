@@ -1,6 +1,11 @@
 import withSerwistInit from '@serwist/next';
 
+import { generateBlocks } from './scripts/generate-blocks.mjs';
 import { SCSS_LOAD_PATHS, SCSS_PRELUDE } from './styles.config.mjs';
+
+// The content-block registry is derived from the folders under src/components/contentBlocks, the
+// same way styles.config.mjs derives _breakpoints.scss from breakpoints.json.
+generateBlocks();
 
 const isDev = process.env.NODE_ENV === 'development';
 

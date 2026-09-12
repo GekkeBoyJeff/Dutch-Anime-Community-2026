@@ -1,5 +1,5 @@
 import { env, isStatic } from '@/lib/shared/env';
-import type { SiteStructures } from '@/lib/site/content';
+import type { SiteStructures } from '@/lib/site/content/document';
 
 export const site = {
 	name: 'Dutch Anime Community',

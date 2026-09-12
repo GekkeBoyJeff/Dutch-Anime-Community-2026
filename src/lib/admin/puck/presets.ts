@@ -1,4 +1,4 @@
-import { REGISTRY } from '@/components/contentBlocks/Blocks';
+import { REGISTRY } from '@/components/contentBlocks/Blocks/Blocks';
 import { humanise } from '@/lib/shared/schemaFields';
 
 export interface BlockPreset {
@@ -41,7 +41,7 @@ const buildPresets = (): Partial<Record<BlockType, BlockPreset[]>> => {
 	);
 
 	const map: Partial<Record<BlockType, BlockPreset[]>> = {};
-	const stories = require.context('../../../stories/contentBlocks', false, /\.stories\.tsx$/);
+	const stories = require.context('../../../components/contentBlocks', true, /\.stories\.tsx$/);
 
 	for (const key of stories.keys()) {
 		const mod = stories(key) as StoryModule;

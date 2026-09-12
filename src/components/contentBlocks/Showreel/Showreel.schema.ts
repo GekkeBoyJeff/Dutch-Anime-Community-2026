@@ -1,0 +1,19 @@
+import { z } from 'zod';
+
+import { SwiperSlide } from '@/components/components/Swiper/Swiper.schema';
+import { Colorset, Heading, Id } from '@/lib/site/content/shared';
+
+export const ShowreelProps = z
+	.object({
+		colorset: Colorset.optional(),
+		heading: Heading.optional().describe('Heading cluster (tagline, title, intro) shown above the reel'),
+		slides: z.array(SwiperSlide).min(2).describe('The slides: image or video (poster + provider/src)'),
+		ratio: z.string().optional().describe('Aspect ratio of the slide frame, e.g. \'16 / 9\''),
+		loop: z.boolean().optional().describe('Loop back to the first slide after the last'),
+		showCounter: z.boolean().optional().describe('Show the \'current / total\' counter beside the controls'),
+	})
+	.meta({ title: 'Showreel' });
+export type ShowreelProps = z.infer<typeof ShowreelProps>;
+
+export const ShowreelBlock = ShowreelProps.extend({ type: z.literal('showreel'), id: Id.optional() }).meta({ category: 'other' });
+export type ShowreelBlock = z.infer<typeof ShowreelBlock>;

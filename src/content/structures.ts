@@ -1,4 +1,5 @@
-import type { NavItem, SiteStructures } from '@/lib/site/content';
+import type { NavItem } from '@/components/structures/Navigation/Navigation.schema';
+import type { SiteStructures } from '@/lib/site/content/document';
 
 // Primary navigation. All pages are registered in src/content/pages/index.ts; the 'Word lid' CTA
 // goes straight to the Discord invite — the one conversion goal of the whole site.

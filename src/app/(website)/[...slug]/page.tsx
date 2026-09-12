@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import PageView from '@/app/_components/PageView';
-import { getAllPagePaths } from '@/lib/site/content';
+import { getAllPagePaths } from '@/lib/site/content/load';
 import { pageMetadata } from '@/lib/site/seo';
 
 type SlugProps = { params: Promise<{ slug: string[] }> };

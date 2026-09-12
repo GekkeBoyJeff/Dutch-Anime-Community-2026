@@ -1,0 +1,30 @@
+import { z } from 'zod';
+
+import { Action } from '@/components/basics/Actions/Actions.schema';
+import { Colorset, Heading, Id, Media } from '@/lib/site/content/shared';
+
+export const HighlightCardItem = z
+	.object({
+		id: Id,
+		media: Media.optional().describe('5:4 photo shown at the top of the card'),
+		badges: z.array(z.string().min(1)).optional().describe('Labels floated over the photo, e.g. "New" or "Popular"'),
+		tagline: z.string().optional().describe('Small label rendered above the title'),
+		title: z.string().optional().describe('Heading text of the card'),
+		value: z.string().optional().describe('Body copy rendered below the title').meta({ editor: 'richtext' }),
+		actions: z.array(Action).optional().describe('Row of call-to-action buttons rendered below the text'),
+	})
+	.meta({ title: 'HighlightCardItem' });
+export type HighlightCardItem = z.infer<typeof HighlightCardItem>;
+
+export const HighlightCardsProps = z
+	.object({
+		colorset: Colorset.optional(),
+		heading: Heading.optional().describe('Heading cluster rendered above the card grid'),
+		columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).optional().describe('Number of card columns in the grid'),
+		items: z.array(HighlightCardItem).min(1).describe('Cards rendered in the grid, each with its own running number'),
+	})
+	.meta({ title: 'HighlightCards' });
+export type HighlightCardsProps = z.infer<typeof HighlightCardsProps>;
+
+export const HighlightCardsBlock = HighlightCardsProps.extend({ type: z.literal('highlightCards'), id: Id.optional() }).meta({ category: 'grids' });
+export type HighlightCardsBlock = z.infer<typeof HighlightCardsBlock>;

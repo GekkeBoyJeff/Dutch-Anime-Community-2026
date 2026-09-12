@@ -79,7 +79,7 @@ export const pages: Record<string, Page> = {
 There is no route file per page. `src/app/(website)/[...slug]/page.tsx` is a catch-all: it asks for
 every known path, then renders whichever page object belongs to the path being visited.
 
-## The shape lives in `src/lib/site/content/schema/`
+## The shape lives in `src/lib/site/content/`
 
 Every block has a schema — a description of its fields, written with [Zod](https://zod.dev). Zod is a
 library for describing the shape of data in code, so the shape can be checked while the program runs.
@@ -111,7 +111,7 @@ position needs.
 
 ### A block file
 
-Every block file exports three things. `src/lib/site/content/schema/blocks/reviews.ts` in full:
+Every block file exports three things. `src/components/contentBlocks/Reviews/Reviews.schema.ts` in full:
 
 ```typescript
 export const ReviewItem = z
@@ -183,7 +183,7 @@ The point of writing the shape down once is that four unrelated parts of the cod
 | Consumer | Reads | Where |
 | --- | --- | --- |
 | TypeScript types | `z.infer` | every schema file, and `Blocks.tsx` |
-| The runtime check | `Page` | `src/lib/site/content/pages.ts` |
+| The runtime check | `Page` | `src/lib/site/content/load.ts` |
 | The Storybook props panel | the story's `jsonSchema` parameter | `.storybook/addons/json-schema/` |
 | The `/builder` visual editor ([9. The visual editor](?path=/docs/for-developers-9-the-visual-editor--docs)) | `Block.options` | `src/lib/admin/puck/config.tsx` |
 
@@ -258,7 +258,7 @@ There are two sources, and the site reads exactly one of them per build.
 - **The registry** — the typed files in `src/content/`, shown above.
 - **Supabase** — a `pages` table, edited through `/builder` by staff.
 
-`src/lib/site/content/pages.ts` decides:
+`src/lib/site/content/load.ts` decides:
 
 ```typescript
 export const dbEnabled = () =>
@@ -293,7 +293,7 @@ So a row carries two versions of the same page: `data` is the working copy an ed
 genuine 404 rather than an error.
 
 The site-wide chrome — navigation, footer — works the same way, through
-`src/lib/site/content/structures.ts` and `src/content/structures.ts`.
+`src/lib/site/content/load.ts` and `src/content/structures.ts`.
 
 > `npm run seed` writes the files in `src/content/` **over** the database's `data` column, discarding
 > anything edited through the builder. It is a one-off migration script, not a sync.
@@ -302,7 +302,7 @@ The site-wide chrome — navigation, footer — works the same way, through
 
 Say a review should be able to carry the date it was written.
 
-1. **Add it to the schema.** In `src/lib/site/content/schema/blocks/reviews.ts`, inside `ReviewItem`:
+1. **Add it to the schema.** In `src/components/contentBlocks/Reviews/Reviews.schema.ts`, inside `ReviewItem`:
 
    ```typescript
    date: z.string().optional().describe('Date the review was written'),
@@ -311,13 +311,13 @@ Say a review should be able to carry the date it was written.
    Optional, because every review already in the content files and in the database lacks it. A
    required field would invalidate all of them at once.
    → verify: `npm run typecheck` passes.
-2. **Render it.** `src/components/contentBlocks/Reviews.tsx` already types its props as
+2. **Render it.** `src/components/contentBlocks/Reviews/Reviews.tsx` already types its props as
    `ReviewsSchemaProps`, so `review.date` is available with no further wiring. Use it in the JSX.
    → verify: `npm run typecheck` passes.
-3. **Style it,** if it needs styling, in `src/styles/components/contentBlocks/Reviews.scss`.
+3. **Style it,** if it needs styling, in `src/components/contentBlocks/Reviews/Reviews.scss`.
    → verify: it looks right in Storybook.
 4. **Show it in the story.** Add `date` to one item in the `args` of
-   `src/stories/contentBlocks/Reviews.stories.tsx`.
+   `src/components/contentBlocks/Reviews/Reviews.stories.tsx`.
    → verify: the control appears in **Controls**, carrying your `.describe()` text.
 5. **Use it in content,** in `src/content/pages/*.ts` — or leave it out; it is optional.
    → verify: `SUPABASE_SERVICE_ROLE_KEY= npm run build:plain` succeeds and renders the new field.

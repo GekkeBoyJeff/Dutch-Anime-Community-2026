@@ -4,8 +4,8 @@ import type { Session } from '@supabase/supabase-js';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
-import Container from '@/components/basics/Container';
-import Spinner from '@/components/basics/Spinner';
+import Container from '@/components/basics/Container/Container';
+import Spinner from '@/components/basics/Spinner/Spinner';
 import { safeNext } from '@/lib/shared/auth/permissions';
 import { getBrowserClient } from '@/lib/shared/supabase/client';
 

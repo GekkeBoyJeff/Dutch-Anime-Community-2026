@@ -34,7 +34,7 @@ Types also cannot express most of what actually goes wrong. This satisfies TypeS
 ```
 
 `rating` is a `number`, and that is all the type says. The schema in
-`src/lib/site/content/schema/blocks/reviews.ts` says more:
+`src/components/contentBlocks/Reviews/Reviews.schema.ts` says more:
 
 ```typescript
 rating: z.number().int().min(1).max(5).describe('Star rating given by the reviewer, rendered as filled stars out of 5'),
@@ -50,7 +50,7 @@ of that is expressible as a type.
 
 ## One function does the checking
 
-`src/lib/site/content/validate.ts` holds the whole boundary:
+`src/lib/site/content/load.ts` holds the whole boundary:
 
 ```typescript
 export const parseContent = <Schema extends z.ZodType>(
@@ -176,7 +176,7 @@ only Zod sees.
 
 ## The same schemas validate forms
 
-`src/components/forms/Form.tsx` takes a Zod schema as a prop and runs it through
+`src/components/forms/Form/Form.tsx` takes a Zod schema as a prop and runs it through
 `zodResolver` from `@hookform/resolvers/zod`. One schema both validates the submitted values and
 types them, so a field's error message and the shape of `onSubmit`'s argument come from the same
 place. `NewsletterSignup` in `schema/blocks/subscribeToNewsletter.ts` is a small example:

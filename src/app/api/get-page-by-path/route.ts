@@ -1,7 +1,7 @@
 import { draftMode } from 'next/headers';
 
 import { env } from '@/lib/shared/env';
-import { getPageByPath } from '@/lib/site/content';
+import { getPageByPath } from '@/lib/site/content/load';
 
 export const dynamic = 'force-dynamic'; // never cache a debug endpoint
 

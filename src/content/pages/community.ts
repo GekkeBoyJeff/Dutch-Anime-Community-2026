@@ -1,4 +1,4 @@
-import type { Page } from '@/lib/site/content';
+import type { Page } from '@/lib/site/content/document';
 
 // De community-pagina beantwoordt waar het hier over gaat buiten anime, wie het draaiende houdt, en
 // wat er alleen hier bestaat. Het blok "zelf meedoen" onderaan bedient bezoekers die iets komen

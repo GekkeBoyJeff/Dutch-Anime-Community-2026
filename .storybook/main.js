@@ -2,13 +2,16 @@ import { fileURLToPath } from 'node:url';
 
 import remarkGfm from 'remark-gfm';
 
+import { generateBlocks } from '../scripts/generate-blocks.mjs';
 import { SCSS_LOAD_PATHS, SCSS_PRELUDE } from '../styles.config.mjs';
+
+generateBlocks();
 
 const srcDir = fileURLToPath(new URL('../src', import.meta.url));
 
 /** @type {import('@storybook/nextjs-vite').StorybookConfig} */
 const config = {
-	stories: ['../src/stories/**/*.mdx', '../src/stories/**/*.stories.@(js|jsx|ts|tsx)'],
+	stories: ['../src/stories/**/*.mdx', '../src/components/**/*.stories.tsx'],
 	addons: [
 		{
 			name: '@storybook/addon-docs',

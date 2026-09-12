@@ -1,4 +1,4 @@
-import type { Page } from '@/lib/site/content';
+import type { Page } from '@/lib/site/content/document';
 
 // De supporterspagina legt uit waar het geld heen gaat en wat er met je naam gebeurt. Namen van
 // supporters staan hier bewust niet: die leven alleen in de CMS-rij, want deze map is getrackt in een

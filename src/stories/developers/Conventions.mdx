@@ -11,37 +11,37 @@ The rules are repetitive on purpose: once one component has been read, they have
 step-by-step recipes that apply them are on
 [3. Adding things](?path=/docs/for-developers-3-adding-things--docs).
 
-## A component is four files
+## A component is one folder
 
-Every UI element is four files with the same base name, in four parallel folders. `Badge` is small
-enough to read whole, and it touches nearly every rule on this page.
+Every UI element is one folder named after it, holding up to four files that share that name. There
+is nothing to look up: what a component is made of, you see by opening it. `Badge` is small enough
+to read whole, and it touches nearly every rule on this page.
 
 | # | The file | Path for `Badge` |
 | --- | --- | --- |
-| 1 | The props | `src/lib/site/content/schema/basics/badge.ts` |
-| 2 | The markup | `src/components/basics/Badge.tsx` |
-| 3 | The styling | `src/styles/components/basics/Badge.scss` |
-| 4 | The Storybook page | `src/stories/basics/Badge.stories.tsx` |
+| 1 | The props | `src/components/basics/Badge/Badge.schema.ts` |
+| 2 | The markup | `src/components/basics/Badge/Badge.tsx` |
+| 3 | The styling | `src/components/basics/Badge/Badge.scss` |
+| 4 | The Storybook page | `src/components/basics/Badge/Badge.stories.tsx` |
 
 Files 3 and 4 are skipped when there is nothing to put in them. Of the 128 components in the site
 tiers, 14 have no stylesheet — `CountUp` renders a `span` with the class `count-up` and no rules of
 its own, leaving the look of the number to whoever placed it — and 6 have no story, because they
 render nothing visible (`JsonLd`, `ServiceWorker`) or only ever appear inside another component.
 
-The casing differs per file, and it is not decorative — the imports are written by hand and will not
-resolve otherwise.
+The folder and all four files carry the component's name in PascalCase, and the suffix says which
+of the four a file is. The one thing that does not follow is the CSS class, which is kebab-case.
 
 | Thing | Case | Example |
 | --- | --- | --- |
-| Component, stylesheet and story file | PascalCase | `Badge.tsx`, `Badge.scss`, `Badge.stories.tsx` |
-| Schema file | camelCase | `badge.ts`, `countUp.ts`, `ctaBanner.ts` |
+| Folder and every file in it | PascalCase | `Badge/`, `Badge.tsx`, `Badge.scss`, `Badge.schema.ts`, `Badge.stories.tsx` |
 | Root CSS class | kebab-case | `.badge`, `.count-up`, `.cta-banner` |
 | Story `title` | `Tier/Component` | `'Basics/Badge'`, `'ContentBlocks/StatBand'` |
 
 ### 1. The props — `badge.ts`
 
 ```typescript
-// src/lib/site/content/schema/basics/badge.ts
+// src/components/basics/Badge/Badge.schema.ts
 import { z } from 'zod';
 
 export const BadgeProps = z
@@ -73,12 +73,12 @@ The pieces:
 ### 2. The markup — `Badge.tsx`
 
 ```tsx
-// src/components/basics/Badge.tsx
-import Icon from '@/components/basics/Icon';
+// src/components/basics/Badge/Badge.tsx
+import Icon from '@/components/basics/Icon/Icon';
 import { classNames } from '@/lib/shared/classNames';
-import type { BadgeProps as BadgeSchemaProps } from '@/lib/site/content/schema/basics/badge';
+import type { BadgeProps as BadgeSchemaProps } from '@/components/basics/Badge/Badge.schema';
 
-import '@/styles/components/basics/Badge.scss';
+import '@/components/basics/Badge/Badge.scss';
 
 type BadgeProps = BadgeSchemaProps;
 
@@ -131,7 +131,7 @@ when `hasLabel` is `false` the `false` is simply filtered out.
 ### 3. The styling — `Badge.scss`
 
 ```css
-/* src/styles/components/basics/Badge.scss */
+/* src/components/basics/Badge/Badge.scss */
 .badge {
 	--font-size: 0.8125rem;
 	display: inline-flex;
@@ -179,11 +179,11 @@ build prepends them to every stylesheet — see *Where styling lives* below.
 ### 4. The Storybook page — `Badge.stories.tsx`
 
 ```tsx
-// src/stories/basics/Badge.stories.tsx
+// src/components/basics/Badge/Badge.stories.tsx
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import Badge from '@/components/basics/Badge';
-import { BadgeProps } from '@/lib/site/content/schema/basics/badge';
+import Badge from '@/components/basics/Badge/Badge';
+import { BadgeProps } from '@/components/basics/Badge/Badge.schema';
 
 const meta: Meta<typeof Badge> = {
 	title: 'Basics/Badge',
@@ -221,7 +221,7 @@ export const WithDot: Story = {
 };
 ```
 
-Note the two imports of the same name: the component from `@/components/basics/Badge`, and the
+Note the two imports of the same name: the component from `@/components/basics/Badge/Badge`, and the
 **schema value** (not the type) from the schema file. `jsonSchema: { schema: BadgeProps }` hands that
 schema to a Storybook add-on that lives in this repo, at `.storybook/addons/json-schema/`. It does
 two things:
@@ -246,7 +246,7 @@ One schema feeds five consumers:
 | Consumer | What it takes from the schema |
 | --- | --- |
 | TypeScript | `z.infer<typeof BadgeProps>` — the props type the component is written against |
-| The content loader | `parseContent` in `src/lib/site/content/validate.ts` parses every page; a mismatch throws with the failing field's path |
+| The content loader | `parseContent` in `src/lib/site/content/load.ts` parses every page; a mismatch throws with the failing field's path |
 | The visual editor | `fieldFor` in `src/lib/admin/puck/fields.tsx` walks the schema and picks an input per prop |
 | Storybook | the JSON Schema panel, plus descriptions and required flags in the args table |
 | Whoever reads it | `.describe()` is the prop documentation, kept next to the prop |
@@ -267,7 +267,7 @@ Some props are not data. A React node, a `ref` or an event handler has no JSON s
 declared with `z.custom` — a Zod type whose only job is to carry a TypeScript type:
 
 ```typescript
-// src/lib/site/content/schema/basics/section.ts
+// src/components/basics/Section/Section.schema.ts
 children: z.custom<ReactNode>().optional().describe('The section content'),
 ```
 
@@ -275,7 +275,7 @@ When a component needs the full HTML attribute surface as well, the schema type 
 the component file instead — `Button` is one of the five that do this:
 
 ```tsx
-// src/components/basics/Button.tsx
+// src/components/basics/Button/Button.tsx
 type ButtonProps = ButtonSchemaProps & HTMLAttributes<HTMLElement> & { children?: never };
 ```
 
@@ -309,12 +309,12 @@ for each, what `rel` an external link gets, and the haptic tap on press — all 
 in that one file:
 
 ```tsx
-// src/components/basics/Interactive.tsx
+// src/components/basics/Interactive/Interactive.tsx
 const isExternal = target === '_blank' || /^https?:\/\//.test(url);
 ```
 
 ```tsx
-// src/components/basics/Interactive.tsx, inside the external-link branch
+// src/components/basics/Interactive/Interactive.tsx, inside the external-link branch
 // Dropping the href is what makes a disabled link inert; aria-disabled alone leaves it
 // focusable and keyboard-activatable.
 href={disabled ? undefined : url}
@@ -325,7 +325,7 @@ rel={['noopener', 'noreferrer', rel].filter(Boolean).join(' ') || undefined}
 `Button`, `Link` and `Pill` sit on top of it and mostly add a class name:
 
 ```tsx
-// src/components/basics/Pill.tsx
+// src/components/basics/Pill/Pill.tsx
 className={classNames('pill', active && 'is-active', className)}
 ```
 
@@ -334,8 +334,8 @@ components that each disable themselves slightly differently.
 
 ## Where styling lives
 
-There are no CSS modules and no utility classes. Styling is plain SCSS in `src/styles/`, addressing
-the class names the components write.
+There are no CSS modules and no utility classes. A component's stylesheet sits in its own folder;
+`src/styles/` holds only what every stylesheet is written in.
 
 | File | What it is for |
 | --- | --- |
@@ -343,7 +343,7 @@ the class names the components write.
 | `src/styles/_interactions.scss` | the interaction mixins: `interactive`, `link-underline`, `overlay-backdrop`, `popup-enter-exit` |
 | `src/styles/theme.scss` | every custom property: the `:root` palette and the `[data-colorset]` mapping |
 | `src/styles/base.scss` | the reset and the bare HTML elements — nothing component-specific |
-| `src/styles/components/<tier>/<Name>.scss` | one file per component, imported by that component |
+| `src/components/<tier>/<Name>/<Name>.scss` | the component's own stylesheet, imported by the component itself |
 
 The two underscore files are **prepended to every stylesheet by the build**, which is why no
 component file writes `@use`. The prelude is one constant, in `styles.config.mjs`:
@@ -359,12 +359,12 @@ A global `.scss` — and none of these are CSS Modules — only reaches the bund
 imports it. So **every component imports its own stylesheet**, as the last of its imports:
 
 ```tsx
-// src/components/basics/Badge.tsx
-import Icon from '@/components/basics/Icon';
+// src/components/basics/Badge/Badge.tsx
+import Icon from '@/components/basics/Icon/Icon';
 import { classNames } from '@/lib/shared/classNames';
-import type { BadgeProps as BadgeSchemaProps } from '@/lib/site/content/schema/basics/badge';
+import type { BadgeProps as BadgeSchemaProps } from '@/components/basics/Badge/Badge.schema';
 
-import '@/styles/components/basics/Badge.scss';
+import '@/components/basics/Badge/Badge.scss';
 ```
 
 `import/order` leaves that line where you put it: the rule does not sort imports that bind no name.
@@ -410,7 +410,7 @@ One attribute drives the cascade. `data-colorset` picks the light or the dark ha
 and any `Section` can set it, so a dark band in the middle of a light page is a prop:
 
 ```tsx
-// src/components/contentBlocks/StatBand.tsx
+// src/components/contentBlocks/StatBand/StatBand.tsx
 <Section colorset={colorset} className="stat-band is-band">
 ```
 
@@ -449,7 +449,7 @@ Four rules, and they hold across every stylesheet in the repo.
 `is-horizontal` for `orientation="horizontal"`.
 
 ```css
-/* src/styles/components/basics/Divider.scss */
+/* src/components/basics/Divider/Divider.scss */
 .divider {
 	&.is-horizontal { … }
 	&.is-vertical { … }
@@ -469,7 +469,7 @@ are the ones whose markup is portalled out of the component's own subtree — `M
 
 **Every import names the file that defines the thing.** There is no `src/components/<tier>/index.ts`
 and no `schema/<tier>/index.ts`; `Badge.tsx` writes
-`import Icon from '@/components/basics/Icon';`, the full path, and so does app code.
+`import Icon from '@/components/basics/Icon/Icon';`, the full path, and so does app code.
 
 The tiers used to have barrels — a file whose only job is to re-export its neighbours. They were
 removed because they earned nothing and cost three things. They were a second list to keep in sync
@@ -478,7 +478,7 @@ touched them, used or not. And they invited an import cycle: a barrel imports ev
 tier, so a component importing its own barrel would read a binding that is not initialised yet.
 
 Two barrels remain, and they are a different kind of file. `@/lib/site/content` and
-`@/lib/site/content/schema` name the handful of types the content layer is *used by* —
+`@/lib/site/content/document` name the handful of types the content layer is *used by* —
 `Page`, `Block`, `NavItem`, `SiteStructures` and the page accessors — not everything the folder
 happens to contain. That list grows when something becomes public, not when a component is added.
 
@@ -486,24 +486,21 @@ happens to contain. That list grows when something becomes public, not when a co
 > compiler holds you to it: `REGISTRY` in `Blocks.tsx` is typed from the `Block` union, so you
 > cannot forget it.
 
-### The trap: `@/lib/site/content` is server-only
+### The content layer is three files
 
-`src/lib/site/content/index.ts` re-exports both the schema *and* the page accessors, and
-`pages.ts` begins with `import 'server-only'` — a package that throws if the module reaches a client
-bundle. So there are three import targets with the same-looking path and very different meanings:
+`src/lib/site/content/` used to be a folder of 128 schema files with an `index.ts` on top, and that
+barrel was a trap: importing it for a type pulled in the page accessors, which are server-only. The
+schemas now live with their components, so what is left is three files that cannot be confused —
+there is no `index.ts` left to import by accident:
 
 | Import from | Contains | Safe on the client |
 | --- | --- | --- |
-| `@/lib/site/content` | schema + `getPageByPath`, `getSiteStructures` | **no** |
-| `@/lib/site/content/schema` | the public content types, nothing else | yes |
-| `@/lib/site/content/schema/basics/badge` | one component's props | yes |
+| `@/lib/site/content/shared` | the field types component schemas are written in | yes |
+| `@/lib/site/content/document` | `Page`, `PageMeta`, `Block`, `SiteStructures` | yes |
+| `@/lib/site/content/load` | `getPageByPath`, `getSiteStructures` — opens with `import 'server-only'` | **no** |
 
-Components always use the third. `SiteChrome.tsx` spells out why:
-
-```tsx
-// The type import points at the schema file, not the @/lib/content barrel, so the client-side
-// editor bundle never touches the server-only accessor modules.
-```
+A component never reaches for any of them to type its own props: those come from the `.schema.ts`
+in its own folder.
 
 ### Import order
 
@@ -513,8 +510,8 @@ and alphabetised inside each group:
 ```typescript
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import Badge from '@/components/basics/Badge';
-import { BadgeProps } from '@/lib/site/content/schema/basics/badge';
+import Badge from '@/components/basics/Badge/Badge';
+import { BadgeProps } from '@/components/basics/Badge/Badge.schema';
 ```
 
 External packages first, then everything under the `@/` alias (`@/*` maps to `src/*`), then relative
@@ -531,7 +528,7 @@ rest of the tree stays on the server.
 block itself is a server component:
 
 ```tsx
-// src/components/contentBlocks/StatBand.tsx
+// src/components/contentBlocks/StatBand/StatBand.tsx
 const StatBand = ({
 	heading,
 	items = [],
@@ -566,7 +563,7 @@ is a client component, and only because a number that animates needs an effect, 
 stays useful without JavaScript:
 
 ```tsx
-// src/components/basics/CountUp.tsx
+// src/components/basics/CountUp/CountUp.tsx
 'use client';
 
 // The initial state is the final value on purpose: it is what the server renders, so crawlers and

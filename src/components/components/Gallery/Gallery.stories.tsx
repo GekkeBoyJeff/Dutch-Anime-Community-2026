@@ -1,0 +1,66 @@
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
+import { demoImage } from '@/components/basics/Media/Media.stories';
+
+import Gallery from './Gallery';
+import { GalleryProps } from './Gallery.schema';
+
+const items = [
+	{ ...demoImage, caption: 'Eerste foto', credit: '© Fotograaf' },
+	{ ...demoImage, caption: 'Tweede foto' },
+	demoImage,
+	{ ...demoImage, caption: 'Vierde foto', href: '/' },
+	demoImage,
+	{ ...demoImage, credit: '© Studio' },
+];
+
+const meta: Meta<typeof Gallery> = {
+	title: 'Components/Gallery',
+	component: Gallery,
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Image gallery in masonry, grid or strip layouts. Fully server-rendered: each item is a `<figure>` from the Media primitive with optional caption, credit and link. The column count drives a --columns custom property.',
+			},
+		},
+		jsonSchema: { schema: GalleryProps },
+	},
+};
+
+export default meta;
+
+type Story = StoryObj<typeof Gallery>;
+
+export const Default: Story = {
+	args: {
+		items,
+		variant: 'grid',
+		columns: 3,
+		gap: 'm',
+	},
+};
+
+export const Masonry: Story = {
+	...Default,
+	args: {
+		...Default.args,
+		variant: 'masonry'
+	}
+};
+
+export const Strip: Story = {
+	...Default,
+	args: {
+		...Default.args,
+		variant: 'strip'
+	}
+};
+
+export const TwoColumns: Story = {
+	...Default,
+	args: {
+		...Default.args,
+		columns: 2
+	}
+};

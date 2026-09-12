@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
-import Container from '@/components/basics/Container';
-import Title from '@/components/basics/Title';
+import Container from '@/components/basics/Container/Container';
+import Title from '@/components/basics/Title/Title';
 
 export const metadata: Metadata = { title: 'Mijn profiel', robots: { index: false, follow: false } };
 

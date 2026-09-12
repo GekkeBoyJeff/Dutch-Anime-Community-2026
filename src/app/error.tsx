@@ -1,7 +1,7 @@
 'use client';
 
-import Button from '@/components/basics/Button';
-import Section from '@/components/basics/Section';
+import Button from '@/components/basics/Button/Button';
+import Section from '@/components/basics/Section/Section';
 
 type ErrorProps = { error: Error & { digest?: string }; reset: () => void };
 

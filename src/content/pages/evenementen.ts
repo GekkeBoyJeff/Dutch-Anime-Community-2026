@@ -1,4 +1,4 @@
-import type { Page } from '@/lib/site/content';
+import type { Page } from '@/lib/site/content/document';
 
 // De terugblik-collages zijn eraf: twee van de drie hebben een conlogo dwars over het beeld gebrand,
 // en dat zet het merk van een ander in het onze.

@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 
-import CookieConsent from '@/components/components/CookieConsent';
-import ScrollProgress from '@/components/components/ScrollProgress';
-import SearchPalette from '@/components/components/SearchPalette';
-import SiteChrome from '@/components/structures/SiteChrome';
-import { getSiteStructures } from '@/lib/site/content';
+import CookieConsent from '@/components/components/CookieConsent/CookieConsent';
+import ScrollProgress from '@/components/components/ScrollProgress/ScrollProgress';
+import SearchPalette from '@/components/components/SearchPalette/SearchPalette';
+import SiteChrome from '@/components/structures/SiteChrome/SiteChrome';
+import { getSiteStructures } from '@/lib/site/content/load';
 import { resolveChrome } from '@/lib/site/site';
 
 type WebsiteLayoutProps = { children: ReactNode };

@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-import { getPageByPath } from '@/lib/site/content';
+import { getPageByPath } from '@/lib/site/content/load';
 import { OgCard, ogSize } from '@/lib/site/ogImage';
 import { site } from '@/lib/site/site';
 

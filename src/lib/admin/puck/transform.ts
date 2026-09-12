@@ -1,6 +1,6 @@
 import type { Data, DefaultComponents } from '@puckeditor/core';
 
-import { Page, SiteStructures, type StructuredDataNode } from '@/lib/site/content/schema';
+import { Page, SiteStructures, type StructuredDataNode } from '@/lib/site/content/document';
 
 // A type alias, not an interface: only an alias satisfies Puck's DefaultComponentProps
 // index-signature bound.

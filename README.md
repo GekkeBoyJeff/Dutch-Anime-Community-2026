@@ -122,7 +122,7 @@ src/app/(website)/page.tsx + [...slug]   home and a catch-all; both delegate to 
 
 - **Content is data.** A page is `{ meta, blocks }` at a path. Each block has a `type` that selects its
   component; the rest of the block is that component's props. Add or reorder sections by editing data.
-- **One contract.** `src/lib/site/content/schema/` defines the Zod schemas (`shared`, `blocks/<type>`,
+- **One contract.** `src/lib/site/content/` defines the Zod schemas (`shared`, `blocks/<type>`,
   `page`); every TypeScript type is inferred from them, and the render registry + JSON-LD builders +
   the Puck editor all derive from the same union — so nothing drifts and a mis-wire is a compile error.
 - **Validated at the boundary.** The `lib/content` accessors `safeParse` every page, so invalid content

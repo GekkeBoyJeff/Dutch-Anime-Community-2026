@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 
+import type { ReviewItem } from '@/components/contentBlocks/Reviews/Reviews.schema';
 import { isStatic } from '@/lib/shared/env';
-import { getPageByPath, type ReviewItem, type Block, type OgImage, type StructuredDataNode } from '@/lib/site/content';
+import type { Block, StructuredDataNode } from '@/lib/site/content/document';
+import { getPageByPath } from '@/lib/site/content/load';
+import type { OgImage } from '@/lib/site/content/shared';
 import { ogSize } from '@/lib/site/ogImage';
 import { site } from '@/lib/site/site';
 

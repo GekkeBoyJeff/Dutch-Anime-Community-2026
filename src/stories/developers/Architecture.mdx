@@ -123,12 +123,12 @@ const Home = () => {
 > paths with at least one segment, so `/` needs its own file. The comment in
 > `[...slug]/page.tsx` says exactly that, and its `generateStaticParams` filters `/` back out.
 
-**3. Fetching.** `getPageByPath` in `src/lib/site/content/pages.ts` is the only code that knows where
+**3. Fetching.** `getPageByPath` in `src/lib/site/content/load.ts` is the only code that knows where
 content lives. It reads Supabase when a service-role key is present, and the files in `src/content/`
 otherwise:
 
 ```typescript
-// src/lib/site/content/pages.ts
+// src/lib/site/content/load.ts
 export const dbEnabled = () =>
 	env.CONTENT_SOURCE ? env.CONTENT_SOURCE === 'supabase' : Boolean(env.SUPABASE_SERVICE_ROLE_KEY);
 ```
@@ -141,7 +141,7 @@ error. That matters: it reads with the service-role key, which bypasses every da
 naming the page and the field:
 
 ```typescript
-// src/lib/site/content/validate.ts
+// src/lib/site/content/load.ts
 const result = schema.safeParse(raw);
 if (result.success) return result.data;
 ```
@@ -206,10 +206,10 @@ not part of the content schema.
 
 ### One schema, four consumers
 
-`src/lib/site/content/schema/` is the single source. A block file declares its props once:
+`src/lib/site/content/` is the single source. A block file declares its props once:
 
 ```typescript
-// src/lib/site/content/schema/blocks/titleText.ts
+// src/components/contentBlocks/TitleText/TitleText.schema.ts
 export const TitleTextProps = z.object({
 	colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
 	heading: Heading.optional().describe('Heading cluster (tagline, title and intro) shown above the body text'),
@@ -254,23 +254,23 @@ for it to drift from.
 | `structures/` | 5 | Site chrome — the parts around a page, not in it. | `Navigation`, `Footer`, `AnnouncementBar`, `SiteChrome` |
 | `dashboard/` | 6 | Staff-platform shell. Split into `shell/` and `structures/`. | `AdminShell`, `DashboardNav`, `CommandPalette` |
 
-Two things mirror that tree. `src/styles/components/` has the same six folders, one `.scss` file per
-component — styling lives at the consumer, never inside a primitive. And
-`src/lib/site/content/schema/` has five of them (`blocks/` in place of `contentBlocks/`, and no
-`dashboard/`, because the staff platform is not content).
+Nothing mirrors that tree, because there is nothing to mirror: a component's stylesheet, schema and
+story sit in its own folder. `src/styles/` holds only what every stylesheet is written in — the
+tokens, the mixins, the reset — and `src/lib/site/content/` only what a *page* is, as opposed to what
+a component is.
 
 Composition runs downhill. A content block reaches for basics and components; a basic never reaches
 back up. `Hero` opens with exactly that:
 
 ```tsx
-// src/components/contentBlocks/Hero.tsx
-import Actions from '@/components/basics/Actions';
-import Container from '@/components/basics/Container';
-import Content from '@/components/basics/Content';
+// src/components/contentBlocks/Hero/Hero.tsx
+import Actions from '@/components/basics/Actions/Actions';
+import Container from '@/components/basics/Container/Container';
+import Content from '@/components/basics/Content/Content';
 // …
-import type { HeroProps as HeroSchemaProps } from '@/lib/site/content/schema/blocks/hero';
+import type { HeroProps as HeroSchemaProps } from '@/components/contentBlocks/Hero/Hero.schema';
 
-import '@/styles/components/contentBlocks/Hero.scss';
+import '@/components/contentBlocks/Hero/Hero.scss';
 ```
 
 Two rules are visible there. Every import names the file that defines the thing — no folder has an

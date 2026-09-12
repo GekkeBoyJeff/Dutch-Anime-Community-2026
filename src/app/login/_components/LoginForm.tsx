@@ -2,10 +2,10 @@
 
 import { useSearchParams } from 'next/navigation';
 
-import Button from '@/components/basics/Button';
-import Container from '@/components/basics/Container';
-import Content from '@/components/basics/Content';
-import Title from '@/components/basics/Title';
+import Button from '@/components/basics/Button/Button';
+import Container from '@/components/basics/Container/Container';
+import Content from '@/components/basics/Content/Content';
+import Title from '@/components/basics/Title/Title';
 import { signInWithDiscord } from '@/lib/shared/auth/permissions';
 
 const LoginForm = () => {

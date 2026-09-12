@@ -1,4 +1,4 @@
-import type { Page } from '@/lib/site/content';
+import type { Page } from '@/lib/site/content/document';
 
 // De word-lid-pagina neemt twijfel weg in plaats van te overtuigen. Vandaar dat het bezwarenblok
 // zichtbare tegels zijn en geen accordeon: geruststelling die je moet openklikken, werkt niet. De

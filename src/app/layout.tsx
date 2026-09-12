@@ -5,8 +5,8 @@ import type { Metadata, Viewport } from 'next';
 import { Manrope, Poppins } from 'next/font/google';
 import type { ReactNode } from 'react';
 
-import JsonLd from '@/components/basics/JsonLd';
-import ServiceWorker from '@/components/basics/ServiceWorker';
+import JsonLd from '@/components/basics/JsonLd/JsonLd';
+import ServiceWorker from '@/components/basics/ServiceWorker/ServiceWorker';
 import { classNames } from '@/lib/shared/classNames';
 import { env } from '@/lib/shared/env';
 import { organizationJsonLd } from '@/lib/site/seo';

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-import { getAllPagePaths } from '@/lib/site/content';
+import { getAllPagePaths } from '@/lib/site/content/load';
 import { routes } from '@/lib/site/site';
 
 export const dynamic = 'force-static';

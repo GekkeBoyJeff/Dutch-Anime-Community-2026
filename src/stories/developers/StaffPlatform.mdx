@@ -254,7 +254,7 @@ entirely so the bar never opens an empty panel. `buildTabBarItems`, `buildPalett
 > a domain means editing `DASHBOARD_GROUPS` alone — the section's permission, path and data guard stay
 > where they are.
 
-The header itself is `DashboardNav` (`src/components/dashboard/shell/DashboardNav.tsx`), a client
+The header itself is `DashboardNav` (`src/components/dashboard/shell/DashboardNav/DashboardNav.tsx`), a client
 component that renders three things: the shared `Navigation` structure under the wordmark "Beheer", a
 `CommandPalette` bound to ⌘K through `useHotkey`, and a `BottomTabBar` that hides itself at the `l`
 breakpoint and up, so it is the phone navigation. It also queries the database for two live nav

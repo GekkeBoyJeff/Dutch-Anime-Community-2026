@@ -1,6 +1,6 @@
 import DOMPurify from 'isomorphic-dompurify';
 
-import type { Page } from '@/lib/site/content/schema';
+import type { Page } from '@/lib/site/content/document';
 
 // Allowlist tuned to what Puck's richtext field emits: formatting tags only — no scripts, no
 // iframes, no event handlers, no `javascript:` URLs. isomorphic-dompurify runs the real DOMPurify in

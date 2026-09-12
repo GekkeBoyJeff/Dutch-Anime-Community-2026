@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
 
-import JsonLd from '@/components/basics/JsonLd';
-import Blocks from '@/components/contentBlocks/Blocks';
-import { getPageByPath } from '@/lib/site/content';
+import JsonLd from '@/components/basics/JsonLd/JsonLd';
+import Blocks from '@/components/contentBlocks/Blocks/Blocks';
+import { getPageByPath } from '@/lib/site/content/load';
 import { pageJsonLd } from '@/lib/site/seo';
 
 type PageViewProps = { path: string };

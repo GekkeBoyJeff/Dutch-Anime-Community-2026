@@ -4,12 +4,12 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import Button from '@/components/basics/Button';
-import Container from '@/components/basics/Container';
-import Title from '@/components/basics/Title';
-import Field from '@/components/forms/Field';
-import TextArea from '@/components/forms/TextArea';
-import TextInput from '@/components/forms/TextInput';
+import Button from '@/components/basics/Button/Button';
+import Container from '@/components/basics/Container/Container';
+import Title from '@/components/basics/Title/Title';
+import Field from '@/components/forms/Field/Field';
+import TextArea from '@/components/forms/TextArea/TextArea';
+import TextInput from '@/components/forms/TextInput/TextInput';
 import { signInWithDiscord, useSession } from '@/lib/shared/auth/permissions';
 import { classNames } from '@/lib/shared/classNames';
 import { getBrowserClient } from '@/lib/shared/supabase/client';

@@ -7,10 +7,10 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'reac
 
 import BlockDrawer from '@/app/builder/_components/BlockDrawer';
 import { dispatchRef, takePendingPreset } from '@/app/builder/_components/presetBridge';
-import Button from '@/components/basics/Button';
-import Content from '@/components/basics/Content';
-import Spinner from '@/components/basics/Spinner';
-import Modal from '@/components/components/Modal';
+import Button from '@/components/basics/Button/Button';
+import Content from '@/components/basics/Content/Content';
+import Spinner from '@/components/basics/Spinner/Spinner';
+import Modal from '@/components/components/Modal/Modal';
 import { config } from '@/lib/admin/puck/config';
 import { pageTemplates, type PageTemplate } from '@/lib/admin/puck/templates';
 import { fromPuckData, structuresChanged, toPuckData, type BuilderData } from '@/lib/admin/puck/transform';
@@ -18,7 +18,7 @@ import { usePermissions } from '@/lib/shared/auth/permissions';
 import { env } from '@/lib/shared/env';
 import { sanitizePage } from '@/lib/shared/sanitize';
 import { getBrowserClient } from '@/lib/shared/supabase/client';
-import { Page, SiteStructures } from '@/lib/site/content/schema';
+import { Page, SiteStructures } from '@/lib/site/content/document';
 import type { Json } from '@/types/database.types';
 
 // The /builder route ships in the static export and is gated on the `pages.edit` permission — RLS

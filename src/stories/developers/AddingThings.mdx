@@ -26,7 +26,7 @@ are shaped — is on [2. Conventions](?path=/docs/for-developers-2-conventions--
 | A helper only the staff platform uses | `src/lib/admin/` |
 | A page of the public site | `src/content/pages/<name>.ts`, then registered in `src/content/pages/index.ts` |
 | Navigation, footer or announcement-bar data | `src/content/structures.ts` |
-| An icon | the `ICONS` map in `src/components/basics/Icon.tsx` |
+| An icon | the `ICONS` map in `src/components/basics/Icon/Icon.tsx` |
 | An environment variable | `src/lib/shared/env.ts`, and documented in `.env.example` |
 | A runtime API endpoint | `src/app/api/<name>/route.ts` — the four that exist are dynamic, so they only work on the `server` build target |
 
@@ -50,7 +50,7 @@ Four steps. The rightmost column is what goes wrong if the step is missed.
 
 | # | Step | If skipped |
 | --- | --- | --- |
-| 1 | Write the schema: `src/lib/site/content/schema/basics/ribbon.ts` | There is no props type to write the component against |
+| 1 | Write the schema: `src/lib/site/content/basics/ribbon.ts` | There is no props type to write the component against |
 | 2 | Write the component: `src/components/basics/Ribbon.tsx`, its imports ending with its own stylesheet | Without that import line the stylesheet never reaches the bundle and the component renders unstyled |
 | 3 | Write the stylesheet: `src/styles/components/basics/Ribbon.scss` | The component renders unstyled |
 | 4 | Write the story: `src/stories/basics/Ribbon.stories.tsx` | The component is invisible in Storybook and cannot be reviewed |
@@ -62,7 +62,7 @@ exists is `Ribbon.tsx`.
 ### 1. The schema
 
 ```typescript
-// src/lib/site/content/schema/basics/ribbon.ts
+// src/lib/site/content/basics/ribbon.ts
 import { z } from 'zod';
 
 export const RibbonProps = z
@@ -86,7 +86,7 @@ marks the props the component supplies a default for.
 ```tsx
 // src/components/basics/Ribbon.tsx
 import { classNames } from '@/lib/shared/classNames';
-import type { RibbonProps as RibbonSchemaProps } from '@/lib/site/content/schema/basics/ribbon';
+import type { RibbonProps as RibbonSchemaProps } from '@/lib/site/content/document/basics/ribbon';
 
 import '@/styles/components/basics/Ribbon.scss';
 
@@ -159,7 +159,7 @@ bare `&.is-…`, everything nested. Never BEM.
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Ribbon from '@/components/basics/Ribbon';
-import { RibbonProps } from '@/lib/site/content/schema/basics/ribbon';
+import { RibbonProps } from '@/lib/site/content/document/basics/ribbon';
 
 const meta: Meta<typeof Ribbon> = {
 	title: 'Basics/Ribbon',
@@ -219,11 +219,12 @@ with a heading above it.
 
 | # | Extra step | If skipped |
 | --- | --- | --- |
-| A | The schema also exports a `…Block` variant with a `type` literal | The block cannot appear in a page's `blocks` array |
-| B | Register that variant in the union in `src/lib/site/content/schema/blocks/index.ts` | Content using the block fails validation, and the editor never offers it |
-| C | Add the component to `REGISTRY` in `src/components/contentBlocks/Blocks.tsx` | `npm run typecheck` fails |
-| D | List the block in a category in `src/lib/admin/puck/config.tsx` | The block still appears in the editor, but under "Overig" |
-| E | Give the story a `Default` export with `args` | The editor inserts placeholder values like "Tekst" |
+| A | The schema also exports a `…Block` variant with a `type` literal | The build stops and names the folder: a content block needs that literal |
+| B | That variant's `.meta()` names a `category` | The block lands in the editor's "Overig" group |
+| C | Give the story a `Default` export with `args` | The editor inserts placeholder values like "Tekst" |
+
+All three live in the block's own folder. The `Block` union and the render registry are **generated**
+from the folders under `src/components/contentBlocks`, so a new block registers itself by existing.
 
 ### A. The schema has two exports
 
@@ -231,7 +232,7 @@ A block schema exports the props *and* a block variant. The block variant is the
 discriminator and an optional `id`. `StatBand` is the pattern to copy:
 
 ```typescript
-// src/lib/site/content/schema/blocks/statBand.ts
+// src/components/contentBlocks/StatBand/StatBand.schema.ts
 export const StatBandProps = z
 	.object({
 		colorset: Colorset.optional().describe('Light/dark theme applied to the surrounding section'),
@@ -247,7 +248,7 @@ export type StatBandBlock = z.infer<typeof StatBandBlock>;
 
 The `type` literal is camelCase and is the block's identity everywhere else: in the union, in the
 render registry, and in the JSON stored for a page. `Colorset`, `Heading` and `Id` come from
-`src/lib/site/content/schema/shared.ts`, which holds the shapes several blocks share — reuse
+`src/lib/site/content/shared.ts`, which holds the shapes several blocks share — reuse
 them rather than re-declaring a heading.
 
 So `posterWall.ts` would end with:
@@ -257,84 +258,59 @@ export const PosterWallBlock = PosterWallProps.extend({ type: z.literal('posterW
 export type PosterWallBlock = z.infer<typeof PosterWallBlock>;
 ```
 
-### B. The block union
+### B. The editor category
 
-`src/lib/site/content/schema/blocks/index.ts` needs one edit: an import and a line in the union.
+The block variant's `.meta()` says which group it belongs to in the editor's insert panel:
 
 ```typescript
-import { PosterWallBlock } from '@/lib/site/content/schema/blocks/posterWall';
-
-export const Block = z.discriminatedUnion('type', [
-	HeroBlock,
-	CardGridBlock,
-	// …
-	PosterWallBlock,
-]);
+export const PosterWallBlock = PosterWallProps.extend({
+	type: z.literal('posterWall'),
+	id: Id.optional(),
+}).meta({ category: 'grids' });
 ```
 
-The imports at the top are alphabetical by path — ESLint enforces that. The union array is not, and
-does not need to be.
+The five group names and their Dutch labels live in `src/lib/admin/puck/config.tsx`, which reads this
+`category` and groups the blocks itself. `other` is where a block with no category lands, so leaving
+it out is not a bug, just an untidy panel.
 
-This is a hand-written list, and it is the kind that is allowed: `REGISTRY` in `Blocks.tsx` derives
-its type from this union, so a block in one and not the other is a `tsc` error. A list you cannot
-forget is a registry; a list you can forget is homework.
+### The generated registry
 
-`Block` is the single union every other part of the system reads. A `Page` is a `meta` object plus an
-array of `Block`, the content loader validates against it, and the editor builds its component list
-from `Block.options`.
+Two things still have to know about every block: the `Block` union that validates page content, and
+the map from a `type` to the component that draws it. Neither is written by hand.
 
-### C. The render registry
+```
+src/components/contentBlocks/Blocks/
+	Blocks.tsx                      the renderer
+	Blocks.schema.generated.ts      the Block union
+	Blocks.registry.generated.ts    type → component
+```
 
-`src/components/contentBlocks/Blocks.tsx` maps each `type` to the component that draws it:
+`scripts/generate-blocks.mjs` scans the folders under `src/components/contentBlocks` and writes both.
+It runs when `next.config.mjs` or `.storybook/main.js` is imported — the same trick
+`styles.config.mjs` uses for `_breakpoints.scss` — so `npm run dev` and every build regenerate them.
+Add a block while the dev server is running and you have to restart it once.
+
+They are two files rather than one on purpose. The union has to be reachable without pulling in React
+components, or every route that knows what a `Page` is would ship every block's CSS.
+
+The generator fails loudly on a folder it cannot read: a missing `<Name>.schema.ts`, a missing
+`<Name>Block` export, or a missing `type: z.literal('…')` each stop the build with that folder's name.
+
+Because both files come from the same scan, a block can no longer be in one list and not the other.
+What still gets checked is the part a generator cannot know — whether a component's props match its
+schema — and that check is one line in `Blocks.tsx`:
 
 ```tsx
-export const REGISTRY: BlockRenderers = {
-	hero: Hero,
-	cardGrid: CardGrid,
-	featureCards: FeatureCards,
-	// …
-};
+export const REGISTRY: BlockRenderers = RENDERERS;
 ```
 
-`BlockRenderers` is derived from the union, so the two cannot drift:
+`BlockRenderers` is a mapped type over the `Block` union, so a component whose props drifted from its
+own schema fails `npm run typecheck`.
 
-```tsx
-type BlockRenderers = {
-	[B in Block as B['type']]: BlockRenderer<Omit<B, 'type' | 'id'>>;
-};
-```
-
-A block in the union with no entry here is a missing property, and an entry here for a `type` no
-block declares is an excess property. Either way `npm run typecheck` fails and names the key.
-
-### D. The editor category
-
-`src/lib/admin/puck/config.tsx` groups the blocks in the editor's insert panel:
-
-```tsx
-categories: {
-	headers: {
-		title: 'Koppen & titels',
-		components: ['hero', 'ctaBanner', 'titleText'],
-		defaultExpanded: true,
-	},
-	content: {
-		title: 'Content',
-		components: ['prose', 'textMedia', 'steps', 'faqAccordion', 'momentList', 'chatPreview'],
-	},
-	// …
-	other: {
-		title: 'Overig',
-	},
-},
-```
-
-`other` is a reserved name: any block not named in another category is listed there. So skipping this
-step is not a bug, just an untidy panel.
-
-### E. The story doubles as the editor's presets
+### C. The story doubles as the editor's presets
 
 Which is the one step with real constraints attached, so it has its own section below.
+
 
 ## Story args are the editor's presets
 
@@ -435,15 +411,15 @@ directive is inherited by everything that file imports.
 `Swiper` is the pattern to copy — it wraps `embla-carousel-react`:
 
 ```tsx
-// src/components/components/Swiper.tsx
+// src/components/components/Swiper/Swiper.tsx
 'use client';
 
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import Content from '@/components/basics/Content';
-import Interactive from '@/components/basics/Interactive';
-import Media from '@/components/basics/Media';
+import Content from '@/components/basics/Content/Content';
+import Interactive from '@/components/basics/Interactive/Interactive';
+import Media from '@/components/basics/Media/Media';
 ```
 
 The blocks that use `Swiper` stay server components. They render it as a child, pass it serialisable
@@ -515,7 +491,7 @@ over — unless the change happens to alter one of the three substrings those ca
 | Dragging a block in gives placeholder text like "Tekst" | The block has no story with `args`, so `defaultValueFor` invented a value per prop |
 | A story exists but the block has no presets | The story file is not directly in `src/stories/contentBlocks/`, or `component:` is not the same component object as the one in `REGISTRY` |
 | A preset is missing a prop that the story clearly sets | The value was a function, JSX or `undefined`; `sanitise` JSON round-trips the args and drops all three |
-| `<Icon name="…" />` renders nothing at all | The name is not a key in the `ICONS` map in `src/components/basics/Icon.tsx`. `Icon` returns `null` for an unknown name |
+| `<Icon name="…" />` renders nothing at all | The name is not a key in the `ICONS` map in `src/components/basics/Icon/Icon.tsx`. `Icon` returns `null` for an unknown name |
 | A build error mentioning `server-only` | Something reaching the browser imports `@/lib/site/content`. Import the specific schema file instead |
 | `npm run lint` complains about `import/order` | Imports out of group order, missing a blank line between groups, or not alphabetical within a group |
 | `npm run lint` complains about `func-style` or `react/function-component-definition` | A `function` declaration. Everything is an arrow function assigned to a `const` |

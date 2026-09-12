@@ -1,4 +1,4 @@
-import type { Page } from '@/lib/site/content';
+import type { Page } from '@/lib/site/content/document';
 
 // The 404 page, authored as content blocks like any other page — but kept OUT of the routable registry
 // (pages/index.ts) on purpose: not-found.tsx loads it via getNotFoundPage(), so it never becomes a real

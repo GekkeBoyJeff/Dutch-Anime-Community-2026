@@ -1,5 +1,5 @@
 import { defaultPresetFor } from '@/lib/admin/puck/presets';
-import { Page } from '@/lib/site/content/schema';
+import { Page } from '@/lib/site/content/document';
 
 export interface PageTemplate {
 	label: string;

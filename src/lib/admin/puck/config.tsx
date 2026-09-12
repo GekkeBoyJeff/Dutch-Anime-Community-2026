@@ -2,13 +2,13 @@ import type { Config, Field } from '@puckeditor/core';
 import { useEffect, useRef } from 'react';
 import { z } from 'zod';
 
-import { REGISTRY } from '@/components/contentBlocks/Blocks';
-import SiteChrome from '@/components/structures/SiteChrome';
+import { REGISTRY } from '@/components/contentBlocks/Blocks/Blocks';
+import { CARD_GRID_ITEM_BY_VARIANT } from '@/components/contentBlocks/CardGrid/CardGrid.schema';
+import SiteChrome from '@/components/structures/SiteChrome/SiteChrome';
 import { defaultValueFor, fieldFor, objectFieldsFor } from '@/lib/admin/puck/fields';
 import { defaultPresetFor } from '@/lib/admin/puck/presets';
 import type { BuilderRootProps } from '@/lib/admin/puck/transform';
-import { Block, PageMeta, SiteStructures } from '@/lib/site/content/schema';
-import { CARD_GRID_ITEM_BY_VARIANT } from '@/lib/site/content/schema/blocks/cardGrid';
+import { Block, PageMeta, SiteStructures } from '@/lib/site/content/document';
 
 const componentEntries = (): Config['components'] => {
 	return Object.fromEntries(
@@ -87,30 +87,41 @@ const requiredField = (name: string, schema: z.ZodType): Field => {
 	return field;
 };
 
+// The drawer's groups. Each block names its own category in its schema's `.meta()`, so adding one
+// never touches this file; these are only the Dutch labels and the order they read in.
+const CATEGORY_LABELS = {
+	headers: 'Koppen & titels',
+	content: 'Content',
+	grids: 'Grids & kaarten',
+	marketing: 'Marketing & social',
+	other: 'Overig',
+} as const;
+
+type CategoryName = keyof typeof CATEGORY_LABELS;
+
+const blockCategories = (): Config['categories'] => {
+	const byCategory = new Map<CategoryName, string[]>();
+	for (const blockSchema of Block.options) {
+		const name = (blockSchema.meta()?.category ?? 'other') as CategoryName;
+		const category = name in CATEGORY_LABELS ? name : 'other';
+		byCategory.set(category, [...(byCategory.get(category) ?? []), blockSchema.shape.type.value as string]);
+	}
+
+	return Object.fromEntries(
+		Object.entries(CATEGORY_LABELS).map(([name, title]) => [
+			name,
+			{
+				title,
+				components: byCategory.get(name as CategoryName) ?? [],
+				...(name === 'headers' ? { defaultExpanded: true } : {}),
+			},
+		]),
+	);
+};
+
 export const config: Config = {
 	components: componentEntries(),
-	categories: {
-		headers: {
-			title: 'Koppen & titels',
-			components: ['hero', 'ctaBanner', 'titleText'],
-			defaultExpanded: true,
-		},
-		content: {
-			title: 'Content',
-			components: ['prose', 'textMedia', 'steps', 'faqAccordion', 'momentList', 'chatPreview'],
-		},
-		grids: {
-			title: 'Grids & kaarten',
-			components: ['bentoGrid', 'highlightCards', 'featureCards', 'introGrid', 'cardGrid', 'profileCards', 'channelBoard'],
-		},
-		marketing: {
-			title: 'Marketing & social',
-			components: ['reviews', 'logoCloud', 'eventTeaser', 'subscribeNewsletter', 'communityQuestion', 'proofTicker'],
-		},
-		other: {
-			title: 'Overig',
-		},
-	},
+	categories: blockCategories(),
 	root: {
 		fields: {
 			title: { type: 'text', label: 'Meta titel' },

@@ -1,4 +1,4 @@
-import type { Page } from '@/lib/site/content';
+import type { Page } from '@/lib/site/content/document';
 
 // De homepage beantwoordt drie vragen in volgorde: wat is dit, gebeurt hier nog iets, en wat kan ik
 // nu doen zonder me op te geven. Vandaar dat de agenda direct onder de hero staat en niet onderaan.

@@ -36,7 +36,7 @@ is much further along than the screens — `supabase/migrations/` holds 83 SQL f
 Site content is written in **Dutch**. Code, comments and these docs are in **English**.
 
 > **Why one repository?** The staff platform is built from the same components as the site.
-> `src/components/dashboard/shell/DashboardNav.tsx` imports `Icon`, `Media`, `Shortcut` and
+> `src/components/dashboard/shell/DashboardNav/DashboardNav.tsx` imports `Icon`, `Media`, `Shortcut` and
 > `Skeleton` from `@/components/basics/`, and the login screen uses the same `Button`. A change to a
 > primitive lands in both halves at once.
 
@@ -118,7 +118,7 @@ Straight from `package.json`:
 | --- | --- | --- |
 | The words on a page | `src/content/pages/<page>.ts` | Read the warning below first. This is often not what the live site serves. |
 | The header, footer or announcement bar | `src/content/structures.ts` | Same warning. |
-| How a component looks | `src/styles/components/<tier>/<Name>.scss` | One stylesheet per component, in a folder tree mirroring `src/components/`. Restyling the button is `src/styles/components/basics/Button.scss`. |
+| How a component looks | `src/styles/components/<tier>/<Name>.scss` | One stylesheet per component, in a folder tree mirroring `src/components/`. Restyling the button is `src/components/basics/Button/Button.scss`. |
 | A brand colour | the `:root` palette in `src/styles/theme.scss` | A few runtime surfaces cannot read CSS — the browser theme colour and the share image — and repeat the palette in the `brand` object in `src/lib/site/site.ts`. Keep both in step. |
 | Add a page | a new file in `src/content/pages/`, registered in `src/content/pages/index.ts` | The route, the sitemap and the metadata all follow from that one registry entry. |
 | Add a new *kind* of section | a schema file, a component, and one line in `src/components/contentBlocks/Blocks.tsx` | A fixed sequence of files. [3. Adding things](?path=/docs/for-developers-3-adding-things--docs) walks through it. |

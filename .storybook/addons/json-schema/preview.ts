@@ -3,7 +3,7 @@ import type { ArgTypesEnhancer } from 'storybook/internal/csf';
 import { addons } from 'storybook/preview-api';
 import * as z from 'zod';
 
-import { ICONS } from '@/components/basics/Icon';
+import { ICONS } from '@/components/basics/Icon/Icon';
 import { describeField, describeMeta, type FieldDescription } from '@/lib/shared/schemaFields';
 
 import { EVENTS, PARAM_KEY, type SchemaResult } from './constants';

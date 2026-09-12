@@ -186,7 +186,7 @@ meta: {
 ```
 
 Only `url` is required; `alt`, `width` and `height` are optional. The shape is `OgImage` in
-`src/lib/site/content/schema/shared.ts`, and `url` is a plain non-empty string rather than a strict
+`src/lib/site/content/shared.ts`, and `url` is a plain non-empty string rather than a strict
 URL, because a root-relative value is resolved against `metadataBase`.
 
 > **Why the pre-generated PNGs?** The live site is a static export. The deploy workflow
@@ -283,7 +283,7 @@ export const StructuredDataNode = z
 Only `@type` is required; everything else passes through untouched. `pageJsonLd` appends these to the
 same graph, so derived and hand-written nodes ship as one script.
 
-> **Why the graph is escaped.** `jsonLdString` in `src/components/basics/JsonLd.tsx` replaces every `<`
+> **Why the graph is escaped.** `jsonLdString` in `src/components/basics/JsonLd/JsonLd.tsx` replaces every `<`
 > in the serialised JSON with its unicode escape before the string reaches the tag, so a content value
 > containing a literal closing script tag cannot break out of it:
 >
