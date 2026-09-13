@@ -52,7 +52,7 @@ Four steps. The rightmost column is what goes wrong if the step is missed.
 | --- | --- | --- |
 | 1 | Write the schema: `src/lib/site/content/basics/ribbon.ts` | There is no props type to write the component against |
 | 2 | Write the component: `src/components/basics/Ribbon.tsx`, its imports ending with its own stylesheet | Without that import line the stylesheet never reaches the bundle and the component renders unstyled |
-| 3 | Write the stylesheet: `src/styles/components/basics/Ribbon.scss` | The component renders unstyled |
+| 3 | Write the stylesheet: `src/design-system/components/basics/Ribbon.scss` | The component renders unstyled |
 | 4 | Write the story: `src/components/basics/Ribbon/Ribbon.stories.tsx` | The component is invisible in Storybook and cannot be reviewed |
 
 Every step writes a file the component needs to work. There is no list to append to and no barrel to
@@ -88,7 +88,7 @@ marks the props the component supplies a default for.
 import { classNames } from '@/lib/shared/classNames';
 import type { RibbonProps as RibbonSchemaProps } from '@/lib/site/content/document/basics/ribbon';
 
-import '@/styles/components/basics/Ribbon.scss';
+import '@/design-system/components/basics/Ribbon.scss';
 
 type RibbonProps = RibbonSchemaProps;
 
@@ -127,7 +127,7 @@ UI, whose components use state and effects. Every file in `src/components/forms/
 ### 3. The stylesheet
 
 ```css
-/* src/styles/components/basics/Ribbon.scss */
+/* src/design-system/components/basics/Ribbon.scss */
 .ribbon {
 	--font-size: 0.75rem;
 	position: absolute;
@@ -482,7 +482,7 @@ over — unless the change happens to alter one of the three substrings those ca
 
 | Symptom | Cause |
 | --- | --- |
-| The component renders, completely unstyled | The component file has no `import '@/styles/components/…'` line, so its stylesheet never reached the bundle |
+| The component renders, completely unstyled | The component file has no `import '@/design-system/components/…'` line, so its stylesheet never reached the bundle |
 | `npm run typecheck` says a property is missing from `REGISTRY` | The block is in the union but has no renderer in `Blocks.tsx` |
 | `npm run typecheck` flags an unknown key in the `REGISTRY` object | An entry whose `type` no block schema declares |
 | The build stops with `✖ Invalid page content — 2 problems:` and a field path | A page in `src/content/pages/` no longer matches the schema. The message names the page and the field |

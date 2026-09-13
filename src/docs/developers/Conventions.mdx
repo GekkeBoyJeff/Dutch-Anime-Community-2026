@@ -281,8 +281,7 @@ type ButtonProps = ButtonSchemaProps & HTMLAttributes<HTMLElement> & { children?
 
 ## The five tiers
 
-The public site is built out of five tiers, one folder each under `src/components/`, and
-`src/styles/components/` carries the same folder names. (A sixth folder,
+The public site is built out of five tiers, one folder each under `src/components/`. (A sixth folder,
 `src/components/dashboard/`, holds the staff platform's shell; it uses plain TypeScript interfaces
 and none of the content schema — see
 [8. Staff platform](?path=/docs/for-developers-8-staff-platform--docs).)
@@ -335,14 +334,15 @@ components that each disable themselves slightly differently.
 ## Where styling lives
 
 There are no CSS modules and no utility classes. A component's stylesheet sits in its own folder;
-`src/styles/` holds only what every stylesheet is written in.
+`src/design-system/` holds only what every stylesheet is written in.
 
 | File | What it is for |
 | --- | --- |
-| `src/styles/_tokens.scss` | everything a stylesheet may read: fixed colours, the aliases for the ones the palette sets, `spacing()`, `bp()`, `breakpoint()`, `on-colorset()` |
-| `src/styles/_interactions.scss` | the interaction mixins: `interactive`, `link-underline`, `overlay-backdrop`, `popup-enter-exit` |
-| `src/styles/theme.scss` | every custom property: the `:root` palette and the `[data-colorset]` mapping |
-| `src/styles/base.scss` | the reset and the bare HTML elements — nothing component-specific |
+| `src/design-system/_tokens.scss` | everything a stylesheet may read: fixed colours, the aliases for the ones the palette sets, `spacing()`, `bp()`, `breakpoint()`, `on-colorset()` |
+| `src/design-system/_interactions.scss` | the interaction mixins: `interactive`, `link-underline`, `overlay-backdrop`, `popup-enter-exit` |
+| `src/design-system/theme.scss` | every custom property: the `:root` palette and the `[data-colorset]` mapping |
+| `src/design-system/base.scss` | the reset and the bare HTML elements — nothing component-specific |
+| `src/design-system/breakpoints.mjs` | the six breakpoint widths. Sass cannot read JavaScript, so `styles.config.mjs` writes `_breakpoints.scss` from it; `compileSizes()` imports the same object for the `sizes` attribute on `<img srcset>` |
 | `src/components/<tier>/<Name>/<Name>.scss` | the component's own stylesheet, imported by the component itself |
 
 The two underscore files are **prepended to every stylesheet by the build**, which is why no
@@ -374,8 +374,8 @@ Only the two site-wide stylesheets are imported centrally, as the **first** line
 before any component:
 
 ```typescript
-import '@/styles/theme.scss';
-import '@/styles/base.scss';
+import '@/design-system/theme.scss';
+import '@/design-system/base.scss';
 ```
 
 Two things follow. A route now downloads only the CSS of the components it renders — the home page
@@ -457,7 +457,7 @@ Four rules, and they hold across every stylesheet in the repo.
 }
 ```
 
-**3. Never BEM.** No `__` and no `--` in a class name anywhere in `src/styles/`. `.badge-dot`, not
+**3. Never BEM.** No `__` and no `--` in a class name anywhere in `src/design-system/`. `.badge-dot`, not
 `.badge__dot`; `.is-primary`, not `.badge--primary`.
 
 **4. Always nest.** A rule for `.badge-dot` is written inside `.badge`, never as a second top-level

@@ -30,7 +30,7 @@ export const Box = ({ children }) => (
 
 ## One property drives every size
 
-`src/styles/base.scss` sets the size of every element on the page in two rules:
+`src/design-system/base.scss` sets the size of every element on the page in two rules:
 
 ```css
 body {
@@ -162,7 +162,7 @@ So `size={2} element="h1"` is a page's real first heading at the h2 size, and `e
 paragraph the heading look without polluting the outline.
 
 `.title.is-1` … `.title.is-6` are not a second scale. They are declared on the same rule as
-`.h1`–`.h6` in `src/styles/base.scss`, so a `Title` and a bare `.h1` resolve to the same size *and*
+`.h1`–`.h6` in `src/design-system/base.scss`, so a `Title` and a bare `.h1` resolve to the same size *and*
 the same line-height:
 
 ```css
@@ -184,7 +184,7 @@ Props and controls: [Title](?path=/docs/basics-title--docs).
 
 ## Weights
 
-Four, in `src/styles/_tokens.scss`. Headings get `$weight-semibold` from `base.scss`; everything else
+Four, in `src/design-system/_tokens.scss`. Headings get `$weight-semibold` from `base.scss`; everything else
 is the component's choice.
 
 <Box>

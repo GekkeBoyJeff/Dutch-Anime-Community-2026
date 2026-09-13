@@ -1,5 +1,5 @@
-import '@/styles/theme.scss';
-import '@/styles/base.scss';
+import '@/design-system/theme.scss';
+import '@/design-system/base.scss';
 
 import type { Metadata, Viewport } from 'next';
 import { Manrope, Poppins } from 'next/font/google';

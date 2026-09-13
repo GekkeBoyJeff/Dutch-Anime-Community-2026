@@ -1,4 +1,4 @@
-import breakpoints from '@/styles/breakpoints.json';
+import { breakpoints } from '@/design-system/breakpoints.mjs';
 
 import manifest from './manifest.json';
 

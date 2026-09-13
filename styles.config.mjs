@@ -1,27 +1,25 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { breakpoints } from './src/design-system/breakpoints.mjs';
+
 const root = dirname(fileURLToPath(import.meta.url));
-const stylesDir = join(root, 'src/styles');
+const designSystemDir = join(root, 'src/design-system');
 
-// loadPaths lets `@use "tokens"` / `@use "breakpoints"` resolve from the styles root instead of
-// relatively. One source, shared by next.config and Storybook (DRY).
-export const SCSS_LOAD_PATHS = [stylesDir];
+// loadPaths lets `@use "tokens"` / `@use "breakpoints"` resolve from the design-system root instead
+// of relatively. One source, shared by next.config and Storybook (DRY).
+export const SCSS_LOAD_PATHS = [designSystemDir];
 
-// ── Single source of breakpoints ──
-// The breakpoint scale lives in exactly ONE place — src/styles/breakpoints.json — so the JS side (the
-// Media component's `<source media="(min-width: …)">` queries) and the SCSS side (`bp()`/`breakpoint()`
-// in _tokens.scss) can never drift. Here we generate the SCSS partial `_breakpoints.scss` from that
-// JSON; `_tokens.scss` `@use`s it. The generated file is git-ignored. This runs on import, and both
-// next.config.mjs and .storybook/main.js import this module before any SCSS is compiled.
-const breakpoints = JSON.parse(readFileSync(join(stylesDir, 'breakpoints.json'), 'utf8'));
+// The SCSS half of the breakpoint scale. breakpoints.mjs explains why it is generated; this writes
+// it on import, and both next.config.mjs and .storybook/main.js import this module before any SCSS
+// is compiled. The generated file is git-ignored.
 const breakpointMap = Object.entries(breakpoints)
 	.map(([name, value]) => `\t${name}: ${value},`)
 	.join('\n');
 writeFileSync(
-	join(stylesDir, '_breakpoints.scss'),
-	`// GENERATED from breakpoints.json by styles.config.mjs — do not edit by hand.\n$breakpoints: (\n${breakpointMap}\n);\n`,
+	join(designSystemDir, '_breakpoints.scss'),
+	`// GENERATED from breakpoints.mjs by styles.config.mjs — do not edit by hand.\n$breakpoints: (\n${breakpointMap}\n);\n`,
 );
 
 // Prepended to every SCSS file entering the bundler, so every token, function and mixin is available

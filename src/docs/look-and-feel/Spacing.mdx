@@ -71,7 +71,7 @@ The steps are close together at the bottom and far apart at the top, because tha
 notices a difference. Below `l` the scale is quarter-rem increments for the inside of controls; above
 it, the jumps are for the space between whole blocks.
 
-They live in one Sass map in `src/styles/_tokens.scss`:
+They live in one Sass map in `src/design-system/_tokens.scss`:
 
 ```css
 $spacing: (
@@ -145,7 +145,7 @@ not so the scale can be bypassed.
 }
 ```
 
-`$section-gutter` is not a step. It is a custom property declared in `src/styles/theme.scss`, and it
+`$section-gutter` is not a step. It is a custom property declared in `src/design-system/theme.scss`, and it
 changes at a breakpoint:
 
 ```css
@@ -188,42 +188,46 @@ Six widths, and every media query in the codebase uses one of them.
 | `2xl` | 90rem | 1440px | Wide desktop. |
 | `3xl` | 120rem | 1920px | Very wide. |
 
-They are written in **`src/styles/breakpoints.json`**, which is not a stylesheet:
+They are written in **`src/design-system/breakpoints.mjs`**, which is not a stylesheet:
 
-```json
-{
-	"s": "24rem",
-	"m": "48rem",
-	"l": "64rem",
-	"xl": "80rem",
-	"2xl": "90rem",
-	"3xl": "120rem"
-}
+```js
+export const breakpoints = {
+	s: '24rem',
+	m: '48rem',
+	l: '64rem',
+	xl: '80rem',
+	'2xl': '90rem',
+	'3xl': '120rem',
+};
 ```
 
-### Why JSON
+### Why a JavaScript module
 
 Two sides of the codebase need these numbers, and they cannot both read a `.scss` file.
 
 - The **SCSS** side wants a Sass map for `bp()` and `breakpoint()`.
 - The **JS** side wants the raw values. `src/lib/site/images/index.ts` builds the `sizes` attribute of
   a responsive image out of them: `(min-width: 48rem) 50vw, 100vw`. That string has to name the same
-  widths the stylesheet does, or an image picks the wrong file at the wrong width.
+  widths the stylesheet does, or the browser fetches the wrong image file at the wrong width — and
+  nothing reports it.
 
-`styles.config.mjs` closes the gap by reading the JSON and writing a Sass partial from it:
+A module rather than a JSON file, because JSON cannot carry the comment that explains any of this.
 
-```jsx
-const breakpoints = JSON.parse(readFileSync(join(stylesDir, 'breakpoints.json'), 'utf8'));
+`styles.config.mjs` closes the gap by importing it and writing a Sass partial:
+
+```js
+import { breakpoints } from './src/design-system/breakpoints.mjs';
+
 const breakpointMap = Object.entries(breakpoints)
 	.map(([name, value]) => `\t${name}: ${value},`)
 	.join('\n');
 ```
 
 A `writeFileSync` on the next line wraps that map in `$breakpoints: ( … );` and saves it as
-`src/styles/_breakpoints.scss`, which `_tokens.scss` then `@use`s:
+`src/design-system/_breakpoints.scss`, which `_tokens.scss` then `@use`s:
 
 ```css
-// GENERATED from breakpoints.json by styles.config.mjs — do not edit by hand.
+// GENERATED from breakpoints.mjs by styles.config.mjs — do not edit by hand.
 $breakpoints: (
 	s: 24rem,
 	m: 48rem,
@@ -234,18 +238,9 @@ $breakpoints: (
 );
 ```
 
-That code runs on import, and both `next.config.mjs` and `.storybook/main.js` import the module before
-any SCSS is compiled. The partial is therefore a build artefact and is git-ignored; editing it by hand
-is undone on the next start. To change a breakpoint, change the JSON.
+The generated file is git-ignored: it is an output, and the only place to change a width is
+`breakpoints.mjs`.
 
-The same module also exports the prelude that puts every token in reach:
-
-```jsx
-export const SCSS_PRELUDE = '@use "tokens" as *;\n@use "interactions" as *;';
-```
-
-It is prepended to every stylesheet entering the bundler, which is why a component stylesheet can
-call `spacing()` without an `@use` line of its own.
 
 ## `bp()`, and writing mobile-first
 
@@ -277,7 +272,7 @@ as the screen gets wider. Write the small layout first; never undo it.
 }
 ```
 
-From `src/styles/components/structures/Footer.scss`. One column stacked by default; from 768px up,
+From `src/design-system/components/structures/Footer.scss`. One column stacked by default; from 768px up,
 two columns in a 1:2 ratio. The gap is stated once and never repeated, because nothing about it
 changes.
 
@@ -300,7 +295,7 @@ matching nothing.
 
 Stylesheets in this repo do not write `padding-left`, `margin-left` or `left`. They write
 `padding-inline-start`, `margin-inline` and `inset-inline-start`. There is not one `padding-left`,
-`margin-left` or `left` declaration anywhere in `src/styles`.
+`margin-left` or `left` declaration anywhere in `src/design-system` or any component stylesheet.
 
 | Physical | Logical | Means |
 | --- | --- | --- |

@@ -173,7 +173,7 @@ const reducedMotion = useReducedMotion();
 It is built on [`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore), so it
 reads the live media query without a state-setting effect, and it returns `false` during server rendering.
 
-**Only for motion that lives in JavaScript.** `src/styles/base.scss` already ships a global reset that
+**Only for motion that lives in JavaScript.** `src/design-system/base.scss` already ships a global reset that
 collapses every CSS animation and transition to 0.01ms under `prefers-reduced-motion: reduce`. This hook
 is for the cases that reset cannot reach — a `requestAnimationFrame` loop, or a state machine that waits
 for a transition to end. `AnnouncementDismiss` is exactly that second case:

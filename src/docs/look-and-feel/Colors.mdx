@@ -79,8 +79,8 @@ on.
 
 Two files, two forms of the same colour.
 
-- `src/styles/theme.scss` declares the **custom property**: `--color: var(--color-light)`.
-- `src/styles/_tokens.scss` declares the **Sass alias**: `$color: var(--color);`.
+- `src/design-system/theme.scss` declares the **custom property**: `--color: var(--color-light)`.
+- `src/design-system/_tokens.scss` declares the **Sass alias**: `$color: var(--color);`.
 
 A component stylesheet always writes the `$` form:
 
@@ -93,7 +93,7 @@ A component stylesheet always writes the `$` form:
 }
 ```
 
-That is the whole of `src/styles/components/basics/Section.scss`. `_tokens.scss` is prepended to
+That is the whole of `src/design-system/components/basics/Section.scss`. `_tokens.scss` is prepended to
 every stylesheet by the build, so no component ever writes an `@use` line to reach these names.
 
 > **Why two forms?** Sass runs at build time and cannot know which colorset a component will land in;
@@ -122,7 +122,7 @@ says so, with the `on-colorset()` mixin:
 }
 ```
 
-Real code, from `src/styles/components/basics/Badge.scss`. The neutral badge is a near-white chip on
+Real code, from `src/design-system/components/basics/Badge.scss`. The neutral badge is a near-white chip on
 a light section; on a dark one that chip would glare, so it becomes a mid grey. Its text is `$color`,
 which flips on its own and needs no extra rule.
 
@@ -131,7 +131,7 @@ inside a dark section, however deep. Over 40 component stylesheets use it today.
 
 ## The grey scale
 
-Seven fixed steps, in `src/styles/_tokens.scss`. They are plain Sass variables holding a hex value:
+Seven fixed steps, in `src/design-system/_tokens.scss`. They are plain Sass variables holding a hex value:
 no `var()`, no flipping.
 
 <Ramp steps={[['$white', '#ffffff'], ['$grey-lightest', '#f6f6f7'], ['$grey-light', '#e3e3e6'], ['$grey', '#a0a0a8'], ['$grey-dark', '#5c5c66'], ['$grey-darkest', '#202024'], ['$black', '#111112']]} />
@@ -195,7 +195,7 @@ third as an inset hairline: `box-shadow: inset 0 0 0 0.0625rem $ring-success`.
 
 ## Two layers
 
-`src/styles/theme.scss` is one file in two steps, and each step has exactly one job.
+`src/design-system/theme.scss` is one file in two steps, and each step has exactly one job.
 
 **1. Palette.** Every colour the site owns, as a `-light` and a `-dark` pair.
 
@@ -286,11 +286,11 @@ token definitions. A box that needs to stand out uses a border, a shadow, or a g
 
 ## Adding a colour
 
-1. `src/styles/theme.scss`, step 1 — add the value to the `:root` palette. If it has to flip, add the
+1. `src/design-system/theme.scss`, step 1 — add the value to the `:root` palette. If it has to flip, add the
    pair `--thing-light` and `--thing-dark`; if not, add plain `--thing`.
 2. Same file, step 2 — if it flips, add one line to `[data-colorset='light']` and one to
    `[data-colorset='dark']`. Both blocks, always; a slot in one and not the other is a silent bug.
-3. `src/styles/_tokens.scss` — add the alias next to its neighbours: `$thing: var(--thing);`.
+3. `src/design-system/_tokens.scss` — add the alias next to its neighbours: `$thing: var(--thing);`.
 4. Use `$thing` in the component stylesheet. Never `var(--thing)`.
 6. Verify by compiling — `npm run storybook` or `npm run build`. An unknown Sass variable is a build
    error, so a missing step 4 cannot reach production. A missing step 3 can: nothing fails, the

@@ -127,7 +127,7 @@ src/app/(website)/page.tsx + [...slug]   home and a catch-all; both delegate to 
   the Puck editor all derive from the same union — so nothing drifts and a mis-wire is a compile error.
 - **Validated at the boundary.** The `lib/content` accessors `safeParse` every page, so invalid content
   fails `next build` (or an invalid DB row never reaches the site) with a path-pointed error.
-- **Theming via tokens.** Colour, type and spacing live in `src/styles/theme.scss` and `src/styles/_tokens.scss`
+- **Theming via tokens.** Colour, type and spacing live in `src/design-system/theme.scss` and `src/design-system/_tokens.scss`
   and cascade through `data-colorset`. Runtime surfaces that can't read CSS (OG images, the manifest, the
   viewport theme colour) read the matching `brand` palette in `src/lib/site/site.ts`.
 
@@ -224,6 +224,6 @@ git merge starter/main    # resolve conflicts (usually only in src/content/ and 
 ```
 
 DAC-specific changes are deliberately concentrated in `src/content/`, the `:root` palette in
-`src/styles/theme.scss`, `src/lib/site/site.ts`, and `public/media/` — so merges stay small. (The Supabase staff
+`src/design-system/theme.scss`, `src/lib/site/site.ts`, and `public/media/` — so merges stay small. (The Supabase staff
 platform under `src/app/(admin)`, `src/lib/auth`, `src/lib/supabase` and `supabase/` is DAC-only and not part
 of the starter.)

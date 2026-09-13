@@ -1,5 +1,5 @@
-import '@/styles/theme.scss';
-import '@/styles/base.scss';
+import '@/design-system/theme.scss';
+import '@/design-system/base.scss';
 
 import type { Decorator } from '@storybook/nextjs-vite';
 import { useDarkMode } from '@storybook-community/storybook-dark-mode';
