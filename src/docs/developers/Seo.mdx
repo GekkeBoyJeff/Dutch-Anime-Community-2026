@@ -24,9 +24,11 @@ export const site = {
 };
 ```
 
-The same file exports `brand` — five hex colours copied out of the SCSS theme. They exist because three
-surfaces are drawn outside the browser and cannot read CSS custom properties: the share image, the web
-manifest, and the browser theme colour. More on that below.
+Three surfaces are drawn outside the browser and cannot read CSS custom properties: the share image,
+the web manifest, and the browser theme colour. They read `theme` from
+`src/design-system/theme.generated.ts`, which `styles.config.mjs` derives by compiling `theme.scss`
+and reading its palette back out. So the colours still come from the stylesheet — nothing is copied
+by hand. More on that below.
 
 ## How title, description and canonical get set
 
@@ -117,7 +119,7 @@ renderer uses, so metadata and content can never describe different pages (see
 | `og:image` | `ogImageMeta` | see the next section |
 | `og:type`, `og:site_name`, `og:locale` | root layout | `website`, the site name, `nl_NL` |
 | `twitter:card` | root layout | `summary_large_image` |
-| `<meta name="theme-color">` | the `viewport` export in the root layout | `brand.warm` |
+| `<meta name="theme-color">` | the `viewport` export in the root layout | `theme.browserChrome` |
 | favicon, Apple touch icon | root layout `icons` | `/icon.svg` and `/icon-192.png` |
 
 **Keeping a route out of search.** A route can export its own `metadata` and say so. Every signed-in
@@ -142,9 +144,11 @@ export const ogContentType = 'image/png';
 ```
 
 > **Why hex colours instead of tokens?** `OgCard` is drawn by `next/og`, which renders through satori,
-> outside the DOM, and cannot read CSS variables. So it reads `brand` from `src/lib/site/site.ts` —
-> `brand.ink` for the background, `brand.page` for the text, `brand.primary` for the bar. That object is
-> a hand-kept copy of the theme colours. Change the theme, change it too.
+> outside the DOM, and cannot read CSS variables. So it reads `theme` from
+> `src/design-system/theme.generated.ts` — `theme.backgroundDark` for the background, `theme.page` for
+> the text, `theme.primary` for the bar. That file is derived: `styles.config.mjs` compiles
+> `theme.scss` and reads its `:root` palette back out, so changing a colour in the stylesheet is
+> enough.
 
 Two files render that card:
 

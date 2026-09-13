@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next';
 
+import { theme } from '@/design-system/theme.generated';
 import { env } from '@/lib/shared/env';
-import { site, brand } from '@/lib/site/site';
+import { site } from '@/lib/site/site';
 
 export const dynamic = 'force-static';
 
@@ -18,8 +19,8 @@ const manifest = (): MetadataRoute.Manifest => {
 		start_url: `${base}/`,
 		scope: `${base}/`,
 		display: 'standalone',
-		background_color: brand.page,
-		theme_color: brand.warm,
+		background_color: theme.page,
+		theme_color: theme.browserChrome,
 		icons: [
 			// Manifest icons are PNG: an SVG whose artwork is text fails in Chromium's sandboxed icon
 			// decoder. The SVG lives on as the favicon instead (see metadata.icons in layout.tsx).

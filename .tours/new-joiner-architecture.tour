@@ -22,13 +22,13 @@
       "description": "Dit bestand is de lijst van publieke pagina's zoals ze in code zijn vastgelegd — het vangnet en de startset uit stap 1. De live site bewaart diezelfde pagina's in de database, in exact dezelfde vorm. En die vorm is heerlijk simpel: een pagina is een titel plus een reeks 'blokken' — een hero-blok, een tekstblok, een rij kaarten. Elk blok zegt zelf welk type het is; de rest zijn de teksten en plaatjes van dat blok.\n\nHet mooie gevolg: een sectie is gewoon een stukje gegevens, geen apart geprogrammeerd scherm. Je voegt er een toe of wisselt de volgorde door de gegevens aan te passen — in de visuele bouwer, die naar de database schrijft, of hier in code (waarna `npm run seed` het naar de database brengt). Zelfs een blog zou gewoon een verzameling pagina's zijn — er is maar één soort 'pagina'."
     },
     {
-      "file": "src/lib/content/schema/blocks/index.ts",
+      "file": "src/components/contentBlocks/Blocks/Blocks.schema.generated.ts",
       "pattern": "discriminatedUnion",
       "title": "4 · De regels waar alles zich aan houdt",
-      "description": "In stap 3 zag je losse gegevens; hier staat wélke blokken bestaan en hoe elk blok eruit hoort te zien. Dit is de officiële 'afspraak' van het systeem. Alles leidt zich hiervan af: de teksten die je invult, de code die de blokken tekent, en zelfs de visuele paginabouwer werken allemaal vanuit deze ene lijst.\n\nDaardoor kan niets stiekem uit de pas lopen. Vul je per ongeluk iets verkeerds in, dan merk je dat meteen bij het bouwen, niet pas als een bezoeker het scherm opent. Let op: wil je later een nieuw type blok toevoegen, dan moet het ook híer worden bijgeschreven — anders bestaat het nergens."
+      "description": "In stap 3 zag je losse gegevens; hier staat wélke blokken bestaan en hoe elk blok eruit hoort te zien. Dit is de officiële 'afspraak' van het systeem. Alles leidt zich hiervan af: de teksten die je invult, de code die de blokken tekent, en zelfs de visuele paginabouwer werken allemaal vanuit deze ene lijst.\n\nDaardoor kan niets stiekem uit de pas lopen. Vul je per ongeluk iets verkeerds in, dan merk je dat meteen bij het bouwen, niet pas als een bezoeker het scherm opent. Let op: wil je later een nieuw type blok toevoegen, dan moet het ook híer worden bijgeschreven — anders bestaat het nergens.\n\nDit bestand wordt overigens niet met de hand geschreven: het wordt afgeleid uit de mappen in src/components/contentBlocks. Een blok toevoegen betekent een map toevoegen — de lijst volgt vanzelf."
     },
     {
-      "file": "src/lib/content/pages.ts",
+      "file": "src/lib/site/content/load.ts",
       "pattern": "SUPABASE_SERVICE_ROLE_KEY",
       "title": "5 · De inhoud wordt gecontroleerd binnengehaald",
       "description": "Dit is de plek die de pagina-inhoud ophaalt. Het kan op twee plekken kijken: is er verbinding met de database (Supabase, de online opslag van dit project), dan komt de inhoud daarvandaan; zo niet, dan valt het terug op de vaste gegevens uit stap 3.\n\nWat er ook binnenkomt, het wordt eerst gecontroleerd tegen de afspraak uit stap 4. Foute of onvolledige inhoud haalt de site dus nooit. En omdat alle ophaalwerk hier gebundeld zit, hoef je maar op één plek iets te veranderen als je later de bron wilt omzetten naar een echt beheersysteem."
@@ -46,19 +46,19 @@
       "description": "Elk blok uit een pagina zei in stap 3 zélf welk type het was ('hero', 'tekst', 'kaarten'…). Hier staat de vertaaltabel die zo'n type koppelt aan het schermonderdeel dat het daadwerkelijk tekent. De pagina loopt simpelweg z'n blokken langs en laat per blok het bijbehorende onderdeel verschijnen.\n\nDit sluit de cirkel van stap 4: die afspraak bepaalt welke bloktypes er zijn, en deze tabel bepaalt hoe ze getekend worden. Goed om te weten: deze blokken halen zelf nooit gegevens op — de pagina levert alles kant-en-klaar aan."
     },
     {
-      "file": "src/lib/env.ts",
+      "file": "src/lib/shared/env.ts",
       "pattern": "export const env = createEnv",
       "title": "8 · De instellingen en geheime sleutels",
       "description": "Elk project heeft instellingen die per omgeving verschillen: het adres van de database, geheime sleutels, aan/uit-vlaggen. Ze staan niet los in de code, maar worden hier op één plek verzameld en meteen bij het opstarten gecontroleerd. Ontbreekt er iets of klopt het niet, dan stopt de boel meteen met een duidelijke melding — beter dan een onverklaarbare fout later.\n\nBelangrijk detail: geheime sleutels blijven strikt aan de serverkant en komen nooit mee naar de browser van de bezoeker. Deze stap is ook het bruggetje: vanaf hier duiken we in de beheerkant en de database. Het bestand `.env.example` toont welke waarden je zelf moet invullen."
     },
     {
-      "file": "src/lib/auth/permissions.ts",
+      "file": "src/lib/shared/auth/permissions.ts",
       "pattern": "export const APP_PERMISSIONS",
       "title": "9 · Wie mag wat — de rechten",
       "description": "In het beheergedeelte mag niet iedereen alles. Hier staat de lijst met rechten: pagina's bewerken, moderatie doen, kosten inzien, en zo verder. Iemand krijgt rechten via een rol (van gewoon lid tot beheerder), en kan daarbovenop losse extra rechten krijgen.\n\nDeze rechten bepalen welke onderdelen van het dashboard iemand te zien krijgt. Onthoud goed: dit gaat alléén over wat je ziét en kunt aanklikken — het is gemak voor de gebruiker, geen slot op de deur. Waar het écht wordt afgedwongen, zie je in stap 12."
     },
     {
-      "file": "src/lib/supabase/client.ts",
+      "file": "src/lib/shared/supabase/client.ts",
       "pattern": "getBrowserClient",
       "title": "10 · De verbinding met de database",
       "description": "Vrijwel het hele beheergedeelte praat via dit ene onderdeel met de database. Elke keer dat een scherm gegevens opvraagt of opslaat, gebeurt dat namens de ingelogde gebruiker — en de database laat die persoon alleen bij wat mag.\n\nOpvallend: dit project heeft geen aparte tussenlaag; de schermen praten rechtstreeks met de database. De sleutel die daarvoor nodig is, mag zelfs openbaar zijn, want de beveiliging zit in de database zelf, niet in het geheimhouden van de sleutel. Er bestaat nog een tweede, krachtiger verbinding (`admin.ts`) die álle regels mag omzeilen, maar die wordt uitsluitend gebruikt tijdens het bouwen van de site, nooit vanuit de browser."

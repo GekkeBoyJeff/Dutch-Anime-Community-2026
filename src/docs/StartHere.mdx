@@ -119,7 +119,7 @@ Straight from `package.json`:
 | The words on a page | `src/content/pages/<page>.ts` | Read the warning below first. This is often not what the live site serves. |
 | The header, footer or announcement bar | `src/content/structures.ts` | Same warning. |
 | How a component looks | `src/design-system/components/<tier>/<Name>.scss` | One stylesheet per component, in a folder tree mirroring `src/components/`. Restyling the button is `src/components/basics/Button/Button.scss`. |
-| A brand colour | the `:root` palette in `src/design-system/theme.scss` | A few runtime surfaces cannot read CSS — the browser theme colour and the share image — and repeat the palette in the `brand` object in `src/lib/site/site.ts`. Keep both in step. |
+| A brand colour | the `:root` palette in `src/design-system/theme.scss` | That is the only place. A few runtime surfaces cannot read CSS — the browser theme colour and the share image — but they read a file derived from this one, so they follow along. |
 | Add a page | a new file in `src/content/pages/`, registered in `src/content/pages/index.ts` | The route, the sitemap and the metadata all follow from that one registry entry. |
 | Add a new *kind* of section | a schema file, a component, and one line in `src/components/contentBlocks/Blocks.tsx` | A fixed sequence of files. [3. Adding things](?path=/docs/for-developers-3-adding-things--docs) walks through it. |
 | Who may do what in the dashboard | a new SQL file in `supabase/migrations/` | **Never** in React. The React checks only decide what to draw — see [1. Architecture](?path=/docs/for-developers-1-architecture--docs). |

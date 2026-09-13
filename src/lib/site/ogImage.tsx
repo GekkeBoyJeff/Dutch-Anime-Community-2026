@@ -1,4 +1,4 @@
-import { brand } from '@/lib/site/site';
+import { theme } from '@/design-system/theme.generated';
 
 export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = 'image/png';
@@ -9,7 +9,7 @@ interface OgCardProps {
 }
 
 // satori (next/og) renders outside the DOM and cannot read CSS variables, so the colours come from
-// the `brand` constant instead of the SCSS tokens.
+// theme.generated.ts, which styles.config.mjs derives from theme.scss by compiling it.
 export const OgCard = ({ title, description }: OgCardProps) => {
 	return (
 		<div
@@ -20,15 +20,15 @@ export const OgCard = ({ title, description }: OgCardProps) => {
 				flexDirection: 'column',
 				justifyContent: 'space-between',
 				padding: '80px',
-				backgroundColor: brand.ink,
-				color: brand.page,
+				backgroundColor: theme.backgroundDark,
+				color: theme.page,
 			}}
 		>
 			<div style={{
 				display: 'flex',
 				width: '72px',
 				height: '8px',
-				backgroundColor: brand.primary,
+				backgroundColor: theme.primary,
 			}} />
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
 				<div style={{
@@ -38,7 +38,7 @@ export const OgCard = ({ title, description }: OgCardProps) => {
 				}}>{title}</div>
 				<div style={{
 					fontSize: '32px',
-					color: brand.subtle,
+					color: theme.ogMuted,
 					marginTop: '20px',
 				}}>{description}</div>
 			</div>

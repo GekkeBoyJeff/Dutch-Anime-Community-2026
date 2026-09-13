@@ -129,7 +129,8 @@ src/app/(website)/page.tsx + [...slug]   home and a catch-all; both delegate to 
   fails `next build` (or an invalid DB row never reaches the site) with a path-pointed error.
 - **Theming via tokens.** Colour, type and spacing live in `src/design-system/theme.scss` and `src/design-system/_tokens.scss`
   and cascade through `data-colorset`. Runtime surfaces that can't read CSS (OG images, the manifest, the
-  viewport theme colour) read the matching `brand` palette in `src/lib/site/site.ts`.
+  viewport theme colour) read `theme` from `src/design-system/theme.generated.ts`, derived from
+  `theme.scss` at build time.
 
 The full architecture guide lives in Storybook (`npm run storybook` → **For developers**): Architecture,
 Conventions, Content & data, Validation, SEO & sharing, and a step-by-step **Adding things**.

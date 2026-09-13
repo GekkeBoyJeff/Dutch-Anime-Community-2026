@@ -342,6 +342,7 @@ There are no CSS modules and no utility classes. A component's stylesheet sits i
 | `src/design-system/_interactions.scss` | the interaction mixins: `interactive`, `link-underline`, `overlay-backdrop`, `popup-enter-exit` |
 | `src/design-system/theme.scss` | every custom property: the `:root` palette and the `[data-colorset]` mapping |
 | `src/design-system/base.scss` | the reset and the bare HTML elements — nothing component-specific |
+| `src/design-system/theme.generated.ts` | the same `:root` palette as plain strings, derived by compiling `theme.scss` — for next/og, the manifest and the theme colour, which cannot read CSS |
 | `src/design-system/breakpoints.mjs` | the six breakpoint widths. Sass cannot read JavaScript, so `styles.config.mjs` writes `_breakpoints.scss` from it; `compileSizes()` imports the same object for the `sizes` attribute on `<img srcset>` |
 | `src/components/<tier>/<Name>/<Name>.scss` | the component's own stylesheet, imported by the component itself |
 

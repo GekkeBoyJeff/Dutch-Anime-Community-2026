@@ -7,10 +7,11 @@ import type { ReactNode } from 'react';
 
 import JsonLd from '@/components/basics/JsonLd/JsonLd';
 import ServiceWorker from '@/components/basics/ServiceWorker/ServiceWorker';
+import { theme } from '@/design-system/theme.generated';
 import { classNames } from '@/lib/shared/classNames';
 import { env } from '@/lib/shared/env';
 import { organizationJsonLd } from '@/lib/site/seo';
-import { site, brand } from '@/lib/site/site';
+import { site } from '@/lib/site/site';
 
 const sans = Manrope({
 	subsets: ['latin'],
@@ -53,7 +54,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-	themeColor: brand.warm,
+	themeColor: theme.browserChrome,
 };
 
 type RootLayoutProps = { children: ReactNode };
