@@ -272,15 +272,14 @@ as the screen gets wider. Write the small layout first; never undo it.
 }
 ```
 
-From `src/design-system/components/structures/Footer.scss`. One column stacked by default; from 768px up,
+From `src/components/structures/Footer/Footer.scss`. One column stacked by default; from 768px up,
 two columns in a 1:2 ratio. The gap is stated once and never repeated, because nothing about it
 changes.
 
-For the rare rule that only applies *below* a width, `breakpoint()` returns the raw value so it can go
-in a hand-written query:
+For the rare rule that only applies *below* a width, pass a second argument to the same mixin:
 
 ```css
-@media (max-width: breakpoint(m)) {
+@include bp(m, true) {
 	thead {
 		position: absolute;
 	}
@@ -288,7 +287,8 @@ in a hand-written query:
 ```
 
 From `Table.scss`, which hides the header row and re-labels each cell when a table has to become a
-list. Both helpers `@error` on an unknown name, so `bp(desktop)` fails the build instead of silently
+list. Write it as `bp(m, $max: true)` if the bare `true` reads as a riddle. One mixin covers both
+directions, and it `@error`s on an unknown name, so `bp(desktop)` fails the build instead of silently
 matching nothing.
 
 ## Logical properties

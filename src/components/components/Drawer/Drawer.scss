@@ -91,7 +91,7 @@
 		transform: translateY(100%);
 	}
 
-	@media (max-width: breakpoint(m)) {
+	@include bp(m, true) {
 		padding-block-end: 0;
 
 		&.is-left,

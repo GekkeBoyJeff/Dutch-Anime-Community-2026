@@ -53,10 +53,8 @@
 	/* The canvas around the rounded page frame. Sits outside it, so it never flips. */
 	--page: #f2ebd7;
 
-	/* Two colours only the surfaces outside the page use. They are here, with the rest of the
-	   palette, because that is where you look for a colour — theme.generated.ts derives them for
-	   next/og and the web manifest, which cannot read CSS. */
-	--browser-chrome: #e7b46b; /* the browser's UI bar and the manifest; full gold reads too loud there */
+	/* Only the surfaces outside the page use these, but they live here so a colour has one home. */
+	--browser-chrome: #e7b46b; /* browser bar and manifest; full gold reads too loud there */
 	--og-muted: #d8c9b3; /* the quiet line in the share image */
 
 	/* Status colours are the same hue in every colorset: success is always

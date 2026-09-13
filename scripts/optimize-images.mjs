@@ -1,3 +1,4 @@
+// Writes the resized variants Media puts in srcset; run via `npm run images` after adding media.
 import { createHash } from 'node:crypto';
 import { access, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';

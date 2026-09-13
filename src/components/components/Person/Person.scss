@@ -28,7 +28,7 @@
 		}
 	}
 
-	@media (max-width: #{breakpoint(l)}) {
+	@include bp(l, true) {
 		min-block-size: $tap-target;
 	}
 

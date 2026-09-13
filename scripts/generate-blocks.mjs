@@ -1,17 +1,9 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-// ── The block registry, derived from the folders ──
-// A content block is a folder under src/components/contentBlocks with a schema that declares a
-// `type` literal and a component to draw it. Both lists below used to be written by hand, which
-// meant adding a block meant editing files elsewhere. Now the folder IS the registration, and the
-// two generated files are what the rest of the app reads.
-//
-// Two files, not one, on purpose: the union must stay reachable without pulling in React components,
-// or every route that knows what a Page is would ship every block's CSS.
-//
-// Generated on import by next.config.mjs and .storybook/main.js, the same way styles.config.mjs
-// generates _breakpoints.scss.
+// Builds the block union and the renderer map from the folders under src/components/contentBlocks,
+// so adding a block is adding a folder. Two files, or importing the union would pull in every
+// block's component and its CSS. See docs, Adding things.
 
 const BLOCKS_DIR = 'src/components/contentBlocks';
 const OUT_DIR = join(BLOCKS_DIR, 'Blocks');

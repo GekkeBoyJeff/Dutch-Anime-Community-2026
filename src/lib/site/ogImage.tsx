@@ -8,8 +8,8 @@ interface OgCardProps {
 	description: string;
 }
 
-// satori (next/og) renders outside the DOM and cannot read CSS variables, so the colours come from
-// theme.generated.ts, which styles.config.mjs derives from theme.scss by compiling it.
+// satori renders outside the DOM and cannot read CSS variables, so the colours come from theme.scss
+// via theme.generated.ts.
 export const OgCard = ({ title, description }: OgCardProps) => {
 	return (
 		<div

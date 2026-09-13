@@ -3,7 +3,8 @@ import { notFoundPage } from '@/content/pages/notFound';
 import { structures } from '@/content/structures';
 import { Page, SiteStructures } from '@/lib/site/content/document';
 
-// One-off migration of the current TS content into Supabase. Run with the service-role env loaded:
+// Copies src/content into Supabase once, at the switch to the database; running it again overwrites
+// whatever editors changed in /builder. Run with the service-role env loaded:
 //   set -a && . ./.env.local && set +a && npm run seed
 // Uses plain fetch against PostgREST (no supabase-js) so it works on any Node without a WebSocket
 // polyfill.

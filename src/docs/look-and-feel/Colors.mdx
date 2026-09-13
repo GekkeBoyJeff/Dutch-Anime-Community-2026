@@ -93,7 +93,7 @@ A component stylesheet always writes the `$` form:
 }
 ```
 
-That is the whole of `src/design-system/components/basics/Section.scss`. `_tokens.scss` is prepended to
+That is the whole of `src/components/basics/Section/Section.scss`. `_tokens.scss` is prepended to
 every stylesheet by the build, so no component ever writes an `@use` line to reach these names.
 
 > **Why two forms?** Sass runs at build time and cannot know which colorset a component will land in;
@@ -122,7 +122,7 @@ says so, with the `on-colorset()` mixin:
 }
 ```
 
-Real code, from `src/design-system/components/basics/Badge.scss`. The neutral badge is a near-white chip on
+Real code, from `src/components/basics/Badge/Badge.scss`. The neutral badge is a near-white chip on
 a light section; on a dark one that chip would glare, so it becomes a mid grey. Its text is `$color`,
 which flips on its own and needs no extra rule.
 

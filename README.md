@@ -72,18 +72,40 @@ The tour is written in plain Dutch for any reader (no jargon assumed). It comple
 
 ## Scripts
 
-| Script | What it does |
-| --- | --- |
-| `npm run dev` | Start the dev server (Turbopack); `/builder` is on |
-| `npm run build` | Production PWA build: `npm run images` → `ENABLE_PWA=true next build --webpack` (also validates all content — see below) |
-| `npm run build:plain` | Plain Turbopack build (no service worker) |
-| `npm run start` | Serve the production build |
-| `npm run lint` | ESLint (flat config, `eslint-config-next`) |
-| `npm run typecheck` | `tsc --noEmit` (strict + `noUncheckedIndexedAccess`) |
-| `npm run images` | Optimize images (`sharp`) + regenerate the builder media manifest |
-| `npm run seed` | One-off migrate the TS content into Supabase (`pages`/`structures`); needs the service-role key |
-| `npm run storybook` | Component workshop + the full developer docs |
-| `npm run build-storybook` | Static Storybook build |
+Nothing here runs on a schedule, and nothing has to be run before a deploy — see
+[Deployment](#deployment-two-targets-from-one-codebase) for what a go-live actually does. The
+right-hand column is when you would reach for it.
+
+| Script | What it does | When you run it |
+| --- | --- | --- |
+| `npm run dev` | Dev server (Turbopack); `/builder` is on | All day |
+| `npm run verify` | Rewrites the generated files, then `tsc --noEmit` and ESLint | Before you commit |
+| `npm run storybook` | Component workshop + these developer docs | While building a component |
+| `npm run images` | Optimizes `public/media` and rebuilds the media picker's list | After adding images or video |
+| `npm run build` | Production PWA build: `npm run images`, then webpack with the service worker | To check a real build locally |
+| `npm run build:plain` | The same build without the service worker, on Turbopack | A faster build check |
+| `npm run start` | Serves whatever `build` produced | To try the production build |
+| `npm run lint` / `npm run typecheck` | The two halves of `verify`, separately | When you want only one |
+| `npm run build-storybook` | Static Storybook, for publishing the docs | Rarely; CI does it |
+| `npm run db:push` | Pushes `supabase/migrations/*` to the linked project, then regenerates types | After writing a migration |
+| `npm run db:types` | Regenerates `src/types/database.types.ts` only | After a schema change made elsewhere |
+| `npm run seed` | One-off: copies the TS content into Supabase | Once, at the switch to Supabase. Never again |
+
+### What runs without you asking
+
+Three files are derived from something else. You never edit them, and you never have to run anything
+to refresh them:
+
+| Generated file | Derived from | Written when |
+| --- | --- | --- |
+| `src/design-system/_breakpoints.scss` | `breakpoints.mjs` | any `dev`, `build`, `storybook` or `verify` |
+| `src/design-system/theme.generated.ts` | `theme.scss` | idem |
+| `src/components/contentBlocks/Blocks/*.generated.ts` | the folders in `contentBlocks/` | idem |
+
+`next.config.mjs` and `.storybook/main.js` write them as a side effect of being imported, and
+`scripts/write-generated-files.mjs` does the same on its own so `verify` never typechecks a stale file. One catch:
+a dev server that is already running imported the config once, at startup — so if you change a colour
+or a breakpoint while it runs, restart it.
 
 ## Project structure
 
@@ -190,6 +212,33 @@ deploy workflow (`SFTP_*`, `SITE_URL`) and the Supabase Edge Function secrets
   Public page data is read from Supabase via the service-role at **build time** and baked in; the dashboard
   remains a client-side SPA that talks to Supabase at runtime. `trailingSlash: true` keeps every route
   directory-based so a static host resolves `<route>/index.html` without rewrite rules.
+
+### Going live: what you run
+
+**Nothing.** There is no build to run by hand and no artefact to upload. Two GitHub Actions workflows
+do it, and both build from a clean checkout:
+
+| Workflow | Fires on | Deploys to |
+| --- | --- | --- |
+| `.github/workflows/deploy-pages.yml` | every push to `main`, plus a `publish` dispatch | GitHub Pages |
+| `.github/workflows/deploy-directadmin.yml` | a `publish` dispatch, or the Run workflow button | DirectAdmin, over rsync/SSH |
+
+A `publish` dispatch is what the `deploy` Edge Function sends when an editor presses **Publish** in
+`/builder`. So publishing a page in the editor *is* the deploy: content is read from Supabase at build
+time and baked into the export.
+
+Each workflow runs the same four steps:
+
+1. `npm ci`
+2. `rm -rf src/app/api` — a static host cannot run route handlers, and `output: 'export'` refuses to
+   build them. This is also why `HOST_TYPE=static npm run build` fails locally unless you do the same.
+3. `npm run build` with `HOST_TYPE=static` and `CONTENT_CHANNEL=published`, which also regenerates
+   every derived file and validates all content against the schema — invalid content fails the build
+   instead of shipping.
+4. Upload `out/`.
+
+What this means in practice: to ship a code change, merge it to `main`. To ship a content change,
+press Publish. You never run a script for either.
 
 ## Visual builder (development only)
 

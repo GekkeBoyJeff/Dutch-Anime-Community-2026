@@ -63,7 +63,7 @@
 		}
 	}
 
-	@media (max-width: breakpoint(m)) {
+	@include bp(m, true) {
 		thead {
 			position: absolute;
 			inline-size: 0.0625rem;

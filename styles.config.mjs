@@ -17,9 +17,7 @@ export const SCSS_LOAD_PATHS = [designSystemDir];
 // without writing `@use` per file. Order matters: _interactions.scss depends on the tokens.
 export const SCSS_PRELUDE = '@use "tokens" as *;\n@use "interactions" as *;';
 
-// ── The SCSS half of the breakpoint scale ──
-// breakpoints.mjs explains why it is generated. This writes it on import, and both next.config.mjs
-// and .storybook/main.js import this module before any SCSS is compiled.
+// Written on import, before any SCSS is compiled, so the Sass map cannot lag behind breakpoints.mjs.
 const breakpointMap = Object.entries(breakpoints)
 	.map(([name, value]) => `\t${name}: ${value},`)
 	.join('\n');
@@ -28,13 +26,8 @@ writeFileSync(
 	`// GENERATED from breakpoints.mjs by styles.config.mjs — do not edit by hand.\n$breakpoints: (\n${breakpointMap}\n);\n`,
 );
 
-// ── The theme's custom properties, for code that cannot read CSS ──
-// next/og, the web manifest and the viewport theme colour need real colour values, and they run in
-// JavaScript. Rather than keep a second copy by hand — which had already drifted — theme.scss is
-// compiled here and its palette read back out of the result.
-//
-// The palette is the FIRST `:root` rule. The `[data-colorset]` rules after it only map those values
-// per light/dark half, which a PNG or a manifest cannot use anyway.
+// The palette for JavaScript that cannot read CSS, compiled out of theme.scss so it cannot drift.
+// Only the first `:root` rule: the `[data-colorset]` rules after it are the light/dark mapping.
 const camelCase = (name) => name.replace(/-([a-z0-9])/g, (_, character) => character.toUpperCase());
 
 const themeTokens = () => {

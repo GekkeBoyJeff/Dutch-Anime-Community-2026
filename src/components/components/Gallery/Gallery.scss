@@ -106,7 +106,7 @@
 		--gallery-gap: #{spacing(xl)};
 	}
 
-	@media (max-width: breakpoint(m)) {
+	@include bp(m, true) {
 		&.is-grid {
 			grid-template-columns: 1fr;
 		}

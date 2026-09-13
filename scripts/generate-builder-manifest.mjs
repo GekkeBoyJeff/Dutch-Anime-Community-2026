@@ -1,3 +1,4 @@
+// Lists public/ media for the file picker in /builder; run via `npm run images` after adding media.
 import { readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 

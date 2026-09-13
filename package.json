@@ -11,7 +11,7 @@
 		"start": "next start",
 		"lint": "eslint .",
 		"typecheck": "tsc --noEmit",
-		"verify": "tsc --noEmit && eslint .",
+		"verify": "node scripts/write-generated-files.mjs && tsc --noEmit && eslint .",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
 		"images": "node scripts/optimize-images.mjs && node scripts/generate-builder-manifest.mjs",

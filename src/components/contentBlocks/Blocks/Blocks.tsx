@@ -15,9 +15,7 @@ type BlockRenderers = {
 	[B in Block as B['type']]: BlockRenderer<Omit<B, 'type' | 'id'>>;
 };
 
-// Both generated files come from the same folder scan, so a block can never be in one and not the
-// other. This assignment is what still earns its keep: it checks every component's props against the
-// schema its own folder declares, so the two drifting apart is a compile error.
+// Typed on assignment, so a component whose props drifted from its own schema fails to compile.
 export const REGISTRY: BlockRenderers = RENDERERS;
 
 const Blocks = ({ blocks = [] }: BlocksProps) => {

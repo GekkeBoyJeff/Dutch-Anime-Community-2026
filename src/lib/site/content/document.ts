@@ -10,9 +10,7 @@ import { FooterProps } from '@/components/structures/Footer/Footer.schema';
 import { NavigationProps } from '@/components/structures/Navigation/Navigation.schema';
 import { OgImage } from '@/lib/site/content/shared';
 
-// What content IS: the union of every block, the page that holds them, and the structures around it.
-// Assembled from the schema each component keeps next to itself, so this file names blocks but
-// describes none of them.
+// What content is, assembled from the schema each component keeps next to itself.
 
 export { Block };
 

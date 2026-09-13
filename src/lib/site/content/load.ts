@@ -13,8 +13,7 @@ interface ContentErrorOptions {
 	locate: (path: readonly PropertyKey[]) => { source: string; field: string };
 }
 
-// Content that no longer matches the schema stops the build with the page and the field that broke,
-// instead of a Zod dump nobody can trace back to a file.
+// Names the page and the field that broke, so a schema mismatch is traceable to a file.
 const parseContent = <Schema extends z.ZodType>(
 	schema: Schema,
 	raw: unknown,

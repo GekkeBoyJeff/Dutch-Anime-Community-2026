@@ -18,7 +18,7 @@
 	}
 
 	.metric-value {
-		@media (max-width: #{breakpoint(l)}) {
+		@include bp(l, true) {
 			font-size: 1.5rem;
 		}
 	}

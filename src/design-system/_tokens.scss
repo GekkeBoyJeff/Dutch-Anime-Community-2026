@@ -145,22 +145,26 @@ $spacing: (
 	@error 'Unknown spacing step: #{$step}';
 }
 
-@mixin bp($name) {
+// Opens a media query at a named breakpoint. Mobile-first by default — the rule applies from that
+// width up. Pass $max to flip it, for the rarer rule that only applies below the width:
+//
+//   @include bp(m) { … }             from 48rem up
+//   @include bp(m, true) { … }       below 48rem
+//   @include bp(m, $max: true) { … } the same, spelled out
+@mixin bp($name, $max: false) {
 	@if not map.has-key($breakpoints, $name) {
 		@error 'Unknown breakpoint: #{$name}';
 	}
 
-	@media (min-width: map.get($breakpoints, $name)) {
-		@content;
+	@if $max {
+		@media (max-width: map.get($breakpoints, $name)) {
+			@content;
+		}
+	} @else {
+		@media (min-width: map.get($breakpoints, $name)) {
+			@content;
+		}
 	}
-}
-
-@function breakpoint($name) {
-	@if not map.has-key($breakpoints, $name) {
-		@error 'Unknown breakpoint: #{$name}';
-	}
-
-	@return map.get($breakpoints, $name);
 }
 
 // Applies a rule only inside a dark section. Use it when a fixed colour — a grey, mostly — needs a

@@ -338,7 +338,7 @@ There are no CSS modules and no utility classes. A component's stylesheet sits i
 
 | File | What it is for |
 | --- | --- |
-| `src/design-system/_tokens.scss` | everything a stylesheet may read: fixed colours, the aliases for the ones the palette sets, `spacing()`, `bp()`, `breakpoint()`, `on-colorset()` |
+| `src/design-system/_tokens.scss` | everything a stylesheet may read: fixed colours, the aliases for the ones the palette sets, `spacing()`, `bp()` — with `true` as a second argument for a max-width query — and `on-colorset()` |
 | `src/design-system/_interactions.scss` | the interaction mixins: `interactive`, `link-underline`, `overlay-backdrop`, `popup-enter-exit` |
 | `src/design-system/theme.scss` | every custom property: the `:root` palette and the `[data-colorset]` mapping |
 | `src/design-system/base.scss` | the reset and the bare HTML elements — nothing component-specific |
