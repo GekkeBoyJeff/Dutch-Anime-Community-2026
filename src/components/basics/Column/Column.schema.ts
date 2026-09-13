@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { z } from 'zod';
 
+import { breakpoints } from '@/design-system/breakpoints.mjs';
+
 export const ColumnSpan = z.union([
 	z.literal(1),
 	z.literal(2),
@@ -17,16 +19,18 @@ export const ColumnSpan = z.union([
 ]);
 export type ColumnSpan = z.infer<typeof ColumnSpan>;
 
+const breakpointNames = Object.keys(breakpoints) as (keyof typeof breakpoints)[];
+
+export const ResponsiveSpan = z.union([
+	ColumnSpan,
+	z.partialRecord(z.enum(['default', ...breakpointNames]), ColumnSpan),
+]);
+export type ResponsiveSpan = z.infer<typeof ResponsiveSpan>;
+
 export const ColumnProps = z
 	.object({
-		span: ColumnSpan.optional().describe('Columns spanned (1–12) at the base width'),
-		spanM: ColumnSpan.optional().describe('Span from the m breakpoint up'),
-		spanL: ColumnSpan.optional().describe('Span from the l breakpoint up'),
-		spanXl: ColumnSpan.optional().describe('Span from the xl breakpoint up'),
-		offset: ColumnSpan.optional().describe('Empty columns to push the cell by (1–12)'),
-		offsetM: ColumnSpan.optional().describe('Offset from the m breakpoint up'),
-		offsetL: ColumnSpan.optional().describe('Offset from the l breakpoint up'),
-		offsetXl: ColumnSpan.optional().describe('Offset from the xl breakpoint up'),
+		span: ResponsiveSpan.optional().describe('Columns spanned (1–12): one value for every width, or `{ default, s, m, l, xl, 2xl, 3xl }` where each breakpoint value applies from that width up; full width when omitted'),
+		offset: ResponsiveSpan.optional().describe('Empty columns to push the cell by (1–12): one value, or per breakpoint like `span`'),
 		children: z.custom<ReactNode>().optional().describe('The column content'),
 		className: z.string().optional().describe('Additional classes on the root element'),
 	})

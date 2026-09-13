@@ -1,7 +1,7 @@
 .heading-group {
 	display: flex;
 	flex-direction: column;
-	gap: spacing(s);
+	gap: spacing(m);
 
 	&.is-reversed {
 		.heading-group-tagline {
@@ -14,7 +14,6 @@
 	}
 
 	.heading-group-tagline {
-		--font-size: 0.875rem;
 		font-weight: $weight-medium;
 		text-transform: uppercase;
 		letter-spacing: $tracking-wider;
@@ -24,5 +23,11 @@
 	.heading-group-intro {
 		color: $color-secondary;
 		max-inline-size: $measure;
+	}
+
+	.heading-group-aside {
+		display: flex;
+		flex-direction: column;
+		gap: spacing(m);
 	}
 }

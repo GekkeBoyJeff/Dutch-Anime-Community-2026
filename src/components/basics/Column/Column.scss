@@ -11,7 +11,7 @@
 		}
 	}
 
-	@each $bp in m, l, xl {
+	@each $bp, $width in $breakpoints {
 		@include bp($bp) {
 			@for $i from 1 through 12 {
 				&.is-#{$i}-#{$bp} {

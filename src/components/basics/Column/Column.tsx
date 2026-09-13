@@ -2,21 +2,26 @@ import type { ComponentPropsWithoutRef } from 'react';
 
 import { classNames } from '@/lib/shared/classNames';
 
-import type { ColumnProps as ColumnSchemaProps } from './Column.schema';
+import type { ColumnProps as ColumnSchemaProps, ResponsiveSpan } from './Column.schema';
 
 import './Column.scss';
 
 type ColumnProps = ColumnSchemaProps;
 
+// `is-6` for a number; `is-6 is-12-l` for `{ default: 6, l: 12 }`, each breakpoint value holding from that width up.
+const spanClasses = (prefix: string, value: ResponsiveSpan | undefined) => {
+	if (value === undefined) return '';
+	const perBreakpoint = typeof value === 'number' ? { default: value } : value;
+
+	return Object.entries(perBreakpoint)
+		.filter(([, span]) => span !== undefined)
+		.map(([name, span]) => (name === 'default' ? `${prefix}-${span}` : `${prefix}-${span}-${name}`))
+		.join(' ');
+};
+
 const Column = ({
 	span,
-	spanM,
-	spanL,
-	spanXl,
 	offset,
-	offsetM,
-	offsetL,
-	offsetXl,
 	className,
 	children,
 	...rest
@@ -25,14 +30,8 @@ const Column = ({
 		<div
 			className={classNames(
 				'column',
-				span && `is-${span}`,
-				spanM && `is-${spanM}-m`,
-				spanL && `is-${spanL}-l`,
-				spanXl && `is-${spanXl}-xl`,
-				offset && `is-offset-${offset}`,
-				offsetM && `is-offset-${offsetM}-m`,
-				offsetL && `is-offset-${offsetL}-l`,
-				offsetXl && `is-offset-${offsetXl}-xl`,
+				spanClasses('is', span),
+				spanClasses('is-offset', offset),
 				className,
 			)}
 			{...rest}

@@ -2,6 +2,7 @@
 @use "sass:map";
 @use "sass:meta";
 @use "sass:selector";
+@forward "breakpoints";
 @use "breakpoints" as *;
 
 // Everything a stylesheet may read. This file is prepended to every stylesheet by the build, so no

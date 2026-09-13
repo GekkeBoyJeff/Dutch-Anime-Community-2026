@@ -7,36 +7,27 @@ import { ColumnsProps } from './Columns.schema';
 
 // A tinted, labelled box so the spans and offsets are visible in the examples below.
 const cell = (label: string) => (
-	<div style={{
-		background: 'color-mix(in srgb, currentColor 12%, transparent)',
-		padding: '1rem',
-		borderRadius: '8px',
-		textAlign: 'center',
-	}}>
+	<div
+		style={{
+			background: 'color-mix(in srgb, currentColor 12%, transparent)',
+			padding: '1rem',
+			borderRadius: '8px',
+			textAlign: 'center',
+		}}
+	>
 		{label}
 	</div>
-);
-
-const thirds = (
-	<>
-		<Column spanM={4}>{cell('1 / 3')}</Column>
-		<Column spanM={4}>{cell('2 / 3')}</Column>
-		<Column spanM={4}>{cell('3 / 3')}</Column>
-	</>
-);
-
-const mainAndSidebar = (
-	<>
-		<Column spanM={8}>{cell('main (8)')}</Column>
-		<Column spanM={4}>{cell('aside (4)')}</Column>
-	</>
 );
 
 const meta: Meta<typeof Columns> = {
 	title: 'Basics/Columns',
 	component: Columns,
 	parameters: {
-		docs: { description: { component: 'The row half of the grid pair: a 12-column CSS grid that Column children span into. Combine with Column for responsive layouts.' } },
+		docs: {
+			description: {
+				component: 'The row half of the grid pair: a 12-column CSS grid that Column children span into. Combine with Column for responsive layouts.',
+			},
+		},
 		jsonSchema: { schema: ColumnsProps },
 	},
 	argTypes: {
@@ -51,15 +42,65 @@ type Story = StoryObj<typeof Columns>;
 
 export const Thirds: Story = {
 	parameters: {
-		docs: { description: { story: 'Three equal thirds from the m breakpoint up; full width and stacked below it.' } },
+		docs: {
+			description: {
+				story: 'Three equal thirds from the m breakpoint up; full width and stacked below it.',
+			},
+		},
 	},
 	args: {
-		children: thirds,
+		children: (
+			<>
+				<Column
+					span={{
+						default: 12,
+						m: 4,
+					}}
+				>
+					{cell('1 / 3')}
+				</Column>
+				<Column
+					span={{
+						default: 12,
+						m: 4,
+					}}
+				>
+					{cell('2 / 3')}
+				</Column>
+				<Column
+					span={{
+						default: 12,
+						m: 4,
+					}}
+				>
+					{cell('3 / 3')}
+				</Column>
+			</>
+		),
 	},
 };
 
 export const MainAndSidebar: Story = {
 	args: {
-		children: mainAndSidebar,
+		children: (
+			<>
+				<Column
+					span={{
+						default: 12,
+						m: 8,
+					}}
+				>
+					{cell('main (8)')}
+				</Column>
+				<Column
+					span={{
+						default: 12,
+						m: 4,
+					}}
+				>
+					{cell('aside (4)')}
+				</Column>
+			</>
+		),
 	},
 };
