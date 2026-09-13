@@ -20,11 +20,10 @@ import './docs.css';
 export const tags = ['autodocs'];
 
 export const parameters = {
-	// Without it usePathname() returns null in the canvas and app-router components (e.g. Navigation's
-	// active-route check) crash.
 	nextjs: { appDirectory: true },
 	options: {
 		storySort: {
+			method: 'alphabetical',
 			order: [
 				'Start here',
 				'For developers',
@@ -46,6 +45,7 @@ export const parameters = {
 				'ContentBlocks',
 				'Structures',
 				'Forms',
+				'Dashboard',
 			],
 		},
 	},
@@ -136,14 +136,7 @@ const withDashboardSurface: Decorator = (Story, context) => {
 
 	// Screens that report success or failure call useToastManager, which throws without this provider.
 	return (
-		<div
-			style={{
-				background: 'var(--page)',
-				color: 'var(--color)',
-				padding: '2rem',
-				borderRadius: '1rem',
-			}}
-		>
+		<div>
 			<NotificationProvider>
 				<Story />
 				<Notification position='bottom-right' />
