@@ -28,7 +28,7 @@ export const communityPage: Page = {
 		{
 			type: 'growingMediaOnScroll',
 			id: 'sfeer',
-			colorset: 'light',
+			colorset: 'white',
 			media: {
 				type: 'image',
 				src: '/media/dac-meetup.png',
@@ -116,7 +116,7 @@ export const communityPage: Page = {
 		{
 			type: 'statBand',
 			id: 'cijfers',
-			colorset: 'light',
+			colorset: 'white',
 			heading: {
 				tagline: 'In cijfers',
 				title: 'DAC in het kort',
@@ -155,7 +155,7 @@ export const communityPage: Page = {
 		{
 			type: 'profileCards',
 			id: 'team',
-			colorset: 'light',
+			colorset: 'white',
 			columns: 4,
 			heading: {
 				tagline: 'Vrijwilligers',

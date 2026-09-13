@@ -20,7 +20,8 @@ export const Panel = ({ colorset, children }) => (
 );
 
 export const TwoUp = ({ children }) => (
-	<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(16rem, 1fr))', gap: '1rem', marginBlock: '1.5rem' }}>
+	<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(14rem, 1fr))', gap: '1rem', marginBlock: '1.5rem' }}>
+		<Panel colorset="white">{children}</Panel>
 		<Panel colorset="light">{children}</Panel>
 		<Panel colorset="dark">{children}</Panel>
 	</div>
@@ -37,7 +38,7 @@ export const Row = ({ fill, name, note }) => (
 );
 
 export const Ramp = ({ steps }) => (
-	<div data-colorset="light" style={{ ...SURFACE, marginBlock: '1.5rem' }}>
+	<div data-colorset="white" style={{ ...SURFACE, marginBlock: '1.5rem' }}>
 		<div style={{ display: 'grid', gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))`, gap: '0.4rem' }}>
 			{steps.map(([name, hex]) => (
 				<div key={name}>
@@ -52,13 +53,20 @@ export const Ramp = ({ steps }) => (
 	</div>
 );
 
-## The two colorsets
+## The three colorsets
 
-A page is built from sections, and every section renders on either the light or the dark half of the
-palette. `Section` takes a `colorset` prop and writes it onto the DOM as `data-colorset`; seven colours
-and one focus ring swap underneath. `$primary` is listed with them so you can watch it do nothing —
-the brand fill is the same colour on both halves. A section that says nothing keeps the half it is
-nested in, and the page starts on light. Both halves, live:
+A page is built from sections, and every section renders on one of three surfaces. `Section` takes a
+`colorset` prop and writes it onto the DOM as `data-colorset`; seven colours and one focus ring swap
+underneath. `$primary` is listed with them so you can watch it do nothing — the brand fill is the same
+in all three. A section that says nothing keeps the set it is nested in, and the page starts on light.
+
+`light` is `white` with one slot changed: the surface. Everything else — text, borders, the focus ring —
+is identical, so it lets sections alternate without touching contrast.
+
+All three come from one map, `$colorsets` in `_tokens.scss`. `theme.scss` loops over it and writes each
+one out as `[data-colorset='<name>']`, and `styles.config.mjs` reads the names back out of the compiled
+CSS into `colorsets.generated.ts`, which the Zod schema and the Storybook toolbar both import. Adding a
+colorset is one entry in that map and nothing else. All three, live:
 
 <TwoUp>
 	<Row fill="var(--background)" name="$background" note="The surface." />
@@ -79,7 +87,7 @@ on.
 
 Two files, two forms of the same colour.
 
-- `src/design-system/theme.scss` declares the **custom property**: `--color: var(--color-light)`.
+- `src/design-system/theme.scss` declares the **custom property**: `--color: var(--color-on-light)`.
 - `src/design-system/_tokens.scss` declares the **Sass alias**: `$color: var(--color);`.
 
 A component stylesheet always writes the `$` form:
@@ -202,25 +210,25 @@ third as an inset hairline: `box-shadow: inset 0 0 0 0.0625rem $ring-success`.
 ```css
 :root {
 	--primary: #f5c24a;
-	--primary-text-light: #875f0d;
-	--primary-text-dark: #f5c24a;
+	--primary-text-on-light: #875f0d;
+	--primary-text-on-dark: #f5c24a;
 
-	--secondary-light: #f2ebd7;
-	--secondary-dark: #3b2938;
+	--secondary-on-light: #f2ebd7;
+	--secondary-on-dark: #3b2938;
 
 	/* The light half. */
-	--background-light: #ffffff;
-	--color-light: #3b2938;
-	--color-secondary-light: #6f5f6a;
-	--color-tertiary-light: #948590;
-	--border-light: #e7dcc0;
+	--background-white: #ffffff;
+	--color-on-light: #3b2938;
+	--color-secondary-on-light: #6f5f6a;
+	--color-tertiary-on-light: #948590;
+	--border-on-light: #e7dcc0;
 
 	/* The dark half — the same five slots, no more, no less. */
 	--background-dark: #241a22;
-	--color-dark: #f2ebd7;
-	--color-secondary-dark: #c9b4bf;
-	--color-tertiary-dark: #9a8792;
-	--border-dark: #{rgba(#f2ebd7, 0.14)};
+	--color-on-dark: #f2ebd7;
+	--color-secondary-on-dark: #c9b4bf;
+	--color-tertiary-on-dark: #9a8792;
+	--border-on-dark: #{rgba(#f2ebd7, 0.14)};
 }
 ```
 
@@ -230,19 +238,19 @@ every line reads `--x: var(--x-light)`, so what a colorset does is visible witho
 ```css
 :root,
 [data-colorset='light'] {
-	--background: var(--background-light);
-	--color: var(--color-light);
-	--primary-text: var(--primary-text-light);
-	--secondary: var(--secondary-light);
-	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-light);
+	--background: var(--background-white);
+	--color: var(--color-on-light);
+	--primary-text: var(--primary-text-on-light);
+	--secondary: var(--secondary-on-light);
+	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-on-light);
 }
 
 [data-colorset='dark'] {
 	--background: var(--background-dark);
-	--color: var(--color-dark);
-	--primary-text: var(--primary-text-dark);
-	--secondary: var(--secondary-dark);
-	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-dark);
+	--color: var(--color-on-dark);
+	--primary-text: var(--primary-text-on-dark);
+	--secondary: var(--secondary-on-dark);
+	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-on-dark);
 }
 ```
 

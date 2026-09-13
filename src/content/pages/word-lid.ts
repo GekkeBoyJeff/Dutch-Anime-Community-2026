@@ -39,7 +39,7 @@ export const wordLidPage: Page = {
 		{
 			type: 'steps',
 			id: 'zo-werkt-het',
-			colorset: 'light',
+			colorset: 'white',
 			variant: 'process',
 			heading: {
 				tagline: 'De eerste vijf minuten',
@@ -125,7 +125,7 @@ export const wordLidPage: Page = {
 		{
 			type: 'stickyShowcase',
 			id: 'journey',
-			colorset: 'light',
+			colorset: 'white',
 			heading: {
 				tagline: 'Zo groeit het',
 				title: 'En dan?',
@@ -185,7 +185,7 @@ export const wordLidPage: Page = {
 		{
 			type: 'faqAccordion',
 			id: 'faq',
-			colorset: 'light',
+			colorset: 'white',
 			singleOpen: true,
 			heading: {
 				tagline: 'Nog vragen?',

@@ -67,7 +67,7 @@ export const homePage: Page = {
 		{
 			type: 'eventTeaser',
 			id: 'events',
-			colorset: 'light',
+			colorset: 'white',
 			heading: {
 				tagline: 'Binnenkort',
 				title: 'Wat er de komende weken gebeurt',
@@ -166,7 +166,7 @@ export const homePage: Page = {
 		{
 			type: 'showreel',
 			id: 'in-beeld',
-			colorset: 'light',
+			colorset: 'white',
 			ratio: '848 / 488',
 			heading: {
 				tagline: 'In beeld',
@@ -286,7 +286,7 @@ export const homePage: Page = {
 		{
 			type: 'spotlightQuote',
 			id: 'spotlight',
-			colorset: 'light',
+			colorset: 'white',
 			quote: 'Ik heb hier een paar van mijn beste vrienden ontmoet. Het heeft me geholpen om mezelf te zijn — en door deze server durf ik nu naar cons te gaan.',
 			author: 'Pejowo',
 			role: 'lid, review op Disboard',

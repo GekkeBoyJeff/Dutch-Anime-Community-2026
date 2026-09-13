@@ -31,7 +31,7 @@ export const supportersPage: Page = {
 		{
 			type: 'titleText',
 			id: 'waar-het-heen-gaat',
-			colorset: 'light',
+			colorset: 'white',
 			align: 'start',
 			heading: {
 				tagline: 'Waar het heen gaat',

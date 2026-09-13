@@ -31,7 +31,7 @@ export const evenementenPage: Page = {
 		{
 			type: 'titleText',
 			id: 'langskomen',
-			colorset: 'light',
+			colorset: 'white',
 			align: 'center',
 			heading: {
 				tagline: 'Zonder aanmelden',
@@ -56,7 +56,7 @@ export const evenementenPage: Page = {
 			type: 'cardGrid',
 			id: 'cons',
 			variant: 'event',
-			colorset: 'light',
+			colorset: 'white',
 			columns: 2,
 			heading: {
 				tagline: 'In het echt',

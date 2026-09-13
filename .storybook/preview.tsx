@@ -2,13 +2,13 @@ import '@/design-system/theme.scss';
 import '@/design-system/base.scss';
 
 import type { Decorator } from '@storybook/nextjs-vite';
-import { useDarkMode } from '@storybook-community/storybook-dark-mode';
 import { DarkModeDocsContainer } from '@storybook-community/storybook-dark-mode/docs';
 import type { ArgTypesEnhancer } from 'storybook/internal/csf';
 import { useEffect } from 'storybook/preview-api';
 
 import Notification from '@/components/components/Notification/Notification';
 import NotificationProvider from '@/components/components/NotificationProvider/NotificationProvider';
+import { COLORSETS } from '@/design-system/colorsets.generated';
 
 import {
 	withJsonSchema,
@@ -99,6 +99,15 @@ export const argTypesEnhancers: ArgTypesEnhancer[] = [
 ];
 
 export const globalTypes = {
+	colorset: {
+		description: 'Colour theme of the canvas, independent of the Storybook chrome',
+		toolbar: {
+			icon: 'paintbrush',
+			title: 'Colorset',
+			items: COLORSETS.map((value) => ({ value, title: `${value.charAt(0).toUpperCase()}${value.slice(1)}` })),
+			dynamicTitle: true,
+		},
+	},
 	direction: {
 		description: 'Text direction',
 		toolbar: {
@@ -114,19 +123,18 @@ export const globalTypes = {
 };
 
 export const initialGlobals = {
+	colorset: COLORSETS[0],
 	direction: 'ltr',
 };
 
 const withPreviewContext: Decorator = (Story, context) => {
-	// eslint-disable-next-line react-hooks/rules-of-hooks
-	const isDark = useDarkMode();
-	const { direction } = context.globals;
+	const { colorset, direction } = context.globals;
 
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	useEffect(() => {
-		document.body.setAttribute('data-colorset', isDark ? 'dark' : 'light');
+		document.body.setAttribute('data-colorset', String(colorset));
 		document.body.setAttribute('dir', String(direction));
-	}, [isDark, direction]);
+	}, [colorset, direction]);
 
 	return <Story />;
 };

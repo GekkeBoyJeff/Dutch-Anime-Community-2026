@@ -62,7 +62,7 @@ type RootLayoutProps = { children: ReactNode };
 const RootLayout = ({ children }: RootLayoutProps) => {
 	return (
 		<html lang="nl" dir="ltr" className={classNames(sans.variable, displayFont.variable)}>
-			<body data-colorset="light">
+			<body data-colorset="white">
 				{children}
 
 				<JsonLd data={organizationJsonLd()} />

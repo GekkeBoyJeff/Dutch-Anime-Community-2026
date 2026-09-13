@@ -25,3 +25,10 @@
 .sbdocs :is(.h1, .h2, .h3, .h4, .h5, .h6, .title, .body-large, .body-small, .caption) {
 	font-size: var(--font-size);
 }
+
+/* The docs page is themed by the dark-mode addon, the components inside it by the colorset toolbar.
+   Let the story surface follow the colorset, or the two can disagree. */
+.docs-story {
+	background: var(--background);
+	color: var(--color);
+}

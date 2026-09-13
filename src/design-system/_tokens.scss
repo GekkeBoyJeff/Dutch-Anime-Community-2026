@@ -1,5 +1,7 @@
+@use "sass:list";
 @use "sass:map";
 @use "sass:meta";
+@use "sass:selector";
 @use "breakpoints" as *;
 
 // Everything a stylesheet may read. This file is prepended to every stylesheet by the build, so no
@@ -167,10 +169,26 @@ $spacing: (
 	}
 }
 
-// Applies a rule only inside a dark section. Use it when a fixed colour — a grey, mostly — needs a
-// different value there, since fixed colours do not flip on their own.
+// Applies a rule only inside a given colorset. The attribute sits on the element a Section renders,
+// which is the outermost part of the selector here — so a plain `[data-colorset=x] &` would demand an
+// ancestor that does not exist and match nothing. Two forms cover both cases: the attribute on this
+// component's own root, and the attribute somewhere above it.
 @mixin on-colorset($name) {
-	[data-colorset="#{$name}"] & {
+	$attr: '[data-colorset="' + $name + '"]';
+	$out: ();
+
+	@each $complex in & {
+		$scoped: selector.append(list.nth($complex, 1), $attr);
+		@if list.length($complex) > 1 {
+			@for $i from 2 through list.length($complex) {
+				$scoped: selector.nest($scoped, list.nth($complex, $i));
+			}
+		}
+		$out: list.join($out, $scoped, $separator: comma);
+		$out: list.join($out, selector.nest($attr, $complex), $separator: comma);
+	}
+
+	@at-root #{$out} {
 		@content;
 	}
 }

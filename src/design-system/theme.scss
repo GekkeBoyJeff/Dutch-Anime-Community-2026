@@ -28,27 +28,28 @@
 
 	/* The accent used AS TEXT needs its own value per half: the accent itself
 	   rarely has enough contrast on both a light and a dark background. */
-	--primary-text-light: #875f0d;
-	--primary-text-dark: #f5c24a;
+	--primary-text-on-light: #875f0d;
+	--primary-text-on-dark: #f5c24a;
 
 	/* The quiet companion to the accent: a brand surface, not an accent. It has to
 	   stay gentle against whichever half it lands on, so it needs a value per half. */
-	--secondary-light: #f2ebd7;
-	--secondary-dark: #3b2938;
+	--secondary-on-light: #f2ebd7;
+	--secondary-on-dark: #3b2938;
 
-	/* The light half. */
-	--background-light: #ffffff;
-	--color-light: #3b2938;
-	--color-secondary-light: #6f5f6a;
-	--color-tertiary-light: #948590;
-	--border-light: #e7dcc0;
+	/* Two colorsets share this half: white and light differ only in their canvas. */
+	--background-white: #ffffff;
+	--background-light: #f2ebd7;
+	--color-on-light: #3b2938;
+	--color-secondary-on-light: #6f5f6a;
+	--color-tertiary-on-light: #948590;
+	--border-on-light: #e7dcc0;
 
 	/* The dark half — the same five slots, no more, no less. */
 	--background-dark: #241a22;
-	--color-dark: #f2ebd7;
-	--color-secondary-dark: #c9b4bf;
-	--color-tertiary-dark: #9a8792;
-	--border-dark: #{rgba(#f2ebd7, 0.14)};
+	--color-on-dark: #f2ebd7;
+	--color-secondary-on-dark: #c9b4bf;
+	--color-tertiary-on-dark: #9a8792;
+	--border-on-dark: #{rgba(#f2ebd7, 0.14)};
 
 	/* The canvas around the rounded page frame. Sits outside it, so it never flips. */
 	--page: #f2ebd7;
@@ -116,34 +117,46 @@
 }
 
 /* --- 2. COLORSET — pick the light half or the dark half ------------------- */
-/* Written out twice on purpose. Every line reads --x: var(--x-light), so you
-   can see what a colorset does without decoding a loop, and adding a slot is
-   the same edit in two visible places. */
+/* Written out per colorset on purpose. Every line reads --x: var(--x-on-light), so you can see what a
+   colorset does without decoding a loop, and a colorset of your own is one block added here. The
+   names the rest of the app knows — the Zod enum, the Storybook toolbar — are read back out of these
+   selectors, so this file is the only place a colorset is declared. */
 
 :root,
+[data-colorset='white'] {
+	--background: var(--background-white);
+	--color: var(--color-on-light);
+	--color-secondary: var(--color-secondary-on-light);
+	--color-tertiary: var(--color-tertiary-on-light);
+	--border: var(--border-on-light);
+	--primary-text: var(--primary-text-on-light);
+	--secondary: var(--secondary-on-light);
+
+	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-on-light);
+}
+
+/* The same half on a tinted canvas: every slot borrowed from white, one replaced. */
 [data-colorset='light'] {
 	--background: var(--background-light);
-	--color: var(--color-light);
-	--color-secondary: var(--color-secondary-light);
-	--color-tertiary: var(--color-tertiary-light);
-	--border: var(--border-light);
-	--primary-text: var(--primary-text-light);
-	--secondary: var(--secondary-light);
+	--color: var(--color-on-light);
+	--color-secondary: var(--color-secondary-on-light);
+	--color-tertiary: var(--color-tertiary-on-light);
+	--border: var(--border-on-light);
+	--primary-text: var(--primary-text-on-light);
+	--secondary: var(--secondary-on-light);
 
-	/* Spelled out per colorset rather than derived from --primary-text: a custom
-	   property is resolved where it is declared, so one written on :root would
-	   keep the root's accent inside a nested dark section. */
-	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-light);
+	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-on-light);
 }
 
 [data-colorset='dark'] {
 	--background: var(--background-dark);
-	--color: var(--color-dark);
-	--color-secondary: var(--color-secondary-dark);
-	--color-tertiary: var(--color-tertiary-dark);
-	--border: var(--border-dark);
-	--primary-text: var(--primary-text-dark);
-	--secondary: var(--secondary-dark);
+	--color: var(--color-on-dark);
+	--color-secondary: var(--color-secondary-on-dark);
+	--color-tertiary: var(--color-tertiary-on-dark);
+	--border: var(--border-on-dark);
+	--primary-text: var(--primary-text-on-dark);
+	--secondary: var(--secondary-on-dark);
 
-	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-dark);
+	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-on-dark);
 }
+

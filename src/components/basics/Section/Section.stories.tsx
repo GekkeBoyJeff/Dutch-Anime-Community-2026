@@ -35,7 +35,7 @@ export const Nested: Story = {
 		docs: { description: { story: 'A dark panel inside a light section switches only its own subtree.' } },
 	},
 	args: {
-		colorset: 'light',
+		colorset: 'white',
 		children: (
 			<>
 				<Title size={3} value="Light" />

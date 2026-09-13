@@ -72,7 +72,7 @@ const PreviewColorset = () => {
 	useEffect(() => {
 		const doc = ref.current?.ownerDocument;
 		if (doc && doc !== document) {
-			doc.body.dataset.colorset ??= 'light';
+			doc.body.dataset.colorset ??= 'white';
 		}
 	});
 

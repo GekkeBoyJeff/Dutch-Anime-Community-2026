@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { COLORSETS } from '@/design-system/colorsets.generated';
+
 // The shapes more than one schema needs: a colorset, an id, an icon name, a media object, a heading
 // cluster, an option in a list. If two component schemas would otherwise declare the same thing
 // twice, it belongs here — and the second one picks or extends it rather than re-typing it.
@@ -11,7 +13,7 @@ import { z } from 'zod';
 // this module is the foundation every schema imports, so it runs before any runtime parse.
 z.config({ jitless: true });
 
-export const Colorset = z.enum(['light', 'dark']).meta({ title: 'Colorset' }).describe('Light/dark theme applied to the surrounding section');
+export const Colorset = z.enum(COLORSETS).meta({ title: 'Colorset' }).describe('Colour theme applied to the surrounding section; the set of names comes from theme.scss');
 export type Colorset = z.infer<typeof Colorset>;
 
 export const Id = z.union([z.string(), z.number()]).meta({ title: 'Id' });
