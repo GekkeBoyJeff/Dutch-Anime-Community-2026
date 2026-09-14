@@ -35,6 +35,12 @@
 				--media-radius: #{$rounded-s};
 			}
 
+			.card-media {
+				.avatar {
+					--avatar-size: 3.5rem;
+				}
+			}
+
 			.card-body {
 				gap: spacing(xs);
 			}

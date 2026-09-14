@@ -263,6 +263,10 @@
 		@include on-colorset(dark) {
 			background-color: $grey-dark;
 		}
+
+		.avatar {
+			--avatar-size: 1.75rem;
+		}
 	}
 
 	.mega-menu-scrim {
@@ -311,6 +315,10 @@
 			align-items: center;
 			gap: spacing(s);
 			min-inline-size: 0;
+
+			.avatar {
+				--avatar-size: 1.75rem;
+			}
 		}
 		.mega-menu-overlay-user-text {
 			display: flex;

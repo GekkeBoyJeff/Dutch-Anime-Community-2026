@@ -9,7 +9,11 @@ const meta: Meta<typeof Avatar> = {
 	title: 'Basics/Avatar',
 	component: Avatar,
 	parameters: {
-		docs: { description: { component: 'Circular avatar built on Media, with an optional presence dot and an initials fallback when there is no image.' } },
+		docs: {
+			description: {
+				component: 'Circular avatar built on Media, with an optional presence dot and initials when there is no image. It has one size of its own (2.5rem); whoever places it sets another by putting `--avatar-size` on it in their own stylesheet.',
+			},
+		},
 		jsonSchema: { schema: AvatarProps },
 	},
 	argTypes: {
@@ -25,7 +29,6 @@ export const Default: Story = {
 	args: {
 		src: demoImage.src,
 		alt: 'Portrait',
-		size: 'm',
 	},
 };
 
@@ -33,7 +36,6 @@ export const WithStatus: Story = {
 	args: {
 		...Default.args,
 		status: 'online',
-		size: 'l',
 	},
 };
 

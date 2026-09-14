@@ -101,7 +101,7 @@ const Badge = ({
 export default Badge;
 ```
 
-Six habits, all of them repo-wide:
+Eight habits, all of them repo-wide:
 
 - **The prop type is imported and re-aliased.** `import type { BadgeProps as BadgeSchemaProps }`,
   then `type BadgeProps = BadgeSchemaProps;`. 126 of the 128 components in the site tiers take
@@ -116,6 +116,14 @@ Six habits, all of them repo-wide:
 - **The component is an arrow function assigned to a `const`**, and it is the default export. ESLint
   fails the build otherwise.
 - **Decorative markup gets `aria-hidden="true"`.** The dot repeats what the text already says.
+- **JSX stays in the tree.** No `titleNode`-style variable that holds markup for later; write the
+  element where it renders, even if a ternary then repeats two or three lines. Stories follow the
+  same rule: plain data in `args`, the markup in `render`.
+- **More than two props, or a nested value, means one line each.** An element with three or more
+  props puts every prop on its own line and the closing `>` on its own. An object in a prop
+  (`span={{ default: 12, l: 6 }}`) gets one key per line, a child element goes on its own line, and
+  a conditional child is written as `{title && (`, the element, `)}`. Two plain props may share a
+  line.
 
 `classNames` itself is four lines, at `src/lib/shared/classNames.ts`:
 
@@ -436,6 +444,50 @@ A primitive styles itself and nothing more. Layout, spacing and size come from w
 
 `HeadingGroup.scss` knows nothing about stat bands. That is what keeps a primitive reusable: it has
 no opinion about the space around it.
+
+### Layout is Columns and Column
+
+A block does not write its own grid. Two basics carry every column layout: `Columns` is the row, a
+12-column grid, and `Column` is a cell in it that says how many of the twelve it takes.
+
+```tsx
+// src/components/basics/HeadingGroup/HeadingGroup.tsx
+<Columns gap="xl">
+	<Column
+		span={{
+			default: 12,
+			l: 6,
+		}}
+	>
+		{title && (
+			<Title size={size} value={title} />
+		)}
+	</Column>
+	<Column
+		span={{
+			default: 12,
+			l: 6,
+		}}
+		className="heading-group-aside"
+	>
+		{intro && (
+			<Content className="heading-group-intro" value={intro} />
+		)}
+		<Actions actions={actions} className="heading-group-actions" />
+	</Column>
+</Columns>
+```
+
+The split heading: title on the left, intro and buttons on the right, stacked on a phone. `span` is
+a number when the width is the same on every screen (`span={6}`), or an object when it changes.
+`default` is the phone width; every other key (`s`, `m`, `l`, `xl`, `2xl`, `3xl`, the names in
+`breakpoints.mjs`) holds from that width up, the same direction `bp()` reads in. Leave `span` out
+for a full-width cell, but write `default: 12` when another key follows, so the phone layout is
+stated rather than implied. `offset` skips columns before a cell in the same two forms.
+
+This holds even when a block is one full-width column: the grid is still the frame, and the block's
+stylesheet only styles what the grid cannot, such as colour, type, or a vertical stack inside one
+cell. No `display: grid` or `grid-template-columns` in a block for what `Columns` already does.
 
 ## The class-name convention
 

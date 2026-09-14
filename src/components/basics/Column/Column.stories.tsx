@@ -19,16 +19,23 @@ const cell = (label: string) => (
 	</div>
 );
 
-const meta: Meta<typeof Column> = {
+type ColumnStoryArgs = ColumnProps & { label: string };
+
+const meta: Meta<ColumnStoryArgs> = {
 	title: 'Basics/Column',
 	component: Column,
 	parameters: {
 		docs: {
 			description: {
-				component: 'A single cell of the 12-column grid, always inside a Columns. `span` sets the width as one value (`span={6}`) or per breakpoint (`span={{ default: 12, m: 6, l: 4 }}`, each value holding from that width up); `offset` pushes the cell across empty columns the same way.',
+				component: 'One cell of the 12-column grid; always place it inside a Columns. `span` says how many columns it takes, as one number (`span={6}`) or per breakpoint (`span={{ default: 12, m: 6, l: 4 }}`: full width on a phone, half from the m breakpoint, a third from l). `offset` skips columns before it in the same way.',
 			},
 		},
 		jsonSchema: { schema: ColumnProps },
+	},
+	argTypes: {
+		span: { control: 'object' },
+		offset: { control: 'object' },
+		label: { control: 'text', description: 'Text shown inside the cell' },
 	},
 	decorators: [
 		(Story) => (
@@ -37,17 +44,22 @@ const meta: Meta<typeof Column> = {
 			</Columns>
 		),
 	],
+	render: ({ label, ...args }) => (
+		<Column {...args}>
+			{cell(label)}
+		</Column>
+	),
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Column>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
 	args: {
 		span: 6,
 		offset: 3,
-		children: cell('span 6, offset 3'),
+		label: 'span 6, offset 3',
 	},
 };
 
@@ -55,7 +67,7 @@ export const PerBreakpoint: Story = {
 	parameters: {
 		docs: {
 			description: {
-				story: 'One cell whose span and offset change per breakpoint: full width below m, half from m, a third from l, kept centred by the offset. Each value holds from that width up.',
+				story: 'One cell whose width changes with the screen: full width on a phone, half from the m breakpoint, a third from l. The offset grows with it so the cell stays centred.',
 			},
 		},
 	},
@@ -69,6 +81,6 @@ export const PerBreakpoint: Story = {
 			m: 3,
 			l: 4,
 		},
-		children: cell('12 · 6 from m · 4 from l'),
+		label: '12 · 6 from m · 4 from l',
 	},
 };

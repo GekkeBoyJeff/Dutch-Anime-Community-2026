@@ -32,7 +32,7 @@ const ChatPreview = ({
 							return (
 								<li key={message.id} className="chat-preview-message" data-opens-turn={opensTurn || undefined}>
 									<span className="chat-preview-avatar">
-										{opensTurn && <Avatar size="s" initials={message.author.slice(0, 1).toUpperCase()} />}
+										{opensTurn && <Avatar initials={message.author.slice(0, 1).toUpperCase()} />}
 									</span>
 
 									<span className="chat-preview-body">

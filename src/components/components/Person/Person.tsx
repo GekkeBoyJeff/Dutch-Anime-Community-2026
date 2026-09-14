@@ -33,7 +33,11 @@ const Person = ({
 	const body = (
 		<>
 			<span className={classNames('person-avatar', status && `is-${status}`)}>
-				<Avatar size="m" src={avatarUrl ?? undefined} initials={initials ?? name.slice(0, 2).toUpperCase()} alt="" />
+				<Avatar
+					src={avatarUrl ?? undefined}
+					initials={initials ?? name.slice(0, 2).toUpperCase()}
+					alt=""
+				/>
 				{status && <span className="person-status" title={STATUS_LABEL[status]} />}
 			</span>
 			<span className="person-info">

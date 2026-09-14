@@ -29,8 +29,8 @@ export type ResponsiveSpan = z.infer<typeof ResponsiveSpan>;
 
 export const ColumnProps = z
 	.object({
-		span: ResponsiveSpan.optional().describe('Columns spanned (1–12): one value for every width, or `{ default, s, m, l, xl, 2xl, 3xl }` where each breakpoint value applies from that width up; full width when omitted'),
-		offset: ResponsiveSpan.optional().describe('Empty columns to push the cell by (1–12): one value, or per breakpoint like `span`'),
+		span: ResponsiveSpan.optional().describe('How many of the 12 columns the cell takes. One number applies at every screen width; an object such as `{ default: 12, l: 6 }` changes it per breakpoint, each value counting from that width up. Leave it out for full width'),
+		offset: ResponsiveSpan.optional().describe('How many empty columns come before the cell, as one number or per breakpoint like `span`'),
 		children: z.custom<ReactNode>().optional().describe('The column content'),
 		className: z.string().optional().describe('Additional classes on the root element'),
 	})

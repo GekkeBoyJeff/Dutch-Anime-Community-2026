@@ -9,7 +9,7 @@ const meta: Meta<typeof HeadingGroup> = {
 	parameters: {
 		docs: {
 			description: {
-				component: 'Tagline + Title + intro cluster — the section heading composite blocks open with. Renders nothing when empty.',
+				component: 'Tagline, title and intro as one unit: the heading most content blocks open with. `split` puts the intro and the buttons beside the title from the l breakpoint up. Renders nothing when every field is empty.',
 			},
 		},
 		jsonSchema: { schema: HeadingGroupProps },

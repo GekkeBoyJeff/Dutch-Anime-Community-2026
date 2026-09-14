@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Column from '@/components/basics/Column/Column';
+import type { ResponsiveSpan } from '@/components/basics/Column/Column.schema';
 
 import Columns from './Columns';
 import { ColumnsProps } from './Columns.schema';
@@ -19,88 +20,75 @@ const cell = (label: string) => (
 	</div>
 );
 
-const meta: Meta<typeof Columns> = {
+type ColumnsStoryArgs = ColumnsProps & { spans: ResponsiveSpan[] };
+
+const meta: Meta<ColumnsStoryArgs> = {
 	title: 'Basics/Columns',
 	component: Columns,
 	parameters: {
 		docs: {
 			description: {
-				component: 'The row half of the grid pair: a 12-column CSS grid that Column children span into. Combine with Column for responsive layouts.',
+				component: 'A row of the 12-column grid. Put Column cells inside and give each a span; the row keeps the space between them. Every column layout in a content block starts with one of these.',
 			},
 		},
 		jsonSchema: { schema: ColumnsProps },
 	},
 	argTypes: {
-		align: { control: 'inline-radio', options: [undefined, 'start', 'center', 'end', 'stretch', 'baseline'] },
 		gap: { control: 'inline-radio', options: [undefined, 'none', 's', 'm', 'l', 'xl'] },
+		spans: { control: 'object', description: 'One span per cell, in order (story data, not a prop)' },
 	},
+	render: ({ spans, ...args }) => (
+		<Columns {...args}>
+			{spans.map((span, index) => (
+				<Column key={index} span={span}>
+					{cell(`${index + 1} / ${spans.length}`)}
+				</Column>
+			))}
+		</Columns>
+	),
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Columns>;
+type Story = StoryObj<typeof meta>;
 
 export const Thirds: Story = {
 	parameters: {
 		docs: {
 			description: {
-				story: 'Three equal thirds from the m breakpoint up; full width and stacked below it.',
+				story: 'Three equal cells from the m breakpoint up; on a phone they stack at full width.',
 			},
 		},
 	},
 	args: {
-		children: (
-			<>
-				<Column
-					span={{
-						default: 12,
-						m: 4,
-					}}
-				>
-					{cell('1 / 3')}
-				</Column>
-				<Column
-					span={{
-						default: 12,
-						m: 4,
-					}}
-				>
-					{cell('2 / 3')}
-				</Column>
-				<Column
-					span={{
-						default: 12,
-						m: 4,
-					}}
-				>
-					{cell('3 / 3')}
-				</Column>
-			</>
-		),
+		spans: [
+			{
+				default: 12,
+				m: 4,
+			},
+			{
+				default: 12,
+				m: 4,
+			},
+			{
+				default: 12,
+				m: 4,
+			},
+		],
 	},
 };
 
 export const MainAndSidebar: Story = {
 	args: {
-		children: (
-			<>
-				<Column
-					span={{
-						default: 12,
-						m: 8,
-					}}
-				>
-					{cell('main (8)')}
-				</Column>
-				<Column
-					span={{
-						default: 12,
-						m: 4,
-					}}
-				>
-					{cell('aside (4)')}
-				</Column>
-			</>
-		),
+		spans: [
+			{
+				default: 12,
+				m: 8,
+			},
+			{
+				default: 12,
+				m: 4,
+			},
+		],
 	},
 };

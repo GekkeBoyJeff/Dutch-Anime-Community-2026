@@ -59,7 +59,6 @@ const ArticleCard = ({
 					<div className="article-card-byline">
 						{author && (
 							<Avatar
-								size="s"
 								src={author.avatar}
 								alt={author.name}
 								initials={author.name.slice(0, 2)}

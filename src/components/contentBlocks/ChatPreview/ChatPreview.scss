@@ -39,6 +39,10 @@
 				.chat-preview-avatar {
 					inline-size: 2rem;
 					flex: none;
+
+					.avatar {
+						--avatar-size: 1.75rem;
+					}
 				}
 
 				.chat-preview-body {

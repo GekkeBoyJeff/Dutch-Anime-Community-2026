@@ -11,13 +11,12 @@ type AvatarProps = AvatarSchemaProps;
 const Avatar = ({
 	src,
 	alt = '',
-	size = 'm',
 	status,
 	initials,
 	className,
 }: AvatarProps) => {
 	return (
-		<span className={classNames('avatar', `is-${size}`, className)}>
+		<span className={classNames('avatar', className)}>
 			{src ? (
 				<Media type="image" src={src} alt={alt} ratio="1" className="avatar-image" />
 			) : (

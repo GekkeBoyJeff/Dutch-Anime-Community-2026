@@ -409,7 +409,11 @@ const DashboardHeader = ({
 			className="mega-menu-profile-menu"
 			trigger={
 				<button type="button" className="mega-menu-profile" aria-label={`Profielmenu — ${user.name}`}>
-					<Avatar size="s" src={user.avatarUrl} initials={user.initials} alt="" />
+					<Avatar
+						src={user.avatarUrl}
+						initials={user.initials}
+						alt={`Profielafbeelding van ${user.name}`}
+					/>
 					<span className="mega-menu-profile-text">
 						<span className="mega-menu-profile-name">{user.name}</span>
 						{user.roleLabel && <span className="mega-menu-profile-role">{user.roleLabel}</span>}
@@ -419,7 +423,11 @@ const DashboardHeader = ({
 			}
 		>
 			<div className="mega-menu-profile-head">
-				<Avatar size="m" src={user.avatarUrl} initials={user.initials} alt="" />
+				<Avatar
+					src={user.avatarUrl}
+					initials={user.initials}
+					alt={`Profielafbeelding van ${user.name}`}
+				/>
 				<span className="mega-menu-profile-head-text">
 					<span className="mega-menu-profile-head-name">{user.name}</span>
 					{user.roleLabel && <Badge variant="primary" value={user.roleLabel} />}
@@ -521,7 +529,11 @@ const DashboardHeader = ({
 				<div className="mega-menu-overlay-head">
 					{user ? (
 						<span className="mega-menu-overlay-user">
-							<Avatar size="s" src={user.avatarUrl} initials={user.initials} alt="" />
+							<Avatar
+								src={user.avatarUrl}
+								initials={user.initials}
+								alt={`Profielafbeelding van ${user.name}`}
+							/>
 							<span className="mega-menu-overlay-user-text">
 								<span className="mega-menu-overlay-user-name">{user.name}</span>
 								{user.roleLabel && <span className="mega-menu-overlay-user-role">{user.roleLabel}</span>}

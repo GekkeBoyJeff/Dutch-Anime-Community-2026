@@ -4,14 +4,6 @@
 	display: inline-flex;
 	inline-size: var(--avatar-size);
 
-	&.is-s {
-		--avatar-size: 1.75rem;
-	}
-
-	&.is-l {
-		--avatar-size: 3.5rem;
-	}
-
 	.avatar-image {
 		inline-size: 100%;
 		--media-radius: #{$rounded-full};

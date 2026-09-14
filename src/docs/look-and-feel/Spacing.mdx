@@ -209,7 +209,8 @@ Two sides of the codebase need these numbers, and they cannot both read a `.scss
 - The **JS** side wants the raw values. `src/lib/site/images/index.ts` builds the `sizes` attribute of
   a responsive image out of them: `(min-width: 48rem) 50vw, 100vw`. That string has to name the same
   widths the stylesheet does, or the browser fetches the wrong image file at the wrong width — and
-  nothing reports it.
+  nothing reports it. `Column.schema.ts` reads the same names for the keys of a per-breakpoint
+  `span`.
 
 A module rather than a JSON file, because JSON cannot carry the comment that explains any of this.
 
@@ -224,7 +225,8 @@ const breakpointMap = Object.entries(breakpoints)
 ```
 
 A `writeFileSync` on the next line wraps that map in `$breakpoints: ( … );` and saves it as
-`src/design-system/_breakpoints.scss`, which `_tokens.scss` then `@use`s:
+`src/design-system/_breakpoints.scss`. `_tokens.scss` `@use`s it for `bp()` and `@forward`s it, so any
+stylesheet can read `$breakpoints` — `Column.scss` loops over it to write a span class for every width:
 
 ```css
 // GENERATED from breakpoints.mjs by styles.config.mjs — do not edit by hand.
@@ -275,6 +277,10 @@ as the screen gets wider. Write the small layout first; never undo it.
 From `src/components/structures/Footer/Footer.scss`. One column stacked by default; from 768px up,
 two columns in a 1:2 ratio. The gap is stated once and never repeated, because nothing about it
 changes.
+
+That is a structure framing its own footer. Inside a content block, a column layout is not written
+with `bp()` at all: `Columns` and `Column` take the breakpoints as props and the block's stylesheet
+never declares a grid. See [Conventions → Layout is Columns and Column](?path=/docs/for-developers-2-conventions--docs#layout-is-columns-and-column).
 
 For the rare rule that only applies *below* a width, pass a second argument to the same mixin:
 

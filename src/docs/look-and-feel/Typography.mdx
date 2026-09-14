@@ -220,15 +220,29 @@ letters would otherwise crowd. `HeadingGroup` does exactly that with its tagline
 
 ## Line length
 
-`$measure` is `60ch` — sixty zero-widths of the current font, so it scales with the type size rather
-than being a fixed pixel width. It caps a column of running text at a comfortable line, somewhere
-around 65–75 characters in practice.
+A line of running text gets hard to read once it passes about 75 characters. At the end of every
+line the eye has to jump back to the start of the next one, and the longer that jump, the more often
+it lands a line too high or too low. `$measure` is the cap this codebase puts on that: `60ch`.
+
+`ch` is the width of the digit 0 in whatever font is in use, so `60ch` grows and shrinks with the
+type size and comes out at roughly 70 characters of ordinary text. Put it on a paragraph as
+`max-inline-size` and the paragraph wraps there no matter how wide its column is. In a column that is
+already narrower, it changes nothing.
+
+export const sample = 'Een regel lopende tekst wordt lastig te lezen als hij te lang wordt: aan het einde moet het oog terug naar het begin van de volgende regel, en hoe langer die sprong, hoe vaker het een regel misslaat. Met een maat van zestig ch breekt de tekst af rond de zeventig tekens, hoe breed de kolom ook is.';
 
 <Box>
-	<div style={{ maxInlineSize: '60ch', paddingBlock: '0.9rem', paddingInlineStart: '0.9rem', borderInlineStart: '0.1875rem solid rgba(128, 128, 128, 0.45)' }}>Deze kolom is precies 60ch breed. Zodra een regel het einde ervan raakt, breekt hij af. Zonder die grens loopt lopende tekst op een breed scherm door tot voorbij de honderd tekens, en verliest het oog bij elke terugsprong de volgende regel.</div>
+	<Sample label="max-inline-size: 60ch">
+		<div style={{ maxInlineSize: '60ch' }}>{sample}</div>
+	</Sample>
+	<Sample label="no max-inline-size">
+		{sample}
+	</Sample>
 </Box>
 
-One stylesheet uses it today — `HeadingGroup.scss`, on the intro paragraph under a heading:
+Reach for it on any paragraph that can end up wider than a comfortable line: the intro under a
+heading, a lead paragraph, a block of body text that is not already inside a card or a narrow
+column. One stylesheet uses it today — `HeadingGroup.scss`, on the intro paragraph under a heading:
 
 ```css
 .heading-group-intro {

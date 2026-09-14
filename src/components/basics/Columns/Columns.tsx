@@ -9,14 +9,20 @@ import './Columns.scss';
 type ColumnsProps = ColumnsSchemaProps;
 
 const Columns = ({
-	align,
 	gap,
 	className,
 	children,
 	...rest
 }: ColumnsProps) => {
 	return (
-		<div className={classNames('columns', align && `is-${align}`, gap && `has-gap-${gap}`, className)} {...rest}>
+		<div
+			className={classNames(
+				'columns',
+				gap && `has-gap-${gap}`,
+				className,
+			)}
+			{...rest}
+		>
 			{children}
 		</div>
 	);

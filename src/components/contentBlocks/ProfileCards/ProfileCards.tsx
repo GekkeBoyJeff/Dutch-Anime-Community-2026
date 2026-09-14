@@ -48,7 +48,7 @@ const ProfileCards = ({
 									item.image ? (
 										<Media type="image" src={item.image} alt={item.name} ratio="4 / 5" className="profile-cards-portrait" />
 									) : (
-										<Avatar size="l" initials={item.initials || initials(item.name)} />
+										<Avatar initials={item.initials || initials(item.name)} />
 									)
 								}
 								header={<Title element="h3" size={5} value={item.name} />}
