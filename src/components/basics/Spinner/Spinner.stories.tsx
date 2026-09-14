@@ -18,21 +18,6 @@ type Story = StoryObj<typeof Spinner>;
 
 export const Default: Story = {
 	args: {
-		size: 'm',
 		ariaLabel: 'Loading',
-	},
-};
-
-export const Small: Story = {
-	args: {
-		...Default.args,
-		size: 's',
-	},
-};
-
-export const Large: Story = {
-	args: {
-		...Default.args,
-		size: 'l',
 	},
 };

@@ -8,12 +8,11 @@ import './Spinner.scss';
 type SpinnerProps = SpinnerSchemaProps;
 
 const Spinner = ({
-	size = 'm',
 	ariaLabel = 'Loading',
 	className,
 }: SpinnerProps) => {
 	return (
-		<span role="status" className={classNames('spinner', `is-${size}`, className)}>
+		<span role="status" className={classNames('spinner', className)}>
 			<span className="spinner-ring" aria-hidden="true" />
 			<VisuallyHidden value={ariaLabel} />
 		</span>
