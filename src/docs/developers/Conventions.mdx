@@ -428,7 +428,7 @@ Full detail is on [Look & feel → Colors](?path=/docs/look-feel-colors--docs).
 ### Styling lives at the consumer
 
 A primitive styles itself and nothing more. Layout, spacing and size come from whoever placed it.
-`StatBand` passes its own class down to a basic and styles it in `StatBand.scss`:
+`StatBand` passes its own class down to a component and styles it in `StatBand.scss`:
 
 ```tsx
 {heading && <HeadingGroup {...heading} element="header" className="stat-band-header" />}
@@ -451,7 +451,7 @@ A block does not write its own grid. Two basics carry every column layout: `Colu
 12-column grid, and `Column` is a cell in it that says how many of the twelve it takes.
 
 ```tsx
-// src/components/basics/HeadingGroup/HeadingGroup.tsx
+// src/components/components/HeadingGroup/HeadingGroup.tsx
 <Columns gap="xl">
 	<Column
 		span={{

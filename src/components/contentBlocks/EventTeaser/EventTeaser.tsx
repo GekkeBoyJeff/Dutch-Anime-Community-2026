@@ -1,9 +1,9 @@
 import Container from '@/components/basics/Container/Container';
 import Content from '@/components/basics/Content/Content';
-import HeadingGroup from '@/components/basics/HeadingGroup/HeadingGroup';
 import Interactive from '@/components/basics/Interactive/Interactive';
 import Section from '@/components/basics/Section/Section';
 import EventCard from '@/components/components/EventCard/EventCard';
+import HeadingGroup from '@/components/components/HeadingGroup/HeadingGroup';
 
 import type { EventTeaserProps as EventTeaserSchemaProps } from './EventTeaser.schema';
 

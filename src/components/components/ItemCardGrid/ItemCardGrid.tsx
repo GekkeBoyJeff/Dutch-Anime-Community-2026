@@ -4,7 +4,6 @@ import { useId, useMemo, useState } from 'react';
 
 import Container from '@/components/basics/Container/Container';
 import Content from '@/components/basics/Content/Content';
-import HeadingGroup from '@/components/basics/HeadingGroup/HeadingGroup';
 import Icon from '@/components/basics/Icon/Icon';
 import Interactive from '@/components/basics/Interactive/Interactive';
 import Pill from '@/components/basics/Pill/Pill';
@@ -14,6 +13,7 @@ import VisuallyHidden from '@/components/basics/VisuallyHidden/VisuallyHidden';
 import ArticleCard from '@/components/components/ArticleCard/ArticleCard';
 import Card from '@/components/components/Card/Card';
 import EventCard from '@/components/components/EventCard/EventCard';
+import HeadingGroup from '@/components/components/HeadingGroup/HeadingGroup';
 import Select from '@/components/forms/Select/Select';
 import TextInput from '@/components/forms/TextInput/TextInput';
 import { classNames } from '@/lib/shared/classNames';

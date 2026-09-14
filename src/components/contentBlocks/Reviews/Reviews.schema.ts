@@ -6,7 +6,7 @@ export const ReviewItem = z
 	.object({
 		id: Id,
 		author: z.string().min(1).describe('Name of the reviewer, shown below the review text'),
-		rating: z.number().int().min(1).max(5).describe('Star rating given by the reviewer, rendered as filled stars out of 5'),
+		rating: z.number().min(1).max(5).describe('Star rating given by the reviewer, rendered as filled stars out of 5, where a part-star shows as a half'),
 		value: z.string().min(1).describe('Review text/testimonial content'),
 	})
 	.meta({ title: 'ReviewItem' });

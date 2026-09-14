@@ -1,7 +1,7 @@
 import Container from '@/components/basics/Container/Container';
 import CountUp from '@/components/basics/CountUp/CountUp';
-import HeadingGroup from '@/components/basics/HeadingGroup/HeadingGroup';
 import Section from '@/components/basics/Section/Section';
+import HeadingGroup from '@/components/components/HeadingGroup/HeadingGroup';
 
 import type { StatBandProps as StatBandSchemaProps } from './StatBand.schema';
 

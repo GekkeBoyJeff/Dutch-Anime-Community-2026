@@ -3,7 +3,25 @@
 	gap: 0.125em;
 	color: $primary;
 
-	.icon.is-filled {
-		fill: currentColor;
+	.rating-star {
+		position: relative;
+		display: inline-flex;
+	}
+
+	.rating-fill {
+		position: absolute;
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		display: inline-flex;
+		overflow: hidden;
+
+		&.is-half {
+			inline-size: 0.5em;
+		}
+
+		.icon {
+			max-inline-size: none;
+			fill: currentColor;
+		}
 	}
 }

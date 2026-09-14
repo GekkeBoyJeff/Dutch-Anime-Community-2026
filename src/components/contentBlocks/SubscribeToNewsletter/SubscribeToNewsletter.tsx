@@ -1,6 +1,6 @@
 import Container from '@/components/basics/Container/Container';
-import HeadingGroup from '@/components/basics/HeadingGroup/HeadingGroup';
 import Section from '@/components/basics/Section/Section';
+import HeadingGroup from '@/components/components/HeadingGroup/HeadingGroup';
 import NewsletterForm from '@/components/components/NewsletterForm/NewsletterForm';
 
 import type { SubscribeToNewsletterProps as SubscribeToNewsletterSchemaProps } from './SubscribeToNewsletter.schema';

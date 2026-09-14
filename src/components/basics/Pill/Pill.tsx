@@ -46,10 +46,7 @@ const Pill = ({
 		>
 			{value}
 			{typeof count === 'number' && (
-				<span className="pill-count">
-					{' '}
-					{count}
-				</span>
+				<span className="pill-count">{count}</span>
 			)}
 		</Interactive>
 	);

@@ -1,6 +1,6 @@
 import Container from '@/components/basics/Container/Container';
-import HeadingGroup from '@/components/basics/HeadingGroup/HeadingGroup';
 import Section from '@/components/basics/Section/Section';
+import HeadingGroup from '@/components/components/HeadingGroup/HeadingGroup';
 import Swiper from '@/components/components/Swiper/Swiper';
 
 import type { ShowreelProps as ShowreelSchemaProps } from './Showreel.schema';

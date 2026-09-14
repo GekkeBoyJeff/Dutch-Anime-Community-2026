@@ -1,9 +1,9 @@
 import Container from '@/components/basics/Container/Container';
 import Content from '@/components/basics/Content/Content';
-import HeadingGroup from '@/components/basics/HeadingGroup/HeadingGroup';
 import Rating from '@/components/basics/Rating/Rating';
 import Section from '@/components/basics/Section/Section';
 import Card from '@/components/components/Card/Card';
+import HeadingGroup from '@/components/components/HeadingGroup/HeadingGroup';
 
 import type { ReviewsProps as ReviewsSchemaProps } from './Reviews.schema';
 

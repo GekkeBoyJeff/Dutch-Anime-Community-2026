@@ -1,8 +1,8 @@
 import Actions from '@/components/basics/Actions/Actions';
 import Container from '@/components/basics/Container/Container';
 import Content from '@/components/basics/Content/Content';
-import HeadingGroup from '@/components/basics/HeadingGroup/HeadingGroup';
 import Section from '@/components/basics/Section/Section';
+import HeadingGroup from '@/components/components/HeadingGroup/HeadingGroup';
 import { classNames } from '@/lib/shared/classNames';
 
 import type { TitleTextProps as TitleTextSchemaProps } from './TitleText.schema';

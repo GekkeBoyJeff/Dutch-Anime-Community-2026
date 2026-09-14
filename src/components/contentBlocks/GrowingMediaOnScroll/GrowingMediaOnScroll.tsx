@@ -1,8 +1,8 @@
 import Container from '@/components/basics/Container/Container';
 import Content from '@/components/basics/Content/Content';
-import HeadingGroup from '@/components/basics/HeadingGroup/HeadingGroup';
 import Media from '@/components/basics/Media/Media';
 import Section from '@/components/basics/Section/Section';
+import HeadingGroup from '@/components/components/HeadingGroup/HeadingGroup';
 
 import type { GrowingMediaOnScrollProps as GrowingMediaOnScrollSchemaProps } from './GrowingMediaOnScroll.schema';
 

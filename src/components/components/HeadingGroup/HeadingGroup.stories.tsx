@@ -4,7 +4,7 @@ import HeadingGroup from './HeadingGroup';
 import { HeadingGroupProps } from './HeadingGroup.schema';
 
 const meta: Meta<typeof HeadingGroup> = {
-	title: 'Basics/HeadingGroup',
+	title: 'Components/HeadingGroup',
 	component: HeadingGroup,
 	parameters: {
 		docs: {

@@ -1,9 +1,9 @@
 import Container from '@/components/basics/Container/Container';
 import Content from '@/components/basics/Content/Content';
-import HeadingGroup from '@/components/basics/HeadingGroup/HeadingGroup';
 import Interactive from '@/components/basics/Interactive/Interactive';
 import Media from '@/components/basics/Media/Media';
 import Section from '@/components/basics/Section/Section';
+import HeadingGroup from '@/components/components/HeadingGroup/HeadingGroup';
 
 import type { LogoCloudProps as LogoCloudSchemaProps, LogoItem } from './LogoCloud.schema';
 

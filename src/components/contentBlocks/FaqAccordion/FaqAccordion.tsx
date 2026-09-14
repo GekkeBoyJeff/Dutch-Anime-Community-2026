@@ -1,8 +1,8 @@
 import Accordion from '@/components/basics/Accordion/Accordion';
 import Container from '@/components/basics/Container/Container';
-import HeadingGroup from '@/components/basics/HeadingGroup/HeadingGroup';
 import Section from '@/components/basics/Section/Section';
 import Title from '@/components/basics/Title/Title';
+import HeadingGroup from '@/components/components/HeadingGroup/HeadingGroup';
 import { classNames } from '@/lib/shared/classNames';
 
 import type { FaqAccordionProps as FaqAccordionSchemaProps, FaqItem } from './FaqAccordion.schema';
