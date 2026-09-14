@@ -160,3 +160,10 @@
 	--shadow-focus: 0 0 0 0.1875rem var(--primary-text-on-dark);
 }
 
+/* Carrying a colorset means carrying its surface, so forcing one on a plain <div> needs nothing
+   else. This is the floor, not the last word: a component stylesheet nests its own rule and wins on
+   specificity, and so does the canvas around the page frame. */
+[data-colorset] {
+	background-color: $background;
+	color: $color;
+}
