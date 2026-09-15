@@ -45,7 +45,7 @@ const Combobox = ({
 			<Icon name="search" className="combobox-search" />
 			<BaseCombobox.Input className="combobox-input" placeholder={placeholder} aria-label={ariaLabel} />
 			<BaseCombobox.Clear className="combobox-clear" aria-label={clearLabel}>
-				<Icon name="close" />
+				{!readOnly && <Icon name="close" />}
 			</BaseCombobox.Clear>
 			<BaseCombobox.Trigger className="combobox-trigger" aria-label={ariaLabel}>
 				<BaseCombobox.Icon className="combobox-icon">

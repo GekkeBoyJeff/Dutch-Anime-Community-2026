@@ -20,10 +20,6 @@ const Card = ({
 	className,
 	children,
 }: CardProps) => {
-	if (process.env.NODE_ENV !== 'production' && href && !linkLabel) {
-		console.warn('Card: a clickable card (href) needs a linkLabel for the stretched link’s accessible name.');
-	}
-
 	return (
 		<article
 			className={classNames('card', variant && `is-${variant}`, !!image && 'has-media', href && 'is-clickable', className)}

@@ -15,10 +15,14 @@
 
 	transition: box-shadow $speed-fast $ease;
 
+	@include interactive {
+		box-shadow: inset 0 0 0 0.0625rem $primary;
+	}
+
 	&[data-focused],
 	&:focus-within {
 		outline: none;
-		box-shadow: inset 0 0 0 0.0625rem $primary, $shadow-focus;
+		box-shadow: inset 0 0 0 0.0625rem $primary;
 	}
 
 	&[data-disabled] {
@@ -54,7 +58,6 @@
 		border: 0;
 		background: none;
 		color: $color-secondary;
-		cursor: pointer;
 
 		&[data-visible] {
 			display: inline-flex;
@@ -73,7 +76,6 @@
 		border: 0;
 		background: none;
 		color: $color-secondary;
-		cursor: pointer;
 
 		@include interactive {
 			color: $color;

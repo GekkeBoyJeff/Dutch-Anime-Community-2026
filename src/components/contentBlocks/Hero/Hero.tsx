@@ -27,25 +27,26 @@ const Hero = ({
 	eager,
 }: HeroProps) => {
 	const isCover = variant === 'cover' && !!media;
+	const isDark = colorset = 'dark';
 
 	const body = (
-		<div className="hero-body">
-			{tagline && <Content element="span" className="hero-tagline" value={tagline} />}
+		<div className='hero-body' data-colorset={!isDark ? 'dark' : undefined}>
+			{tagline && <Content element='span' className='hero-tagline' value={tagline} />}
 			{title && <Title size={1} value={title} />}
-			{isCover && <span className="hero-divider" aria-hidden="true" />}
+			{isCover && <span className='hero-divider' aria-hidden='true' />}
 			{value && <Content value={value} />}
 
-			<Actions actions={actions} defaultVariant="primary" />
+			<Actions actions={actions} defaultVariant='primary' />
 		</div>
 	);
 
 	const statsBar = stats.length > 0 && (
-		<div className="hero-stats">
+		<div className='hero-stats'>
 			{stats.map((stat) => {
 				return (
-					<div key={stat.label} className="hero-item">
-						<span className="hero-count">{stat.count}</span>
-						<span className="hero-label">{stat.label}</span>
+					<div key={stat.label} className='hero-item'>
+						<span className='hero-count'>{stat.count}</span>
+						<span className='hero-label'>{stat.label}</span>
 					</div>
 				);
 			})}
@@ -54,26 +55,26 @@ const Hero = ({
 
 	if (isCover) {
 		return (
-			<Section colorset={colorset} className="hero is-cover">
-				<Media {...media} eager={eager} className="hero-backdrop" />
+			<Section colorset={colorset} className='hero is-cover'>
+				<Media {...media} eager={eager} className='hero-backdrop' />
 
-				<Container className="hero-inner">
+				<Container className='hero-inner'>
 					{body}
 					{statsBar}
 				</Container>
 
 				{socials.length > 0 && (
-					<div className="hero-tab">
-						<span className="corner is-scoop-tr is-start" aria-hidden="true" />
+					<div className='hero-tab' data-colorset={isDark ? 'white' : undefined}>
+						<span className='corner is-scoop-tr is-start' aria-hidden='true' />
 						{socials.map((social, index) => {
 							return (
-								<Interactive key={`${social.value}-${index}`} url={social.url} target={social.target} className="hero-tab-link">
+								<Interactive key={`${social.value}-${index}`} url={social.url} target={social.target} className='hero-tab-link'>
 									{social.icon && <Icon name={social.icon} />}
 									{social.value}
 								</Interactive>
 							);
 						})}
-						<span className="corner is-scoop-tr is-end" aria-hidden="true" />
+						<span className='corner is-scoop-tr is-end' aria-hidden='true' />
 					</div>
 				)}
 			</Section>
@@ -81,13 +82,13 @@ const Hero = ({
 	}
 
 	return (
-		<Section colorset={colorset} className="hero">
+		<Section colorset={colorset} className='hero'>
 			<Container>
 				{media ? (
-					<div className="hero-panel" data-colorset="dark">
-						<Media {...media} eager={eager} className="hero-backdrop" />
+					<div className='hero-panel' data-colorset='dark'>
+						<Media {...media} eager={eager} className='hero-backdrop' />
 
-						<div className="hero-inner">
+						<div className='hero-inner'>
 							{body}
 							{statsBar}
 						</div>

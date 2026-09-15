@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Icon from '@/components/basics/Icon/Icon';
-import StatusBadge from '@/components/basics/StatusBadge/StatusBadge';
 
 import Entry from './Entry';
 import { EntryProps } from './Entry.schema';
@@ -39,7 +38,6 @@ export const WithMarker: Story = {
 		sub: '12 augustus',
 		marker: <Icon name="file" />,
 		tone: 'warning',
-		trailing: <StatusBadge domain="expense" status="submitted" />,
 	},
 };
 

@@ -98,7 +98,7 @@ const CookieConsent = ({
 			aria-label={title}
 			className={classNames('cookie-consent', showPreferences && 'has-preferences', className)}
 		>
-			<div className="cookie-consent-panel">
+			<div className="cookie-consent-panel" data-colorset='white'>
 				<div className="cookie-consent-body">
 					<Content element="p" className="cookie-consent-cookie-title" value={title} />
 					<Content element="p" className="cookie-consent-cookie-text" value={description} />

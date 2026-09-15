@@ -2,6 +2,7 @@
 	.hero-body {
 		display: grid;
 		gap: spacing(m);
+		background: transparent; // in case of colorset giving the background its own color
 
 		.hero-tagline {
 			--font-size: 0.875rem;

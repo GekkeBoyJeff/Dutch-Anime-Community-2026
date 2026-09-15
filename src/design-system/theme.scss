@@ -77,8 +77,8 @@
 
 	--shadow-focus-error: 0 0 0 0.1875rem #{rgba($error, 0.3)};
 
-	--overlay: #{rgba(#241a22, 0.55)};
-	--overlay-strong: #{rgba(#241a22, 0.78)};
+	--overlay: #{rgba($black, 0.55)};
+	--overlay-strong: #{rgba($black, 0.78)};
 
 	--section-gutter: #{spacing(l)};
 

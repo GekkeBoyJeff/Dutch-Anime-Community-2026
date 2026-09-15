@@ -88,17 +88,6 @@ export const Polaroid: Story = {
 	},
 };
 
-// The ProfileCards shape: card structure (slots, stretched link, hover contract) without any
-// surface chrome — for compositions that carry no card surface of their own.
-export const Bare: Story = {
-	args: {
-		variant: 'bare',
-		image: <Media {...demoImage} alt="" ratio="4 / 5" />,
-		header: <Title element="h3" size={5} value="Amelia" />,
-		children: <Content size="small" value="Mascotte en officieel gezicht van de community." />,
-	},
-};
-
 export const Clickable: Story = {
 	...Default,
 	args: {
